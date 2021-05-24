@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "223818056821",
+    "project_id": "simplydo-6bac0",
+    "storage_bucket": "simplydo-6bac0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:223818056821:android:14de5e3369b7db4dada43c",
+        "android_client_info": {
+          "package_name": "com.v.simplydo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "223818056821-s5q95bo5espnavhoa4cbba9e1j89l2k5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCsP9hvNkt04xodJYVc5q9iyl8CJ20CpIM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "223818056821-s5q95bo5espnavhoa4cbba9e1j89l2k5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

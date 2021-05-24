@@ -1,0 +1,29 @@
+package com.example.simplydo.model
+
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.Index
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "todoList", indices = [Index(value = ["dtId"], unique = true)])
+data class TodoList(
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "dtId") val id: Int = 0,
+    @ColumnInfo(name = "title") val title: String,
+    @ColumnInfo(name = "todo") val todo: String,
+    @ColumnInfo(name = "locationInfo", defaultValue = "") val locationInfo: String = "",
+    @ColumnInfo(name = "contactInfo", defaultValue = "") val contactInfo: ArrayList<ContactInfo>,
+    @ColumnInfo(name = "imageFiles", defaultValue = "") val imageFiles: ArrayList<String>,
+    @ColumnInfo(name = "eventTime") val eventTime: String,
+    @ColumnInfo(name = "eventDate") val eventDate: String,
+    @ColumnInfo(name = "createdAt", defaultValue = "") val createdAt: String,
+    @ColumnInfo(name = "updatedAt", defaultValue = "") val updatedAt: String,
+    // new values
+//    @ColumnInfo(name = "priority", defaultValue = "") val isHighPriority: Boolean,
+
+    )
+
+data class ContactInfo(
+    val name: String,
+    val mobile: String,
+)
