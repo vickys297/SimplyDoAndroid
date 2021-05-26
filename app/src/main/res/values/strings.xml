@@ -9,10 +9,13 @@
     <string name="create">Create</string>
     <string name="date_time">Date Time</string>
     <string name="date_label">Date</string>
-    <string name="task">Task</string>
     <string name="title">Title</string>
     <string name="contact_attachment">Contact Attachment</string>
     <string name="add">Add</string>
     <string name="image_attachment">Image Attachment</string>
     <string name="new_todo">New Todo</string>
+    <string name="add_todo">Add Todo</string>
+    <string name="today">Today</string>
+    <string name="today_caps">TODAY</string>
+    <string name="task">Task</string>
 </resources>

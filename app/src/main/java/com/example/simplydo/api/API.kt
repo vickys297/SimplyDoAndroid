@@ -2,8 +2,7 @@ package com.example.simplydo.api
 
 import com.example.simplydo.model.*
 import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.POST
+import retrofit2.http.*
 
 interface API {
 
@@ -15,4 +14,24 @@ interface API {
 
     @POST("verify")
     fun validateOTP(@Body loginOTPModel: OTPModel): Call<OTPResponse>
+
+    @POST("todo/{uKey}")
+    fun newEntryTodo(
+        @Body todoModel: TodoModel,
+        @Path("uKey") uKey: String,
+    ): Call<CommonResponseModel>
+
+    @POST("todo/{uKey}/bulk")
+    fun uploadDataToCloudDatabase(
+        @Body todoModels: ArrayList<TodoModel>,
+        @Path("uKey") uKey: String,
+    ): Call<CommonResponseModel>
+
+
+    // get data from cloud by uKey and date
+    @GET("todo/{uKey}")
+    fun syncFromCloudByDate(
+        @Path("uKey") uKey: String,
+        @QueryMap dateString: HashMap<String, String>,
+    ): Call<RequestDataFromCloudResponseModel>
 }

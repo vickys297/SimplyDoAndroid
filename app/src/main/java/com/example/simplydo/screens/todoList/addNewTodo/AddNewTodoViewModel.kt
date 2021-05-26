@@ -3,7 +3,7 @@ package com.example.simplydo.screens.todoList.addNewTodo
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import com.example.simplydo.model.ContactInfo
-import com.example.simplydo.model.TodoList
+import com.example.simplydo.model.TodoModel
 import com.example.simplydo.utli.Repository
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -23,7 +23,7 @@ class AddNewTodoViewModel(private val context: Context,private val repository: R
         val df1: DateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
 
         repository.insertNewTodoTask(
-            TodoList(
+            TodoModel(
                 title = title,
                 todo = task,
                 eventTime = dateTime,

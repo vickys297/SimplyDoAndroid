@@ -37,6 +37,7 @@ class AddNewTodo : Fragment() {
             DataBindingUtil.inflate(inflater, R.layout.add_new_todo_fragment, container, false)
         setViewModel()
         (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
+        (activity as AppCompatActivity).supportActionBar!!.setDisplayShowTitleEnabled(false)
         setHasOptionsMenu(true)
 
         // setup array list

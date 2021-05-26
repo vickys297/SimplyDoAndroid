@@ -24,10 +24,16 @@ object Session {
         sharedPreferences.apply()
     }
 
-    fun getSession(key: String, default: String, context: Context): String? {
+    fun getSession(key: String, default: String, context: Context): String {
         val sharedPreferences =
             context.getSharedPreferences(Constant.SESSION_KEY, Context.MODE_PRIVATE)
-        return sharedPreferences.getString(key, default)
+        return sharedPreferences.getString(key, default) ?: ""
+    }
+
+    fun getSession(key: String, context: Context): String {
+        val sharedPreferences =
+            context.getSharedPreferences(Constant.SESSION_KEY, Context.MODE_PRIVATE)
+        return sharedPreferences.getString(key, "") ?: ""
     }
 
     fun getSession(key: String, default: Int, context: Context): Int {
@@ -41,4 +47,5 @@ object Session {
             context.getSharedPreferences(Constant.SESSION_KEY, Context.MODE_PRIVATE)
         return sharedPreferences.getBoolean(key, default)
     }
+
 }

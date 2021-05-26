@@ -5,10 +5,13 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.example.simplydo.model.TodoList
+import com.example.simplydo.model.TodoModel
 import com.example.simplydo.utli.Constant
 
-@Database(entities = [TodoList::class], version = 1, exportSchema = false)
+@Database(
+    entities = [TodoModel::class],
+    version = 1,
+)
 @TypeConverters(ConverterHelper::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun todoDao(): TodoDAO

@@ -16,31 +16,34 @@
         android:layout_height="match_parent"
         tools:context=".ui.main.MainFragment">
 
-        <TextView
-            android:id="@+id/textView3"
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="8dp"
-            android:fontFamily="@font/title_main"
-            android:text="Today"
-            android:textSize="34sp"
+            android:elevation="10dp"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                style="@style/ToolbarStyledText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/task"
+                tools:layout_editor_absoluteX="16dp"
+                tools:layout_editor_absoluteY="6dp" />
+        </androidx.appcompat.widget.Toolbar>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewTodoList"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
             app:layout_constraintBottom_toTopOf="@+id/btnNewTodo"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView3"/>
+            app:layout_constraintTop_toBottomOf="@+id/toolbar2" />
 
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -57,6 +60,7 @@
 
         <Button
             android:id="@+id/btnNewTodo"
+            style="@style/PrimaryButton"
             android:layout_width="0dp"
             android:layout_height="68dp"
             android:background="@drawable/button_background"

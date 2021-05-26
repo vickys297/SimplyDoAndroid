@@ -1,4 +1,6 @@
 package com.example.simplydo.utli
 
-interface Interface {
+interface AppInterface {
+    fun onAddMoreDetails()
+    fun onCreateTodo(title: String, task: String, date: String, checked: Boolean)
 }

@@ -6,24 +6,51 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "todoList", indices = [Index(value = ["dtId"], unique = true)])
-data class TodoList(
+data class TodoModel(
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "dtId") val id: Int = 0,
+    @ColumnInfo(name = "dtId") val dtId: Long = 0,
     @ColumnInfo(name = "title") val title: String,
     @ColumnInfo(name = "todo") val todo: String,
+
+    // event date time
+    @ColumnInfo(name = "eventTime") val eventTime: String,
+    @ColumnInfo(name = "eventDate") val eventDate: String,
+
+    // priority
+    @ColumnInfo(name = "isHighPriority", defaultValue = "true") val isHighPriority: Boolean = true,
+
+    // attachments
     @ColumnInfo(name = "locationInfo", defaultValue = "") val locationInfo: String = "",
     @ColumnInfo(name = "contactInfo", defaultValue = "") val contactInfo: ArrayList<ContactInfo>,
     @ColumnInfo(name = "imageFiles", defaultValue = "") val imageFiles: ArrayList<String>,
-    @ColumnInfo(name = "eventTime") val eventTime: String,
-    @ColumnInfo(name = "eventDate") val eventDate: String,
+
+    // entries time stamp
     @ColumnInfo(name = "createdAt", defaultValue = "") val createdAt: String,
     @ColumnInfo(name = "updatedAt", defaultValue = "") val updatedAt: String,
-    // new values
-//    @ColumnInfo(name = "priority", defaultValue = "") val isHighPriority: Boolean,
 
-    )
+    // is database synced with cloud database
+    @ColumnInfo(name = "synchronize", defaultValue = "0") var synchronize: Int = 0,
+) {
+
+
+    fun getEventTextValue(): String {
+        return if (eventTime.isEmpty()) {
+            "Today"
+        } else {
+            eventTime
+        }
+    }
+}
 
 data class ContactInfo(
     val name: String,
     val mobile: String,
 )
+
+
+data class RequestDataFromCloudResponseModel(
+    val result: String,
+    val message: String,
+    val data: ArrayList<TodoModel>,
+)
+

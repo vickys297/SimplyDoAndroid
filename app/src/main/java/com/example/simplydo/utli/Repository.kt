@@ -1,9 +1,19 @@
 package com.example.simplydo.utli
 
 import android.content.Context
+import android.util.Log
+import androidx.lifecycle.MutableLiveData
+import com.example.simplydo.api.API
 import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.localDatabase.TodoDAO
-import com.example.simplydo.model.TodoList
+import com.example.simplydo.model.CommonResponseModel
+import com.example.simplydo.model.RequestDataFromCloudResponseModel
+import com.example.simplydo.model.TodoModel
+import com.example.simplydo.network.NoConnectivityException
+import com.example.simplydo.network.RetrofitServices
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 
@@ -14,7 +24,6 @@ class Repository private constructor(val context: Context, val appDatabase: AppD
 
 
     private var db: TodoDAO = appDatabase.todoDao()
-
 
 
     companion object {
@@ -33,25 +42,159 @@ class Repository private constructor(val context: Context, val appDatabase: AppD
 
     }
 
-    fun insertNewTodoTask(todoList: TodoList) {
-        val thread = Thread {
-            db.insert(todoList = todoList)
-        }
-        thread.start()
-    }
-
-    fun getTodoList(): ArrayList<TodoList> {
-        val callable = Callable { db.getAll() }
+    fun insertNewTodoTask(todoModel: TodoModel): Long {
+        val callable = Callable { db.insert(todoModel = todoModel) }
         val future = Executors.newSingleThreadExecutor().submit(callable)
-        return future!!.get() as ArrayList<TodoList>
+        return future!!.get()
     }
 
-    fun deleteTaskByPosition(id: Int) {
+
+    fun deleteTaskByPosition(id: Long) {
         Thread {
             db.deleteTaskById(id)
         }.start()
     }
 
+    fun uploadNewTodo(
+        todoModel: TodoModel,
+        user_key: String,
+        todoListResponseModel: MutableLiveData<CommonResponseModel>,
+        noNetworkMessage: MutableLiveData<String>,
+    ) {
+        val retrofit = RetrofitServices.getInstance(context).createService(API::class.java)
+        val insertTodo = retrofit.newEntryTodo(todoModel, user_key)
+
+        insertTodo.enqueue(object : Callback<CommonResponseModel> {
+            override fun onResponse(
+                call: Call<CommonResponseModel>,
+                responseModel: Response<CommonResponseModel>,
+            ) {
+                val data = responseModel.body()
+                data?.let {
+                    todoListResponseModel.postValue(data)
+                }
+            }
+
+            override fun onFailure(call: Call<CommonResponseModel>, t: Throwable) {
+                if (t is NoConnectivityException) {
+                    // show No Connectivity message to user or do whatever you want.
+                    noNetworkMessage.postValue("No network connection")
+                }
+            }
+
+        })
+
+    }
+
+
+    fun uploadDataToCloudDatabase() {
+
+        val callable = Callable { db.getNotSynchronizedTodoData() }
+        val thread = Executors.newSingleThreadExecutor().submit(callable)
+        val todoLists = thread.get() as ArrayList<TodoModel>
+
+
+
+        if (todoLists.isNotEmpty()) {
+            val retrofitServices =
+                RetrofitServices.getInstance(context).createService(API::class.java)
+            val uploadToDatabase = retrofitServices.uploadDataToCloudDatabase(todoLists,
+                Session.getSession(Constant.USER_KEY, context))
+            uploadToDatabase.enqueue(object : Callback<CommonResponseModel> {
+                override fun onResponse(
+                    call: Call<CommonResponseModel>,
+                    response: Response<CommonResponseModel>,
+                ) {
+                    val data = response.body()
+                    data?.let {
+                        if (data.result == Constant.API_RESULT_OK) {
+                            updateSynchronizedTodoData(todoLists)
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<CommonResponseModel>, t: Throwable) {
+
+                }
+
+            })
+        }
+
+
+    }
+
+    private fun updateSynchronizedTodoData(todoModels: ArrayList<TodoModel>) {
+        for (todo in todoModels) {
+            Thread {
+                db.updateSynchronizedTodoDataById(todo.dtId)
+            }.start()
+        }
+    }
+
+
+    private fun bulkInsertIntoLocalappdata(data: ArrayList<TodoModel>) {
+        if (data.isNotEmpty()) {
+            data.forEach {
+                val callable = Callable { db.insert(it) }
+                Thread {
+                    db.updateSynchronizedTodoDataById(it.dtId)
+                }.start()
+
+                val thread = Executors.newSingleThreadExecutor().submit(callable)
+                Log.i(TAG, "New Bulk insert -> ${thread.get()}")
+            }
+        }
+    }
+
+    fun downloadTaskByDate(dateString: String) {
+
+        val hashMap = HashMap<String, String>()
+        hashMap["eventDate"] = dateString
+        val retrofitServices = RetrofitServices.getInstance(context).createService(API::class.java)
+        val syncFromCloud =
+            retrofitServices.syncFromCloudByDate(Session.getSession(Constant.USER_KEY,
+                context = context), hashMap)
+
+
+        syncFromCloud.enqueue(object : Callback<RequestDataFromCloudResponseModel> {
+            override fun onResponse(
+                call: Call<RequestDataFromCloudResponseModel>,
+                response: Response<RequestDataFromCloudResponseModel>,
+            ) {
+                val data = response.body()
+                data?.let {
+                    if (it.result == Constant.API_RESULT_OK) {
+                        synDataWithLocalDatabase(it.data)
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<RequestDataFromCloudResponseModel>, t: Throwable) {
+
+            }
+
+        })
+    }
+
+    private fun synDataWithLocalDatabase(data: ArrayList<TodoModel>) {
+        if (data.isNotEmpty()) {
+            data.forEach {
+                val callable = Callable { db.getTodoByCreatedDateEventDate(it.eventDate, it.createdAt) }
+                val executors = Executors.newSingleThreadExecutor().submit(callable)
+
+                val todo = executors.get()
+
+                Log.i(TAG, "Todo in data base $todo")
+
+                if (todo == null) {
+                    it.synchronize = 1
+                    Thread{
+                        db.insert(it)
+                    }.start()
+                }
+            }
+        }
+    }
 
 
 }

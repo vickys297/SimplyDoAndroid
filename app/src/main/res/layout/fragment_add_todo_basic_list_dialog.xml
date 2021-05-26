@@ -3,11 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/bottom_sheet_background"
+    android:layout_height="wrap_content"
     android:clipToPadding="false"
     android:paddingTop="@dimen/list_item_spacing_half"
-    android:paddingBottom="@dimen/list_item_spacing_half"
     tools:context=".screens.todoList.addTodoBasic.AddTodoBasic">
 
     <TextView
@@ -37,9 +35,11 @@
         app:layout_constraintTop_toBottomOf="@+id/textView5">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Tile" />
+            android:hint="@string/title"
+            android:imeOptions="actionNext" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -55,31 +55,42 @@
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout2">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etTask"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/task" />
+            android:gravity="start"
+            android:hint="@string/task"
+            android:imeOptions="actionDone"
+            android:lines="4" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayout6"
+        android:id="@+id/tilEventDate"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:visibility="gone"
         android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout5">
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout5"
+        app:startIconDrawable="@drawable/ic_baseline_calendar_today_24"
+        app:startIconTint="@color/purple_500">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/date_label" />
+            android:hint="@string/date_label"
+            android:imeOptions="actionDone"
+            android:inputType="none" />
     </com.google.android.material.textfield.TextInputLayout>
 
+
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/btnAddMoreDetails"
         style="@style/ButtonAddMoreDetails"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -89,19 +100,59 @@
         android:text="add more details"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout6" />
+        app:layout_constraintTop_toBottomOf="@+id/llDateSelector" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/btnCreateTodo"
+        style="@style/PrimaryButton"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_height="68dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
         android:text="@string/create"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button2" />
+        app:layout_constraintTop_toBottomOf="@+id/btnAddMoreDetails" />
+
+    <LinearLayout
+        android:id="@+id/llDateSelector"
+        style="@style/DateViewSmall"
+        android:layout_width="68dp"
+        android:layout_height="68dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tilEventDate">
+
+        <TextView
+            android:id="@+id/tvDayofMonth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="10" />
+
+        <TextView
+            android:id="@+id/tvMonth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="APR"
+            android:textColor="@color/purple_500"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <CheckBox
+        android:id="@+id/cbPriority"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
+        android:buttonTint="@color/purple_500"
+        android:checked="true"
+        android:text="Priority"
+        app:layout_constraintBottom_toBottomOf="@+id/llDateSelector"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/llDateSelector"
+        app:layout_constraintTop_toTopOf="@+id/llDateSelector" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

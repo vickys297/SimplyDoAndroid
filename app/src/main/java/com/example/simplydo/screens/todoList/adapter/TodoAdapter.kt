@@ -5,11 +5,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.simplydo.databinding.RecyclerTodoListItemBinding
-import com.example.simplydo.model.TodoList
+import com.example.simplydo.model.TodoModel
 
 class TodoAdapter(private val context: Context) :
     RecyclerView.Adapter<TodoAdapter.ViewHolder>() {
-    private var dataSet = ArrayList<TodoList>()
+    private var dataSet = ArrayList<TodoModel>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
@@ -34,7 +34,7 @@ class TodoAdapter(private val context: Context) :
 
     override fun getItemCount(): Int = dataSet.size
 
-    fun updateItem(it: ArrayList<TodoList>) {
+    fun updateItem(it: ArrayList<TodoModel>) {
         this.dataSet = it
         notifyDataSetChanged()
     }
@@ -47,7 +47,7 @@ class TodoAdapter(private val context: Context) :
 
     class ViewHolder(private val binding: RecyclerTodoListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: TodoList) {
+        fun bind(item: TodoModel) {
             binding.apply {
                 todoModel = item
                 executePendingBindings()
