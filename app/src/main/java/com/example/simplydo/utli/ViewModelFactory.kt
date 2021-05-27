@@ -3,6 +3,7 @@ package com.example.simplydo.utli
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.example.simplydo.screens.calender.CalenderViewModel
 import com.example.simplydo.screens.todoList.ToDoViewModel
 import com.example.simplydo.screens.todoList.addNewTodo.AddNewTodoViewModel
 
@@ -22,6 +23,9 @@ open class ViewModelFactory internal constructor(
                     context,
                     this.repository
                 ) as T
+            }
+            CalenderViewModel::class.java.canonicalName -> {
+                CalenderViewModel(context, this.repository) as T
             }
             else -> {
                 throw IllegalArgumentException("ViewModel not found")

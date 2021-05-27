@@ -2,7 +2,6 @@ package com.example.simplydo.screens.todoList.addNewTodo
 
 import android.os.Bundle
 import android.view.*
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -92,14 +91,6 @@ class AddNewTodo : Fragment() {
 
     private fun createToDo() {
 
-        viewModel.insertIntoLocalDatabase(binding.etTitle.text.toString(),
-            binding.etTask.text.toString(),
-            binding.etDateTime.text.toString(),
-            contactInfo,
-            imagesList
-        )
-        Toast.makeText(requireContext(), "New Todo added", Toast.LENGTH_LONG).show()
-        findNavController().navigateUp()
     }
 
 }

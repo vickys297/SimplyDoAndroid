@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.simplydo.databinding.FragmentAddTodoBasicListDialogBinding
-import com.example.simplydo.utli.AppInterface
+import com.example.simplydo.utli.CreateBasicTodoInterface
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.text.SimpleDateFormat
 import java.util.*
@@ -24,7 +24,7 @@ const val ARG_ITEM_COUNT = "item_count"
  *    AddTodoBasic.newInstance(30).show(supportFragmentManager, "dialog")
  * </pre>
  */
-class AddTodoBasic(private val appInterface: AppInterface) : BottomSheetDialogFragment() {
+class AddTodoBasic(private val appInterface: CreateBasicTodoInterface) : BottomSheetDialogFragment() {
 
     private var _binding: FragmentAddTodoBasicListDialogBinding? = null
 
@@ -60,7 +60,7 @@ class AddTodoBasic(private val appInterface: AppInterface) : BottomSheetDialogFr
         binding.etDate.setText(simpleDate.format(Date()).toString())
         eventDate = simpleDate.format(Date()).toString()
 
-        binding.tvDayofMonth.text = SimpleDateFormat("dd").format(Date().time)
+        binding.tvDayOfMonth.text = SimpleDateFormat("dd").format(Date().time)
         binding.tvMonth.text = SimpleDateFormat("MMM").format(Date().time)
 
         binding.llDateSelector.setOnClickListener {
@@ -72,7 +72,7 @@ class AddTodoBasic(private val appInterface: AppInterface) : BottomSheetDialogFr
                     newDate.set(year, month, dayOfMonth)
                     eventDate = (simpleDate.format(newDate.time))
 
-                    binding.tvDayofMonth.text = SimpleDateFormat("dd").format(newDate.time)
+                    binding.tvDayOfMonth.text = SimpleDateFormat("dd").format(newDate.time)
                     binding.tvMonth.text = SimpleDateFormat("MMM").format(newDate.time)
 
                     datePicker.dismiss()
@@ -105,8 +105,7 @@ class AddTodoBasic(private val appInterface: AppInterface) : BottomSheetDialogFr
 
 
     companion object {
-
-        fun newInstance(appInterface: AppInterface): AddTodoBasic =
+        fun newInstance(appInterface: CreateBasicTodoInterface): AddTodoBasic =
             AddTodoBasic(appInterface)
     }
 

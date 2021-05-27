@@ -18,4 +18,7 @@
     <string name="today">Today</string>
     <string name="today_caps">TODAY</string>
     <string name="task">Task</string>
+    <string name="todo">Todo</string>
+    <string name="no_event_available">No Event Available</string>
+    <string name="next_event_available_on">Next event available on</string>
 </resources>

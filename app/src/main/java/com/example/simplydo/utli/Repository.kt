@@ -38,9 +38,6 @@ class Repository private constructor(val context: Context, val appDatabase: AppD
 
     }
 
-    fun registerUser() {
-
-    }
 
     fun insertNewTodoTask(todoModel: TodoModel): Long {
         val callable = Callable { db.insert(todoModel = todoModel) }
@@ -53,6 +50,14 @@ class Repository private constructor(val context: Context, val appDatabase: AppD
         Thread {
             db.deleteTaskById(id)
         }.start()
+        deleteTodoFromCloud(id)
+    }
+
+    private fun deleteTodoFromCloud(id: Long) {
+
+        val retrofitServices = RetrofitServices.getInstance(context).createService(API::class.java)
+//        val deleteTodoById = retrofitServices.delete
+
     }
 
     fun uploadNewTodo(
@@ -92,8 +97,6 @@ class Repository private constructor(val context: Context, val appDatabase: AppD
         val callable = Callable { db.getNotSynchronizedTodoData() }
         val thread = Executors.newSingleThreadExecutor().submit(callable)
         val todoLists = thread.get() as ArrayList<TodoModel>
-
-
 
         if (todoLists.isNotEmpty()) {
             val retrofitServices =
@@ -179,7 +182,8 @@ class Repository private constructor(val context: Context, val appDatabase: AppD
     private fun synDataWithLocalDatabase(data: ArrayList<TodoModel>) {
         if (data.isNotEmpty()) {
             data.forEach {
-                val callable = Callable { db.getTodoByCreatedDateEventDate(it.eventDate, it.createdAt) }
+                val callable =
+                    Callable { db.getTodoByCreatedDateEventDate(it.eventDate, it.createdAt) }
                 val executors = Executors.newSingleThreadExecutor().submit(callable)
 
                 val todo = executors.get()
@@ -188,12 +192,23 @@ class Repository private constructor(val context: Context, val appDatabase: AppD
 
                 if (todo == null) {
                     it.synchronize = 1
-                    Thread{
+                    Thread {
                         db.insert(it)
                     }.start()
                 }
             }
         }
+    }
+
+    fun getTodoByEventDate(
+        date: String,
+        todoList: MutableLiveData<List<TodoModel>>,
+    ) {
+        val callable = Callable {
+            db.getTodoByEnetDate(date)
+        }
+        val executors = Executors.newSingleThreadExecutor().submit(callable)
+        todoList.postValue(executors.get())
     }
 
 

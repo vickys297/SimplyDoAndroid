@@ -36,4 +36,7 @@ interface TodoDAO {
 
     @Query("UPDATE todoList SET synchronize ='1' WHERE dtId =:id")
     fun updateSynchronizedTodoDataById(id: Long)
+
+    @Query("SELECT * FROM todoList WHERE eventDate =:eventDate ")
+    fun getTodoByEnetDate(eventDate: String): List<TodoModel>
 }

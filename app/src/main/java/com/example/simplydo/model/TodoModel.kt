@@ -30,6 +30,9 @@ data class TodoModel(
 
     // is database synced with cloud database
     @ColumnInfo(name = "synchronize", defaultValue = "0") var synchronize: Int = 0,
+
+
+//    @ColumnInfo(name = "isCompleted", defaultValue = "0") var isCompleted: Int = 0,
 ) {
 
 

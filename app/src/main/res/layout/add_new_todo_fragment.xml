@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -64,7 +65,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/title"
-                        android:imeOptions="actionNext" />
+                        android:imeOptions="actionNext"
+                        android:inputType="text" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -84,26 +86,38 @@
                         android:layout_height="wrap_content"
                         android:gravity="start"
                         android:hint="@string/task"
+                        android:imeOptions="actionUnspecified|actionNext"
                         android:lines="10" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/textInputLayout4"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="0dp"
-                    android:layout_marginLeft="0dp"
                     android:layout_marginTop="8dp"
-                    android:layout_marginEnd="0dp"
-                    android:layout_marginRight="0dp">
+                    android:gravity="center">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etDateTime"
-                        android:layout_width="match_parent"
+                    <include
+                        layout="@layout/small_date_view"
+                        android:layout_width="58dp"
+                        android:layout_height="58dp" />
+
+                    <include
+                        layout="@layout/time_view"
+                        android:layout_width="88dp"
+                        android:layout_height="58dp"
+                        android:layout_marginLeft="16dp" />
+
+                    <CheckBox
+                        android:id="@+id/checkBox"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:hint="@string/date_time" />
-                </com.google.android.material.textfield.TextInputLayout>
+                        android:layout_marginLeft="16dp"
+                        android:layout_weight="1"
+                        android:buttonTint="@color/purple_500"
+                        android:checked="true"
+                        android:text="Priority" />
+                </LinearLayout>
+
 
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"

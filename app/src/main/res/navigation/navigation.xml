@@ -19,10 +19,18 @@
         <action
             android:id="@+id/action_addNewTodo_to_contactFragment"
             app:destination="@id/contactFragment" />
+        <action
+            android:id="@+id/action_addNewTodo_to_calenderFragment"
+            app:destination="@id/calenderFragment" />
     </fragment>
     <fragment
         android:id="@+id/contactFragment"
         android:name="com.example.simplydo.screens.todoList.addNewTodo.contactListView.ContactFragment"
         android:label="fragment_contact_list"
         tools:layout="@layout/fragment_contact_list" />
+    <fragment
+        android:id="@+id/calenderFragment"
+        android:name="com.example.simplydo.screens.calender.CalenderFragment"
+        android:label="calender_fragment"
+        tools:layout="@layout/calender_fragment" />
 </navigation>

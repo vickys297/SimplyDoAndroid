@@ -39,7 +39,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/title"
-            android:imeOptions="actionNext" />
+            android:imeOptions="actionNext"
+            android:inputType="text" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -61,7 +62,8 @@
             android:gravity="start"
             android:hint="@string/task"
             android:imeOptions="actionDone"
-            android:lines="4" />
+            android:inputType="text"
+            android:minLines="3" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -117,7 +119,7 @@
 
     <LinearLayout
         android:id="@+id/llDateSelector"
-        style="@style/DateViewSmall"
+        style="@style/DateTimeView"
         android:layout_width="68dp"
         android:layout_height="68dp"
         android:layout_marginStart="8dp"
@@ -126,7 +128,7 @@
         app:layout_constraintTop_toTopOf="@+id/tilEventDate">
 
         <TextView
-            android:id="@+id/tvDayofMonth"
+            android:id="@+id/tvDayOfMonth"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="10" />

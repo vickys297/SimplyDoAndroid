@@ -66,9 +66,20 @@
             android:background="@drawable/button_background"
             android:text="@string/new_todo"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btnCalenderView"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/recyclerViewTodoList" />
+
+        <ImageButton
+            android:id="@+id/btnCalenderView"
+            style="@style/PrimaryButtonOptional"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_calendar_today_24_white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/btnNewTodo" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

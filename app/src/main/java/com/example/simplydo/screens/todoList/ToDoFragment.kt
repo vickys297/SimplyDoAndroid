@@ -21,8 +21,8 @@ import com.example.simplydo.model.ContactInfo
 import com.example.simplydo.model.TodoModel
 import com.example.simplydo.screens.todoList.adapter.TodoAdapter
 import com.example.simplydo.screens.todoList.addTodoBasic.AddTodoBasic
-import com.example.simplydo.utli.AppInterface
 import com.example.simplydo.utli.Constant
+import com.example.simplydo.utli.CreateBasicTodoInterface
 import com.example.simplydo.utli.Repository
 import com.example.simplydo.utli.ViewModelFactory
 import java.text.SimpleDateFormat
@@ -52,7 +52,7 @@ class ToDoFragment : Fragment() {
     lateinit var imagesList: ArrayList<String>
 
 
-    private var appInterface = object : AppInterface {
+    private var appInterface = object : CreateBasicTodoInterface {
         override fun onAddMoreDetails() {
             findNavController().navigate(R.id.action_toDoFragment_to_addNewTodo)
         }
@@ -144,6 +144,10 @@ class ToDoFragment : Fragment() {
         binding.btnNewTodo.setOnClickListener {
             AddTodoBasic.newInstance(appInterface)
                 .show(requireActivity().supportFragmentManager, "dialog")
+        }
+
+        binding.btnCalenderView.setOnClickListener {
+            findNavController().navigate(R.id.calenderFragment)
         }
 
 
