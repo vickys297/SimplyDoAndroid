@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:clipToPadding="false"
     android:paddingTop="@dimen/list_item_spacing_half"
-    tools:context=".screens.todoList.addTodoBasic.AddTodoBasic">
+    tools:context=".utli.bottomSheetDialogs.addTodoBasic.AddTodoBasic">
 
     <TextView
         android:id="@+id/textView5"
@@ -66,57 +66,6 @@
             android:minLines="3" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilEventDate"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:visibility="gone"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout5"
-        app:startIconDrawable="@drawable/ic_baseline_calendar_today_24"
-        app:startIconTint="@color/purple_500">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etDate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/date_label"
-            android:imeOptions="actionDone"
-            android:inputType="none" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-
-    <Button
-        android:id="@+id/btnAddMoreDetails"
-        style="@style/ButtonAddMoreDetails"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:text="add more details"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/llDateSelector" />
-
-    <Button
-        android:id="@+id/btnCreateTodo"
-        style="@style/PrimaryButton"
-        android:layout_width="0dp"
-        android:layout_height="68dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/create"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnAddMoreDetails" />
-
     <LinearLayout
         android:id="@+id/llDateSelector"
         style="@style/DateTimeView"
@@ -125,7 +74,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tilEventDate">
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout5">
 
         <TextView
             android:id="@+id/tvDayOfMonth"
@@ -156,5 +105,42 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/llDateSelector"
         app:layout_constraintTop_toTopOf="@+id/llDateSelector" />
+
+    <Button
+        android:id="@+id/btnAddMoreDetails"
+        style="@style/ButtonOptionsDetails"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/add_more_details"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/llDateSelector" />
+
+    <Button
+        android:id="@+id/btnCreateTodo"
+        style="@style/PrimaryButton"
+        android:layout_width="0dp"
+        android:layout_height="68dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/create"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/ivClose"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnAddMoreDetails" />
+
+    <ImageView
+        android:id="@+id/ivClose"
+        style="@style/PrimaryButtonOptional"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_baseline_close_24"
+        app:layout_constraintBottom_toBottomOf="@+id/btnCreateTodo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btnCreateTodo"
+        app:layout_constraintTop_toTopOf="@+id/btnCreateTodo" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

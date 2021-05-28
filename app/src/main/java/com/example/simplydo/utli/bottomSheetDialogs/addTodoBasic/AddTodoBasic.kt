@@ -1,4 +1,4 @@
-package com.example.simplydo.screens.todoList.addTodoBasic
+package com.example.simplydo.utli.bottomSheetDialogs.addTodoBasic
 
 import android.app.DatePickerDialog
 import android.os.Build
@@ -7,9 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.simplydo.databinding.FragmentAddTodoBasicListDialogBinding
+import com.example.simplydo.utli.Constant
 import com.example.simplydo.utli.CreateBasicTodoInterface
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import java.text.SimpleDateFormat
 import java.util.*
 
 // TODO: Customize parameter argument names
@@ -24,7 +24,14 @@ const val ARG_ITEM_COUNT = "item_count"
  *    AddTodoBasic.newInstance(30).show(supportFragmentManager, "dialog")
  * </pre>
  */
-class AddTodoBasic(private val appInterface: CreateBasicTodoInterface) : BottomSheetDialogFragment() {
+
+internal val TAG = AddTodoBasic::class.java.canonicalName
+
+class AddTodoBasic(
+    private val appInterface: CreateBasicTodoInterface,
+    defaultEventDate: String,
+) :
+    BottomSheetDialogFragment() {
 
     private var _binding: FragmentAddTodoBasicListDialogBinding? = null
 
@@ -32,7 +39,13 @@ class AddTodoBasic(private val appInterface: CreateBasicTodoInterface) : BottomS
     // onDestroyView.
     private val binding get() = _binding!!
 
-    lateinit var eventDate: String
+    private var eventDate: String
+
+    init {
+        // start with the given date
+        eventDate = defaultEventDate
+
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,9 +58,12 @@ class AddTodoBasic(private val appInterface: CreateBasicTodoInterface) : BottomS
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-
         binding.btnAddMoreDetails.setOnClickListener {
-            appInterface.onAddMoreDetails()
+            appInterface.onAddMoreDetails(eventDate)
+            dismiss()
+        }
+
+        binding.ivClose.setOnClickListener {
             dismiss()
         }
 
@@ -55,25 +71,42 @@ class AddTodoBasic(private val appInterface: CreateBasicTodoInterface) : BottomS
             validateInput()
         }
 
+        binding.tvDayOfMonth.text =
+            Constant.parseStringDateToCalender(eventDate).get(Calendar.DAY_OF_MONTH).toString()
 
-        val simpleDate = SimpleDateFormat("dd-MM-yyyy")
-        binding.etDate.setText(simpleDate.format(Date()).toString())
-        eventDate = simpleDate.format(Date()).toString()
-
-        binding.tvDayOfMonth.text = SimpleDateFormat("dd").format(Date().time)
-        binding.tvMonth.text = SimpleDateFormat("MMM").format(Date().time)
+        binding.tvMonth.text = Constant.dateFormatter(Constant.DATE_PATTERN_MONTH_TEXT)
+            .format(Constant.parseStringDateToCalender(eventDate).time)
+            .uppercase(Locale.getDefault())
 
         binding.llDateSelector.setOnClickListener {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+
+
+                val date = Constant.dateFormatter(Constant.DATE_PATTERN_COMMON).parse(eventDate)
+                val calendar = Calendar.getInstance()
+                calendar.time = date!!
+
                 val datePicker = DatePickerDialog(requireContext())
                 datePicker.datePicker.minDate = System.currentTimeMillis()
+
+                datePicker.datePicker.updateDate(
+                    calendar.get(Calendar.YEAR),
+                    calendar.get(Calendar.MONTH),
+                    calendar.get(Calendar.DAY_OF_MONTH)
+                )
+
                 datePicker.setOnDateSetListener { picker, year, month, dayOfMonth ->
                     val newDate = Calendar.getInstance()
                     newDate.set(year, month, dayOfMonth)
-                    eventDate = (simpleDate.format(newDate.time))
 
-                    binding.tvDayOfMonth.text = SimpleDateFormat("dd").format(newDate.time)
-                    binding.tvMonth.text = SimpleDateFormat("MMM").format(newDate.time)
+                    eventDate = (Constant.dateFormatter(Constant.DATE_PATTERN_COMMON).format(newDate.time))
+
+                    binding.tvDayOfMonth.text =
+                        Constant.dateFormatter(Constant.DATE_PATTERN_DAY_OF_MONTH).format(newDate.time)
+
+                    binding.tvMonth.text =
+                        Constant.dateFormatter(Constant.DATE_PATTERN_MONTH_TEXT).format(newDate.time)
+                            .uppercase(Locale.getDefault())
 
                     datePicker.dismiss()
                 }
@@ -105,12 +138,17 @@ class AddTodoBasic(private val appInterface: CreateBasicTodoInterface) : BottomS
 
 
     companion object {
-        fun newInstance(appInterface: CreateBasicTodoInterface): AddTodoBasic =
-            AddTodoBasic(appInterface)
+        fun newInstance(
+            createBasicTodoInterface: CreateBasicTodoInterface,
+            eventDate: String,
+        ): AddTodoBasic =
+            AddTodoBasic(createBasicTodoInterface, eventDate)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
+
+
 }

@@ -19,6 +19,18 @@
     <string name="today_caps">TODAY</string>
     <string name="task">Task</string>
     <string name="todo">Todo</string>
-    <string name="no_event_available">No Event Available</string>
-    <string name="next_event_available_on">Next event available on</string>
+    <string name="no_event_available">No task available</string>
+    <string name="next_event_available_on">Next task available on</string>
+    <string name="eventDateString">eventDate</string>
+    <string name="todo_options">TODO Options</string>
+    <string name="options">Options</string>
+    <string name="add_more_details">add more details</string>
+    <string name="priority">Priority</string>
+    <string name="view_now">View Now</string>
+    <string name="task_completed_label">Task Completed</string>
+    <string name="todo_completed">Todo Completed</string>
+    <string name="calender">Calender</string>
+    <string name="edit">Edit</string>
+    <string name="restore">Restore</string>
+    <string name="delete">Delete</string>
 </resources>

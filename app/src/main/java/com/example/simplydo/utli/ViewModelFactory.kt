@@ -25,7 +25,7 @@ open class ViewModelFactory internal constructor(
                 ) as T
             }
             CalenderViewModel::class.java.canonicalName -> {
-                CalenderViewModel(context, this.repository) as T
+                CalenderViewModel(this.repository) as T
             }
             else -> {
                 throw IllegalArgumentException("ViewModel not found")

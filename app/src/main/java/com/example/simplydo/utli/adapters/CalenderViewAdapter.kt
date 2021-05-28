@@ -1,4 +1,4 @@
-package com.example.simplydo.screens.calender.adapter
+package com.example.simplydo.utli.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -11,24 +11,23 @@ import com.example.simplydo.databinding.RecyclerCalenderListItemBinding
 import com.example.simplydo.model.SmallCalenderModel
 import com.example.simplydo.utli.CalenderAdapterInterface
 
+
 class CalenderViewAdapter(
     val context: Context,
     private val calenderAdapterInterface: CalenderAdapterInterface,
-) : RecyclerView.Adapter<CalenderViewAdapter.ViewHolder>() {
+) :
+    RecyclerView.Adapter<CalenderViewAdapter.ViewHolder>() {
 
-
-    private lateinit var dataset: ArrayList<SmallCalenderModel>
-
+    private var dataset = ArrayList<SmallCalenderModel>()
     private var activePosition: Int = 0
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int,
     ): ViewHolder {
-        val layoutInflater = LayoutInflater.from(parent.context)
         return ViewHolder(
             RecyclerCalenderListItemBinding.inflate(
-                layoutInflater,
+                LayoutInflater.from(parent.context),
                 parent,
                 false
             )
@@ -44,27 +43,21 @@ class CalenderViewAdapter(
 
                 val layout = itemView.rootView.findViewById<ConstraintLayout>(R.id.calenderLayout)
 
-                if (activePosition == absoluteAdapterPosition) {
-                    val sdk = android.os.Build.VERSION.SDK_INT;
-                    if (sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                        layout.setBackgroundDrawable(ContextCompat.getDrawable(context,
-                            R.drawable.active_calender_view))
-                    } else {
-                        layout.background =
-                            ContextCompat.getDrawable(context, R.drawable.active_calender_view)
-                    }
+                if (position == activePosition) {
+                    layout.background =
+                        ContextCompat.getDrawable(context, R.drawable.active_calender_view)
                 }
 
                 itemView.setOnClickListener {
-                    calenderAdapterInterface.onDateSelect(absoluteAdapterPosition, dateEvent = item.date)
+                    calenderAdapterInterface.onDateSelect(position, dateEvent = item.date)
                 }
+
             }
         }
     }
 
-    class ViewHolder(private val binding: RecyclerCalenderListItemBinding) :
+    inner class ViewHolder(private val binding: RecyclerCalenderListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-
         fun bind(item: SmallCalenderModel) {
             binding.apply {
                 dataModel = item
@@ -73,16 +66,18 @@ class CalenderViewAdapter(
         }
     }
 
-    override fun getItemCount(): Int = dataset.size
-
+    override fun getItemCount(): Int {
+        return dataset.size
+    }
 
     fun updateList(smallCalenderModels: ArrayList<SmallCalenderModel>) {
-        this.dataset = smallCalenderModels
+        dataset = smallCalenderModels
         notifyDataSetChanged()
     }
 
     fun setActiveDate(position: Int) {
         this.activePosition = position
+        notifyItemChanged(this.activePosition)
         notifyDataSetChanged()
     }
 

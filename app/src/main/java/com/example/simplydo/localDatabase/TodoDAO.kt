@@ -16,15 +16,20 @@ interface TodoDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(todoModel: TodoModel): Long
 
-    @Query("SELECT * FROM todoList ORDER BY createdAt ASC")
-    fun getAllTodo(): LiveData<List<TodoModel>>
+    @Query("SELECT * FROM todoList WHERE eventDate  =  :eventDate OR  eventDate > :eventDate AND isCompleted  = '1' OR isCompleted ='0' ORDER BY createdAt ASC")
+    fun getAllTodo(eventDate: String): LiveData<List<TodoModel>>
 
+    @Query("UPDATE todoList SET isCompleted = '1', synchronize ='0', updatedAt =:updatedAt WHERE dtId =:dtId")
+    fun completeTaskById(dtId: Long, updatedAt: String)
 
     @Query("DELETE FROM todoList WHERE dtId =:id")
     fun deleteTaskById(id: Long)
 
     @Query("SELECT * FROM todoList WHERE synchronize ='0'")
     fun getNotSynchronizedTodoData(): List<TodoModel>
+
+    @Query("SELECT * FROM todoList WHERE CAST(eventDate as DATE) > CAST(:date as DATE)")
+    fun getNextEventCountByDate(date: String): List<TodoModel>
 
 
     /*Cloud Purpose
@@ -38,5 +43,6 @@ interface TodoDAO {
     fun updateSynchronizedTodoDataById(id: Long)
 
     @Query("SELECT * FROM todoList WHERE eventDate =:eventDate ")
-    fun getTodoByEnetDate(eventDate: String): List<TodoModel>
+    fun getTodoByEnetDate(eventDate: String): LiveData<List<TodoModel>>
+
 }

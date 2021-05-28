@@ -42,12 +42,18 @@
         <item name="android:layout_width">500dp</item>
     </style>
 
-    <style name="ButtonAddMoreDetails" parent="Theme.MaterialComponents.DayNight">
+    <style name="ButtonOptionsDetails" parent="Theme.MaterialComponents.DayNight">
         <item name="textAllCaps">true</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:background">@android:color/transparent</item>
         <item name="fontFamily">@font/montserrat_regular</item>
+        <item name="android:padding">20dp</item>
         <item name="android:textSize">16sp</item>
+        <item name="android:minHeight">68dp</item>
+
+        <item name="android:foreground">?attr/selectableItemBackground</item>
+        <item name="android:clickable">true</item>
+
     </style>
 
     <style name="PrimaryButton" parent="Theme.MaterialComponents.DayNight">
@@ -58,6 +64,9 @@
         <item name="fontStyle">normal</item>
         <item name="android:textSize">16sp</item>
         <item name="android:minHeight">68dp</item>
+
+        <item name="android:foreground">?attr/selectableItemBackground</item>
+        <item name="android:clickable">true</item>
     </style>
 
     <style name="PrimaryButtonOptional" parent="Theme.MaterialComponents.DayNight">
@@ -69,6 +78,35 @@
         <item name="android:padding">20dp</item>
         <item name="android:textSize">16sp</item>
         <item name="android:minHeight">68dp</item>
+
+        <item name="android:foreground">?attr/selectableItemBackground</item>
+        <item name="android:clickable">true</item>
+    </style>
+
+    <style name="PrimaryButtonSmall" parent="Theme.MaterialComponents.DayNight">
+
+        <item name="android:background">@drawable/button_background</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="textAllCaps">true</item>
+        <item name="fontFamily">@font/montserrat_regular</item>
+        <item name="fontStyle">normal</item>
+
+        <item name="android:foreground">?attr/selectableItemBackground</item>
+        <item name="android:clickable">true</item>
+    </style>
+
+    <style name="ButtonOptionsDetailsDelete" parent="Theme.MaterialComponents.DayNight">
+        <item name="android:background">@drawable/button_background_delete</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="textAllCaps">true</item>
+        <item name="fontFamily">@font/montserrat_regular</item>
+        <item name="fontStyle">normal</item>
+        <item name="android:padding">20dp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:minHeight">68dp</item>
+
+        <item name="android:foreground">?attr/selectableItemBackground</item>
+        <item name="android:clickable">true</item>
     </style>
 
     <style name="ToolbarStyledText" parent="Theme.MaterialComponents.DayNight">
@@ -77,12 +115,20 @@
         <item name="android:textColor">#777777</item>
     </style>
 
+    <style name="TodoCard" parent="Theme.MaterialComponents.DayNight">
+        <item name="android:foreground">?attr/selectableItemBackground</item>
+        <item name="android:clickable">true</item>
+    </style>
 
     <!--Calender Recycler Item Styles-->
     <style name="DateTimeView" parent="Theme.MaterialComponents.DayNight">
         <item name="android:background">@drawable/small_date_time_view_dark</item>
         <item name="android:gravity">center</item>
         <item name="android:orientation">vertical</item>
+        <item name="android:radius">20dp</item>
+
+        <item name="android:foreground">?attr/selectableItemBackground</item>
+        <item name="android:clickable">true</item>
     </style>
 
     <style name="TextDay">

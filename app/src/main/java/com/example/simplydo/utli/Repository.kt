@@ -14,8 +14,10 @@ import com.example.simplydo.network.RetrofitServices
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.*
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
+import kotlin.collections.HashMap
 
 
 internal val TAG = Repository::class.java.canonicalName
@@ -39,6 +41,15 @@ class Repository private constructor(val context: Context, val appDatabase: AppD
     }
 
 
+    /*
+    * Room Database CRUD
+    * ***************************
+    * insertNewTodoTask -> Insert new task
+    * deleteTaskByPosition -> Delete task by id
+    * getTodoByEventDate -> List tasks by date
+    * */
+
+
     fun insertNewTodoTask(todoModel: TodoModel): Long {
         val callable = Callable { db.insert(todoModel = todoModel) }
         val future = Executors.newSingleThreadExecutor().submit(callable)
@@ -51,6 +62,15 @@ class Repository private constructor(val context: Context, val appDatabase: AppD
             db.deleteTaskById(id)
         }.start()
         deleteTodoFromCloud(id)
+    }
+
+    fun getTodoByEventDate(
+        date: String
+    ) {
+        Thread{
+            db.getTodoByEnetDate(date)
+        }.start()
+
     }
 
     private fun deleteTodoFromCloud(id: Long) {
@@ -153,11 +173,12 @@ class Repository private constructor(val context: Context, val appDatabase: AppD
 
         val hashMap = HashMap<String, String>()
         hashMap["eventDate"] = dateString
+
         val retrofitServices = RetrofitServices.getInstance(context).createService(API::class.java)
         val syncFromCloud =
-            retrofitServices.syncFromCloudByDate(Session.getSession(Constant.USER_KEY,
+            retrofitServices.syncFromCloudByDate(
+                Session.getSession(Constant.USER_KEY,
                 context = context), hashMap)
-
 
         syncFromCloud.enqueue(object : Callback<RequestDataFromCloudResponseModel> {
             override fun onResponse(
@@ -188,8 +209,6 @@ class Repository private constructor(val context: Context, val appDatabase: AppD
 
                 val todo = executors.get()
 
-                Log.i(TAG, "Todo in data base $todo")
-
                 if (todo == null) {
                     it.synchronize = 1
                     Thread {
@@ -200,15 +219,22 @@ class Repository private constructor(val context: Context, val appDatabase: AppD
         }
     }
 
-    fun getTodoByEventDate(
-        date: String,
-        todoList: MutableLiveData<List<TodoModel>>,
+    fun getNextTaskAvailability(
+        selectedEventDate: String,
+        nextAvailableDate: MutableLiveData<List<TodoModel>>
     ) {
         val callable = Callable {
-            db.getTodoByEnetDate(date)
+            db.getNextEventCountByDate(date = selectedEventDate)
         }
+
         val executors = Executors.newSingleThreadExecutor().submit(callable)
-        todoList.postValue(executors.get())
+        nextAvailableDate.postValue(executors.get())
+    }
+
+    fun completeTaskById(dtId: Long) {
+        Thread{
+            db.completeTaskById(dtId, Constant.dateFormatter(Constant.DATE_PATTERN_ISO).format(Date().time))
+        }.start()
     }
 
 

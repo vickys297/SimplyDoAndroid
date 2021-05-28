@@ -10,8 +10,6 @@ import com.example.simplydo.model.TodoModel
 import com.example.simplydo.utli.Constant
 import com.example.simplydo.utli.Repository
 import com.example.simplydo.utli.Session
-import java.text.DateFormat
-import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -23,8 +21,8 @@ class ToDoViewModel(private val context: Context, private val repository: Reposi
     val noNetworkMessage = MutableLiveData<String>()
 
 
-    fun todoListObserver(): LiveData<List<TodoModel>> {
-        return repository.appDatabase.todoDao().getAllTodo()
+    fun todoListObserver(eventDate: String): LiveData<List<TodoModel>> {
+        return repository.appDatabase.todoDao().getAllTodo(eventDate)
     }
 
 
@@ -40,7 +38,6 @@ class ToDoViewModel(private val context: Context, private val repository: Reposi
         contactInfo: ArrayList<ContactInfo>,
         imagesList: ArrayList<String>,
     ) {
-        val dateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
         val lastId = repository.insertNewTodoTask(
             TodoModel(
                 title = title,
@@ -50,8 +47,8 @@ class ToDoViewModel(private val context: Context, private val repository: Reposi
                 contactInfo = contactInfo,
                 imageFiles = imagesList,
                 locationInfo = "",
-                createdAt = dateFormat.format(Date()),
-                updatedAt = dateFormat.format(Date()),
+                createdAt = Constant.dateFormatter(Constant.DATE_PATTERN_ISO).format(Date().time),
+                updatedAt = Constant.dateFormatter(Constant.DATE_PATTERN_ISO).format(Date().time),
                 isHighPriority = priority
             ))
 
@@ -65,8 +62,8 @@ class ToDoViewModel(private val context: Context, private val repository: Reposi
                 contactInfo = contactInfo,
                 imageFiles = imagesList,
                 locationInfo = "",
-                createdAt = dateFormat.format(Date()),
-                updatedAt = dateFormat.format(Date()),
+                createdAt = Constant.dateFormatter(Constant.DATE_PATTERN_ISO).format(Date().time),
+                updatedAt = Constant.dateFormatter(Constant.DATE_PATTERN_ISO).format(Date().time),
                 isHighPriority = priority),
             Session.getSession(Constant.USER_KEY, context),
             todoListResponse,
@@ -76,6 +73,10 @@ class ToDoViewModel(private val context: Context, private val repository: Reposi
     fun syncDataWithDatabase(dateString: String) {
         repository.uploadDataToCloudDatabase()
         repository.downloadTaskByDate(dateString)
+    }
+
+    fun completeTaskByID(dtId: Long) {
+        repository.completeTaskById(dtId)
     }
 
 }

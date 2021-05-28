@@ -1,22 +1,28 @@
 package com.example.simplydo.screens.calender
 
 import android.os.Bundle
+import android.transition.TransitionInflater
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.simplydo.R
+import com.example.simplydo.utli.bottomSheetDialogs.addTodoBasic.AddTodoBasic
+import com.example.simplydo.utli.bottomSheetDialogs.todoOptions.TodoOptions
 import com.example.simplydo.databinding.CalenderFragmentBinding
 import com.example.simplydo.localDatabase.AppDatabase
+import com.example.simplydo.model.ContactInfo
 import com.example.simplydo.model.SmallCalenderModel
 import com.example.simplydo.model.TodoModel
-import com.example.simplydo.screens.calender.adapter.CalenderViewAdapter
-import com.example.simplydo.screens.todoList.adapter.TodoAdapter
-import com.example.simplydo.utli.CalenderAdapterInterface
-import com.example.simplydo.utli.Repository
-import com.example.simplydo.utli.ViewModelFactory
-import java.text.SimpleDateFormat
+import com.example.simplydo.utli.adapters.CalenderViewAdapter
+import com.example.simplydo.utli.adapters.TodoAdapter
+import com.example.simplydo.utli.adapters.options.TodoOptionsFragment
+import com.example.simplydo.utli.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -29,6 +35,9 @@ class CalenderFragment : Fragment() {
         fun newInstance() = CalenderFragment()
     }
 
+
+    private lateinit var nextAvailableDateObserver: Observer<List<TodoModel>>
+    private lateinit var todoByDateObserver: Observer<List<TodoModel>>
     private lateinit var viewModel: CalenderViewModel
 
     private lateinit var binding: CalenderFragmentBinding
@@ -37,15 +46,65 @@ class CalenderFragment : Fragment() {
 
     private lateinit var todoAdapter: TodoAdapter
 
-    lateinit var selectedEventDate: String
+    private var selectedEventDate: String
+
+
+    var contactInfo: ArrayList<ContactInfo> = ArrayList()
+    var imagesList: ArrayList<String> = ArrayList()
+
 
     private val calenderAdapterInterface = object : CalenderAdapterInterface {
         override fun onDateSelect(position: Int, dateEvent: String) {
             selectedEventDate = dateEvent
             calenderViewAdapter.setActiveDate(position)
             viewModel.getTodoListByEventDate(selectedEventDate)
+                .observe(viewLifecycleOwner, todoByDateObserver)
+            viewModel.requestDataFromCloud(selectedEventDate)
         }
 
+    }
+
+    private var todoAdapterInterface = object : TodoAdapterInterface {
+        override fun onLongClick(item: TodoModel) {
+            TodoOptionsFragment.newInstance()
+                .show(requireActivity().supportFragmentManager, "dialog")
+        }
+
+    }
+
+    private val createBasicTodoInterface = object : CreateBasicTodoInterface {
+        override fun onAddMoreDetails(eventDate: String) {
+            val bundle = Bundle()
+            bundle.putString(getString(R.string.eventDateString), eventDate)
+            findNavController().navigate(R.id.action_calenderFragment_to_addNewTodo, bundle)
+        }
+
+        override fun onCreateTodo(
+            title: String,
+            task: String,
+            eventDate: String,
+            isPriority: Boolean,
+        ) {
+            viewModel.createNewTodo(
+                title,
+                task,
+                eventDate = eventDate,
+                priority = isPriority,
+                contactInfo,
+                imagesList
+            )
+        }
+    }
+
+
+    init {
+        selectedEventDate = Constant.dateFormatter(Constant.DATE_PATTERN_COMMON).format(Date().time)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        sharedElementEnterTransition =
+            TransitionInflater.from(requireContext()).inflateTransition(android.R.transition.move)
     }
 
     override fun onCreateView(
@@ -59,8 +118,10 @@ class CalenderFragment : Fragment() {
     }
 
     private fun setObserver() {
-        viewModel.todoList.observe(viewLifecycleOwner, {
 
+        todoByDateObserver = Observer {
+
+            Log.i(TAG, "todoList -> $it")
             todoAdapter.updateItem(it as ArrayList<TodoModel>)
 
             if (it.isNotEmpty()) {
@@ -71,14 +132,35 @@ class CalenderFragment : Fragment() {
             if (it.isEmpty()) {
                 binding.llNoEventAvailable.visibility = View.VISIBLE
                 binding.recyclerViewTodoList.visibility = View.GONE
+                viewModel.getNextTaskAvailability(selectedEventDate)
             }
 
-        })
+        }
+
+        nextAvailableDateObserver = Observer {
+
+            Log.i(TAG, "Next available date observer $it")
+            it as ArrayList<TodoModel>
+
+            if (it.isNotEmpty()) {
+                binding.btnViewEventOnNextDate.visibility = View.VISIBLE
+                binding.tvNextEventAvailable.text =
+                    String.format("You have %d on %s", it.size, it[0].eventDate)
+            } else {
+                binding.tvNextEventAvailable.text = String.format("You do not have upcoming task")
+                binding.btnViewEventOnNextDate.visibility = View.GONE
+            }
+
+
+        }
+
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         // TODO: Use the ViewModel
+
+
 
         smallCalenderModels = ArrayList()
 
@@ -90,27 +172,48 @@ class CalenderFragment : Fragment() {
         binding.recyclerViewCalenderView.adapter = calenderViewAdapter
 
 
-        todoAdapter = TodoAdapter(requireContext())
+        todoAdapter = TodoAdapter(requireContext(), todoAdapterInterface)
         binding.recyclerViewTodoList.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerViewTodoList.adapter = todoAdapter
 
+        clickListener(binding)
 
         populateRecyclerView()
-        selectedEventDate = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(Date().time)
+
+
+        viewModel.nextAvailableDate.observe(viewLifecycleOwner, nextAvailableDateObserver)
+
         viewModel.getTodoListByEventDate(selectedEventDate)
+            .observe(viewLifecycleOwner, todoByDateObserver)
+    }
+
+
+    private fun clickListener(binding: CalenderFragmentBinding) {
+        binding.btnNewTodo.setOnClickListener {
+            AddTodoBasic.newInstance(
+                createBasicTodoInterface = createBasicTodoInterface,
+                eventDate = selectedEventDate
+            ).show(requireActivity().supportFragmentManager, "dialog")
+        }
+        binding.ivOptions.setOnClickListener {
+            TodoOptions.newInstance("", "").show(requireActivity().supportFragmentManager, "dialog")
+        }
     }
 
     private fun populateRecyclerView() {
-        for (i in 0..30) {
+        for (i in 0..60) {
             val calendar = Calendar.getInstance()
             calendar.time = Date()
             calendar.add(Calendar.DAY_OF_MONTH, i)
             smallCalenderModels.add(
-                SmallCalenderModel(calendar.get(Calendar.DAY_OF_MONTH).toString(),
-                    SimpleDateFormat("MMM", Locale.getDefault()).format(calendar.time)
+                SmallCalenderModel(
+                    calendar.get(Calendar.DAY_OF_MONTH).toString(),
+                    Constant.dateFormatter(Constant.DATE_PATTERN_MONTH_TEXT).format(calendar.time)
                         .uppercase(Locale.getDefault()),
-                    SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(calendar.time)))
+                    Constant.dateFormatter(Constant.DATE_PATTERN_COMMON).format(calendar.time)))
         }
+
+        smallCalenderModels[0].isActive = true
 
         calenderViewAdapter.updateList(smallCalenderModels)
     }
@@ -131,5 +234,6 @@ class CalenderFragment : Fragment() {
             executePendingBindings()
         }
     }
+
 
 }

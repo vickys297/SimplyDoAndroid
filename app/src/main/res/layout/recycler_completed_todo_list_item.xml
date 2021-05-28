@@ -27,10 +27,11 @@
             android:background="@drawable/task_icon"
             android:padding="10dp"
             android:visibility="@{todoModel.isVisible()}"
-            app:srcCompat="@drawable/ic_baseline_priority_high_24" />
+            app:srcCompat="@drawable/ic_baseline_check_24_white"
+            android:contentDescription="@string/todo_completed" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1">
 
@@ -84,8 +85,8 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
-                android:visibility="gone"
                 android:text="@string/priority"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

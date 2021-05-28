@@ -17,12 +17,13 @@
         tools:context=".screens.calender.CalenderFragment">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar2"
+            android:id="@+id/calenderToolbar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:elevation="10dp"
             android:minHeight="?attr/actionBarSize"
             android:theme="?attr/actionBarTheme"
+            android:transitionName="tn_toolbar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -31,7 +32,7 @@
                 style="@style/ToolbarStyledText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/todo" />
+                android:text="@string/calender" />
         </androidx.appcompat.widget.Toolbar>
 
         <androidx.recyclerview.widget.RecyclerView
@@ -40,38 +41,39 @@
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar2" />
+            app:layout_constraintTop_toBottomOf="@+id/calenderToolbar" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewTodoList"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@+id/button"
+            app:layout_constraintBottom_toTopOf="@+id/btnNewTodo"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/recyclerViewCalenderView" />
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/btnNewTodo"
             style="@style/PrimaryButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/new_todo"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/imageView"
+            app:layout_constraintEnd_toStartOf="@+id/ivOptions"
             app:layout_constraintStart_toStartOf="parent" />
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/ivOptions"
             style="@style/PrimaryButtonOptional"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
+            android:contentDescription="@string/todo_options"
             android:src="@drawable/ic_baseline_more_vert_24"
-            app:layout_constraintBottom_toBottomOf="@+id/button"
+            app:layout_constraintBottom_toBottomOf="@+id/btnNewTodo"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/button"
-            app:layout_constraintTop_toTopOf="@+id/button" />
+            app:layout_constraintStart_toEndOf="@+id/btnNewTodo"
+            app:layout_constraintTop_toTopOf="@+id/btnNewTodo" />
 
         <LinearLayout
             android:id="@+id/llNoEventAvailable"
@@ -80,7 +82,7 @@
             android:gravity="center"
             android:orientation="vertical"
             android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@+id/button"
+            app:layout_constraintBottom_toTopOf="@+id/btnNewTodo"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/recyclerViewCalenderView">
@@ -89,20 +91,28 @@
                 android:id="@+id/imageView2"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:src="@drawable/ic_baseline_event_busy_24"/>
+                android:src="@drawable/ic_baseline_event_busy_24" />
 
             <TextView
                 android:id="@+id/textView3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/no_event_available"
-                android:textSize="26sp"/>
+                android:textSize="26sp" />
 
             <TextView
-                android:id="@+id/textView4"
+                android:id="@+id/tvNextEventAvailable"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/next_event_available_on" />
+
+            <Button
+                android:id="@+id/btnViewEventOnNextDate"
+                style="@style/PrimaryButtonSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/view_now" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
