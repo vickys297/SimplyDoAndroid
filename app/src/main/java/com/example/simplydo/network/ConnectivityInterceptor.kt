@@ -4,7 +4,6 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
-import com.example.simplydo.utli.Repository
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response

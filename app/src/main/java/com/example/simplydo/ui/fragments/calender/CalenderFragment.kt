@@ -1,4 +1,4 @@
-package com.example.simplydo.screens.calender
+package com.example.simplydo.ui.fragments.calender
 
 import android.os.Bundle
 import android.transition.TransitionInflater
@@ -12,17 +12,17 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simplydo.R
-import com.example.simplydo.utli.bottomSheetDialogs.addTodoBasic.AddTodoBasic
-import com.example.simplydo.utli.bottomSheetDialogs.todoOptions.TodoOptions
 import com.example.simplydo.databinding.CalenderFragmentBinding
 import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.model.ContactInfo
 import com.example.simplydo.model.SmallCalenderModel
 import com.example.simplydo.model.TodoModel
+import com.example.simplydo.utli.*
 import com.example.simplydo.utli.adapters.CalenderViewAdapter
 import com.example.simplydo.utli.adapters.TodoAdapter
 import com.example.simplydo.utli.adapters.options.TodoOptionsFragment
-import com.example.simplydo.utli.*
+import com.example.simplydo.utli.bottomSheetDialogs.addTodoBasic.AddTodoBasic
+import com.example.simplydo.utli.bottomSheetDialogs.todoOptions.TodoOptions
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -98,7 +98,7 @@ class CalenderFragment : Fragment() {
 
 
     init {
-        selectedEventDate = Constant.dateFormatter(Constant.DATE_PATTERN_COMMON).format(Date().time)
+        selectedEventDate = AppConstant.dateFormatter(AppConstant.DATE_PATTERN_COMMON).format(Date().time)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -208,9 +208,9 @@ class CalenderFragment : Fragment() {
             smallCalenderModels.add(
                 SmallCalenderModel(
                     calendar.get(Calendar.DAY_OF_MONTH).toString(),
-                    Constant.dateFormatter(Constant.DATE_PATTERN_MONTH_TEXT).format(calendar.time)
+                    AppConstant.dateFormatter(AppConstant.DATE_PATTERN_MONTH_TEXT).format(calendar.time)
                         .uppercase(Locale.getDefault()),
-                    Constant.dateFormatter(Constant.DATE_PATTERN_COMMON).format(calendar.time)))
+                    AppConstant.dateFormatter(AppConstant.DATE_PATTERN_COMMON).format(calendar.time)))
         }
 
         smallCalenderModels[0].isActive = true
@@ -221,7 +221,7 @@ class CalenderFragment : Fragment() {
     private fun setViewModel() {
         viewModel = ViewModelProvider(this,
             ViewModelFactory(requireContext(),
-                Repository.getInstance(requireContext(),
+                AppRepository.getInstance(requireContext(),
                     AppDatabase.getInstance(requireContext()
                     )
                 )

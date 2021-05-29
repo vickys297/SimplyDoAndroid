@@ -1,4 +1,4 @@
-package com.example.simplydo
+package com.example.simplydo.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,16 +7,18 @@ import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.simplydo.ui.MainActivity
+import com.example.simplydo.R
 import com.example.simplydo.api.API
 import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.model.Token
 import com.example.simplydo.model.TokenResponse
 import com.example.simplydo.network.NoConnectivityException
 import com.example.simplydo.network.RetrofitServices
-import com.example.simplydo.screens.login.LoginActivity
-import com.example.simplydo.utli.Constant
-import com.example.simplydo.utli.Repository
-import com.example.simplydo.utli.Session
+import com.example.simplydo.ui.fragments.login.LoginActivity
+import com.example.simplydo.utli.AppPreference
+import com.example.simplydo.utli.AppConstant
+import com.example.simplydo.utli.AppRepository
 import com.google.firebase.messaging.FirebaseMessaging
 import retrofit2.Call
 import retrofit2.Callback
@@ -26,13 +28,13 @@ internal val TAG: String = SplashScreenActivity::class.java.canonicalName.toStri
 
 class SplashScreenActivity : AppCompatActivity() {
 
-    lateinit var repository: Repository
+    lateinit var appRepository: AppRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash_screen)
 
-        repository = Repository.getInstance(this@SplashScreenActivity,
+        appRepository = AppRepository.getInstance(this@SplashScreenActivity,
             AppDatabase.getInstance(context = this@SplashScreenActivity))
     }
 
@@ -40,7 +42,7 @@ class SplashScreenActivity : AppCompatActivity() {
         super.onResume()
         Handler(Looper.getMainLooper()).postDelayed(Runnable {
 
-            val uuid = Session.getSession(Constant.UUID, "", this@SplashScreenActivity)
+            val uuid = AppPreference.getPreferences(AppConstant.UUID, "", this@SplashScreenActivity)
 
             if (uuid.isNullOrEmpty() && uuid.isNullOrBlank()) {
                 FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
@@ -76,13 +78,13 @@ class SplashScreenActivity : AppCompatActivity() {
                 data?.let {
 
                     when (it.result) {
-                        Constant.API_RESULT_OK -> {
-                            Session.saveSession(Constant.UUID, it.uuid, this@SplashScreenActivity)
+                        AppConstant.API_RESULT_OK -> {
+                            AppPreference.storePreferences(AppConstant.UUID, it.uuid, this@SplashScreenActivity)
                             Toast.makeText(this@SplashScreenActivity, it.message, Toast.LENGTH_LONG)
                                 .show()
                             goToLoginActivity()
                         }
-                        Constant.API_RESULT_ERROR -> {
+                        AppConstant.API_RESULT_ERROR -> {
                             Toast.makeText(this@SplashScreenActivity, it.message, Toast.LENGTH_LONG)
                                 .show()
                         }

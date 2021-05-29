@@ -1,14 +1,15 @@
-package com.example.simplydo
+package com.example.simplydo.ui
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import com.example.simplydo.screens.login.LoginActivity
-import com.example.simplydo.screens.todoList.ToDoFragment
-import com.example.simplydo.utli.Constant
-import com.example.simplydo.utli.Session
+import com.example.simplydo.R
+import com.example.simplydo.ui.activity.SplashScreenActivity
+import com.example.simplydo.ui.fragments.login.LoginActivity
+import com.example.simplydo.utli.AppPreference
+import com.example.simplydo.utli.AppConstant
 
 class MainActivity : AppCompatActivity() {
 
@@ -20,17 +21,18 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
 
-        val userKey = Session.getSession(Constant.USER_KEY, "", context = this@MainActivity)
-        val uuid = Session.getSession(Constant.UUID, "", this@MainActivity)
+        val userKey = AppPreference.getPreferences(AppConstant.USER_KEY, "", context = this@MainActivity)
+        val uuid = AppPreference.getPreferences(AppConstant.UUID, "", this@MainActivity)
 
-        if (uuid.isNullOrEmpty()) {
+        if (uuid.isEmpty()) {
             val intent = Intent(this@MainActivity, SplashScreenActivity::class.java)
             startActivity(intent)
+            finish()
         }
-        if (userKey.isNullOrEmpty()) {
-            //
+        if (userKey.isEmpty()) {
             val intent = Intent(this@MainActivity, LoginActivity::class.java)
             startActivity(intent)
+            finish()
         }
 
         navHostFragment =

@@ -1,4 +1,4 @@
-package com.example.simplydo.screens.todoList
+package com.example.simplydo.ui.fragments.todoList
 
 import android.content.Context
 import androidx.lifecycle.LiveData
@@ -7,13 +7,13 @@ import androidx.lifecycle.ViewModel
 import com.example.simplydo.model.CommonResponseModel
 import com.example.simplydo.model.ContactInfo
 import com.example.simplydo.model.TodoModel
-import com.example.simplydo.utli.Constant
-import com.example.simplydo.utli.Repository
-import com.example.simplydo.utli.Session
+import com.example.simplydo.utli.AppPreference
+import com.example.simplydo.utli.AppRepository
+import com.example.simplydo.utli.AppConstant
 import java.util.*
 
 
-class ToDoViewModel(private val context: Context, private val repository: Repository) :
+class ToDoViewModel(private val context: Context, private val appRepository: AppRepository) :
     ViewModel() {
 
     // TODO: Implement the ViewModel
@@ -22,12 +22,12 @@ class ToDoViewModel(private val context: Context, private val repository: Reposi
 
 
     fun todoListObserver(eventDate: String): LiveData<List<TodoModel>> {
-        return repository.appDatabase.todoDao().getAllTodo(eventDate)
+        return appRepository.appDatabase.todoDao().getAllTodo(eventDate)
     }
 
 
     fun removeTaskById(id: Long) {
-        return repository.deleteTaskByPosition(id)
+        return appRepository.deleteTaskByPosition(id)
     }
 
     fun createNewTodo(
@@ -38,7 +38,7 @@ class ToDoViewModel(private val context: Context, private val repository: Reposi
         contactInfo: ArrayList<ContactInfo>,
         imagesList: ArrayList<String>,
     ) {
-        val lastId = repository.insertNewTodoTask(
+        val lastId = appRepository.insertNewTodoTask(
             TodoModel(
                 title = title,
                 todo = task,
@@ -47,12 +47,12 @@ class ToDoViewModel(private val context: Context, private val repository: Reposi
                 contactInfo = contactInfo,
                 imageFiles = imagesList,
                 locationInfo = "",
-                createdAt = Constant.dateFormatter(Constant.DATE_PATTERN_ISO).format(Date().time),
-                updatedAt = Constant.dateFormatter(Constant.DATE_PATTERN_ISO).format(Date().time),
+                createdAt = AppConstant.dateFormatter(AppConstant.DATE_PATTERN_ISO).format(Date().time),
+                updatedAt = AppConstant.dateFormatter(AppConstant.DATE_PATTERN_ISO).format(Date().time),
                 isHighPriority = priority
             ))
 
-        repository.uploadNewTodo(
+        appRepository.uploadNewTodo(
             TodoModel(
                 dtId = lastId,
                 title = title,
@@ -62,21 +62,21 @@ class ToDoViewModel(private val context: Context, private val repository: Reposi
                 contactInfo = contactInfo,
                 imageFiles = imagesList,
                 locationInfo = "",
-                createdAt = Constant.dateFormatter(Constant.DATE_PATTERN_ISO).format(Date().time),
-                updatedAt = Constant.dateFormatter(Constant.DATE_PATTERN_ISO).format(Date().time),
+                createdAt = AppConstant.dateFormatter(AppConstant.DATE_PATTERN_ISO).format(Date().time),
+                updatedAt = AppConstant.dateFormatter(AppConstant.DATE_PATTERN_ISO).format(Date().time),
                 isHighPriority = priority),
-            Session.getSession(Constant.USER_KEY, context),
+            AppPreference.getPreferences(AppConstant.USER_KEY, context),
             todoListResponse,
             noNetworkMessage)
     }
 
     fun syncDataWithDatabase(dateString: String) {
-        repository.uploadDataToCloudDatabase()
-        repository.downloadTaskByDate(dateString)
+        appRepository.uploadDataToCloudDatabase()
+        appRepository.downloadTaskByDate(dateString)
     }
 
     fun completeTaskByID(dtId: Long) {
-        repository.completeTaskById(dtId)
+        appRepository.completeTaskById(dtId)
     }
 
 }

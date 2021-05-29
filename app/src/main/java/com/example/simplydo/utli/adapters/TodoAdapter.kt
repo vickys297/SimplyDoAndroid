@@ -10,7 +10,10 @@ import com.example.simplydo.databinding.RecyclerTodoListItemBinding
 import com.example.simplydo.model.TodoModel
 import com.example.simplydo.utli.TodoAdapterInterface
 
-class TodoAdapter(private val context: Context,val todoAdapterInterface: TodoAdapterInterface) :
+class TodoAdapter(
+    private val context: Context,
+    private val todoAdapterInterface: TodoAdapterInterface,
+) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var dataSet = ArrayList<TodoModel>()
 
@@ -20,9 +23,10 @@ class TodoAdapter(private val context: Context,val todoAdapterInterface: TodoAda
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val layoutInflater = LayoutInflater.from(parent.context)
         return when (viewType) {
             VIEW_TYPE_TASK -> {
-                val layoutInflater = LayoutInflater.from(parent.context)
+
                 TaskViewHolder(
                     RecyclerTodoListItemBinding.inflate(
                         layoutInflater,
@@ -31,7 +35,6 @@ class TodoAdapter(private val context: Context,val todoAdapterInterface: TodoAda
                     ))
             }
             VIEW_TYPE_TASK_COMPLETED -> {
-                val layoutInflater = LayoutInflater.from(parent.context)
                 CompletedTaskViewHolder(
                     RecyclerCompletedTodoListItemBinding.inflate(
                         layoutInflater,
@@ -86,6 +89,7 @@ class TodoAdapter(private val context: Context,val todoAdapterInterface: TodoAda
     override fun getItemCount(): Int = dataSet.size
 
     fun updateItem(it: ArrayList<TodoModel>) {
+
         this.dataSet = it
         notifyDataSetChanged()
     }

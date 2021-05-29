@@ -3,7 +3,7 @@ package com.example.simplydo.utli
 import java.text.SimpleDateFormat
 import java.util.*
 
-object Constant {
+object AppConstant {
 
 
     const val DATABASE_NAME: String = "todoDatabase"

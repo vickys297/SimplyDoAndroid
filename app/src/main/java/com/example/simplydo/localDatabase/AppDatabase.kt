@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.simplydo.model.TodoModel
-import com.example.simplydo.utli.Constant
+import com.example.simplydo.utli.AppConstant
 
 @Database(
     entities = [TodoModel::class],
@@ -26,7 +26,7 @@ abstract class AppDatabase : RoomDatabase() {
             }
 
         private fun database(context: Context): AppDatabase {
-            return Room.databaseBuilder(context, AppDatabase::class.java, Constant.DATABASE_NAME)
+            return Room.databaseBuilder(context, AppDatabase::class.java, AppConstant.DATABASE_NAME)
                 .build()
         }
 

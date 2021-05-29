@@ -1,15 +1,15 @@
-package com.example.simplydo.screens.todoList.addNewTodo
+package com.example.simplydo.ui.fragments.addNewTodo
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import com.example.simplydo.model.ContactInfo
 import com.example.simplydo.model.TodoModel
-import com.example.simplydo.utli.Repository
+import com.example.simplydo.utli.AppRepository
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
-class AddNewTodoViewModel(private val context: Context,private val repository: Repository) : ViewModel() {
+class AddNewTodoViewModel(private val context: Context,private val appRepository: AppRepository) : ViewModel() {
 
     // TODO: Implement the ViewModel
     fun insertIntoLocalDatabase(
@@ -22,7 +22,7 @@ class AddNewTodoViewModel(private val context: Context,private val repository: R
 
         val df1: DateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
 
-        repository.insertNewTodoTask(
+        appRepository.insertNewTodoTask(
             TodoModel(
                 title = title,
                 todo = task,

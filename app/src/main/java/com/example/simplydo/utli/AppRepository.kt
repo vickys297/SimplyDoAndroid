@@ -20,9 +20,9 @@ import java.util.concurrent.Executors
 import kotlin.collections.HashMap
 
 
-internal val TAG = Repository::class.java.canonicalName
+internal val TAG = AppRepository::class.java.canonicalName
 
-class Repository private constructor(val context: Context, val appDatabase: AppDatabase) {
+class AppRepository private constructor(val context: Context, val appDatabase: AppDatabase) {
 
 
     private var db: TodoDAO = appDatabase.todoDao()
@@ -31,11 +31,11 @@ class Repository private constructor(val context: Context, val appDatabase: AppD
     companion object {
 
         @Volatile
-        var instance: Repository? = null
+        var instance: AppRepository? = null
 
         fun getInstance(context: Context, appDatabase: AppDatabase) =
             this.instance ?: synchronized(this) {
-                this.instance ?: Repository(context, appDatabase).also { this.instance = it }
+                this.instance ?: AppRepository(context, appDatabase).also { this.instance = it }
             }
 
     }
@@ -122,7 +122,7 @@ class Repository private constructor(val context: Context, val appDatabase: AppD
             val retrofitServices =
                 RetrofitServices.getInstance(context).createService(API::class.java)
             val uploadToDatabase = retrofitServices.uploadDataToCloudDatabase(todoLists,
-                Session.getSession(Constant.USER_KEY, context))
+                AppPreference.getPreferences(AppConstant.USER_KEY, context))
             uploadToDatabase.enqueue(object : Callback<CommonResponseModel> {
                 override fun onResponse(
                     call: Call<CommonResponseModel>,
@@ -130,7 +130,7 @@ class Repository private constructor(val context: Context, val appDatabase: AppD
                 ) {
                     val data = response.body()
                     data?.let {
-                        if (data.result == Constant.API_RESULT_OK) {
+                        if (data.result == AppConstant.API_RESULT_OK) {
                             updateSynchronizedTodoData(todoLists)
                         }
                     }
@@ -177,7 +177,7 @@ class Repository private constructor(val context: Context, val appDatabase: AppD
         val retrofitServices = RetrofitServices.getInstance(context).createService(API::class.java)
         val syncFromCloud =
             retrofitServices.syncFromCloudByDate(
-                Session.getSession(Constant.USER_KEY,
+                AppPreference.getPreferences(AppConstant.USER_KEY,
                 context = context), hashMap)
 
         syncFromCloud.enqueue(object : Callback<RequestDataFromCloudResponseModel> {
@@ -187,7 +187,7 @@ class Repository private constructor(val context: Context, val appDatabase: AppD
             ) {
                 val data = response.body()
                 data?.let {
-                    if (it.result == Constant.API_RESULT_OK) {
+                    if (it.result == AppConstant.API_RESULT_OK) {
                         synDataWithLocalDatabase(it.data)
                     }
                 }
@@ -233,9 +233,12 @@ class Repository private constructor(val context: Context, val appDatabase: AppD
 
     fun completeTaskById(dtId: Long) {
         Thread{
-            db.completeTaskById(dtId, Constant.dateFormatter(Constant.DATE_PATTERN_ISO).format(Date().time))
+            db.completeTaskById(dtId, AppConstant.dateFormatter(AppConstant.DATE_PATTERN_ISO).format(Date().time))
         }.start()
     }
+
+
+
 
 
 }

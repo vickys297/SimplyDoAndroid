@@ -4,3 +4,5 @@ data class CommonResponseModel(
     val result: String,
     val message: String,
 )
+
+

@@ -1,24 +1,24 @@
-package com.example.simplydo.screens.calender
+package com.example.simplydo.ui.fragments.calender
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.simplydo.model.ContactInfo
 import com.example.simplydo.model.TodoModel
-import com.example.simplydo.utli.Constant
-import com.example.simplydo.utli.Repository
+import com.example.simplydo.utli.AppConstant
+import com.example.simplydo.utli.AppRepository
 import java.util.*
 
-class CalenderViewModel(val repository: Repository) : ViewModel() {
+class CalenderViewModel(val appRepository: AppRepository) : ViewModel() {
 
     val nextAvailableDate = MutableLiveData<List<TodoModel>>()
 
     fun getTodoListByEventDate(date: String): LiveData<List<TodoModel>> {
-        return repository.appDatabase.todoDao().getTodoByEnetDate(date)
+        return appRepository.appDatabase.todoDao().getTodoByEnetDate(date)
     }
 
     fun requestDataFromCloud(selectedEventDate: String) {
-        repository.downloadTaskByDate(selectedEventDate)
+        appRepository.downloadTaskByDate(selectedEventDate)
     }
 
     fun createNewTodo(
@@ -29,7 +29,7 @@ class CalenderViewModel(val repository: Repository) : ViewModel() {
         contactInfo: ArrayList<ContactInfo>,
         imagesList: ArrayList<String>,
     ) {
-        repository.insertNewTodoTask(TodoModel(
+        appRepository.insertNewTodoTask(TodoModel(
             title = title,
             todo = task,
             eventTime = "",
@@ -37,8 +37,8 @@ class CalenderViewModel(val repository: Repository) : ViewModel() {
             contactInfo = contactInfo,
             imageFiles = imagesList,
             locationInfo = "",
-            createdAt = Constant.dateFormatter(Constant.DATE_PATTERN_ISO).format(Date().time),
-            updatedAt = Constant.dateFormatter(Constant.DATE_PATTERN_ISO).format(Date().time),
+            createdAt = AppConstant.dateFormatter(AppConstant.DATE_PATTERN_ISO).format(Date().time),
+            updatedAt = AppConstant.dateFormatter(AppConstant.DATE_PATTERN_ISO).format(Date().time),
             isHighPriority = priority
         ))
 
@@ -61,7 +61,7 @@ class CalenderViewModel(val repository: Repository) : ViewModel() {
     }
 
     fun getNextTaskAvailability(selectedEventDate: String) {
-        repository.getNextTaskAvailability(selectedEventDate, nextAvailableDate)
+        appRepository.getNextTaskAvailability(selectedEventDate, nextAvailableDate)
     }
 
 }

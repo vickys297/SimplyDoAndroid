@@ -33,4 +33,7 @@
     <string name="edit">Edit</string>
     <string name="restore">Restore</string>
     <string name="delete">Delete</string>
+    <string name="todo_calender_view">TODO Calender View</string>
+    <string name="add_attachments">Add Attachments</string>
+    <string name="select_contacts">Select Contacts</string>
 </resources>

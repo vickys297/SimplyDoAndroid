@@ -7,14 +7,14 @@
 
         <variable
             name="viewModel"
-            type="com.example.simplydo.screens.calender.CalenderViewModel" />
+            type="com.example.simplydo.ui.fragments.calender.CalenderViewModel" />
 
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".screens.calender.CalenderFragment">
+        tools:context=".ui.fragments.calender.CalenderFragment">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/calenderToolbar"

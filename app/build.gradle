@@ -71,6 +71,9 @@ dependencies {
 
     def paging_version = "3.0.0"
 
+
+    implementation "androidx.paging:paging-runtime-ktx:$paging_version" // For Kotlin use paging-runtime-ktx
+
     implementation "androidx.paging:paging-runtime-ktx:$paging_version"
     // For Kotlin use paging-runtime-ktx
 

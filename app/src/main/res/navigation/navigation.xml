@@ -6,7 +6,7 @@
     app:startDestination="@id/toDoFragment">
     <fragment
         android:id="@+id/toDoFragment"
-        android:name="com.example.simplydo.screens.todoList.ToDoFragment"
+        android:name="com.example.simplydo.ui.fragments.todoList.ToDoFragment"
         android:label="ToDoFragment">
         <action
             android:id="@+id/action_toDoFragment_to_addNewTodo"
@@ -23,7 +23,7 @@
     </fragment>
     <fragment
         android:id="@+id/addNewTodo"
-        android:name="com.example.simplydo.screens.todoList.addNewTodo.AddNewTodo"
+        android:name="com.example.simplydo.ui.fragments.addNewTodo.AddNewTodo"
         android:label="AddNewTodo">
         <action
             android:id="@+id/action_addNewTodo_to_contactsFragment"
@@ -36,7 +36,7 @@
     </fragment>
     <fragment
         android:id="@+id/calenderFragment"
-        android:name="com.example.simplydo.screens.calender.CalenderFragment"
+        android:name="com.example.simplydo.ui.fragments.calender.CalenderFragment"
         android:label="calender_fragment"
         tools:layout="@layout/calender_fragment">
         <action
@@ -50,6 +50,6 @@
     </fragment>
     <fragment
         android:id="@+id/contactsFragment"
-        android:name="com.example.simplydo.screens.todoList.contactListView.ContactsFragment"
+        android:name="com.example.simplydo.ui.fragments.contactListView.ContactsFragment"
         android:label="ContactsFragment" />
 </navigation>

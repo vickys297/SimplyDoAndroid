@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.simplydo.databinding.FragmentAddTodoBasicListDialogBinding
-import com.example.simplydo.utli.Constant
+import com.example.simplydo.utli.AppConstant
 import com.example.simplydo.utli.CreateBasicTodoInterface
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.util.*
@@ -72,17 +72,17 @@ class AddTodoBasic(
         }
 
         binding.tvDayOfMonth.text =
-            Constant.parseStringDateToCalender(eventDate).get(Calendar.DAY_OF_MONTH).toString()
+            AppConstant.parseStringDateToCalender(eventDate).get(Calendar.DAY_OF_MONTH).toString()
 
-        binding.tvMonth.text = Constant.dateFormatter(Constant.DATE_PATTERN_MONTH_TEXT)
-            .format(Constant.parseStringDateToCalender(eventDate).time)
+        binding.tvMonth.text = AppConstant.dateFormatter(AppConstant.DATE_PATTERN_MONTH_TEXT)
+            .format(AppConstant.parseStringDateToCalender(eventDate).time)
             .uppercase(Locale.getDefault())
 
         binding.llDateSelector.setOnClickListener {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
 
 
-                val date = Constant.dateFormatter(Constant.DATE_PATTERN_COMMON).parse(eventDate)
+                val date = AppConstant.dateFormatter(AppConstant.DATE_PATTERN_COMMON).parse(eventDate)
                 val calendar = Calendar.getInstance()
                 calendar.time = date!!
 
@@ -99,13 +99,13 @@ class AddTodoBasic(
                     val newDate = Calendar.getInstance()
                     newDate.set(year, month, dayOfMonth)
 
-                    eventDate = (Constant.dateFormatter(Constant.DATE_PATTERN_COMMON).format(newDate.time))
+                    eventDate = (AppConstant.dateFormatter(AppConstant.DATE_PATTERN_COMMON).format(newDate.time))
 
                     binding.tvDayOfMonth.text =
-                        Constant.dateFormatter(Constant.DATE_PATTERN_DAY_OF_MONTH).format(newDate.time)
+                        AppConstant.dateFormatter(AppConstant.DATE_PATTERN_DAY_OF_MONTH).format(newDate.time)
 
                     binding.tvMonth.text =
-                        Constant.dateFormatter(Constant.DATE_PATTERN_MONTH_TEXT).format(newDate.time)
+                        AppConstant.dateFormatter(AppConstant.DATE_PATTERN_MONTH_TEXT).format(newDate.time)
                             .uppercase(Locale.getDefault())
 
                     datePicker.dismiss()

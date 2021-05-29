@@ -1,4 +1,4 @@
-package com.example.simplydo.screens.todoList
+package com.example.simplydo.ui.fragments.todoList
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,15 +14,15 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.simplydo.R
-import com.example.simplydo.utli.bottomSheetDialogs.addTodoBasic.AddTodoBasic
 import com.example.simplydo.databinding.TodoFragmentBinding
 import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.model.CommonResponseModel
 import com.example.simplydo.model.ContactInfo
 import com.example.simplydo.model.TodoModel
+import com.example.simplydo.utli.*
 import com.example.simplydo.utli.adapters.TodoAdapter
 import com.example.simplydo.utli.adapters.options.TodoOptionsFragment
-import com.example.simplydo.utli.*
+import com.example.simplydo.utli.bottomSheetDialogs.addTodoBasic.AddTodoBasic
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -101,7 +101,7 @@ class ToDoFragment : Fragment() {
         }
 
         todoObserver = Observer {
-            if (it.result == Constant.API_RESULT_OK) {
+            if (it.result == AppConstant.API_RESULT_OK) {
                 Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
             }
         }
@@ -114,7 +114,7 @@ class ToDoFragment : Fragment() {
     private fun setupViewModel() {
         viewModel =
             ViewModelProvider(this,
-                ViewModelFactory(requireContext(), Repository.getInstance(requireContext(),
+                ViewModelFactory(requireContext(), AppRepository.getInstance(requireContext(),
                     AppDatabase.getInstance(context = requireContext())))).get(
                 ToDoViewModel::class.java
             )
@@ -125,11 +125,16 @@ class ToDoFragment : Fragment() {
         }
 
 
-        viewModel.todoListObserver(Constant.dateFormatter(Constant.DATE_PATTERN_COMMON)
+        viewModel.todoListObserver(AppConstant.dateFormatter(AppConstant.DATE_PATTERN_COMMON)
             .format(Date().time)).observe(viewLifecycleOwner, todoModelObserver)
 
         viewModel.todoListResponse.observe(viewLifecycleOwner, todoObserver)
         viewModel.noNetworkMessage.observe(viewLifecycleOwner, noNetworkObserver)
+
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
 
     }
@@ -150,7 +155,7 @@ class ToDoFragment : Fragment() {
 
         binding.btnNewTodo.setOnClickListener {
             AddTodoBasic.newInstance(appInterface,
-                Constant.dateFormatter(Constant.DATE_PATTERN_COMMON).format(Date()))
+                AppConstant.dateFormatter(AppConstant.DATE_PATTERN_COMMON).format(Date()))
                 .show(requireActivity().supportFragmentManager, "dialog")
         }
 
@@ -189,6 +194,24 @@ class ToDoFragment : Fragment() {
             }
         }
 
+        // pre load sample tasks
+//        for (i in 0..200) {
+//
+//            val calendar = Calendar.getInstance()
+//            calendar.time = Date()
+//            calendar.add(Calendar.DAY_OF_MONTH, i)
+//
+//            viewModel.createNewTodo(
+//                title = "Title $i",
+//                task = "Sample test task with populated data $i",
+//                eventDate = Constant.dateFormatter(Constant.DATE_PATTERN_COMMON)
+//                    .format(calendar.time),
+//                priority = i % 10 == 0,
+//                contactInfo,
+//                imagesList
+//            )
+//        }
+
         val itemTouchHelper = ItemTouchHelper(simpleItemTouchCallback)
         itemTouchHelper.attachToRecyclerView(binding.recyclerViewTodoList)
 
@@ -198,7 +221,7 @@ class ToDoFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        viewModel.syncDataWithDatabase(SimpleDateFormat(Constant.DATE_PATTERN_COMMON,
+        viewModel.syncDataWithDatabase(SimpleDateFormat(AppConstant.DATE_PATTERN_COMMON,
             Locale.getDefault()).format(Date().time))
     }
 

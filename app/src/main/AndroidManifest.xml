@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -15,16 +16,16 @@
         android:theme="@style/Theme.SimplyDo"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.MainActivity"
             android:theme="@style/Theme.SimplyDo" />
 
         <activity
-            android:name=".screens.login.LoginActivity"
+            android:name="com.example.simplydo.ui.fragments.login.LoginActivity"
             android:theme="@style/Theme.SimplyDo"
             android:windowSoftInputMode="adjustPan" />
 
         <activity
-            android:name=".SplashScreenActivity"
+            android:name="com.example.simplydo.ui.activity.SplashScreenActivity"
             android:theme="@style/Theme.SimplyDo">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

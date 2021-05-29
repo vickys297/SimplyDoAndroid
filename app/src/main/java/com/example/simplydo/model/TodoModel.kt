@@ -5,7 +5,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import com.example.simplydo.utli.Constant
+import com.example.simplydo.utli.AppConstant
 
 @Entity(tableName = "todoList", indices = [Index(value = ["dtId"], unique = true)])
 data class TodoModel(
@@ -62,7 +62,7 @@ data class TodoModel(
 
     fun getEventTextValue(): String {
         return if (eventTime.isEmpty()) {
-            if (eventDate == Constant.getCurrentEventDate()) {
+            if (eventDate == AppConstant.getCurrentEventDate()) {
                 "Today"
             } else {
                 eventDate

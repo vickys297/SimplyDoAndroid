@@ -1,7 +1,7 @@
 package com.example.simplydo.network
 
 import android.content.Context
-import com.example.simplydo.utli.Constant
+import com.example.simplydo.utli.AppConstant
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -25,12 +25,12 @@ class RetrofitServices(context: Context) {
             .addInterceptor(interceptor)
             .hostnameVerifier { _, session ->
                 val hv = HttpsURLConnection.getDefaultHostnameVerifier()
-                hv.verify(Constant.VERIFY_WEBSITE, session)
+                hv.verify(AppConstant.VERIFY_WEBSITE, session)
             }
             .build()
 
         retrofit = Retrofit.Builder()
-            .baseUrl(Constant.BASE_URL)
+            .baseUrl(AppConstant.BASE_URL)
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
 
