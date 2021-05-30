@@ -1,6 +1,7 @@
 package com.example.simplydo.ui.fragments.addNewTodo
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -9,18 +10,15 @@ import androidx.navigation.fragment.findNavController
 import com.example.simplydo.R
 import com.example.simplydo.databinding.AddNewTodoFragmentBinding
 import com.example.simplydo.localDatabase.AppDatabase
-import com.example.simplydo.model.ContactInfo
-import com.example.simplydo.utli.AddAttachmentInterface
-import com.example.simplydo.utli.AppConstant
-import com.example.simplydo.utli.AppRepository
-import com.example.simplydo.utli.ViewModelFactory
+import com.example.simplydo.model.ContactModel
+import com.example.simplydo.utli.*
 import com.example.simplydo.utli.bottomSheetDialogs.attachments.AddAttachmentsFragments
 import java.util.*
 import kotlin.collections.ArrayList
 
 internal val TAG = AddNewTodo::class.java.canonicalName
 
-class AddNewTodo : Fragment() {
+class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
 
     companion object {
         fun newInstance() = AddNewTodo()
@@ -29,13 +27,13 @@ class AddNewTodo : Fragment() {
     private lateinit var viewModel: AddNewTodoViewModel
     private lateinit var binding: AddNewTodoFragmentBinding
 
-    private lateinit var contactInfo: ArrayList<ContactInfo>
+    private lateinit var contactInfo: ArrayList<ContactModel>
     private lateinit var imagesList: ArrayList<String>
 
     private lateinit var selectedEventDate: String
 
 
-    private var addAttachmentInterface: AddAttachmentInterface = object : AddAttachmentInterface{
+    private var addAttachmentInterface: AddAttachmentInterface = object : AddAttachmentInterface {
         override fun onAddDocument() {
         }
 
@@ -46,7 +44,9 @@ class AddNewTodo : Fragment() {
         }
 
         override fun onAddContact() {
-            findNavController().navigate(R.id.action_addNewTodo_to_contactsFragment)
+            val bundle = Bundle()
+            bundle.putString(getString(R.string.eventDateString), selectedEventDate)
+            findNavController().navigate(R.id.action_addNewTodo_to_contactsFragment, bundle)
         }
 
         override fun onAddLocation() {
@@ -65,7 +65,16 @@ class AddNewTodo : Fragment() {
 
         arguments?.let {
 
+
+            if (requireArguments().getString("ContactList").isNullOrEmpty()) {
+                Log.i(TAG, "onCreateView:  ${requireArguments().getString("ContactList")}")
+            } else {
+                Log.i(TAG, "onCreateView: No Contact List Found")
+            }
+
+
             selectedEventDate = it.get(getString(R.string.eventDateString)) as String
+
             binding.include.tvDayOfMonth.text =
                 AppConstant.parseStringDateToCalender(selectedEventDate)
                     .get(Calendar.DAY_OF_MONTH)
@@ -96,36 +105,45 @@ class AddNewTodo : Fragment() {
             lifecycleOwner = this@AddNewTodo
             executePendingBindings()
         }
+
+
+        // We use a String here, but any type that can be put in a Bundle is supported
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<ArrayList<ContactModel>>(
+            "SelectedContactList")?.observe(
+            viewLifecycleOwner) { result ->
+            // Do something with the result.
+
+            Log.i(TAG, "currentBackStackEntry: $result")
+        }
     }
 
-    override fun onResume() {
-        super.onResume()
-
-    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        binding.btnAddAttachments.setOnClickListener {
-            AddAttachmentsFragments.newInstance(addAttachmentInterface).show(requireActivity().supportFragmentManager,"dialog")
-        }
 
         binding.btnCreateTodoTask.setOnClickListener {
             createToDo()
         }
 
-        binding.ivClose.setOnClickListener {
-            findNavController().navigateUp()
+        binding.imageButtonNewTodoOptions.setOnClickListener {
+            AddAttachmentsFragments.newInstance(addAttachmentInterface)
+                .show(requireActivity().supportFragmentManager, "dialog")
         }
-
-
-
     }
 
 
-
     private fun createToDo() {
+        // create new task
+    }
 
+    override fun onAddAttachments() {
+        AddAttachmentsFragments.newInstance(addAttachmentInterface)
+            .show(requireActivity().supportFragmentManager, "dialog")
+    }
+
+    override fun onClose() {
+        findNavController().navigateUp()
     }
 
 }

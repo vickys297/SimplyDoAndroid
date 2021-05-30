@@ -16,10 +16,16 @@ interface TodoDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(todoModel: TodoModel): Long
 
-    @Query("SELECT * FROM todoList WHERE eventDate  =  :eventDate OR  eventDate > :eventDate AND isCompleted  = '1' OR isCompleted ='0' ORDER BY createdAt ASC")
-    fun getAllTodo(eventDate: String): LiveData<List<TodoModel>>
+    @Query("SELECT COUNT(*) FROM todoList")
+    fun getTotalTaskCount(): LiveData<Int>
 
-    @Query("UPDATE todoList SET isCompleted = '1', synchronize ='0', updatedAt =:updatedAt WHERE dtId =:dtId")
+    @Query("SELECT * FROM todoList WHERE eventDate  =  :eventDate OR  eventDate > :eventDate AND isCompleted  = '1' OR isCompleted ='0' ORDER BY createdAt ASC")
+    fun getTodoForQuickView(eventDate: String): LiveData<List<TodoModel>>
+
+    @Query("SELECT * FROM todoList WHERE eventDate =:eventDate ")
+    fun getTodoByEventDate(eventDate: String): LiveData<List<TodoModel>>
+
+    @Query("UPDATE todoList SET isCompleted = '1', synchronize ='0' , updatedAt =:updatedAt WHERE dtId =:dtId")
     fun completeTaskById(dtId: Long, updatedAt: String)
 
     @Query("DELETE FROM todoList WHERE dtId =:id")
@@ -42,7 +48,9 @@ interface TodoDAO {
     @Query("UPDATE todoList SET synchronize ='1' WHERE dtId =:id")
     fun updateSynchronizedTodoDataById(id: Long)
 
-    @Query("SELECT * FROM todoList WHERE eventDate =:eventDate ")
-    fun getTodoByEnetDate(eventDate: String): LiveData<List<TodoModel>>
+    @Query("SELECT * FROM todoList WHERE synchronize ='0'")
+    fun getAllTodoNotSynced(): LiveData<List<TodoModel>>
+
+
 
 }

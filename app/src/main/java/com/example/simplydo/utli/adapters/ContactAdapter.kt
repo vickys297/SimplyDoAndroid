@@ -6,7 +6,7 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.simplydo.databinding.RecyclerContactListItemBinding
-import com.example.simplydo.model.attachmentModel.ContactModel
+import com.example.simplydo.model.ContactModel
 import com.example.simplydo.utli.ContactAdapterInterface
 
 

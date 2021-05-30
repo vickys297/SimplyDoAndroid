@@ -65,10 +65,10 @@ class AppRepository private constructor(val context: Context, val appDatabase: A
     }
 
     fun getTodoByEventDate(
-        date: String
+        date: String,
     ) {
-        Thread{
-            db.getTodoByEnetDate(date)
+        Thread {
+            db.getTodoByEventDate(date)
         }.start()
 
     }
@@ -112,36 +112,33 @@ class AppRepository private constructor(val context: Context, val appDatabase: A
     }
 
 
-    fun uploadDataToCloudDatabase() {
+    fun uploadDataToCloudDatabase(todoLists: ArrayList<TodoModel>) {
 
-        val callable = Callable { db.getNotSynchronizedTodoData() }
-        val thread = Executors.newSingleThreadExecutor().submit(callable)
-        val todoLists = thread.get() as ArrayList<TodoModel>
+        val retrofitServices =
+            RetrofitServices.getInstance(context).createService(API::class.java)
+        val uploadToDatabase = retrofitServices.uploadDataToCloudDatabase(todoLists,
+            AppPreference.getPreferences(AppConstant.USER_KEY, context))
 
-        if (todoLists.isNotEmpty()) {
-            val retrofitServices =
-                RetrofitServices.getInstance(context).createService(API::class.java)
-            val uploadToDatabase = retrofitServices.uploadDataToCloudDatabase(todoLists,
-                AppPreference.getPreferences(AppConstant.USER_KEY, context))
-            uploadToDatabase.enqueue(object : Callback<CommonResponseModel> {
-                override fun onResponse(
-                    call: Call<CommonResponseModel>,
-                    response: Response<CommonResponseModel>,
-                ) {
-                    val data = response.body()
-                    data?.let {
-                        if (data.result == AppConstant.API_RESULT_OK) {
-                            updateSynchronizedTodoData(todoLists)
-                        }
+        uploadToDatabase.enqueue(object : Callback<CommonResponseModel> {
+            override fun onResponse(
+                call: Call<CommonResponseModel>,
+                response: Response<CommonResponseModel>,
+            ) {
+                val data = response.body()
+                data?.let {
+                    if (data.result == AppConstant.API_RESULT_OK) {
+                        updateSynchronizedTodoData(todoLists)
                     }
                 }
+            }
 
-                override fun onFailure(call: Call<CommonResponseModel>, t: Throwable) {
-
+            override fun onFailure(call: Call<CommonResponseModel>, t: Throwable) {
+                if (t is NoConnectivityException) {
+                    throw NoConnectivityException()
                 }
+            }
 
-            })
-        }
+        })
 
 
     }
@@ -178,7 +175,7 @@ class AppRepository private constructor(val context: Context, val appDatabase: A
         val syncFromCloud =
             retrofitServices.syncFromCloudByDate(
                 AppPreference.getPreferences(AppConstant.USER_KEY,
-                context = context), hashMap)
+                    context = context), hashMap)
 
         syncFromCloud.enqueue(object : Callback<RequestDataFromCloudResponseModel> {
             override fun onResponse(
@@ -210,7 +207,7 @@ class AppRepository private constructor(val context: Context, val appDatabase: A
                 val todo = executors.get()
 
                 if (todo == null) {
-                    it.synchronize = 1
+                    it.synchronize = true
                     Thread {
                         db.insert(it)
                     }.start()
@@ -221,7 +218,7 @@ class AppRepository private constructor(val context: Context, val appDatabase: A
 
     fun getNextTaskAvailability(
         selectedEventDate: String,
-        nextAvailableDate: MutableLiveData<List<TodoModel>>
+        nextAvailableDate: MutableLiveData<List<TodoModel>>,
     ) {
         val callable = Callable {
             db.getNextEventCountByDate(date = selectedEventDate)
@@ -232,13 +229,12 @@ class AppRepository private constructor(val context: Context, val appDatabase: A
     }
 
     fun completeTaskById(dtId: Long) {
-        Thread{
-            db.completeTaskById(dtId, AppConstant.dateFormatter(AppConstant.DATE_PATTERN_ISO).format(Date().time))
-        }.start()
+        val callable = Callable {
+            db.completeTaskById(dtId,
+                AppConstant.dateFormatter(AppConstant.DATE_PATTERN_ISO).format(Date().time))
+        }
+        Executors.newSingleThreadExecutor().submit(callable)
     }
-
-
-
 
 
 }

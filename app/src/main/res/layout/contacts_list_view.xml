@@ -7,19 +7,21 @@
 
     </data>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/calenderToolbar"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:elevation="10dp"
             android:minHeight="?attr/actionBarSize"
             android:theme="?attr/actionBarTheme"
-            android:transitionName="tn_toolbar">
+            android:transitionName="tn_toolbar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
                 style="@style/ToolbarStyledText"
@@ -30,13 +32,41 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewSelectedContact"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/calenderToolbar" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewContactList"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/btnAddContact"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/recyclerViewSelectedContact"
             tools:listitem="@layout/recycler_contact_list_item" />
-    </LinearLayout>
+
+        <Button
+            android:id="@+id/btnAddContact"
+            style="@style/PrimaryButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/add_contacts"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btnClose"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageButton
+            android:id="@+id/btnClose"
+            style="@style/PrimaryButtonOptional"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_close_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btnAddContact"
+            app:layout_constraintTop_toTopOf="@+id/btnAddContact" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

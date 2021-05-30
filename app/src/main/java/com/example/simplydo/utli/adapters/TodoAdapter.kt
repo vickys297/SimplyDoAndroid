@@ -88,15 +88,14 @@ class TodoAdapter(
 
     override fun getItemCount(): Int = dataSet.size
 
-    fun updateItem(it: ArrayList<TodoModel>) {
-
+    fun updateDataSet(it: ArrayList<TodoModel>) {
         this.dataSet = it
         notifyDataSetChanged()
     }
 
 
     override fun getItemViewType(position: Int): Int {
-        return dataSet[position].isCompleted
+        return if (dataSet[position].isCompleted) 1 else 0
     }
 
     fun removeItemAtPosition(position: Int) {

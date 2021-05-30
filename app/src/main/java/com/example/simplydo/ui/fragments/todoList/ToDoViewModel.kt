@@ -5,11 +5,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.simplydo.model.CommonResponseModel
-import com.example.simplydo.model.ContactInfo
+import com.example.simplydo.model.ContactModel
 import com.example.simplydo.model.TodoModel
-import com.example.simplydo.utli.AppPreference
-import com.example.simplydo.utli.AppRepository
 import com.example.simplydo.utli.AppConstant
+import com.example.simplydo.utli.AppRepository
 import java.util.*
 
 
@@ -22,7 +21,7 @@ class ToDoViewModel(private val context: Context, private val appRepository: App
 
 
     fun todoListObserver(eventDate: String): LiveData<List<TodoModel>> {
-        return appRepository.appDatabase.todoDao().getAllTodo(eventDate)
+        return appRepository.appDatabase.todoDao().getTodoForQuickView(eventDate)
     }
 
 
@@ -35,10 +34,10 @@ class ToDoViewModel(private val context: Context, private val appRepository: App
         task: String,
         eventDate: String,
         priority: Boolean,
-        contactInfo: ArrayList<ContactInfo>,
+        contactInfo: ArrayList<ContactModel>,
         imagesList: ArrayList<String>,
     ) {
-        val lastId = appRepository.insertNewTodoTask(
+        appRepository.insertNewTodoTask(
             TodoModel(
                 title = title,
                 todo = task,
@@ -47,33 +46,15 @@ class ToDoViewModel(private val context: Context, private val appRepository: App
                 contactInfo = contactInfo,
                 imageFiles = imagesList,
                 locationInfo = "",
-                createdAt = AppConstant.dateFormatter(AppConstant.DATE_PATTERN_ISO).format(Date().time),
-                updatedAt = AppConstant.dateFormatter(AppConstant.DATE_PATTERN_ISO).format(Date().time),
+                createdAt = AppConstant.dateFormatter(AppConstant.DATE_PATTERN_ISO)
+                    .format(Date().time),
+                updatedAt = AppConstant.dateFormatter(AppConstant.DATE_PATTERN_ISO)
+                    .format(Date().time),
                 isHighPriority = priority
             ))
 
-        appRepository.uploadNewTodo(
-            TodoModel(
-                dtId = lastId,
-                title = title,
-                todo = task,
-                eventTime = "",
-                eventDate = eventDate,
-                contactInfo = contactInfo,
-                imageFiles = imagesList,
-                locationInfo = "",
-                createdAt = AppConstant.dateFormatter(AppConstant.DATE_PATTERN_ISO).format(Date().time),
-                updatedAt = AppConstant.dateFormatter(AppConstant.DATE_PATTERN_ISO).format(Date().time),
-                isHighPriority = priority),
-            AppPreference.getPreferences(AppConstant.USER_KEY, context),
-            todoListResponse,
-            noNetworkMessage)
     }
 
-    fun syncDataWithDatabase(dateString: String) {
-        appRepository.uploadDataToCloudDatabase()
-        appRepository.downloadTaskByDate(dateString)
-    }
 
     fun completeTaskByID(dtId: Long) {
         appRepository.completeTaskById(dtId)

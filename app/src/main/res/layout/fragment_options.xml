@@ -26,7 +26,7 @@
 
     <Button
         android:id="@+id/button"
-        style="@style/ButtonOptionsDetails"
+        style="@style/ButtonOptions"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -37,7 +37,7 @@
 
     <Button
         android:id="@+id/button2"
-        style="@style/ButtonOptionsDetails"
+        style="@style/ButtonOptions"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"

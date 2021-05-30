@@ -3,6 +3,7 @@ package com.example.simplydo.ui.fragments.contactListView
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,14 +12,14 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simplydo.databinding.ContactsListViewBinding
 import com.example.simplydo.localDatabase.AppDatabase
-import com.example.simplydo.model.attachmentModel.ContactModel
-import com.example.simplydo.utli.AppRepository
-import com.example.simplydo.utli.ContactAdapterInterface
-import com.example.simplydo.utli.ViewModelFactory
+import com.example.simplydo.model.ContactModel
+import com.example.simplydo.utli.*
 import com.example.simplydo.utli.adapters.ContactAdapter
+import com.example.simplydo.utli.adapters.SelectedContactAdapter
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -35,15 +36,30 @@ class ContactsFragment :
         fun newInstance() = ContactsFragment()
     }
 
-
     private lateinit var viewModel: ContactsViewModel
     private lateinit var contactAdapter: ContactAdapter
+    private lateinit var selectedContactAdapter: SelectedContactAdapter
 
     private var selectedContact = ArrayList<ContactModel>()
 
-    private val contactAdapterInterface = object :ContactAdapterInterface{
+    private val contactAdapterInterface = object : ContactAdapterInterface {
         override fun onContactSelect(item: ContactModel) {
-            selectedContact.add(item)
+            Log.i(TAG, "onContactSelect: $item")
+            if (!selectedContact.contains(item)) {
+                selectedContact.add(item)
+                selectedContactAdapter.updateDatSet(selectedContact)
+            } else {
+                Toast.makeText(requireContext(), "Contact Already Added", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private val selectedContactInterFace = object : SelectedContactInterface {
+        override fun onContactRemove(item: ContactModel) {
+            if (selectedContact.contains(item)) {
+                selectedContact.remove(item)
+                selectedContactAdapter.updateDatSet(selectedContact)
+            }
         }
     }
 
@@ -53,7 +69,6 @@ class ContactsFragment :
         savedInstanceState: Bundle?,
     ): View {
         binding = ContactsListViewBinding.inflate(inflater, container, false)
-
         setUpViewModel()
         return binding.root
     }
@@ -73,15 +88,33 @@ class ContactsFragment :
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        binding.recyclerViewContactList.layoutManager = LinearLayoutManager(requireContext())
+        selectedContactAdapter = SelectedContactAdapter(selectedContactInterFace)
+        binding.recyclerViewSelectedContact.apply {
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            adapter = selectedContactAdapter
+        }
+
         contactAdapter = ContactAdapter(contactAdapterInterface)
-        binding.recyclerViewContactList.adapter = contactAdapter
 
-        binding.recyclerViewSelectedContact.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerViewContactList.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = contactAdapter
+        }
 
+        binding.btnAddContact.setOnClickListener {
+            findNavController().previousBackStackEntry?.savedStateHandle?.set("SelectedContactList",
+                selectedContact)
+            findNavController().popBackStack()
+        }
+
+        binding.btnClose.setOnClickListener {
+            findNavController().navigateUp()
+        }
 
         checkPermission()
     }
+
 
     private fun checkPermission() {
         if (ActivityCompat.checkSelfPermission(requireContext(),
@@ -119,6 +152,5 @@ class ContactsFragment :
         }
 
     }
-
 
 }

@@ -137,9 +137,10 @@
 
                 <Button
                     android:id="@+id/btnAddAttachments"
-                    style="@style/ButtonOptionsDetails"
+                    style="@style/ButtonOptions"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     android:text="Add Attachments" />
 
             </LinearLayout>
@@ -152,18 +153,18 @@
             android:layout_height="wrap_content"
             android:text="@string/create"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/ivClose"
+            app:layout_constraintEnd_toStartOf="@+id/imageButtonNewTodoOptions"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <ImageView
-            android:id="@+id/ivClose"
+        <ImageButton
+            android:id="@+id/imageButtonNewTodoOptions"
             style="@style/PrimaryButtonOptional"
             android:layout_width="100dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="@+id/btnCreateTodoTask"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/btnCreateTodoTask"
-            app:srcCompat="@drawable/ic_baseline_close_24" />
+            app:srcCompat="@drawable/ic_baseline_attach_file_24" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

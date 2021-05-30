@@ -5,7 +5,7 @@ import android.provider.ContactsContract
 import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.example.simplydo.model.attachmentModel.ContactModel
+import com.example.simplydo.model.ContactModel
 import com.example.simplydo.model.attachmentModel.ContactPagingModel
 
 internal val TAG = ContactPagingSource::class.java.canonicalName

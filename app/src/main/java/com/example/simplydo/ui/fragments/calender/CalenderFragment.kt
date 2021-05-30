@@ -1,7 +1,6 @@
 package com.example.simplydo.ui.fragments.calender
 
 import android.os.Bundle
-import android.transition.TransitionInflater
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -14,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simplydo.R
 import com.example.simplydo.databinding.CalenderFragmentBinding
 import com.example.simplydo.localDatabase.AppDatabase
-import com.example.simplydo.model.ContactInfo
+import com.example.simplydo.model.ContactModel
 import com.example.simplydo.model.SmallCalenderModel
 import com.example.simplydo.model.TodoModel
 import com.example.simplydo.utli.*
@@ -27,7 +26,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-internal val TAG = CalenderViewAdapter::class.java.canonicalName
+internal val TAG = CalenderFragment::class.java.canonicalName
 
 class CalenderFragment : Fragment() {
 
@@ -49,7 +48,7 @@ class CalenderFragment : Fragment() {
     private var selectedEventDate: String
 
 
-    var contactInfo: ArrayList<ContactInfo> = ArrayList()
+    var contactInfo: ArrayList<ContactModel> = ArrayList()
     var imagesList: ArrayList<String> = ArrayList()
 
 
@@ -98,22 +97,18 @@ class CalenderFragment : Fragment() {
 
 
     init {
-        selectedEventDate = AppConstant.dateFormatter(AppConstant.DATE_PATTERN_COMMON).format(Date().time)
+        selectedEventDate =
+            AppConstant.dateFormatter(AppConstant.DATE_PATTERN_COMMON).format(Date().time)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        sharedElementEnterTransition =
-            TransitionInflater.from(requireContext()).inflateTransition(android.R.transition.move)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
         binding = CalenderFragmentBinding.inflate(inflater, container, false)
-        setViewModel()
         setObserver()
+        setViewModel()
         return binding.root
     }
 
@@ -122,14 +117,12 @@ class CalenderFragment : Fragment() {
         todoByDateObserver = Observer {
 
             Log.i(TAG, "todoList -> $it")
-            todoAdapter.updateItem(it as ArrayList<TodoModel>)
+            todoAdapter.updateDataSet(it as ArrayList<TodoModel>)
 
             if (it.isNotEmpty()) {
                 binding.llNoEventAvailable.visibility = View.GONE
                 binding.recyclerViewTodoList.visibility = View.VISIBLE
-            }
-
-            if (it.isEmpty()) {
+            } else {
                 binding.llNoEventAvailable.visibility = View.VISIBLE
                 binding.recyclerViewTodoList.visibility = View.GONE
                 viewModel.getNextTaskAvailability(selectedEventDate)
@@ -150,41 +143,30 @@ class CalenderFragment : Fragment() {
                 binding.tvNextEventAvailable.text = String.format("You do not have upcoming task")
                 binding.btnViewEventOnNextDate.visibility = View.GONE
             }
-
-
         }
-
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         // TODO: Use the ViewModel
-
-
-
+        clickListener(binding)
         smallCalenderModels = ArrayList()
 
         calenderViewAdapter =
             CalenderViewAdapter(requireContext(), calenderAdapterInterface)
-
-        binding.recyclerViewCalenderView.layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        binding.recyclerViewCalenderView.adapter = calenderViewAdapter
-
-
         todoAdapter = TodoAdapter(requireContext(), todoAdapterInterface)
-        binding.recyclerViewTodoList.layoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerViewTodoList.adapter = todoAdapter
 
-        clickListener(binding)
+        binding.recyclerViewCalenderView.apply {
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            adapter = calenderViewAdapter
+        }
 
-        populateRecyclerView()
+        binding.recyclerViewTodoList.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = todoAdapter
+        }
 
-
-        viewModel.nextAvailableDate.observe(viewLifecycleOwner, nextAvailableDateObserver)
-
-        viewModel.getTodoListByEventDate(selectedEventDate)
-            .observe(viewLifecycleOwner, todoByDateObserver)
     }
 
 
@@ -200,23 +182,6 @@ class CalenderFragment : Fragment() {
         }
     }
 
-    private fun populateRecyclerView() {
-        for (i in 0..60) {
-            val calendar = Calendar.getInstance()
-            calendar.time = Date()
-            calendar.add(Calendar.DAY_OF_MONTH, i)
-            smallCalenderModels.add(
-                SmallCalenderModel(
-                    calendar.get(Calendar.DAY_OF_MONTH).toString(),
-                    AppConstant.dateFormatter(AppConstant.DATE_PATTERN_MONTH_TEXT).format(calendar.time)
-                        .uppercase(Locale.getDefault()),
-                    AppConstant.dateFormatter(AppConstant.DATE_PATTERN_COMMON).format(calendar.time)))
-        }
-
-        smallCalenderModels[0].isActive = true
-
-        calenderViewAdapter.updateList(smallCalenderModels)
-    }
 
     private fun setViewModel() {
         viewModel = ViewModelProvider(this,
@@ -233,7 +198,41 @@ class CalenderFragment : Fragment() {
             lifecycleOwner = this@CalenderFragment
             executePendingBindings()
         }
+
+        // next task available date
+        viewModel.nextAvailableDate.observe(viewLifecycleOwner, nextAvailableDateObserver)
+
+        // get task list by event date
+        viewModel.getTodoListByEventDate(selectedEventDate)
+            .observe(viewLifecycleOwner, todoByDateObserver)
+
+        // check if there is any new data in cloud database
+        viewModel.requestDataFromCloud(selectedEventDate)
     }
 
 
+    override fun onResume() {
+        super.onResume()
+        populateRecyclerView()
+    }
+
+    private fun populateRecyclerView() {
+        for (i in 0..60) {
+            val calendar = Calendar.getInstance()
+            calendar.time = Date()
+            calendar.add(Calendar.DAY_OF_MONTH, i)
+            smallCalenderModels.add(
+                SmallCalenderModel(
+                    calendar.get(Calendar.DAY_OF_MONTH).toString(),
+                    AppConstant.dateFormatter(AppConstant.DATE_PATTERN_MONTH_TEXT)
+                        .format(calendar.time)
+                        .uppercase(Locale.getDefault()),
+                    AppConstant.dateFormatter(AppConstant.DATE_PATTERN_COMMON)
+                        .format(calendar.time)))
+        }
+
+        smallCalenderModels[0].isActive = true
+
+        calenderViewAdapter.updateList(smallCalenderModels)
+    }
 }

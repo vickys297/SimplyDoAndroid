@@ -6,6 +6,8 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.example.simplydo.utli.AppConstant
+import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 @Entity(tableName = "todoList", indices = [Index(value = ["dtId"], unique = true)])
 data class TodoModel(
@@ -24,14 +26,14 @@ data class TodoModel(
     val eventDate: String,
 
     // priority
-    @ColumnInfo(name = "isHighPriority", defaultValue = "true")
+    @ColumnInfo(name = "isHighPriority", defaultValue = "1")
     val isHighPriority: Boolean = true,
 
     // attachments
     @ColumnInfo(name = "locationInfo", defaultValue = "")
     val locationInfo: String = "",
     @ColumnInfo(name = "contactInfo", defaultValue = "")
-    val contactInfo: ArrayList<ContactInfo>,
+    val contactInfo: ArrayList<ContactModel>,
     @ColumnInfo(name = "imageFiles", defaultValue = "")
     val imageFiles: ArrayList<String>,
 
@@ -43,11 +45,11 @@ data class TodoModel(
 
     // is database synced with cloud database
     @ColumnInfo(name = "synchronize", defaultValue = "0")
-    var synchronize: Int = 0,
+    var synchronize: Boolean = false,
 
     // task  status
     @ColumnInfo(name = "isCompleted", defaultValue = "0")
-    var isCompleted: Int = 0,
+    var isCompleted: Boolean = false,
     @ColumnInfo(name = "completedDateTime", defaultValue = "")
     var completedDateTime: String = "",
 ) {
@@ -73,10 +75,41 @@ data class TodoModel(
     }
 }
 
-data class ContactInfo(
+
+data class ContactModel(
+    @SerializedName("photoThumbnailUri")
+    val photoThumbnailUri: ByteArray?,
+    @SerializedName("photoUri")
+    val photoUri: ByteArray?,
+    @SerializedName("name")
     val name: String,
+    @SerializedName("mobile")
     val mobile: String,
-)
+) : Serializable {
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as ContactModel
+
+        if (!photoThumbnailUri.contentEquals(other.photoThumbnailUri)) return false
+        if (!photoUri.contentEquals(other.photoUri)) return false
+        if (name != other.name) return false
+        if (mobile != other.mobile) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = photoThumbnailUri.contentHashCode()
+        result = 31 * result + photoUri.contentHashCode()
+        result = 31 * result + name.hashCode()
+        result = 31 * result + mobile.hashCode()
+        return result
+    }
+
+}
 
 
 data class RequestDataFromCloudResponseModel(

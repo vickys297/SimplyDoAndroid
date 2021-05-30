@@ -1,7 +1,7 @@
 package com.example.simplydo.utli
 
+import com.example.simplydo.model.ContactModel
 import com.example.simplydo.model.TodoModel
-import com.example.simplydo.model.attachmentModel.ContactModel
 
 interface CreateBasicTodoInterface {
     fun onAddMoreDetails(eventDate: String)
@@ -26,4 +26,18 @@ interface AddAttachmentInterface {
 
 interface ContactAdapterInterface {
     fun onContactSelect(item: ContactModel)
+}
+
+interface SelectedContactInterface {
+    fun onContactRemove(item: ContactModel)
+}
+
+interface CommonBottomSheetDialogInterface {
+    fun onPositiveButtonClick()
+}
+
+
+interface NewTodoOptionsFragmentsInterface {
+    fun onAddAttachments()
+    fun onClose()
 }

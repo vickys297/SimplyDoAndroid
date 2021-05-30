@@ -17,7 +17,8 @@
         android:usesCleartextTraffic="true">
         <activity
             android:name=".ui.MainActivity"
-            android:theme="@style/Theme.SimplyDo" />
+            android:theme="@style/Theme.SimplyDo"
+            android:windowSoftInputMode="adjustPan"/>
 
         <activity
             android:name="com.example.simplydo.ui.fragments.login.LoginActivity"

@@ -1,7 +1,7 @@
 package com.example.simplydo.localDatabase
 
 import androidx.room.TypeConverter
-import com.example.simplydo.model.ContactInfo
+import com.example.simplydo.model.ContactModel
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
@@ -9,8 +9,18 @@ class ConverterHelper {
     val gson = Gson()
 
     @TypeConverter
-    fun fromContactInfoList(list: ArrayList<ContactInfo>): String {
+    fun fromContactInfoList(list: ArrayList<ContactModel>): String {
         return gson.toJson(list)
+    }
+
+    @TypeConverter
+    fun fromBoolean(boolean: Boolean): Int {
+        return if (boolean) 1 else 0
+    }
+
+    @TypeConverter
+    fun toBoolean(boolean: Int): Boolean {
+        return boolean == 1
     }
 
     @TypeConverter
@@ -25,7 +35,7 @@ class ConverterHelper {
 
 
     @TypeConverter
-    fun toContactInfoList(json: String): ArrayList<ContactInfo> {
-        return gson.fromJson(json, object : TypeToken<ArrayList<ContactInfo?>?>() {}.type)
+    fun toContactInfoList(json: String): ArrayList<ContactModel> {
+        return gson.fromJson(json, object : TypeToken<ArrayList<ContactModel?>?>() {}.type)
     }
 }

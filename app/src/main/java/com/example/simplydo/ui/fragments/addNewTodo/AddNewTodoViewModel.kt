@@ -2,7 +2,7 @@ package com.example.simplydo.ui.fragments.addNewTodo
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
-import com.example.simplydo.model.ContactInfo
+import com.example.simplydo.model.ContactModel
 import com.example.simplydo.model.TodoModel
 import com.example.simplydo.utli.AppRepository
 import java.text.DateFormat
@@ -16,7 +16,7 @@ class AddNewTodoViewModel(private val context: Context,private val appRepository
         title: String,
         task: String,
         dateTime: String,
-        contactInfo: ArrayList<ContactInfo>,
+        contactInfo: ArrayList<ContactModel>,
         imagesList: ArrayList<String>
     ) {
 

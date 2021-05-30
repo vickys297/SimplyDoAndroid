@@ -21,7 +21,7 @@ interface API {
         @Path("uKey") uKey: String,
     ): Call<CommonResponseModel>
 
-    @POST("todo/{uKey}/bulk")
+    @POST("todo/{uKey}/sync")
     fun uploadDataToCloudDatabase(
         @Body todoModels: ArrayList<TodoModel>,
         @Path("uKey") uKey: String,

@@ -41,16 +41,19 @@
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/calenderToolbar" />
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintTop_toBottomOf="@+id/calenderToolbar"
+            tools:listitem="@layout/recycler_calender_list_item" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewTodoList"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/btnNewTodo"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            tools:listitem="@layout/recycler_contact_list_item"
             app:layout_constraintTop_toBottomOf="@+id/recyclerViewCalenderView" />
 
         <Button

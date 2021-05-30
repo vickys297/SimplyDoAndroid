@@ -29,35 +29,35 @@
 
         <Button
             android:id="@+id/button8"
-            style="@style/ButtonOptionsDetails"
+            style="@style/ButtonOptions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Document" />
 
         <Button
             android:id="@+id/button3"
-            style="@style/ButtonOptionsDetails"
+            style="@style/ButtonOptions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Audio" />
 
         <Button
             android:id="@+id/btnOpenGallery"
-            style="@style/ButtonOptionsDetails"
+            style="@style/ButtonOptions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Gallery" />
 
         <Button
             android:id="@+id/btnAddContact"
-            style="@style/ButtonOptionsDetails"
+            style="@style/ButtonOptions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Contact" />
 
         <Button
             android:id="@+id/btnAddLocation"
-            style="@style/ButtonOptionsDetails"
+            style="@style/ButtonOptions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Location" />

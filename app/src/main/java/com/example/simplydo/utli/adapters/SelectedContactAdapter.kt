@@ -4,9 +4,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.simplydo.databinding.RecyclerSelectedContactListItemBinding
-import com.example.simplydo.model.attachmentModel.ContactModel
+import com.example.simplydo.model.ContactModel
+import com.example.simplydo.utli.SelectedContactInterface
 
-class SelectedContactRecyclerView : RecyclerView.Adapter<SelectedContactRecyclerView.ViewHolder>() {
+class SelectedContactAdapter(private val selectedContactInterFace: SelectedContactInterface) : RecyclerView.Adapter<SelectedContactAdapter.ViewHolder>() {
 
     var dataSet = ArrayList<ContactModel>()
 
@@ -17,6 +18,7 @@ class SelectedContactRecyclerView : RecyclerView.Adapter<SelectedContactRecycler
                 dataModel = item
                 executePendingBindings()
             }
+
         }
 
     }
@@ -33,7 +35,15 @@ class SelectedContactRecyclerView : RecyclerView.Adapter<SelectedContactRecycler
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = dataSet[position]
-        holder.bind(item)
+        item.run {
+            holder.bind(this@run)
+            holder.itemView.tag = this@run
+
+            holder.itemView.setOnClickListener {
+                selectedContactInterFace.onContactRemove(item)
+            }
+        }
+
     }
 
     override fun getItemCount() = dataSet.size

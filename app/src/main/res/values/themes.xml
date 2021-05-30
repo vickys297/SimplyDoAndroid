@@ -31,7 +31,7 @@
         <item name="android:clickable">true</item>
     </style>
 
-    <style name="ButtonOptionsDetails" parent="Theme.MaterialComponents.DayNight">
+    <style name="ButtonOptions" parent="Theme.MaterialComponents.DayNight">
         <item name="textAllCaps">true</item>
         <item name="android:textColor">@color/purple_500</item>
         <item name="android:background">@android:color/transparent</item>
@@ -128,5 +128,26 @@
         <item name="android:textColor">@color/purple_500</item>
     </style>
     <!--Calender Recycler Item Styles-->
+
+
+    <!--Contact-->
+    <style name="CircularContactAvatar" parent="Theme.MaterialComponents.DayNight">
+        <item name="android:background">@drawable/circular_contact_name</item>
+        <item name="android:textSize">34sp</item>
+        <item name="android:text">A</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+    <!--Contact-->
+
+
+    <style name="CommonMessageTitle" parent="Theme.MaterialComponents.DayNight">
+        <item name="android:textSize">30sp</item>
+        <item name="android:fontFamily">@font/montserrat_regular</item>
+    </style>
+
+    <style name="CommonMessageMessage" parent="Theme.MaterialComponents.DayNight">
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">@font/merriweather_sans_regular</item>
+    </style>
 
 </resources>

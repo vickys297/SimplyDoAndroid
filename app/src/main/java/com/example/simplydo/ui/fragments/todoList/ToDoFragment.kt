@@ -17,13 +17,12 @@ import com.example.simplydo.R
 import com.example.simplydo.databinding.TodoFragmentBinding
 import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.model.CommonResponseModel
-import com.example.simplydo.model.ContactInfo
+import com.example.simplydo.model.ContactModel
 import com.example.simplydo.model.TodoModel
 import com.example.simplydo.utli.*
 import com.example.simplydo.utli.adapters.TodoAdapter
 import com.example.simplydo.utli.adapters.options.TodoOptionsFragment
 import com.example.simplydo.utli.bottomSheetDialogs.addTodoBasic.AddTodoBasic
-import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -46,7 +45,7 @@ class ToDoFragment : Fragment() {
     private lateinit var todoAdapter: TodoAdapter
     private lateinit var todoModel: ArrayList<TodoModel>
 
-    lateinit var contactInfo: ArrayList<ContactInfo>
+    lateinit var contactInfo: ArrayList<ContactModel>
     lateinit var imagesList: ArrayList<String>
 
 
@@ -97,7 +96,7 @@ class ToDoFragment : Fragment() {
 
         todoModelObserver = Observer {
             todoModel = it as ArrayList<TodoModel>
-            todoAdapter.updateItem(it)
+            todoAdapter.updateDataSet(it)
         }
 
         todoObserver = Observer {
@@ -109,6 +108,8 @@ class ToDoFragment : Fragment() {
         noNetworkObserver = Observer {
             Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
         }
+
+
     }
 
     private fun setupViewModel() {
@@ -130,12 +131,6 @@ class ToDoFragment : Fragment() {
 
         viewModel.todoListResponse.observe(viewLifecycleOwner, todoObserver)
         viewModel.noNetworkMessage.observe(viewLifecycleOwner, noNetworkObserver)
-
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
 
     }
 
@@ -194,35 +189,10 @@ class ToDoFragment : Fragment() {
             }
         }
 
-        // pre load sample tasks
-//        for (i in 0..200) {
-//
-//            val calendar = Calendar.getInstance()
-//            calendar.time = Date()
-//            calendar.add(Calendar.DAY_OF_MONTH, i)
-//
-//            viewModel.createNewTodo(
-//                title = "Title $i",
-//                task = "Sample test task with populated data $i",
-//                eventDate = Constant.dateFormatter(Constant.DATE_PATTERN_COMMON)
-//                    .format(calendar.time),
-//                priority = i % 10 == 0,
-//                contactInfo,
-//                imagesList
-//            )
-//        }
-
         val itemTouchHelper = ItemTouchHelper(simpleItemTouchCallback)
         itemTouchHelper.attachToRecyclerView(binding.recyclerViewTodoList)
 
 
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        viewModel.syncDataWithDatabase(SimpleDateFormat(AppConstant.DATE_PATTERN_COMMON,
-            Locale.getDefault()).format(Date().time))
     }
 
 

@@ -1,21 +1,21 @@
 package com.example.simplydo.ui.fragments.login
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import com.example.simplydo.ui.MainActivity
 import com.example.simplydo.R
 import com.example.simplydo.api.API
 import com.example.simplydo.databinding.ActivityLoginBinding
 import com.example.simplydo.model.LoginModel
-import com.example.simplydo.model.OTPModel
 import com.example.simplydo.model.LoginResponseModel
+import com.example.simplydo.model.OTPModel
 import com.example.simplydo.model.OTPResponse
 import com.example.simplydo.network.NoConnectivityException
 import com.example.simplydo.network.RetrofitServices
+import com.example.simplydo.ui.MainActivity
 import com.example.simplydo.utli.AppConstant
 import com.example.simplydo.utli.AppPreference
 import retrofit2.Call
@@ -64,6 +64,9 @@ class LoginActivity : AppCompatActivity() {
                 data?.let {
                     when (it.result) {
                         AppConstant.API_RESULT_OK -> {
+
+
+
                             if (it.data.isVerified) {
 
                                 AppPreference.storePreferences(
@@ -125,6 +128,10 @@ class LoginActivity : AppCompatActivity() {
                 data?.let {
                     when (it.result) {
                         AppConstant.API_RESULT_OK -> {
+
+
+                            Toast.makeText(this@LoginActivity, it.message, Toast.LENGTH_LONG).show()
+
                             if (!it.data.isVerified) {
                                 showOTPField()
                             }

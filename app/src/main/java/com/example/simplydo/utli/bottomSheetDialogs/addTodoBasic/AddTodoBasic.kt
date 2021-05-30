@@ -63,7 +63,7 @@ class AddTodoBasic(
             dismiss()
         }
 
-        binding.ivClose.setOnClickListener {
+        binding.imageButtonBasicAddTodoClose.setOnClickListener {
             dismiss()
         }
 
