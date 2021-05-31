@@ -41,3 +41,10 @@ interface NewTodoOptionsFragmentsInterface {
     fun onAddAttachments()
     fun onClose()
 }
+
+interface TodoOptionDialogFragments{
+    fun onDelete(item: TodoModel)
+    fun onEdit(item: TodoModel)
+    fun onRestore(item: TodoModel)
+
+}

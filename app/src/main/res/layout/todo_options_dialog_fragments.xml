@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".utli.bottomSheetDialogs.todoOptions.TodoOptionsFragment">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:elevation="10dp"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme">
+
+            <TextView
+                style="@style/ToolbarStyledText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/options" />
+        </androidx.appcompat.widget.Toolbar>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnOptionEdit"
+            style="@style/ButtonOptions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/edit" />
+
+        <!--    If the task is completed-->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnOptionRestore"
+            style="@style/ButtonOptions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/restore" />
+
+        <Button
+            android:id="@+id/btnOptionDelete"
+            style="@style/ButtonOptionsDetailsDelete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/delete" />
+    </LinearLayout>
+</layout>

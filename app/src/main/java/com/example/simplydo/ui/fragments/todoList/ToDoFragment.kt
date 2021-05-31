@@ -21,8 +21,8 @@ import com.example.simplydo.model.ContactModel
 import com.example.simplydo.model.TodoModel
 import com.example.simplydo.utli.*
 import com.example.simplydo.utli.adapters.TodoAdapter
-import com.example.simplydo.utli.adapters.options.TodoOptionsFragment
 import com.example.simplydo.utli.bottomSheetDialogs.addTodoBasic.AddTodoBasic
+import com.example.simplydo.utli.bottomSheetDialogs.todoOptions.TodoOptionsFragment
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -48,10 +48,28 @@ class ToDoFragment : Fragment() {
     lateinit var contactInfo: ArrayList<ContactModel>
     lateinit var imagesList: ArrayList<String>
 
+    lateinit var recentSelectedItem: TodoModel
+
+
+    private val todoOptionDialogFragments = object : TodoOptionDialogFragments {
+        override fun onDelete(item: TodoModel) {
+            viewModel.removeTaskById(item)
+            AppConstant.showMessage("Task Removed", requireContext())
+        }
+
+        override fun onEdit(item: TodoModel) {
+        }
+
+        override fun onRestore(item: TodoModel) {
+        }
+
+    }
+
 
     private var todoAdapterInterface = object : TodoAdapterInterface {
         override fun onLongClick(item: TodoModel) {
-            val options = TodoOptionsFragment.newInstance()
+            recentSelectedItem = item
+            val options = TodoOptionsFragment.newInstance(todoOptionDialogFragments, item)
             options.show(requireActivity().supportFragmentManager, "dialog")
         }
 
@@ -141,7 +159,7 @@ class ToDoFragment : Fragment() {
         // init
         contactInfo = ArrayList()
         imagesList = ArrayList()
-        todoAdapter = TodoAdapter(requireContext(), todoAdapterInterface)
+        todoAdapter = TodoAdapter(todoAdapterInterface)
 
 
         binding.recyclerViewTodoList.layoutManager =
@@ -178,14 +196,14 @@ class ToDoFragment : Fragment() {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
                 //Remove swiped item from list and notify the RecyclerView
                 val position = viewHolder.absoluteAdapterPosition
-                viewModel.completeTaskByID(todoModel[position].dtId)
+                if (todoModel.isNotEmpty()) {
+                    viewModel.completeTaskByID(todoModel[position].dtId)
+                    todoAdapter.notifyItemChanged(position)
+                    Toast.makeText(requireContext(),
+                        getString(R.string.task_completed_label),
+                        Toast.LENGTH_LONG).show()
+                }
 
-                todoAdapter.notifyItemRemoved(position)
-                todoAdapter.notifyDataSetChanged()
-
-                Toast.makeText(requireContext(),
-                    getString(R.string.task_completed_label),
-                    Toast.LENGTH_LONG).show()
             }
         }
 

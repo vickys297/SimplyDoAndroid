@@ -1,5 +1,6 @@
 package com.example.simplydo.ui.fragments.gallaryListView
 
+import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
@@ -7,7 +8,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 
 internal val TAG = GalleryListViewModel::class.java.canonicalName
-class GalleryListViewModel : ViewModel() {
+class GalleryListViewModel(context: Context) : ViewModel() {
     // TODO: Implement the ViewModel
 
 

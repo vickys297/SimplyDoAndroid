@@ -12,7 +12,6 @@ import com.example.simplydo.utli.ContactAdapterInterface
 
 
 internal const val VIEW_TYPE_CONTACT: Int = 0
-internal const val VIEW_TYPE_LOADING: Int = 1
 
 class ContactAdapter(
     private val contactAdapterInterface: ContactAdapterInterface,
@@ -35,7 +34,6 @@ class ContactAdapter(
 
     class ContactViewHolder(
         val binding: RecyclerContactListItemBinding,
-        private val requireActivity: FragmentActivity,
     ) :
         RecyclerView.ViewHolder(binding.root) {
 
@@ -71,8 +69,7 @@ class ContactAdapter(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            ),
-            requireActivity
+            )
         )
     }
 

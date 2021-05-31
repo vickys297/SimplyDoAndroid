@@ -1,17 +1,15 @@
 package com.example.simplydo.utli.adapters
 
-import android.content.Context
 import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.simplydo.databinding.RecyclerCompletedTodoListItemBinding
+import com.example.simplydo.databinding.RecyclerTodoCompletedListItemBinding
 import com.example.simplydo.databinding.RecyclerTodoListItemBinding
 import com.example.simplydo.model.TodoModel
 import com.example.simplydo.utli.TodoAdapterInterface
 
 class TodoAdapter(
-    private val context: Context,
     private val todoAdapterInterface: TodoAdapterInterface,
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -36,7 +34,7 @@ class TodoAdapter(
             }
             VIEW_TYPE_TASK_COMPLETED -> {
                 CompletedTaskViewHolder(
-                    RecyclerCompletedTodoListItemBinding.inflate(
+                    RecyclerTodoCompletedListItemBinding.inflate(
                         layoutInflater,
                         parent,
                         false
@@ -115,7 +113,7 @@ class TodoAdapter(
         }
     }
 
-    class CompletedTaskViewHolder(private val binding: RecyclerCompletedTodoListItemBinding) :
+    class CompletedTaskViewHolder(private val binding: RecyclerTodoCompletedListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: TodoModel) {
             binding.apply {

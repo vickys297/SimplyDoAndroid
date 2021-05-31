@@ -12,7 +12,7 @@ import com.example.simplydo.utli.AppRepository
 import java.util.*
 
 
-class ToDoViewModel(private val context: Context, private val appRepository: AppRepository) :
+class ToDoViewModel(context: Context, private val appRepository: AppRepository) :
     ViewModel() {
 
     // TODO: Implement the ViewModel
@@ -25,8 +25,8 @@ class ToDoViewModel(private val context: Context, private val appRepository: App
     }
 
 
-    fun removeTaskById(id: Long) {
-        return appRepository.deleteTaskByPosition(id)
+    fun removeTaskById(item :TodoModel) {
+        return appRepository.deleteTaskByPosition(item)
     }
 
     fun createNewTodo(

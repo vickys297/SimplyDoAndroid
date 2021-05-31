@@ -12,9 +12,6 @@ import com.example.simplydo.utli.CreateBasicTodoInterface
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.util.*
 
-// TODO: Customize parameter argument names
-const val ARG_ITEM_COUNT = "item_count"
-
 /**
  *
  * A fragment that shows a list of items as a modal bottom sheet.

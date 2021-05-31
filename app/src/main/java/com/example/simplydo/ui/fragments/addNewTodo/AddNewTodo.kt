@@ -33,7 +33,6 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
     private lateinit var selectedEventDate: String
 
 
-
     private var addAttachmentInterface: AddAttachmentInterface = object : AddAttachmentInterface {
         override fun onAddDocument() {
         }

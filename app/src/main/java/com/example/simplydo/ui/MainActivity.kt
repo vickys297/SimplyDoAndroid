@@ -79,9 +79,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setUpObserver() {
-        allTodoListDataObserver = Observer {
-            if (it.isNotEmpty()) {
-                (it as ArrayList<TodoModel>).forEach { it ->
+        allTodoListDataObserver = Observer { tasks ->
+            if (tasks.isNotEmpty()) {
+                (tasks as ArrayList<TodoModel>).forEach {
                     Log.i(TAG, "Un Synced data :\n" +
                             "dtId: ${it.dtId}\n" +
                             "Title: ${it.title}\n" +
@@ -89,13 +89,14 @@ class MainActivity : AppCompatActivity() {
                             "Event Date: ${it.eventDate}\n" +
                             "Event Time: ${it.eventTime}")
                 }
-                viewModel.syncDataWithCloud(it)
+                viewModel.syncDataWithCloud(tasks)
             }
         }
 
         totalTaskCountObserver = Observer {
             if (it.equals(0)) {
-                addDummyDataToLocalDataBase()
+//                addDummyDataToLocalDataBase()
+                Log.i(TAG, "setUpObserver: No data available")
             }
         }
 

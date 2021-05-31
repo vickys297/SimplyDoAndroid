@@ -1,5 +1,7 @@
 package com.example.simplydo.utli
 
+import android.content.Context
+import android.widget.Toast
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -35,11 +37,15 @@ object AppConstant {
         return dateFormat.format(Date().time)
     }
 
-    fun parseStringDateToCalender(date:String): Calendar {
+    fun parseStringDateToCalender(date: String): Calendar {
         val simpleDateFormat = dateFormatter(DATE_PATTERN_COMMON)
         val calendar = Calendar.getInstance()
         calendar.time = simpleDateFormat.parse(date)!!
         return calendar
+    }
+
+    fun showMessage(message: String, context: Context) {
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
     }
 
 

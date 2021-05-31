@@ -7,7 +7,6 @@ import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.simplydo.ui.MainActivity
 import com.example.simplydo.R
 import com.example.simplydo.api.API
 import com.example.simplydo.localDatabase.AppDatabase
@@ -15,9 +14,10 @@ import com.example.simplydo.model.Token
 import com.example.simplydo.model.TokenResponse
 import com.example.simplydo.network.NoConnectivityException
 import com.example.simplydo.network.RetrofitServices
+import com.example.simplydo.ui.MainActivity
 import com.example.simplydo.ui.fragments.login.LoginActivity
-import com.example.simplydo.utli.AppPreference
 import com.example.simplydo.utli.AppConstant
+import com.example.simplydo.utli.AppPreference
 import com.example.simplydo.utli.AppRepository
 import com.google.firebase.messaging.FirebaseMessaging
 import retrofit2.Call
@@ -40,7 +40,7 @@ class SplashScreenActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        Handler(Looper.getMainLooper()).postDelayed(Runnable {
+        Handler(Looper.getMainLooper()).postDelayed({
 
             val uuid = AppPreference.getPreferences(AppConstant.UUID, "", this@SplashScreenActivity)
 

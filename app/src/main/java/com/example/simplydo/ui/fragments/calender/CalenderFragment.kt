@@ -9,7 +9,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.simplydo.R
 import com.example.simplydo.databinding.CalenderFragmentBinding
 import com.example.simplydo.localDatabase.AppDatabase
@@ -19,9 +21,9 @@ import com.example.simplydo.model.TodoModel
 import com.example.simplydo.utli.*
 import com.example.simplydo.utli.adapters.CalenderViewAdapter
 import com.example.simplydo.utli.adapters.TodoAdapter
-import com.example.simplydo.utli.adapters.options.TodoOptionsFragment
 import com.example.simplydo.utli.bottomSheetDialogs.addTodoBasic.AddTodoBasic
 import com.example.simplydo.utli.bottomSheetDialogs.calenderOptions.TodoOptions
+import com.example.simplydo.utli.bottomSheetDialogs.todoOptions.TodoOptionsFragment
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -47,6 +49,7 @@ class CalenderFragment : Fragment() {
 
     private var selectedEventDate: String
 
+    private var todoModel = ArrayList<TodoModel>()
 
     var contactInfo: ArrayList<ContactModel> = ArrayList()
     var imagesList: ArrayList<String> = ArrayList()
@@ -63,9 +66,23 @@ class CalenderFragment : Fragment() {
 
     }
 
+    private val todoOptionDialogFragments = object : TodoOptionDialogFragments {
+        override fun onDelete(item: TodoModel) {
+            viewModel.removeTaskById(item)
+            AppConstant.showMessage("Task Removed", requireContext())
+        }
+
+        override fun onEdit(item: TodoModel) {
+        }
+
+        override fun onRestore(item: TodoModel) {
+        }
+
+    }
+
     private var todoAdapterInterface = object : TodoAdapterInterface {
         override fun onLongClick(item: TodoModel) {
-            TodoOptionsFragment.newInstance()
+            TodoOptionsFragment.newInstance(todoOptionDialogFragments, item = item)
                 .show(requireActivity().supportFragmentManager, "dialog")
         }
 
@@ -117,9 +134,10 @@ class CalenderFragment : Fragment() {
         todoByDateObserver = Observer {
 
             Log.i(TAG, "todoList -> $it")
-            todoAdapter.updateDataSet(it as ArrayList<TodoModel>)
+            todoModel = it as ArrayList<TodoModel>
 
             if (it.isNotEmpty()) {
+                todoAdapter.updateDataSet(it)
                 binding.llNoEventAvailable.visibility = View.GONE
                 binding.recyclerViewTodoList.visibility = View.VISIBLE
             } else {
@@ -154,7 +172,7 @@ class CalenderFragment : Fragment() {
 
         calenderViewAdapter =
             CalenderViewAdapter(requireContext(), calenderAdapterInterface)
-        todoAdapter = TodoAdapter(requireContext(), todoAdapterInterface)
+        todoAdapter = TodoAdapter(todoAdapterInterface)
 
         binding.recyclerViewCalenderView.apply {
             layoutManager =
@@ -167,6 +185,37 @@ class CalenderFragment : Fragment() {
             adapter = todoAdapter
         }
 
+
+        val simpleItemTouchCallback: ItemTouchHelper.SimpleCallback = object :
+            ItemTouchHelper.SimpleCallback(0,
+                ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder,
+            ): Boolean {
+                return false
+            }
+
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
+                //Remove swiped item from list and notify the RecyclerView
+                val position = viewHolder.absoluteAdapterPosition
+
+                if (todoModel.isNotEmpty()) {
+
+                    Log.i(TAG, "onSwiped: $todoModel")
+                    Log.i(TAG, "onSwiped: position $position")
+
+                    viewModel.completeTaskByID(todoModel[position].dtId)
+                    todoAdapter.notifyItemChanged(position)
+                    AppConstant.showMessage("Task Completed", requireContext())
+                }
+            }
+        }
+
+        val itemTouchHelper = ItemTouchHelper(simpleItemTouchCallback)
+        itemTouchHelper.attachToRecyclerView(binding.recyclerViewTodoList)
     }
 
 

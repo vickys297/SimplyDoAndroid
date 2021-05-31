@@ -9,7 +9,7 @@ import com.example.simplydo.utli.SelectedContactInterface
 
 class SelectedContactAdapter(private val selectedContactInterFace: SelectedContactInterface) : RecyclerView.Adapter<SelectedContactAdapter.ViewHolder>() {
 
-    var dataSet = ArrayList<ContactModel>()
+    private var dataSet = ArrayList<ContactModel>()
 
     class ViewHolder(val binding: RecyclerSelectedContactListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {

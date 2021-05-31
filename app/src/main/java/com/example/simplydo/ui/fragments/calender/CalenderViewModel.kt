@@ -42,26 +42,18 @@ class CalenderViewModel(val appRepository: AppRepository) : ViewModel() {
             isHighPriority = priority
         ))
 
-//        repository.uploadNewTodo(
-//            TodoModel(
-//                dtId = lastId,
-//                title = title,
-//                todo = task,
-//                eventTime = "",
-//                eventDate = eventDate,
-//                contactInfo = contactInfo,
-//                imageFiles = imagesList,
-//                locationInfo = "",
-//                createdAt = Constant.dateFormatter(Constant.DATE_PATTERN_ISO).format(Date().time),
-//                updatedAt = Constant.dateFormatter(Constant.DATE_PATTERN_ISO).format(Date().time),
-//                isHighPriority = priority),
-//            Session.getSession(Constant.USER_KEY, context),
-//            todoListResponse,
-//            noNetworkMessage)
     }
 
     fun getNextTaskAvailability(selectedEventDate: String) {
         appRepository.getNextTaskAvailability(selectedEventDate, nextAvailableDate)
+    }
+
+    fun removeTaskById(task: TodoModel) {
+        appRepository.deleteTaskByPosition(task)
+    }
+
+    fun completeTaskByID(dtId: Long) {
+        appRepository.completeTaskById(dtId)
     }
 
 }

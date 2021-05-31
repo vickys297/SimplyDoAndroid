@@ -15,7 +15,7 @@ private const val DIALOG_TITLE = "param1"
 private const val DIALOG_MESSAGE = "param2"
 private const val DIALOG_POSITIVE_BUTTON_NAME = "param3"
 
-class CommonBottomSheetDialogFragment(val commonBottomSheetDialogInterface: CommonBottomSheetDialogInterface) : BottomSheetDialogFragment() {
+class CommonBottomSheetDialogFragment(private val commonBottomSheetDialogInterface: CommonBottomSheetDialogInterface) : BottomSheetDialogFragment() {
 
     private var dialogTitle: String = ""
     private var dialogMessage: String = ""

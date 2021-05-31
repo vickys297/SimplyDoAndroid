@@ -1,10 +1,7 @@
 package com.example.simplydo.localDatabase
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.example.simplydo.model.TodoModel
 
 @Dao
@@ -28,8 +25,8 @@ interface TodoDAO {
     @Query("UPDATE todoList SET isCompleted = '1', synchronize ='0' , updatedAt =:updatedAt WHERE dtId =:dtId")
     fun completeTaskById(dtId: Long, updatedAt: String)
 
-    @Query("DELETE FROM todoList WHERE dtId =:id")
-    fun deleteTaskById(id: Long)
+    @Delete
+    fun deleteTaskById(item: TodoModel): Int
 
     @Query("SELECT * FROM todoList WHERE synchronize ='0'")
     fun getNotSynchronizedTodoData(): List<TodoModel>

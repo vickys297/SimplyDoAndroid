@@ -54,7 +54,7 @@ open class SimpleViewModelFactory internal constructor(
 
         return when (modelClass.canonicalName) {
             GalleryListViewModel::class.java.canonicalName->{
-                GalleryListViewModel() as T
+                GalleryListViewModel(context) as T
             }
             else -> {
                 throw IllegalArgumentException("ViewModel not found")

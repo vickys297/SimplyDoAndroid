@@ -57,11 +57,11 @@ class AppRepository private constructor(val context: Context, val appDatabase: A
     }
 
 
-    fun deleteTaskByPosition(id: Long) {
+    fun deleteTaskByPosition(item: TodoModel) {
         Thread {
-            db.deleteTaskById(id)
+            Log.i(TAG, "deleteTaskByPosition: ${db.deleteTaskById(item)}")
         }.start()
-        deleteTodoFromCloud(id)
+//        deleteTodoFromCloud(id)
     }
 
     fun getTodoByEventDate(

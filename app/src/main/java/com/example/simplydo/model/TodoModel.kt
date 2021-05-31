@@ -76,8 +76,8 @@ data class TodoModel(
 
 
 data class ContactModel(
-    val photoThumbnailUri: ByteArray,
-    val photoUri: ByteArray,
+    val photoThumbnailUri: ByteArray?,
+    val photoUri: ByteArray?,
     val name: String,
     val mobile: String,
 ) : Serializable {

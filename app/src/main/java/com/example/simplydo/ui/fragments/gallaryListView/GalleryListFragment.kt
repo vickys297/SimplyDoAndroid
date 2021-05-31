@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.simplydo.databinding.GalleryListFragmentBinding
+import com.example.simplydo.utli.SimpleViewModelFactory
 
 class GalleryListFragment : Fragment() {
 
@@ -45,7 +46,7 @@ class GalleryListFragment : Fragment() {
 
 
     private fun setupViewModel() {
-        viewModel = ViewModelProvider(this).get(GalleryListViewModel::class.java)
+        viewModel = ViewModelProvider(this, SimpleViewModelFactory(requireContext())).get(GalleryListViewModel::class.java)
         binding.apply {
             lifecycleOwner = this@GalleryListFragment
             executePendingBindings()
