@@ -13,11 +13,6 @@ class AddAttachmentsFragments(private val addAttachmentInterface: AddAttachmentI
 
     lateinit var binding: FragmentAddAttachmentsFragmentsBinding
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -36,6 +31,18 @@ class AddAttachmentsFragments(private val addAttachmentInterface: AddAttachmentI
             addAttachmentInterface.onAddContact()
             dismiss()
         }
+
+        binding.buttonAddAudio.setOnClickListener {
+            addAttachmentInterface.onAddAudio()
+            dismiss()
+        }
+
+        binding.btnOpenGallery.setOnClickListener {
+            addAttachmentInterface.onOpenGallery()
+            dismiss()
+        }
+
+
 
     }
 

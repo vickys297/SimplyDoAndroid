@@ -41,4 +41,11 @@
     <string name="add_contacts">Add Contacts</string>
     <string name="cancel">Cancel</string>
     <string name="close">Close</string>
+    <string name="cancel_task">Cancel Task</string>
+    <string name="location">Location</string>
+    <string name="contact">Contact</string>
+    <string name="document">Document</string>
+    <string name="audio">Audio</string>
+    <string name="gallery">Gallery</string>
+    <string name="add_audio">Add audio</string>
 </resources>

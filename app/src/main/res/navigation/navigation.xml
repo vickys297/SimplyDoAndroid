@@ -32,6 +32,12 @@
             app:exitAnim="@android:anim/fade_out"
             app:popEnterAnim="@android:anim/fade_in"
             app:popExitAnim="@android:anim/fade_out" />
+        <action
+            android:id="@+id/action_addNewTodo_to_audioListFragment"
+            app:destination="@id/audioListFragment" />
+        <action
+            android:id="@+id/action_addNewTodo_to_galleryListFragment"
+            app:destination="@id/galleryListFragment" />
     </fragment>
     <fragment
         android:id="@+id/calenderFragment"
@@ -51,4 +57,12 @@
         android:id="@+id/contactsFragment"
         android:name="com.example.simplydo.ui.fragments.contactListView.ContactsFragment"
         android:label="ContactsFragment" />
+    <fragment
+        android:id="@+id/audioListFragment"
+        android:name="com.example.simplydo.ui.fragments.audioListView.AudioListFragment"
+        android:label="AudioListFragment" />
+    <fragment
+        android:id="@+id/galleryListFragment"
+        android:name="com.example.simplydo.ui.fragments.gallaryListView.GalleryListFragment"
+        android:label="GalleryListFragment" />
 </navigation>

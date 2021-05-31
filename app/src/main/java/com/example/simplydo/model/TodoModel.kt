@@ -6,7 +6,6 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.example.simplydo.utli.AppConstant
-import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
 @Entity(tableName = "todoList", indices = [Index(value = ["dtId"], unique = true)])
@@ -77,16 +76,11 @@ data class TodoModel(
 
 
 data class ContactModel(
-    @SerializedName("photoThumbnailUri")
-    val photoThumbnailUri: ByteArray?,
-    @SerializedName("photoUri")
-    val photoUri: ByteArray?,
-    @SerializedName("name")
+    val photoThumbnailUri: ByteArray,
+    val photoUri: ByteArray,
     val name: String,
-    @SerializedName("mobile")
     val mobile: String,
 ) : Serializable {
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -95,8 +89,6 @@ data class ContactModel(
 
         if (!photoThumbnailUri.contentEquals(other.photoThumbnailUri)) return false
         if (!photoUri.contentEquals(other.photoUri)) return false
-        if (name != other.name) return false
-        if (mobile != other.mobile) return false
 
         return true
     }
@@ -104,10 +96,9 @@ data class ContactModel(
     override fun hashCode(): Int {
         var result = photoThumbnailUri.contentHashCode()
         result = 31 * result + photoUri.contentHashCode()
-        result = 31 * result + name.hashCode()
-        result = 31 * result + mobile.hashCode()
         return result
     }
+
 
 }
 

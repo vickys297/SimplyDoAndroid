@@ -33,20 +33,21 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
     private lateinit var selectedEventDate: String
 
 
+
     private var addAttachmentInterface: AddAttachmentInterface = object : AddAttachmentInterface {
         override fun onAddDocument() {
         }
 
         override fun onAddAudio() {
+            findNavController().navigate(R.id.action_addNewTodo_to_audioListFragment)
         }
 
         override fun onOpenGallery() {
+            findNavController().navigate(R.id.action_addNewTodo_to_galleryListFragment)
         }
 
         override fun onAddContact() {
-            val bundle = Bundle()
-            bundle.putString(getString(R.string.eventDateString), selectedEventDate)
-            findNavController().navigate(R.id.action_addNewTodo_to_contactsFragment, bundle)
+            findNavController().navigate(R.id.action_addNewTodo_to_contactsFragment)
         }
 
         override fun onAddLocation() {
@@ -61,6 +62,7 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
     ): View {
         binding =
             DataBindingUtil.inflate(inflater, R.layout.add_new_todo_fragment, container, false)
+        setupObserver()
         setViewModel()
 
         arguments?.let {
@@ -92,6 +94,9 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
         imagesList = ArrayList()
 
         return binding.root
+    }
+
+    private fun setupObserver() {
     }
 
     private fun setViewModel() {

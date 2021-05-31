@@ -9,6 +9,7 @@ import com.example.simplydo.databinding.NewTodoOptionsFragmentBinding
 import com.example.simplydo.utli.NewTodoOptionsFragmentsInterface
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
+@Deprecated("Do not use options")
 class NewTodoOptionsFragment(private val newTodoOptionsFragmentsInterface: NewTodoOptionsFragmentsInterface) :
     BottomSheetDialogFragment() {
 

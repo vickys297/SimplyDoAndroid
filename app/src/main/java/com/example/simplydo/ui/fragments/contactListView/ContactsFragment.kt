@@ -95,7 +95,7 @@ class ContactsFragment :
             adapter = selectedContactAdapter
         }
 
-        contactAdapter = ContactAdapter(contactAdapterInterface)
+        contactAdapter = ContactAdapter(contactAdapterInterface, requireActivity())
 
         binding.recyclerViewContactList.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -112,6 +112,11 @@ class ContactsFragment :
             findNavController().navigateUp()
         }
 
+
+    }
+
+    override fun onResume() {
+        super.onResume()
         checkPermission()
     }
 

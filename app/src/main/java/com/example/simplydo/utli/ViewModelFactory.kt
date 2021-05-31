@@ -7,6 +7,7 @@ import com.example.simplydo.ui.MainViewModel
 import com.example.simplydo.ui.fragments.addNewTodo.AddNewTodoViewModel
 import com.example.simplydo.ui.fragments.calender.CalenderViewModel
 import com.example.simplydo.ui.fragments.contactListView.ContactsViewModel
+import com.example.simplydo.ui.fragments.gallaryListView.GalleryListViewModel
 import com.example.simplydo.ui.fragments.todoList.ToDoViewModel
 
 open class ViewModelFactory internal constructor(
@@ -36,6 +37,24 @@ open class ViewModelFactory internal constructor(
 
             MainViewModel::class.java.canonicalName -> {
                 MainViewModel(context, appRepository) as T
+            }
+            else -> {
+                throw IllegalArgumentException("ViewModel not found")
+            }
+        }
+    }
+
+}
+
+open class SimpleViewModelFactory internal constructor(
+    private val context: Context,
+) :
+    ViewModelProvider.Factory {
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+
+        return when (modelClass.canonicalName) {
+            GalleryListViewModel::class.java.canonicalName->{
+                GalleryListViewModel() as T
             }
             else -> {
                 throw IllegalArgumentException("ViewModel not found")

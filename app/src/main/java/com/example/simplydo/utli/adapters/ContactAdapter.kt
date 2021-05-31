@@ -2,6 +2,7 @@ package com.example.simplydo.utli.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentActivity
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -13,7 +14,10 @@ import com.example.simplydo.utli.ContactAdapterInterface
 internal const val VIEW_TYPE_CONTACT: Int = 0
 internal const val VIEW_TYPE_LOADING: Int = 1
 
-class ContactAdapter(val contactAdapterInterface: ContactAdapterInterface) :
+class ContactAdapter(
+    private val contactAdapterInterface: ContactAdapterInterface,
+    private val requireActivity: FragmentActivity,
+) :
     PagingDataAdapter<ContactModel, ContactAdapter.ContactViewHolder>(DIFF_CALLBACK) {
 
     companion object {
@@ -29,7 +33,10 @@ class ContactAdapter(val contactAdapterInterface: ContactAdapterInterface) :
         }
     }
 
-    class ContactViewHolder(val binding: RecyclerContactListItemBinding) :
+    class ContactViewHolder(
+        val binding: RecyclerContactListItemBinding,
+        private val requireActivity: FragmentActivity,
+    ) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(contactModel: ContactModel) {
@@ -37,6 +44,7 @@ class ContactAdapter(val contactAdapterInterface: ContactAdapterInterface) :
                 dataModel = contactModel
                 executePendingBindings()
             }
+
         }
 
 
@@ -63,7 +71,8 @@ class ContactAdapter(val contactAdapterInterface: ContactAdapterInterface) :
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            )
+            ),
+            requireActivity
         )
     }
 

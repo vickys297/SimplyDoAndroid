@@ -21,7 +21,7 @@ import com.example.simplydo.utli.adapters.CalenderViewAdapter
 import com.example.simplydo.utli.adapters.TodoAdapter
 import com.example.simplydo.utli.adapters.options.TodoOptionsFragment
 import com.example.simplydo.utli.bottomSheetDialogs.addTodoBasic.AddTodoBasic
-import com.example.simplydo.utli.bottomSheetDialogs.todoOptions.TodoOptions
+import com.example.simplydo.utli.bottomSheetDialogs.calenderOptions.TodoOptions
 import java.util.*
 import kotlin.collections.ArrayList
 

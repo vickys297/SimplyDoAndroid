@@ -164,7 +164,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/btnCreateTodoTask"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/btnCreateTodoTask"
-            app:srcCompat="@drawable/ic_baseline_attach_file_24" />
+            app:srcCompat="@drawable/ic_baseline_more_vert_24" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
