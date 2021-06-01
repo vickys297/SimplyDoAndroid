@@ -11,7 +11,7 @@ import com.example.simplydo.databinding.RecyclerCalenderListItemBinding
 import com.example.simplydo.model.SmallCalenderModel
 import com.example.simplydo.utli.CalenderAdapterInterface
 
-
+internal val TAG = CalenderViewAdapter::class.java.canonicalName
 class CalenderViewAdapter(
     val context: Context,
     private val calenderAdapterInterface: CalenderAdapterInterface,
@@ -43,13 +43,13 @@ class CalenderViewAdapter(
 
                 val layout = itemView.rootView.findViewById<ConstraintLayout>(R.id.calenderLayout)
 
-                if (position == activePosition) {
+                if (item.isActive) {
                     layout.background =
                         ContextCompat.getDrawable(context, R.drawable.active_calender_view)
                 }
 
                 itemView.setOnClickListener {
-                    calenderAdapterInterface.onDateSelect(position, dateEvent = item.date)
+
                 }
 
             }
@@ -62,6 +62,17 @@ class CalenderViewAdapter(
             binding.apply {
                 dataModel = item
                 executePendingBindings()
+            }
+
+            binding.root.setOnClickListener {
+
+                dataset[activePosition].isActive = false
+                notifyItemChanged(activePosition)
+                item.isActive = true
+                notifyItemChanged(absoluteAdapterPosition)
+
+                calenderAdapterInterface.onDateSelect(position = absoluteAdapterPosition,
+                    dateEvent = item.date)
             }
         }
     }
@@ -76,9 +87,26 @@ class CalenderViewAdapter(
     }
 
     fun setActiveDate(position: Int) {
+
         this.activePosition = position
-        notifyItemChanged(this.activePosition)
-        notifyDataSetChanged()
+
+//        Log.i(TAG, "setActiveDate: position : $position")
+//
+//        //  update old position task to not active
+//        dataset[this.activePosition].isActive = false
+//        notifyItemChanged(this.activePosition)
+//
+//        //  update new position task to active
+//        dataset[position].isActive = true
+//        notifyItemChanged(position)
+//
+//        //  update the active position to new position
+//        this.activePosition = position
+//
+//        dataset.forEach {
+//            Log.i(TAG,
+//                "setActiveDate: Event Date : ${it.dateOfMonth} is Active : ${it.isActive}")
+//        }
     }
 
 }

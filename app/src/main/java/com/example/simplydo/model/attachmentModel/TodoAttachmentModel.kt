@@ -26,9 +26,13 @@ data class AudioModel(
 )
 
 data class GalleryModel(
-    val uri: Uri,
+    val id: Long,
     val name: String,
     val size: Int,
+    val createdAt: String,
+    val fileDataType: Int,
+    val mimeType: String,
+    val contentUri: Uri
 )
 
 data class GalleryPagingModel(

@@ -11,7 +11,6 @@ import com.example.simplydo.model.ContactModel
 import com.example.simplydo.utli.ContactAdapterInterface
 
 
-internal const val VIEW_TYPE_CONTACT: Int = 0
 
 class ContactAdapter(
     private val contactAdapterInterface: ContactAdapterInterface,
@@ -44,8 +43,17 @@ class ContactAdapter(
             }
 
         }
+    }
 
 
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactViewHolder {
+        return ContactViewHolder(
+            RecyclerContactListItemBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+        )
     }
 
     override fun onBindViewHolder(holder: ContactViewHolder, position: Int) {
@@ -63,15 +71,6 @@ class ContactAdapter(
 
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactViewHolder {
-        return ContactViewHolder(
-            RecyclerContactListItemBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            )
-        )
-    }
 
 
 }
