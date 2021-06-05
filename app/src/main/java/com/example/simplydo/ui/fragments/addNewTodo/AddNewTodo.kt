@@ -50,6 +50,7 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
         }
 
         override fun onAddLocation() {
+            findNavController().navigate(R.id.action_addNewTodo_to_mapsFragment)
         }
 
     }

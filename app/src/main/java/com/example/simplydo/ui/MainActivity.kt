@@ -12,7 +12,6 @@ import androidx.navigation.fragment.NavHostFragment
 import com.example.simplydo.R
 import com.example.simplydo.databinding.MainActivityBinding
 import com.example.simplydo.localDatabase.AppDatabase
-import com.example.simplydo.model.ContactModel
 import com.example.simplydo.model.TodoModel
 import com.example.simplydo.ui.activity.SplashScreenActivity
 import com.example.simplydo.ui.fragments.login.LoginActivity
@@ -21,7 +20,6 @@ import com.example.simplydo.utli.AppPreference
 import com.example.simplydo.utli.AppRepository
 import com.example.simplydo.utli.ViewModelFactory
 import java.util.*
-import kotlin.collections.ArrayList
 
 internal val TAG = MainActivity::class.java.canonicalName
 
@@ -95,33 +93,11 @@ class MainActivity : AppCompatActivity() {
 
         totalTaskCountObserver = Observer {
             if (it.equals(0)) {
-//                addDummyDataToLocalDataBase()
                 Log.i(TAG, "setUpObserver: No data available")
             }
         }
 
     }
 
-    private fun addDummyDataToLocalDataBase() {
 
-        val contactListStub: ArrayList<ContactModel> = ArrayList()
-        val imagesListStub: ArrayList<String> = ArrayList()
-
-
-        for (i in 0..100) {
-            val calendar = Calendar.getInstance()
-            calendar.time = Date()
-            calendar.add(Calendar.DAY_OF_MONTH, i)
-
-            viewModel.insertDummyDataIntoLocalDatabase(
-                task = "task Title $i",
-                title = "Sample dummy stub task $i",
-                eventDate = AppConstant.dateFormatter(AppConstant.DATE_PATTERN_COMMON)
-                    .format(calendar.time),
-                priority = i % 2 == 0,
-                contactList = contactListStub,
-                imageList = imagesListStub
-            )
-        }
-    }
 }

@@ -38,6 +38,9 @@
         <action
             android:id="@+id/action_addNewTodo_to_galleryListFragment"
             app:destination="@id/galleryListFragment" />
+        <action
+            android:id="@+id/action_addNewTodo_to_mapsFragment"
+            app:destination="@id/mapsFragment" />
     </fragment>
     <fragment
         android:id="@+id/calenderFragment"
@@ -65,4 +68,9 @@
         android:id="@+id/galleryListFragment"
         android:name="com.example.simplydo.ui.fragments.gallaryListView.GalleryListFragment"
         android:label="GalleryListFragment" />
+    <fragment
+        android:id="@+id/mapsFragment"
+        android:name="com.example.simplydo.ui.fragments.location.MapsFragment"
+        android:label="fragment_maps"
+        tools:layout="@layout/fragment_maps" />
 </navigation>

@@ -37,12 +37,8 @@ class ContactPagingSource(val context: Context) : PagingSource<Int, ContactModel
     }
 
     private fun getContactList(nextPageNumber: Int): ContactPagingModel {
-        Log.i(TAG, "getDummyData: $nextPageNumber")
-
         val pageSize = 30
-
         val contactModel = ArrayList<ContactModel>()
-
         val cursor = context.contentResolver.query(
             ContactsContract.Contacts.CONTENT_URI,
             null,
@@ -113,16 +109,13 @@ class ContactPagingSource(val context: Context) : PagingSource<Int, ContactModel
             null,
             "${ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME_PRIMARY} ASC LIMIT $pageSize OFFSET ${nextPageNumber + pageSize}"
         )
+
         var incrementer = -1
+
         remainingData?.let {
-            Log.i(TAG, "getContactList: Remaining Data ${remainingData.count}")
-
-            incrementer = if (remainingData.count == 30) nextPageNumber + 30 else -1
-
+            incrementer = if (remainingData.count == pageSize) nextPageNumber + pageSize else -1
             remainingData.close()
         }
-
-        Log.i(TAG, "getContactList: incrementer $incrementer")
 
         return ContactPagingModel(nextPage = incrementer, contactModel)
     }

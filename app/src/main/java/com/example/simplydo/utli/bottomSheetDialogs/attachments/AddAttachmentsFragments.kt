@@ -42,6 +42,10 @@ class AddAttachmentsFragments(private val addAttachmentInterface: AddAttachmentI
             dismiss()
         }
 
+        binding.btnAddLocation.setOnClickListener {
+            addAttachmentInterface.onAddLocation()
+            dismiss()
+        }
 
 
     }

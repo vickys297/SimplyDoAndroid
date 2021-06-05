@@ -3,7 +3,6 @@ package com.example.simplydo.ui.fragments.contactListView
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -44,8 +43,7 @@ class ContactsFragment :
 
     private val contactAdapterInterface = object : ContactAdapterInterface {
         override fun onContactSelect(item: ContactModel) {
-            Log.i(TAG, "onContactSelect: $item")
-            if (!selectedContact.contains(item)) {
+            if (isContactNotAvailable(item)) {
                 selectedContact.add(item)
                 selectedContactAdapter.updateDatSet(selectedContact)
             } else {
@@ -53,6 +51,16 @@ class ContactsFragment :
             }
         }
     }
+
+    private fun isContactNotAvailable(item: ContactModel): Boolean {
+        selectedContact.forEach {
+            if (it.mobile == item.mobile) {
+                return false
+            }
+        }
+        return true
+    }
+
 
     private val selectedContactInterFace = object : SelectedContactInterface {
         override fun onContactRemove(item: ContactModel) {
@@ -103,9 +111,13 @@ class ContactsFragment :
         }
 
         binding.btnAddContact.setOnClickListener {
-            findNavController().previousBackStackEntry?.savedStateHandle?.set("SelectedContactList",
-                selectedContact)
-            findNavController().popBackStack()
+            if (selectedContact.isNotEmpty()) {
+                findNavController().previousBackStackEntry?.savedStateHandle?.set("SelectedContactList",
+                    selectedContact)
+                findNavController().popBackStack()
+            } else {
+                AppConstant.showMessage("No contacts selected", requireContext())
+            }
         }
 
         binding.btnClose.setOnClickListener {

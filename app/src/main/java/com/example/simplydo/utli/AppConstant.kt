@@ -55,4 +55,9 @@ object AppConstant {
     const val DATE_PATTERN_ISO = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
     const val DATE_PATTERN_MONTH_TEXT = "MMM"
     const val DATE_PATTERN_DAY_OF_MONTH = "dd"
+
+
+    // Work Manger
+
+    const val KEY_RESULT = "ContactListResult"
 }
