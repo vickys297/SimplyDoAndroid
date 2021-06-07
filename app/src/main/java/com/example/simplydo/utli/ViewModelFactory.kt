@@ -6,8 +6,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.simplydo.ui.MainViewModel
 import com.example.simplydo.ui.fragments.addNewTodo.AddNewTodoViewModel
 import com.example.simplydo.ui.fragments.calender.CalenderViewModel
-import com.example.simplydo.ui.fragments.contactListView.ContactsViewModel
-import com.example.simplydo.ui.fragments.gallaryListView.GalleryListViewModel
+import com.example.simplydo.ui.fragments.attachments.contactList.ContactsViewModel
+import com.example.simplydo.ui.fragments.attachments.gallaryList.GalleryListViewModel
 import com.example.simplydo.ui.fragments.todoList.ToDoViewModel
 
 open class ViewModelFactory internal constructor(

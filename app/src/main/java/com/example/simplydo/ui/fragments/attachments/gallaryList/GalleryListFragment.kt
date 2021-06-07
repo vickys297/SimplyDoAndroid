@@ -1,4 +1,4 @@
-package com.example.simplydo.ui.fragments.gallaryListView
+package com.example.simplydo.ui.fragments.attachments.gallaryList
 
 import android.os.Bundle
 import android.util.Log
@@ -32,6 +32,8 @@ class GalleryListFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View {
         binding = GalleryListFragmentBinding.inflate(inflater, container, false)
+        setupViewModel()
+        setupObserver()
 
         return binding.root
     }
@@ -48,8 +50,6 @@ class GalleryListFragment : Fragment() {
             layoutManager = GridLayoutManager(requireContext(), 2)
             adapter = galleryAdapter
         }
-        setupViewModel()
-        setupObserver()
 
 
     }

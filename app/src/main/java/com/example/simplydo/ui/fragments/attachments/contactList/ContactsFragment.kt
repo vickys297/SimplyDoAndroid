@@ -1,4 +1,4 @@
-package com.example.simplydo.ui.fragments.contactListView
+package com.example.simplydo.ui.fragments.attachments.contactList
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -47,7 +47,8 @@ class ContactsFragment :
                 selectedContact.add(item)
                 selectedContactAdapter.updateDatSet(selectedContact)
             } else {
-                Toast.makeText(requireContext(), "Contact Already Added", Toast.LENGTH_LONG).show()
+                selectedContact.remove(item)
+                selectedContactAdapter.updateDatSet(selectedContact)
             }
         }
     }
@@ -103,7 +104,7 @@ class ContactsFragment :
             adapter = selectedContactAdapter
         }
 
-        contactAdapter = ContactAdapter(contactAdapterInterface, requireActivity())
+        contactAdapter = ContactAdapter(contactAdapterInterface, requireContext())
 
         binding.recyclerViewContactList.apply {
             layoutManager = LinearLayoutManager(requireContext())

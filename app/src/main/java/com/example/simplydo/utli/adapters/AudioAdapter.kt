@@ -6,17 +6,22 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.simplydo.databinding.RecyclerAudioListItemBinding
 import com.example.simplydo.model.attachmentModel.AudioModel
+import com.example.simplydo.utli.AudioInterface
 
-class AudioAdapter(val context: Context, private var dataSet: ArrayList<AudioModel>) :
+class AudioAdapter(val context: Context, private var dataSet: ArrayList<AudioModel>, val audioInterface: AudioInterface) :
     RecyclerView.Adapter<AudioAdapter.AudioViewHolder>() {
 
-    class AudioViewHolder(val binding: RecyclerAudioListItemBinding) :
+    class AudioViewHolder(val binding: RecyclerAudioListItemBinding,val  audioInterface: AudioInterface) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(audioModel: AudioModel) {
             binding.apply {
                 audioDataModel = audioModel
                 executePendingBindings()
+            }
+
+            binding.imageButtonPlay.setOnClickListener {
+                audioInterface.onPlay(audioModel)
             }
         }
 
@@ -28,7 +33,8 @@ class AudioAdapter(val context: Context, private var dataSet: ArrayList<AudioMod
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            )
+            ),
+            audioInterface
         )
     }
 

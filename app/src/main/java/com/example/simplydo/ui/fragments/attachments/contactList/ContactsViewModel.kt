@@ -1,4 +1,4 @@
-package com.example.simplydo.ui.fragments.gallaryListView
+package com.example.simplydo.ui.fragments.attachments.contactList
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
@@ -6,11 +6,11 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
-import com.example.simplydo.utli.dataSource.GalleryDataSource
+import com.example.simplydo.utli.dataSource.ContactPagingSource
 
-internal val TAG = GalleryListViewModel::class.java.canonicalName
-class GalleryListViewModel(context: Context) : ViewModel() {
-    // TODO: Implement the ViewModel
+internal val ContactsViewModelTAG = ContactsViewModel::class.java.canonicalName
+
+class ContactsViewModel(val context: Context) : ViewModel() {
 
 
     val flow = Pager(
@@ -21,9 +21,7 @@ class GalleryListViewModel(context: Context) : ViewModel() {
             enablePlaceholders = false,
             initialLoadSize = 30)
     ) {
-        GalleryDataSource(context)
+        ContactPagingSource(context)
     }.flow
         .cachedIn(viewModelScope)
-
-
 }

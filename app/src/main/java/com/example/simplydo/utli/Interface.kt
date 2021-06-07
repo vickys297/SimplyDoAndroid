@@ -2,6 +2,7 @@ package com.example.simplydo.utli
 
 import com.example.simplydo.model.ContactModel
 import com.example.simplydo.model.TodoModel
+import com.example.simplydo.model.attachmentModel.AudioModel
 
 interface CreateBasicTodoInterface {
     fun onAddMoreDetails(eventDate: String)
@@ -9,7 +10,7 @@ interface CreateBasicTodoInterface {
 }
 
 interface CalenderAdapterInterface {
-    fun onDateSelect(position: Int, dateEvent: String)
+    fun onDateSelect(layoutPosition: Int, dateEvent: String)
 }
 
 interface TodoAdapterInterface {
@@ -22,6 +23,7 @@ interface AddAttachmentInterface {
     fun onOpenGallery()
     fun onAddContact()
     fun onAddLocation()
+    fun onCancelTask()
 }
 
 interface ContactAdapterInterface {
@@ -46,5 +48,8 @@ interface TodoOptionDialogFragments{
     fun onDelete(item: TodoModel)
     fun onEdit(item: TodoModel)
     fun onRestore(item: TodoModel)
+}
 
+interface AudioInterface{
+    fun onPlay(audioModel: AudioModel)
 }

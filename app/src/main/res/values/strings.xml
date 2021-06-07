@@ -1,6 +1,6 @@
 <resources>
 
-<!--    API KEY-->
+    <!--    API KEY-->
     <string name="MAP_API_KEY">AIzaSyCGc2VLW1Xg1Bj1KuOH_8e4VVN53Q85fBg</string>
 
     <string name="app_name">SimplyDo</string>

@@ -23,10 +23,9 @@ class TodoFullDetailsFragment : Fragment() {
         return inflater.inflate(R.layout.todo_full_details_fragment, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this).get(TodoFullDetailsViewModel::class.java)
-        // TODO: Use the ViewModel
     }
 
 }

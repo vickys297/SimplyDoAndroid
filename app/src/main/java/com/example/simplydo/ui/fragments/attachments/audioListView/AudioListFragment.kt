@@ -1,4 +1,4 @@
-package com.example.simplydo.ui.fragments.audioListView
+package com.example.simplydo.ui.fragments.attachments.audioListView
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -15,7 +15,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simplydo.databinding.AudioListFragmentBinding
 import com.example.simplydo.model.attachmentModel.AudioModel
+import com.example.simplydo.utli.AudioInterface
 import com.example.simplydo.utli.adapters.AudioAdapter
+import com.example.simplydo.utli.bottomSheetDialogs.playAudio.PlayAudioBottomSheetDialog
 
 internal val TAG = AudioListFragment::class.java.canonicalName
 
@@ -31,6 +33,13 @@ class AudioListFragment : Fragment() {
     lateinit var binding: AudioListFragmentBinding
 
     lateinit var audioAdapter: AudioAdapter
+
+    private val audioInterface = object : AudioInterface {
+        override fun onPlay(audioModel: AudioModel) {
+            PlayAudioBottomSheetDialog.newInstance( audioModel)
+                .show(parentFragmentManager, "dialog")
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,7 +58,7 @@ class AudioListFragment : Fragment() {
 
             binding.recyclerViewListAudio.apply {
                 layoutManager = LinearLayoutManager(requireContext())
-                adapter = AudioAdapter(requireContext(), it)
+                adapter = AudioAdapter(requireContext(), it, audioInterface)
             }
         }
 
@@ -73,14 +82,21 @@ class AudioListFragment : Fragment() {
     }
 
     private fun checkPermission() {
-        if (ActivityCompat.checkSelfPermission(requireContext(),
-                Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+        if (ActivityCompat.checkSelfPermission(
                 requireContext(),
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) != PackageManager.PERMISSION_GRANTED
         ) {
-            ActivityCompat.requestPermissions(requireActivity(),
-                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE), 100)
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                ), 100
+            )
         } else {
             getAudioList()
             Log.i(TAG, "checkPermission: Permission Granted")
@@ -111,9 +127,11 @@ class AudioListFragment : Fragment() {
                 getAudioList()
 
         } else {
-            Toast.makeText(requireContext(),
+            Toast.makeText(
+                requireContext(),
                 "Permission required to view contact",
-                Toast.LENGTH_LONG).show()
+                Toast.LENGTH_LONG
+            ).show()
         }
 
     }

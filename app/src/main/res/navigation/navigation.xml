@@ -33,14 +33,14 @@
             app:popEnterAnim="@android:anim/fade_in"
             app:popExitAnim="@android:anim/fade_out" />
         <action
-            android:id="@+id/action_addNewTodo_to_audioListFragment"
-            app:destination="@id/audioListFragment" />
-        <action
             android:id="@+id/action_addNewTodo_to_galleryListFragment"
             app:destination="@id/galleryListFragment" />
         <action
             android:id="@+id/action_addNewTodo_to_mapsFragment"
             app:destination="@id/mapsFragment" />
+        <action
+            android:id="@+id/action_addNewTodo_to_audioListFragment"
+            app:destination="@id/audioListFragment" />
     </fragment>
     <fragment
         android:id="@+id/calenderFragment"
@@ -58,19 +58,19 @@
     </fragment>
     <fragment
         android:id="@+id/contactsFragment"
-        android:name="com.example.simplydo.ui.fragments.contactListView.ContactsFragment"
+        android:name="com.example.simplydo.ui.fragments.attachments.contactList.ContactsFragment"
         android:label="ContactsFragment" />
     <fragment
-        android:id="@+id/audioListFragment"
-        android:name="com.example.simplydo.ui.fragments.audioListView.AudioListFragment"
-        android:label="AudioListFragment" />
-    <fragment
         android:id="@+id/galleryListFragment"
-        android:name="com.example.simplydo.ui.fragments.gallaryListView.GalleryListFragment"
+        android:name="com.example.simplydo.ui.fragments.attachments.gallaryList.GalleryListFragment"
         android:label="GalleryListFragment" />
     <fragment
         android:id="@+id/mapsFragment"
-        android:name="com.example.simplydo.ui.fragments.location.MapsFragment"
+        android:name="com.example.simplydo.ui.fragments.attachments.location.MapsFragment"
         android:label="fragment_maps"
         tools:layout="@layout/fragment_maps" />
+    <fragment
+        android:id="@+id/audioListFragment"
+        android:name="com.example.simplydo.ui.fragments.attachments.audioListView.AudioListFragment"
+        android:label="AudioListFragment" />
 </navigation>

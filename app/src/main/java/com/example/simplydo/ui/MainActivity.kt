@@ -20,6 +20,7 @@ import com.example.simplydo.utli.AppPreference
 import com.example.simplydo.utli.AppRepository
 import com.example.simplydo.utli.ViewModelFactory
 import java.util.*
+import kotlin.collections.ArrayList
 
 internal val TAG = MainActivity::class.java.canonicalName
 
@@ -63,9 +64,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setUpViewModel() {
-        viewModel = ViewModelProvider(this@MainActivity, ViewModelFactory(this@MainActivity,
-            AppRepository.getInstance(this@MainActivity,
-                AppDatabase.getInstance(this@MainActivity)))).get(MainViewModel::class.java)
+        viewModel = ViewModelProvider(
+            this@MainActivity, ViewModelFactory(
+                this@MainActivity,
+                AppRepository.getInstance(
+                    this@MainActivity,
+                    AppDatabase.getInstance(this@MainActivity)
+                )
+            )
+        ).get(MainViewModel::class.java)
         binding.apply {
             viewModel = this@MainActivity.viewModel
             lifecycleOwner = this@MainActivity
@@ -80,12 +87,14 @@ class MainActivity : AppCompatActivity() {
         allTodoListDataObserver = Observer { tasks ->
             if (tasks.isNotEmpty()) {
                 (tasks as ArrayList<TodoModel>).forEach {
-                    Log.i(TAG, "Un Synced data :\n" +
-                            "dtId: ${it.dtId}\n" +
-                            "Title: ${it.title}\n" +
-                            "Task: ${it.todo}\n" +
-                            "Event Date: ${it.eventDate}\n" +
-                            "Event Time: ${it.eventTime}")
+                    Log.i(
+                        TAG, "Un Synced data :\n" +
+                                "dtId: ${it.dtId}\n" +
+                                "Title: ${it.title}\n" +
+                                "Task: ${it.todo}\n" +
+                                "Event Date: ${it.eventDate}\n" +
+                                "Event Time: ${it.eventTime}"
+                    )
                 }
                 viewModel.syncDataWithCloud(tasks)
             }
@@ -94,6 +103,16 @@ class MainActivity : AppCompatActivity() {
         totalTaskCountObserver = Observer {
             if (it.equals(0)) {
                 Log.i(TAG, "setUpObserver: No data available")
+                for (i in 1..100) {
+                    viewModel.insertDummyDataIntoLocalDatabase(
+                        task = "Sample test task $i",
+                        title = "Title $i",
+                        eventDate = "07-06-2021",
+                        priority = true,
+                        contactList = ArrayList(),
+                        imageList = ArrayList()
+                    )
+                }
             }
         }
 

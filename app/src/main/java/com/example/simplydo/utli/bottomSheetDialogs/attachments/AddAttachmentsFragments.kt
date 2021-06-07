@@ -47,6 +47,11 @@ class AddAttachmentsFragments(private val addAttachmentInterface: AddAttachmentI
             dismiss()
         }
 
+        binding.btnCancelTask.setOnClickListener {
+            addAttachmentInterface.onCancelTask()
+            dismiss()
+        }
+
 
     }
 

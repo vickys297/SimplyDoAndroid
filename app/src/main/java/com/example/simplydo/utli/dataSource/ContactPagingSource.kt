@@ -50,20 +50,23 @@ class ContactPagingSource(val context: Context) : PagingSource<Int, ContactModel
         cursor?.let {
 
             while (cursor.moveToNext()) {
-                val id = cursor.getString(cursor.getColumnIndex(
-                    ContactsContract.Contacts._ID
-                ))
+                val id = cursor.getString(
+                    cursor.getColumnIndex(
+                        ContactsContract.Contacts._ID
+                    )
+                )
 
-                val photoThumbnailUri = cursor.getBlob(cursor.getColumnIndex(
-                    ContactsContract.Contacts.PHOTO_THUMBNAIL_URI
-                ))
-                val photoUri = cursor.getBlob(cursor.getColumnIndex(
-                    ContactsContract.Contacts.PHOTO_URI
-                ))
+                val thumbnailUri =
+                    cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI))
 
-                val contactName = cursor.getString(cursor.getColumnIndex(
-                    ContactsContract.Contacts.DISPLAY_NAME
-                ))
+                val photoUri =
+                    cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.PHOTO_URI))
+
+                val contactName = cursor.getString(
+                    cursor.getColumnIndex(
+                        ContactsContract.Contacts.DISPLAY_NAME
+                    )
+                )
 
                 val uriPhone = ContactsContract.CommonDataKinds.Phone.CONTENT_URI
 
@@ -82,12 +85,14 @@ class ContactPagingSource(val context: Context) : PagingSource<Int, ContactModel
                 phoneCursor?.let {
                     while (phoneCursor.moveToNext()) {
 
-                        val phoneNumber = phoneCursor.getString(phoneCursor.getColumnIndex(
-                            ContactsContract.CommonDataKinds.Phone.NUMBER
-                        ))
+                        val phoneNumber = phoneCursor.getString(
+                            phoneCursor.getColumnIndex(
+                                ContactsContract.CommonDataKinds.Phone.NUMBER
+                            )
+                        )
 
                         val model = ContactModel(
-                            photoThumbnailUri = photoThumbnailUri,
+                            photoThumbnailUri = thumbnailUri,
                             photoUri = photoUri,
                             name = contactName,
                             mobile = phoneNumber

@@ -1,20 +1,21 @@
 package com.example.simplydo.utli.adapters
 
+import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentActivity
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.simplydo.databinding.RecyclerContactListItemBinding
 import com.example.simplydo.model.ContactModel
 import com.example.simplydo.utli.ContactAdapterInterface
 
 
-
 class ContactAdapter(
     private val contactAdapterInterface: ContactAdapterInterface,
-    private val requireActivity: FragmentActivity,
+    private val context: Context,
 ) :
     PagingDataAdapter<ContactModel, ContactAdapter.ContactViewHolder>(DIFF_CALLBACK) {
 
@@ -33,6 +34,7 @@ class ContactAdapter(
 
     class ContactViewHolder(
         val binding: RecyclerContactListItemBinding,
+        val context: Context,
     ) :
         RecyclerView.ViewHolder(binding.root) {
 
@@ -40,6 +42,25 @@ class ContactAdapter(
             binding.apply {
                 dataModel = contactModel
                 executePendingBindings()
+            }
+
+            if (!contactModel.photoThumbnailUri.isNullOrEmpty()) {
+                binding.imageViewContactAvatar.visibility = View.VISIBLE
+                binding.textViewAvatarName.visibility = View.GONE
+                Glide.with(context)
+                    .load(contactModel.photoThumbnailUri)
+                    .circleCrop()
+                    .into(binding.imageViewContactAvatar)
+            } else {
+                binding.imageViewContactAvatar.visibility = View.GONE
+                binding.textViewAvatarName.visibility = View.VISIBLE
+                binding.textViewAvatarName.text = contactModel.name[0].toString()
+            }
+
+            if (contactModel.isSelected) {
+                binding.imageViewSelected.visibility = View.VISIBLE
+            } else {
+                binding.imageViewSelected.visibility = View.GONE
             }
 
         }
@@ -52,7 +73,8 @@ class ContactAdapter(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            )
+            ),
+            context
         )
     }
 
@@ -65,12 +87,14 @@ class ContactAdapter(
 
             holder.itemView.setOnClickListener {
                 contactAdapterInterface.onContactSelect(item)
+
+                item.isSelected = !item.isSelected
+                notifyItemChanged(position)
             }
 
         }
 
     }
-
 
 
 }

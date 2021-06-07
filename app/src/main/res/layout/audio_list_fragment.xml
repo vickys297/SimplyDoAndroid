@@ -7,13 +7,13 @@
 
         <variable
             name="viewModel"
-            type="com.example.simplydo.ui.fragments.audioListView.AudioListViewModel" />
+            type="com.example.simplydo.ui.fragments.attachments.audioListView.AudioListViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.fragments.audioListView.AudioListFragment">
+        tools:context=".ui.fragments.attachments.audioList.AudioListFragment">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"

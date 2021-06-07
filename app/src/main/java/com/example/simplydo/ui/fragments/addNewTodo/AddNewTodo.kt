@@ -3,7 +3,6 @@ package com.example.simplydo.ui.fragments.addNewTodo
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -53,6 +52,10 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
             findNavController().navigate(R.id.action_addNewTodo_to_mapsFragment)
         }
 
+        override fun onCancelTask() {
+            findNavController().navigateUp()
+        }
+
     }
 
 
@@ -60,13 +63,11 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        binding =
-            DataBindingUtil.inflate(inflater, R.layout.add_new_todo_fragment, container, false)
+        binding = AddNewTodoFragmentBinding.inflate(inflater, container, false)
         setupObserver()
         setViewModel()
 
         arguments?.let {
-
 
             if (requireArguments().getString("ContactList").isNullOrEmpty()) {
                 Log.i(TAG, "onCreateView:  ${requireArguments().getString("ContactList")}")
@@ -83,7 +84,8 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
                     .toString()
 
             binding.include.tvMonth.text = AppConstant.dateFormatter(
-                AppConstant.DATE_PATTERN_MONTH_TEXT)
+                AppConstant.DATE_PATTERN_MONTH_TEXT
+            )
                 .format(AppConstant.parseStringDateToCalender(selectedEventDate).time)
                 .uppercase(Locale.getDefault())
         }
@@ -100,11 +102,18 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
     }
 
     private fun setViewModel() {
-        viewModel = ViewModelProvider(this,
-            ViewModelFactory(requireContext(),
-                AppRepository.getInstance(requireContext(),
-                    AppDatabase.getInstance(context = requireContext())))).get(
-            AddNewTodoViewModel::class.java)
+        viewModel = ViewModelProvider(
+            this,
+            ViewModelFactory(
+                requireContext(),
+                AppRepository.getInstance(
+                    requireContext(),
+                    AppDatabase.getInstance(context = requireContext())
+                )
+            )
+        ).get(
+            AddNewTodoViewModel::class.java
+        )
         binding.apply {
             this.viewModel = this@AddNewTodo.viewModel
             lifecycleOwner = this@AddNewTodo
@@ -114,8 +123,10 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
 
         // We use a String here, but any type that can be put in a Bundle is supported
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<ArrayList<ContactModel>>(
-            "SelectedContactList")?.observe(
-            viewLifecycleOwner) { result ->
+            "SelectedContactList"
+        )?.observe(
+            viewLifecycleOwner
+        ) { result ->
             // Do something with the result.
 
             Log.i(TAG, "currentBackStackEntry: $result")

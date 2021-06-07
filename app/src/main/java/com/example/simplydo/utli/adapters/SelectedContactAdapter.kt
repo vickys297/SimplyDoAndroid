@@ -7,7 +7,8 @@ import com.example.simplydo.databinding.RecyclerSelectedContactListItemBinding
 import com.example.simplydo.model.ContactModel
 import com.example.simplydo.utli.SelectedContactInterface
 
-class SelectedContactAdapter(private val selectedContactInterFace: SelectedContactInterface) : RecyclerView.Adapter<SelectedContactAdapter.ViewHolder>() {
+class SelectedContactAdapter(private val selectedContactInterFace: SelectedContactInterface) :
+    RecyclerView.Adapter<SelectedContactAdapter.ViewHolder>() {
 
     private var dataSet = ArrayList<ContactModel>()
 
@@ -49,7 +50,7 @@ class SelectedContactAdapter(private val selectedContactInterFace: SelectedConta
     override fun getItemCount() = dataSet.size
 
 
-    fun updateDatSet(newDataSet :ArrayList<ContactModel>){
+    fun updateDatSet(newDataSet: ArrayList<ContactModel>) {
         this.dataSet = newDataSet
         notifyDataSetChanged()
     }

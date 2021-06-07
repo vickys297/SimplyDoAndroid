@@ -56,11 +56,17 @@ class CalenderFragment : Fragment() {
 
 
     private val calenderAdapterInterface = object : CalenderAdapterInterface {
-        override fun onDateSelect(position: Int, dateEvent: String) {
+        override fun onDateSelect(layoutPosition: Int, dateEvent: String) {
             selectedEventDate = dateEvent
-            calenderViewAdapter.setActiveDate(position)
+            calenderViewAdapter.setActiveDate(layoutPosition)
+
+            smallCalenderModels.forEach {
+                Log.i(TAG, "onDateSelect: Date-> ${it.date}/${it.isActive}")
+            }
+
             viewModel.getTodoListByEventDate(selectedEventDate)
                 .observe(viewLifecycleOwner, todoByDateObserver)
+
             viewModel.requestDataFromCloud(selectedEventDate)
         }
 
@@ -187,8 +193,10 @@ class CalenderFragment : Fragment() {
 
 
         val simpleItemTouchCallback: ItemTouchHelper.SimpleCallback = object :
-            ItemTouchHelper.SimpleCallback(0,
-                ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+            ItemTouchHelper.SimpleCallback(
+                0,
+                ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+            ) {
             override fun onMove(
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder,
@@ -233,10 +241,14 @@ class CalenderFragment : Fragment() {
 
 
     private fun setViewModel() {
-        viewModel = ViewModelProvider(this,
-            ViewModelFactory(requireContext(),
-                AppRepository.getInstance(requireContext(),
-                    AppDatabase.getInstance(requireContext()
+        viewModel = ViewModelProvider(
+            this,
+            ViewModelFactory(
+                requireContext(),
+                AppRepository.getInstance(
+                    requireContext(),
+                    AppDatabase.getInstance(
+                        requireContext()
                     )
                 )
             )
@@ -277,7 +289,9 @@ class CalenderFragment : Fragment() {
                         .format(calendar.time)
                         .uppercase(Locale.getDefault()),
                     AppConstant.dateFormatter(AppConstant.DATE_PATTERN_COMMON)
-                        .format(calendar.time)))
+                        .format(calendar.time)
+                )
+            )
         }
 
         smallCalenderModels[0].isActive = true

@@ -6,7 +6,6 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.example.simplydo.utli.AppConstant
-import java.io.Serializable
 
 @Entity(tableName = "todoList", indices = [Index(value = ["dtId"], unique = true)])
 data class TodoModel(
@@ -76,31 +75,12 @@ data class TodoModel(
 
 
 data class ContactModel(
-    val photoThumbnailUri: ByteArray?,
-    val photoUri: ByteArray?,
+    val photoThumbnailUri: String?,
+    val photoUri: String?,
     val name: String,
     val mobile: String,
-) : Serializable {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as ContactModel
-
-        if (!photoThumbnailUri.contentEquals(other.photoThumbnailUri)) return false
-        if (!photoUri.contentEquals(other.photoUri)) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = photoThumbnailUri.contentHashCode()
-        result = 31 * result + photoUri.contentHashCode()
-        return result
-    }
-
-
-}
+    var isSelected: Boolean = false
+)
 
 
 data class RequestDataFromCloudResponseModel(
