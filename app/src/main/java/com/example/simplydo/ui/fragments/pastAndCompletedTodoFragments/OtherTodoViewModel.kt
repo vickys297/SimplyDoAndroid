@@ -12,8 +12,6 @@ class OtherTodoViewModel internal constructor(
     private val appRepository: AppRepository
 ) : ViewModel() {
     // TODO: Implement the ViewModel
-
-
     val flowGetPastTask = Pager(
         PagingConfig(
             pageSize = 10,

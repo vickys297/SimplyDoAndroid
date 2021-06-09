@@ -14,6 +14,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+
+
         <ImageView
             android:id="@+id/imageView3"
             android:layout_width="48dp"
@@ -21,12 +23,22 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
-            android:background="@drawable/primary_color_circle"
+            android:background="@drawable/teal_color_circle"
             android:padding="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_baseline_audiotrack_24" />
+
+        <ImageButton
+            android:id="@+id/imCompleted"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/primary_color_circle"
+            android:cropToPadding="true"
+            android:src="@drawable/ic_baseline_check_12_white"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+            app:layout_constraintEnd_toEndOf="@+id/imageView3" />
 
         <TextView
             android:id="@+id/textView8"

@@ -10,6 +10,8 @@ import com.example.simplydo.R
 import com.example.simplydo.databinding.AddNewTodoFragmentBinding
 import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.model.ContactModel
+import com.example.simplydo.model.attachmentModel.AudioModel
+import com.example.simplydo.model.attachmentModel.GalleryModel
 import com.example.simplydo.utli.*
 import com.example.simplydo.utli.bottomSheetDialogs.attachments.AddAttachmentsFragments
 import java.util.*
@@ -70,9 +72,9 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
         arguments?.let {
 
             if (requireArguments().getString("ContactList").isNullOrEmpty()) {
-                Log.i(TAG, "onCreateView:  ${requireArguments().getString("ContactList")}")
+                Log.d(TAG, "onCreateView:  ${requireArguments().getString("ContactList")}")
             } else {
-                Log.i(TAG, "onCreateView: No Contact List Found")
+                Log.d(TAG, "onCreateView: No Contact List Found")
             }
 
 
@@ -120,23 +122,45 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
             executePendingBindings()
         }
 
+        attachmentDataObserver()
+    }
 
+    private fun attachmentDataObserver() {
         // We use a String here, but any type that can be put in a Bundle is supported
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<ArrayList<ContactModel>>(
-            "SelectedContactList"
+            AppConstant.NAVIGATION_CONTACT_DATA_KEY
         )?.observe(
             viewLifecycleOwner
         ) { result ->
             // Do something with the result.
+            Log.d(TAG, "NAVIGATION_CONTACT_DATA_KEY: $result")
+        }
 
-            Log.i(TAG, "currentBackStackEntry: $result")
+        // We use a String here, but any type that can be put in a Bundle is supported
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<ArrayList<AudioModel>>(
+            AppConstant.NAVIGATION_AUDIO_DATA_KEY
+        )?.observe(
+            viewLifecycleOwner
+        ) { result ->
+            // Do something with the result.
+            Log.d(TAG, "NAVIGATION_AUDIO_DATA_KEY: $result")
+        }
+
+
+        // We use a String here, but any type that can be put in a Bundle is supported
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<ArrayList<GalleryModel>>(
+            AppConstant.NAVIGATION_GALLERY_DATA_KEY
+        )?.observe(
+            viewLifecycleOwner
+        ) { result ->
+            // Do something with the result.
+            Log.d(TAG, "NAVIGATION_GALLERY_DATA_KEY: $result")
         }
     }
 
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         binding.btnCreateTodoTask.setOnClickListener {
             createToDo()

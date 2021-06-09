@@ -113,7 +113,7 @@ class ContactsFragment :
 
         binding.btnAddContact.setOnClickListener {
             if (selectedContact.isNotEmpty()) {
-                findNavController().previousBackStackEntry?.savedStateHandle?.set("SelectedContactList",
+                findNavController().previousBackStackEntry?.savedStateHandle?.set(AppConstant.NAVIGATION_CONTACT_DATA_KEY,
                     selectedContact)
                 findNavController().popBackStack()
             } else {

@@ -63,20 +63,8 @@
             android:layout_height="wrap_content"
             android:text="@string/new_todo"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/ivOptions"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <ImageView
-            android:id="@+id/ivOptions"
-            style="@style/PrimaryButtonOptional"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/todo_options"
-            android:src="@drawable/ic_baseline_more_vert_24"
-            app:layout_constraintBottom_toBottomOf="@+id/btnNewTodo"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/btnNewTodo"
-            app:layout_constraintTop_toTopOf="@+id/btnNewTodo" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <LinearLayout
             android:id="@+id/llNoEventAvailable"

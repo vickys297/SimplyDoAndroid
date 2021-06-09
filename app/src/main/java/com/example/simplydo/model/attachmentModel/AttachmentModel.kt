@@ -10,7 +10,7 @@ data class ContactPagingModel(
 )
 
 
-data class TodoAttachmentModel(
+data class AttachmentModel(
     val documentsList: ArrayList<String>,
     val audioList: ArrayList<AudioModel>,
     val imagesList: ArrayList<String>,
@@ -23,6 +23,7 @@ data class AudioModel(
     val name: String,
     val duration: Int,
     val size: Int,
+    var isSelected: Boolean = false
 )
 
 data class GalleryModel(
@@ -32,7 +33,8 @@ data class GalleryModel(
     val createdAt: String,
     val fileDataType: Int,
     val mimeType: String,
-    val contentUri: Uri
+    val contentUri: Uri,
+    var isSelected: Boolean = false
 )
 
 data class GalleryPagingModel(

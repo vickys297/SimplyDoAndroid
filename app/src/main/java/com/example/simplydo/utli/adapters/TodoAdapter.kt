@@ -3,6 +3,7 @@ package com.example.simplydo.utli.adapters
 import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.Nullable
 import androidx.recyclerview.widget.RecyclerView
 import com.example.simplydo.databinding.RecyclerTodoCompletedListItemBinding
 import com.example.simplydo.databinding.RecyclerTodoListItemBinding
@@ -10,6 +11,7 @@ import com.example.simplydo.model.TodoModel
 import com.example.simplydo.utli.TodoAdapterInterface
 
 class TodoAdapter(
+    @Nullable
     private val todoAdapterInterface: TodoAdapterInterface,
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -24,7 +26,6 @@ class TodoAdapter(
         val layoutInflater = LayoutInflater.from(parent.context)
         return when (viewType) {
             VIEW_TYPE_TASK -> {
-
                 TaskViewHolder(
                     RecyclerTodoListItemBinding.inflate(
                         layoutInflater,
@@ -93,7 +94,7 @@ class TodoAdapter(
 
 
     override fun getItemViewType(position: Int): Int {
-        return if (dataSet[position].isCompleted) 1 else 0
+        return if (dataSet[position].isCompleted) VIEW_TYPE_TASK_COMPLETED else VIEW_TYPE_TASK
     }
 
     fun removeItemAtPosition(position: Int) {

@@ -13,6 +13,7 @@ import java.util.*
 object AppConstant {
 
 
+
     const val DATABASE_NAME: String = "todoDatabase"
 
     const val API_RESULT_OK = "OK"
@@ -28,6 +29,12 @@ object AppConstant {
     const val USER_KEY: String = "uKey"
     const val USER_MOBILE: String = "mobile"
 
+    // view past order in other fragments
+    const val TODO_VIEW_PAST: Int = 1
+
+    // view completed order in other fragments
+    const val TODO_VIEW_COMPLETED: Int = 2
+
 
     // date and time stubs
     fun dateFormatter(format: String): SimpleDateFormat {
@@ -37,6 +44,7 @@ object AppConstant {
     fun timeFormatter(format: String): SimpleDateFormat {
         return SimpleDateFormat(format, Locale.getDefault())
     }
+
     fun getCurrentEventDate(): String? {
         val dateFormat = dateFormatter(DATE_PATTERN_COMMON)
         return dateFormat.format(Date().time)
@@ -56,7 +64,8 @@ object AppConstant {
     fun getDrawableToBitmap(vectorResId: Int, context: Context): BitmapDescriptor? {
         return ContextCompat.getDrawable(context, vectorResId)?.run {
             setBounds(0, 0, intrinsicWidth, intrinsicHeight)
-            val bitmap = Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, Bitmap.Config.ARGB_8888)
+            val bitmap =
+                Bitmap.createBitmap(intrinsicWidth, intrinsicHeight, Bitmap.Config.ARGB_8888)
             draw(Canvas(bitmap))
             BitmapDescriptorFactory.fromBitmap(bitmap)
         }
@@ -74,4 +83,10 @@ object AppConstant {
     // Work Manger
 
     const val KEY_RESULT = "ContactListResult"
+
+
+    // navigation data call back
+    const val NAVIGATION_CONTACT_DATA_KEY: String ="SelectedContactList"
+    const val NAVIGATION_AUDIO_DATA_KEY: String ="SelectedAudioList"
+    const val NAVIGATION_GALLERY_DATA_KEY: String ="SelectedGalleryList"
 }

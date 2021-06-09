@@ -8,8 +8,12 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.simplydo.databinding.GalleryListFragmentBinding
+import com.example.simplydo.model.attachmentModel.GalleryModel
+import com.example.simplydo.utli.AppConstant
+import com.example.simplydo.utli.GalleryInterface
 import com.example.simplydo.utli.SimpleViewModelFactory
 import com.example.simplydo.utli.adapters.GalleryAdapter
 import kotlinx.coroutines.flow.collectLatest
@@ -27,41 +31,72 @@ class GalleryListFragment : Fragment() {
 
     lateinit var galleryAdapter: GalleryAdapter
 
+    private val selectedGalleryArrayList = ArrayList<GalleryModel>()
+
+    private val galleryInterface = object : GalleryInterface {
+        override fun onGallerySelect(galleryModel: GalleryModel) {
+            if (isNotDuplicate(galleryModel)) {
+                selectedGalleryArrayList.add(galleryModel)
+            } else {
+                selectedGalleryArrayList.removeAt(selectedGalleryArrayList.indexOf(galleryModel))
+            }
+
+            if (selectedGalleryArrayList.isEmpty()) {
+                binding.buttonAddImages.visibility = View.GONE
+            } else {
+                binding.buttonAddImages.visibility = View.VISIBLE
+            }
+        }
+
+        override fun onViewItem(galleryModel: GalleryModel) {
+            AppConstant.showMessage("Show Image Full Screen ", requireContext())
+        }
+    }
+
+    private fun isNotDuplicate(galleryModel: GalleryModel): Boolean {
+        selectedGalleryArrayList.forEach {
+            if (it.contentUri == galleryModel.contentUri)
+                return false
+        }
+        return true
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
         binding = GalleryListFragmentBinding.inflate(inflater, container, false)
         setupViewModel()
-        setupObserver()
-
         return binding.root
     }
 
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        // TODO: Use the ViewModel
+        galleryAdapter = GalleryAdapter(requireContext(), galleryInterface)
 
-
-        galleryAdapter = GalleryAdapter(requireContext())
         binding.recyclerViewGalleryView.apply {
             layoutManager = GridLayoutManager(requireContext(), 2)
             adapter = galleryAdapter
-        }
 
-
-    }
-
-    private fun setupObserver() {
-        lifecycleScope.launch {
-            viewModel.flow.collectLatest { pagingData ->
-                Log.i(GALLERY_TAG, "setupObserver: ")
-                galleryAdapter.submitData(pagingData)
+            lifecycleScope.launch {
+                viewModel.flow.collectLatest { pagingData ->
+                    Log.d(GALLERY_TAG, "setupObserver: ")
+                    galleryAdapter.submitData(pagingData)
+                }
             }
         }
+
+        binding.buttonAddImages.setOnClickListener {
+            findNavController().previousBackStackEntry?.savedStateHandle?.set(
+                AppConstant.NAVIGATION_GALLERY_DATA_KEY,
+                selectedGalleryArrayList
+            )
+            findNavController().popBackStack()
+        }
     }
+
 
 
     private fun setupViewModel() {
@@ -71,7 +106,5 @@ class GalleryListFragment : Fragment() {
             lifecycleOwner = this@GalleryListFragment
             executePendingBindings()
         }
-
-
     }
 }

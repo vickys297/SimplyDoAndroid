@@ -22,7 +22,6 @@ import com.example.simplydo.utli.*
 import com.example.simplydo.utli.adapters.CalenderViewAdapter
 import com.example.simplydo.utli.adapters.TodoAdapter
 import com.example.simplydo.utli.bottomSheetDialogs.addTodoBasic.AddTodoBasic
-import com.example.simplydo.utli.bottomSheetDialogs.calenderOptions.TodoOptions
 import com.example.simplydo.utli.bottomSheetDialogs.todoOptions.TodoOptionsFragment
 import java.util.*
 import kotlin.collections.ArrayList
@@ -61,7 +60,7 @@ class CalenderFragment : Fragment() {
             calenderViewAdapter.setActiveDate(layoutPosition)
 
             smallCalenderModels.forEach {
-                Log.i(TAG, "onDateSelect: Date-> ${it.date}/${it.isActive}")
+                Log.d(TAG, "onDateSelect: Date-> ${it.date}/${it.isActive}")
             }
 
             viewModel.getTodoListByEventDate(selectedEventDate)
@@ -139,7 +138,7 @@ class CalenderFragment : Fragment() {
 
         todoByDateObserver = Observer {
 
-            Log.i(TAG, "todoList -> $it")
+            Log.d(TAG, "todoList -> $it")
             todoModel = it as ArrayList<TodoModel>
 
             if (it.isNotEmpty()) {
@@ -156,7 +155,7 @@ class CalenderFragment : Fragment() {
 
         nextAvailableDateObserver = Observer {
 
-            Log.i(TAG, "Next available date observer $it")
+            Log.d(TAG, "Next available date observer $it")
             it as ArrayList<TodoModel>
 
             if (it.isNotEmpty()) {
@@ -170,8 +169,8 @@ class CalenderFragment : Fragment() {
         }
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         // TODO: Use the ViewModel
         clickListener(binding)
         smallCalenderModels = ArrayList()
@@ -212,8 +211,8 @@ class CalenderFragment : Fragment() {
 
                 if (todoModel.isNotEmpty()) {
 
-                    Log.i(TAG, "onSwiped: $todoModel")
-                    Log.i(TAG, "onSwiped: position $position")
+                    Log.d(TAG, "onSwiped: $todoModel")
+                    Log.d(TAG, "onSwiped: position $position")
 
                     viewModel.completeTaskByID(todoModel[position].dtId)
                     todoAdapter.notifyItemChanged(position)
@@ -234,9 +233,7 @@ class CalenderFragment : Fragment() {
                 eventDate = selectedEventDate
             ).show(requireActivity().supportFragmentManager, "dialog")
         }
-        binding.ivOptions.setOnClickListener {
-            TodoOptions.newInstance("", "").show(requireActivity().supportFragmentManager, "dialog")
-        }
+
     }
 
 

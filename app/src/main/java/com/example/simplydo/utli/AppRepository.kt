@@ -3,12 +3,15 @@ package com.example.simplydo.utli
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import androidx.paging.PagingSource
+import androidx.paging.PagingState
 import com.example.simplydo.api.API
 import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.localDatabase.TodoDAO
 import com.example.simplydo.model.CommonResponseModel
 import com.example.simplydo.model.RequestDataFromCloudResponseModel
 import com.example.simplydo.model.TodoModel
+import com.example.simplydo.model.TodoPagingModel
 import com.example.simplydo.network.NoConnectivityException
 import com.example.simplydo.network.RetrofitServices
 import retrofit2.Call
@@ -59,7 +62,7 @@ class AppRepository private constructor(val context: Context, val appDatabase: A
 
     fun deleteTaskByPosition(item: TodoModel) {
         Thread {
-            Log.i(TAG, "deleteTaskByPosition: ${db.deleteTaskById(item)}")
+            Log.d(TAG, "deleteTaskByPosition: ${db.deleteTaskById(item)}")
         }.start()
 //        deleteTodoFromCloud(id)
     }
@@ -116,8 +119,10 @@ class AppRepository private constructor(val context: Context, val appDatabase: A
 
         val retrofitServices =
             RetrofitServices.getInstance(context).createService(API::class.java)
-        val uploadToDatabase = retrofitServices.uploadDataToCloudDatabase(todoLists,
-            AppPreference.getPreferences(AppConstant.USER_KEY, context))
+        val uploadToDatabase = retrofitServices.uploadDataToCloudDatabase(
+            todoLists,
+            AppPreference.getPreferences(AppConstant.USER_KEY, context)
+        )
 
         uploadToDatabase.enqueue(object : Callback<CommonResponseModel> {
             override fun onResponse(
@@ -161,7 +166,7 @@ class AppRepository private constructor(val context: Context, val appDatabase: A
                 }.start()
 
                 val thread = Executors.newSingleThreadExecutor().submit(callable)
-                Log.i(TAG, "New Bulk insert -> ${thread.get()}")
+                Log.d(TAG, "New Bulk insert -> ${thread.get()}")
             }
         }
     }
@@ -174,8 +179,11 @@ class AppRepository private constructor(val context: Context, val appDatabase: A
         val retrofitServices = RetrofitServices.getInstance(context).createService(API::class.java)
         val syncFromCloud =
             retrofitServices.syncFromCloudByDate(
-                AppPreference.getPreferences(AppConstant.USER_KEY,
-                    context = context), hashMap)
+                AppPreference.getPreferences(
+                    AppConstant.USER_KEY,
+                    context = context
+                ), hashMap
+            )
 
         syncFromCloud.enqueue(object : Callback<RequestDataFromCloudResponseModel> {
             override fun onResponse(
@@ -230,11 +238,117 @@ class AppRepository private constructor(val context: Context, val appDatabase: A
 
     fun completeTaskById(dtId: Long) {
         val callable = Callable {
-            db.completeTaskById(dtId,
-                AppConstant.dateFormatter(AppConstant.DATE_PATTERN_ISO).format(Date().time))
+            db.completeTaskById(
+                dtId,
+                AppConstant.dateFormatter(AppConstant.DATE_PATTERN_ISO).format(Date().time)
+            )
         }
         Executors.newSingleThreadExecutor().submit(callable)
     }
 
+
+    val getPastTask = object : PagingSource<Int, TodoModel>() {
+        override fun getRefreshKey(state: PagingState<Int, TodoModel>): Int? {
+            return state.anchorPosition?.let { anchorPosition ->
+                val anchorPage = state.closestPageToPosition(anchorPosition)
+                anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
+            }
+        }
+
+        override suspend fun load(params: LoadParams<Int>): LoadResult<Int, TodoModel> {
+            try {
+                val nextPageNumber = params.key ?: 0
+                val response = getPastTaskData(nextPageNumber)
+                Log.d(TAG, "load: ${response.data.size}")
+
+                return LoadResult.Page(
+                    data = response.data,
+                    prevKey = null, // Only paging forward.
+                    nextKey = if (response.nextPage == -1) null else response.nextPage
+                )
+
+            } catch (e: Exception) {
+                throw e
+            }
+        }
+    }
+
+    private fun getPastTaskData(nextPageNumber: Int): TodoPagingModel {
+        val pageSize = 30
+
+        val callable1 = Callable { db.getPastTaskPaging(nextPageNumber, pageSize) }
+        val executors1 = Executors.newSingleThreadExecutor().submit(callable1)
+
+        val todoModelArrayList = executors1.get() as ArrayList<TodoModel>
+
+        val callable2 = Callable { db.getPastTaskCount(nextPageNumber, pageSize) }
+        val executors2 = Executors.newSingleThreadExecutor().submit(callable2)
+
+        val remainingCount = executors2.get().toInt()
+
+        Log.d(TAG, "getCompletedTaskData: remainingCount--> $remainingCount")
+
+        val incrementer: Int = if (remainingCount != 0) {
+            nextPageNumber + pageSize
+        } else {
+            -1
+        }
+
+        return TodoPagingModel(todoModelArrayList, incrementer)
+    }
+
+    val getCompletedTask = object : PagingSource<Int, TodoModel>() {
+        override fun getRefreshKey(state: PagingState<Int, TodoModel>): Int? {
+            return state.anchorPosition?.let { anchorPosition ->
+                val anchorPage = state.closestPageToPosition(anchorPosition)
+                anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
+            }
+        }
+
+        override suspend fun load(params: LoadParams<Int>): LoadResult<Int, TodoModel> {
+            try {
+                val nextPageNumber = params.key ?: 0
+                val response = getCompletedTaskData(nextPageNumber)
+                Log.d(TAG, "load: ${response.data.size}")
+
+                return LoadResult.Page(
+                    data = response.data,
+                    prevKey = null, // Only paging forward.
+                    nextKey = if (response.nextPage == -1) null else response.nextPage
+                )
+
+            } catch (e: Exception) {
+                throw e
+            }
+        }
+    }
+
+
+    private fun getCompletedTaskData(nextPageNumber: Int): TodoPagingModel {
+
+        Log.d(TAG, "getCompletedTaskData: InitialLoad Data -> $nextPageNumber")
+
+        val pageSize = 30
+
+        val callable1 = Callable { db.getCompletedTask(nextPageNumber, pageSize) }
+        val executors1 = Executors.newSingleThreadExecutor().submit(callable1)
+
+        val todoModelArrayList = executors1.get() as ArrayList<TodoModel>
+
+        val callable2 = Callable { db.getCompletedTaskCount(nextPageNumber, pageSize) }
+        val executors2 = Executors.newSingleThreadExecutor().submit(callable2)
+
+        val remainingCount = executors2.get().toInt()
+
+        Log.d(TAG, "getCompletedTaskData: remainingCount--> $remainingCount")
+
+        val incrementer: Int = if (remainingCount != 0) {
+            nextPageNumber + pageSize
+        } else {
+            -1
+        }
+
+        return TodoPagingModel(todoModelArrayList, incrementer)
+    }
 
 }

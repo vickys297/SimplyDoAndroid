@@ -73,6 +73,18 @@
             app:layout_constraintStart_toEndOf="@+id/tvEventTime"
             app:layout_constraintTop_toTopOf="@+id/tvEventTime" />
 
+        <TextView
+            android:id="@+id/textViewDateExpired"
+            style="@style/PastTask"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/date_expired"
+            app:layout_constraintBottom_toBottomOf="@+id/textView6"
+            app:layout_constraintStart_toEndOf="@+id/textView6"
+            app:layout_constraintTop_toTopOf="@+id/textView6"
+            app:layout_constraintVertical_bias="0.0" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="0dp"
             android:layout_height="wrap_content"

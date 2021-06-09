@@ -38,18 +38,21 @@ class MapsFragment : Fragment() {
         googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(requireContext(),
             R.raw.map_styled_json))
 
-        val sydney = LatLng(-34.0, 151.0)
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 15f))
+        val home = LatLng(11.082096, 77.032576)
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(home, 12f))
         googleMap.addMarker(
             MarkerOptions()
-                .position(sydney)
+                .position(home)
                 .title("Marker in Sydney")
                 .icon(AppConstant.getDrawableToBitmap(R.drawable.ic_map_marker, requireActivity())))
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(home))
 
 
         googleMap.setOnMapClickListener {
             val newMarker = it
+
+            googleMap.clear()
+
             googleMap.addMarker(
                 MarkerOptions()
                     .position(newMarker)
@@ -87,13 +90,13 @@ class MapsFragment : Fragment() {
         autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(place: Place) {
                 // TODO: Get info about the selected place.
-                Log.i(TAG, "Place: ${place.name}, ${place.id}")
-                Log.i(TAG, "onPlaceSelected: latlng ${place.latLng}")
+                Log.d(TAG, "Place: ${place.name}, ${place.id}")
+                Log.d(TAG, "onPlaceSelected: latlng ${place.latLng}")
             }
 
             override fun onError(status: Status) {
                 // TODO: Handle the error.
-                Log.i(TAG, "An error occurred: $status")
+                Log.d(TAG, "An error occurred: $status")
             }
         })
 

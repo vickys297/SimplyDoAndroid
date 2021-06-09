@@ -165,7 +165,7 @@
 
     <!--    Todo card list item text style -->
     <style name="PriorityText" parent="Theme.MaterialComponents.DayNight">
-        <item name="android:background">@drawable/priority_text</item>
+        <item name="android:background">@drawable/priority_task_text_background</item>
         <item name="android:textColor">@color/purple_500</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:textSize">10sp</item>
@@ -187,5 +187,12 @@
     </style>
     <!--    Todo card list item text style -->
 
+
+    <style name="PastTask" parent="Theme.MaterialComponents.DayNight">
+        <item name="android:background">@drawable/past_task_text_background</item>
+        <item name="android:textColor">@color/red_800</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">10sp</item>
+    </style>
 
 </resources>

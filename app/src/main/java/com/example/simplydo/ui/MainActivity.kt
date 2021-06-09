@@ -87,7 +87,7 @@ class MainActivity : AppCompatActivity() {
         allTodoListDataObserver = Observer { tasks ->
             if (tasks.isNotEmpty()) {
                 (tasks as ArrayList<TodoModel>).forEach {
-                    Log.i(
+                    Log.d(
                         TAG, "Un Synced data :\n" +
                                 "dtId: ${it.dtId}\n" +
                                 "Title: ${it.title}\n" +
@@ -102,7 +102,7 @@ class MainActivity : AppCompatActivity() {
 
         totalTaskCountObserver = Observer {
             if (it.equals(0)) {
-                Log.i(TAG, "setUpObserver: No data available")
+                Log.d(TAG, "setUpObserver: No data available")
                 for (i in 1..100) {
                     viewModel.insertDummyDataIntoLocalDatabase(
                         task = "Sample test task $i",

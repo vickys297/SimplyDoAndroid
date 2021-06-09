@@ -23,7 +23,7 @@ class ContactPagingSource(val context: Context) : PagingSource<Int, ContactModel
         try {
             val nextPageNumber = params.key ?: 0
             val response = getContactList(nextPageNumber)
-            Log.i(TAG, "load: ${response.contacts.size}")
+            Log.d(TAG, "load: ${response.contacts.size}")
 
             return LoadResult.Page(
                 data = response.contacts,
@@ -115,11 +115,10 @@ class ContactPagingSource(val context: Context) : PagingSource<Int, ContactModel
             "${ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME_PRIMARY} ASC LIMIT $pageSize OFFSET ${nextPageNumber + pageSize}"
         )
 
-        var incrementer = -1
-
-        remainingData?.let {
-            incrementer = if (remainingData.count == pageSize) nextPageNumber + pageSize else -1
-            remainingData.close()
+        val incrementer = if (remainingData?.count != 0) {
+            nextPageNumber + pageSize
+        } else {
+            -1
         }
 
         return ContactPagingModel(nextPage = incrementer, contactModel)

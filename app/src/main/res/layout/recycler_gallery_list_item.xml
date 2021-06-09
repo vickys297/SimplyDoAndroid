@@ -14,6 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="200dp">
 
+
         <ImageView
             android:id="@+id/imageViewPreview"
             android:layout_width="0dp"
@@ -25,6 +26,18 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+        <ImageButton
+            android:id="@+id/imCompleted"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/primary_color_circle"
+            android:cropToPadding="false"
+            android:src="@drawable/ic_baseline_check_12_white"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <TextView
             android:id="@+id/textView14"

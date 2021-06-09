@@ -3,6 +3,7 @@ package com.example.simplydo.utli.adapters
 import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
@@ -10,9 +11,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.simplydo.databinding.RecyclerGalleryListItemBinding
 import com.example.simplydo.model.attachmentModel.GalleryModel
+import com.example.simplydo.utli.GalleryInterface
 
 
-class GalleryAdapter(val requireContext: Context) :
+class GalleryAdapter(val requireContext: Context, private val galleryInterface: GalleryInterface) :
     PagingDataAdapter<GalleryModel, GalleryAdapter.GalleryViewHolder>(DIFF_CALLBACK) {
 
 
@@ -42,6 +44,12 @@ class GalleryAdapter(val requireContext: Context) :
                 .load(galleryModel.contentUri)
                 .thumbnail(0.1f)
                 .into(binding.imageViewPreview)
+
+            if (galleryModel.isSelected) {
+                binding.imCompleted.visibility = View.VISIBLE
+            } else {
+                binding.imCompleted.visibility = View.GONE
+            }
         }
 
     }
@@ -51,6 +59,17 @@ class GalleryAdapter(val requireContext: Context) :
 
         item?.run {
             holder.bind(this@run)
+
+            holder.itemView.setOnClickListener {
+                item.isSelected = !item.isSelected
+                notifyItemChanged(position)
+                galleryInterface.onGallerySelect(this@run)
+            }
+
+            holder.itemView.setOnLongClickListener {
+                galleryInterface.onViewItem(this@run)
+                return@setOnLongClickListener true
+            }
         }
     }
 

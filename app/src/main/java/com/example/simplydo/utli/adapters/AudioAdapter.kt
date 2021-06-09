@@ -2,6 +2,7 @@ package com.example.simplydo.utli.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.simplydo.databinding.RecyclerAudioListItemBinding
@@ -23,6 +24,13 @@ class AudioAdapter(val context: Context, private var dataSet: ArrayList<AudioMod
             binding.imageButtonPlay.setOnClickListener {
                 audioInterface.onPlay(audioModel)
             }
+
+            if (audioModel.isSelected) {
+                binding.imCompleted.visibility = View.VISIBLE
+            } else {
+                binding.imCompleted.visibility = View.GONE
+            }
+
         }
 
     }
@@ -42,6 +50,14 @@ class AudioAdapter(val context: Context, private var dataSet: ArrayList<AudioMod
         val item = dataSet[position]
         item.run {
             holder.bind(this@run)
+
+            holder.itemView.setOnClickListener {
+
+                this.isSelected = !this.isSelected
+                notifyItemChanged(position)
+
+                audioInterface.onAudioSelect(this@run)
+            }
         }
     }
 

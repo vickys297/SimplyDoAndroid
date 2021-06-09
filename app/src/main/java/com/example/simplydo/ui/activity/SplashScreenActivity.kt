@@ -52,7 +52,7 @@ class SplashScreenActivity : AppCompatActivity() {
                     }
                     // Get new FCM registration token
                     val token = task.result
-                    Log.i(TAG, "New Token $token")
+                    Log.d(TAG, "New Token $token")
                     token?.let {
                         registerNewUser(it)
                     }

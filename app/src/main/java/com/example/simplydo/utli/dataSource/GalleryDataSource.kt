@@ -30,7 +30,7 @@ class GalleryDataSource internal constructor(private val context: Context) :
         try {
             val nextPageNumber = params.key ?: 0
             val response = getGalleryData(nextPageNumber)
-            Log.i(TAG, "load: ${response.data.size}")
+            Log.d(TAG, "load: ${response.data.size}")
 
             return LoadResult.Page(
                 data = response.data,
@@ -89,13 +89,8 @@ class GalleryDataSource internal constructor(private val context: Context) :
             val fileType = cursor.getColumnIndexOrThrow(FileColumns.MEDIA_TYPE)
             val mimeType = cursor.getColumnIndexOrThrow(FileColumns.MIME_TYPE)
 
-
-
-
-            Log.i(TAG,
+            Log.d(TAG,
                 "getGalleryData: ${cursor.getColumnIndexOrThrow(FileColumns.VOLUME_NAME)}")
-
-
 
             while (cursor.moveToNext()) {
 

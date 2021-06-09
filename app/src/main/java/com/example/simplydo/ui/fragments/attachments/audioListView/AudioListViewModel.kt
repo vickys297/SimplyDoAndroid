@@ -1,5 +1,6 @@
 package com.example.simplydo.ui.fragments.attachments.audioListView
 
+import android.annotation.SuppressLint
 import android.content.ContentUris
 import android.net.Uri
 import android.os.Build
@@ -14,6 +15,7 @@ class AudioListViewModel : ViewModel() {
 
     val audioList = MutableLiveData<ArrayList<AudioModel>>()
 
+    @SuppressLint("InlinedApi")
     fun getAudioList(requireActivity: FragmentActivity) {
         val audioArrayList = ArrayList<AudioModel>()
         val collection =
@@ -28,7 +30,8 @@ class AudioListViewModel : ViewModel() {
         val projection = arrayOf(
             MediaStore.Audio.Media._ID,
             MediaStore.Audio.Media.DISPLAY_NAME,
-            MediaStore.Audio.Media.SIZE
+            MediaStore.Audio.Media.SIZE,
+            MediaStore.Audio.Media.DURATION
         )
 
 
@@ -45,17 +48,19 @@ class AudioListViewModel : ViewModel() {
 
         query?.use { cursor ->
             // Cache column indices.
+
             val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media._ID)
             val nameColumn =
                 cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME)
             val sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.SIZE)
+            val durationUnit = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION)
 
             while (cursor.moveToNext()) {
                 // Get values of columns for a given video.
                 val id = cursor.getLong(idColumn)
                 val name = cursor.getString(nameColumn)
                 val size = cursor.getInt(sizeColumn)
-                val duration = 0
+                val duration = cursor.getInt(durationUnit)
 
                 val contentUri: Uri = ContentUris.withAppendedId(
                     MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,

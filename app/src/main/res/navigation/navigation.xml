@@ -20,11 +20,15 @@
             android:id="@+id/action_toDoFragment_to_calenderFragment"
             app:destination="@id/calenderFragment"
             app:popUpTo="@id/toDoFragment" />
+        <action
+            android:id="@+id/action_toDoFragment_to_otherTodoFragment"
+            app:destination="@id/otherTodoFragment" />
     </fragment>
     <fragment
         android:id="@+id/addNewTodo"
         android:name="com.example.simplydo.ui.fragments.addNewTodo.AddNewTodo"
-        android:label="AddNewTodo">
+        android:label="AddNewTodo"
+        app:startDestination="@id/action_addNewTodo_to_galleryListFragment">
         <action
             android:id="@+id/action_addNewTodo_to_contactsFragment"
             app:destination="@id/contactsFragment"
@@ -73,4 +77,8 @@
         android:id="@+id/audioListFragment"
         android:name="com.example.simplydo.ui.fragments.attachments.audioListView.AudioListFragment"
         android:label="AudioListFragment" />
+    <fragment
+        android:id="@+id/otherTodoFragment"
+        android:name="com.example.simplydo.ui.fragments.pastAndCompletedTodoFragments.OtherTodoFragment"
+        android:label="OtherTodoFragment" />
 </navigation>

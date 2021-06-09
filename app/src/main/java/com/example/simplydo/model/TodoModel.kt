@@ -73,6 +73,11 @@ data class TodoModel(
     }
 }
 
+data class TodoPagingModel(
+    val data: ArrayList<TodoModel>,
+    var nextPage: Int
+)
+
 
 data class ContactModel(
     val photoThumbnailUri: String?,

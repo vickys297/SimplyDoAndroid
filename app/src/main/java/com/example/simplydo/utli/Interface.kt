@@ -3,6 +3,7 @@ package com.example.simplydo.utli
 import com.example.simplydo.model.ContactModel
 import com.example.simplydo.model.TodoModel
 import com.example.simplydo.model.attachmentModel.AudioModel
+import com.example.simplydo.model.attachmentModel.GalleryModel
 
 interface CreateBasicTodoInterface {
     fun onAddMoreDetails(eventDate: String)
@@ -44,12 +45,24 @@ interface NewTodoOptionsFragmentsInterface {
     fun onClose()
 }
 
-interface TodoOptionDialogFragments{
+interface TodoOptionDialogFragments {
     fun onDelete(item: TodoModel)
     fun onEdit(item: TodoModel)
     fun onRestore(item: TodoModel)
 }
 
-interface AudioInterface{
+interface AudioInterface {
     fun onPlay(audioModel: AudioModel)
+    fun onAudioSelect(audioModel: AudioModel)
+}
+
+interface GalleryInterface{
+    fun onGallerySelect(galleryModel: GalleryModel)
+    fun onViewItem(galleryModel: GalleryModel)
+}
+
+interface TodoTaskOptionsInterface {
+    fun onCalenderView()
+    fun onCompletedView()
+    fun onPastTaskView()
 }

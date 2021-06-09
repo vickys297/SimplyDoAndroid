@@ -12,9 +12,11 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simplydo.databinding.AudioListFragmentBinding
 import com.example.simplydo.model.attachmentModel.AudioModel
+import com.example.simplydo.utli.AppConstant
 import com.example.simplydo.utli.AudioInterface
 import com.example.simplydo.utli.adapters.AudioAdapter
 import com.example.simplydo.utli.bottomSheetDialogs.playAudio.PlayAudioBottomSheetDialog
@@ -34,11 +36,39 @@ class AudioListFragment : Fragment() {
 
     lateinit var audioAdapter: AudioAdapter
 
+    private val selectedAudioArrayList = ArrayList<AudioModel>()
+
     private val audioInterface = object : AudioInterface {
         override fun onPlay(audioModel: AudioModel) {
-            PlayAudioBottomSheetDialog.newInstance( audioModel)
+            PlayAudioBottomSheetDialog.newInstance(audioModel)
                 .show(parentFragmentManager, "dialog")
         }
+
+        override fun onAudioSelect(audioModel: AudioModel) {
+            if (isNotDuplicateAudio(audioModel)) {
+                selectedAudioArrayList.add(audioModel)
+            } else {
+                selectedAudioArrayList.let {
+                    it.removeAt(it.indexOf(audioModel))
+                }
+            }
+
+            Log.d(TAG, "onAudioSelect: ${audioModel.name}/${selectedAudioArrayList.size}")
+
+            if (selectedAudioArrayList.isEmpty()){
+                binding.buttonAddAudio.visibility = View.GONE
+            }else{
+                binding.buttonAddAudio.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    private fun isNotDuplicateAudio(audioModel: AudioModel): Boolean {
+        selectedAudioArrayList.forEach {
+            if (it.uri == audioModel.uri)
+                return false
+        }
+        return true
     }
 
     override fun onCreateView(
@@ -76,6 +106,18 @@ class AudioListFragment : Fragment() {
         viewModel.audioList.observe(viewLifecycleOwner, audioListObserver)
     }
 
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+
+        binding.buttonAddAudio.setOnClickListener {
+            findNavController().previousBackStackEntry?.savedStateHandle?.set(
+                AppConstant.NAVIGATION_CONTACT_DATA_KEY,
+                selectedAudioArrayList)
+            findNavController().popBackStack()
+        }
+    }
     override fun onResume() {
         super.onResume()
         checkPermission()
@@ -102,6 +144,7 @@ class AudioListFragment : Fragment() {
             Log.i(TAG, "checkPermission: Permission Granted")
         }
     }
+
 
     override fun onRequestPermissionsResult(
         requestCode: Int,

@@ -8,7 +8,6 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,9 +21,9 @@ import com.example.simplydo.model.TodoModel
 import com.example.simplydo.utli.*
 import com.example.simplydo.utli.adapters.TodoAdapter
 import com.example.simplydo.utli.bottomSheetDialogs.addTodoBasic.AddTodoBasic
+import com.example.simplydo.utli.bottomSheetDialogs.calenderOptions.TodoOptions
 import com.example.simplydo.utli.bottomSheetDialogs.todoOptions.TodoOptionsFragment
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 internal val TAG = ToDoFragment::class.java.canonicalName
@@ -61,6 +60,24 @@ class ToDoFragment : Fragment() {
         }
 
         override fun onRestore(item: TodoModel) {
+        }
+    }
+
+    private val todoTaskOptionsInterface = object : TodoTaskOptionsInterface {
+        override fun onCalenderView() {
+            findNavController().navigate(R.id.action_toDoFragment_to_calenderFragment)
+        }
+
+        override fun onCompletedView() {
+            val bundle = Bundle()
+            bundle.putInt(getString(R.string.view_type), AppConstant.TODO_VIEW_COMPLETED)
+            findNavController().navigate(R.id.action_toDoFragment_to_otherTodoFragment, bundle)
+        }
+
+        override fun onPastTaskView() {
+            val bundle = Bundle()
+            bundle.putInt(getString(R.string.view_type), AppConstant.TODO_VIEW_PAST)
+            findNavController().navigate(R.id.action_toDoFragment_to_otherTodoFragment, bundle)
         }
 
     }
@@ -132,9 +149,15 @@ class ToDoFragment : Fragment() {
 
     private fun setupViewModel() {
         viewModel =
-            ViewModelProvider(this,
-                ViewModelFactory(requireContext(), AppRepository.getInstance(requireContext(),
-                    AppDatabase.getInstance(context = requireContext())))).get(
+            ViewModelProvider(
+                this,
+                ViewModelFactory(
+                    requireContext(), AppRepository.getInstance(
+                        requireContext(),
+                        AppDatabase.getInstance(context = requireContext())
+                    )
+                )
+            ).get(
                 ToDoViewModel::class.java
             )
         binding.apply {
@@ -144,18 +167,18 @@ class ToDoFragment : Fragment() {
         }
 
 
-        viewModel.todoListObserver(AppConstant.dateFormatter(AppConstant.DATE_PATTERN_COMMON)
-            .format(Date().time)).observe(viewLifecycleOwner, todoModelObserver)
+        viewModel.todoListObserver(
+            AppConstant.dateFormatter(AppConstant.DATE_PATTERN_COMMON)
+                .format(Date().time)
+        ).observe(viewLifecycleOwner, todoModelObserver)
 
         viewModel.todoListResponse.observe(viewLifecycleOwner, todoObserver)
         viewModel.noNetworkMessage.observe(viewLifecycleOwner, noNetworkObserver)
 
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        // TODO: Use the ViewModel
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         // init
         contactInfo = ArrayList()
         imagesList = ArrayList()
@@ -167,23 +190,24 @@ class ToDoFragment : Fragment() {
         binding.recyclerViewTodoList.adapter = todoAdapter
 
         binding.btnNewTodo.setOnClickListener {
-            AddTodoBasic.newInstance(appInterface,
-                AppConstant.dateFormatter(AppConstant.DATE_PATTERN_COMMON).format(Date()))
+            AddTodoBasic.newInstance(
+                appInterface,
+                AppConstant.dateFormatter(AppConstant.DATE_PATTERN_COMMON).format(Date())
+            )
                 .show(requireActivity().supportFragmentManager, "dialog")
         }
 
-        binding.btnCalenderView.setOnClickListener {
-            val extra = FragmentNavigatorExtras(binding.todoToolbar to "tn_toolbar")
-            findNavController().navigate(R.id.action_toDoFragment_to_calenderFragment,
-                null,
-                null,
-                extra)
+        binding.buttonTodoOption.setOnClickListener {
+            TodoOptions.newInstance(todoTaskOptionsInterface)
+                .show(requireActivity().supportFragmentManager, "dialog")
         }
 
 
         val simpleItemTouchCallback: ItemTouchHelper.SimpleCallback = object :
-            ItemTouchHelper.SimpleCallback(0,
-                ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+            ItemTouchHelper.SimpleCallback(
+                0,
+                ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+            ) {
             override fun onMove(
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder,
@@ -199,9 +223,11 @@ class ToDoFragment : Fragment() {
                 if (todoModel.isNotEmpty()) {
                     viewModel.completeTaskByID(todoModel[position].dtId)
                     todoAdapter.notifyItemChanged(position)
-                    Toast.makeText(requireContext(),
+                    Toast.makeText(
+                        requireContext(),
                         getString(R.string.task_completed_label),
-                        Toast.LENGTH_LONG).show()
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
 
             }
@@ -209,8 +235,6 @@ class ToDoFragment : Fragment() {
 
         val itemTouchHelper = ItemTouchHelper(simpleItemTouchCallback)
         itemTouchHelper.attachToRecyclerView(binding.recyclerViewTodoList)
-
-
     }
 
 
