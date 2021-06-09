@@ -1,18 +1,21 @@
 package com.example.simplydo.utli.adapters
 
+import android.content.Context
 import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.Nullable
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import com.example.simplydo.databinding.RecyclerTodoCompletedListItemBinding
 import com.example.simplydo.databinding.RecyclerTodoListItemBinding
 import com.example.simplydo.model.TodoModel
-import com.example.simplydo.utli.TodoAdapterInterface
+import com.example.simplydo.utli.TodoItemInterface
 
 class TodoAdapter(
     @Nullable
-    private val todoAdapterInterface: TodoAdapterInterface,
+    private val todoItemInterface: TodoItemInterface,
+    val requireContext: Context,
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var dataSet = ArrayList<TodoModel>()
@@ -55,12 +58,28 @@ class TodoAdapter(
                 val item = dataSet[position]
                 item.run {
                     (holderTask as TaskViewHolder).apply {
-                        bind(this@run)
+                        val holder = bind(this@run, todoItemInterface)
                         itemView.tag = this@run
 
                         itemView.setOnLongClickListener {
-                            todoAdapterInterface.onLongClick(item)
+                            todoItemInterface.onLongClick(item)
                             return@setOnLongClickListener true
+                        }
+
+                        holder.tvTitle.transitionName = "task_title_$position"
+                        holder.tvTodo.transitionName = "task_todo_$position"
+
+                        itemView.setOnClickListener {
+                            val extras = FragmentNavigatorExtras(
+                                holder.tvTitle to "transition_title",
+                                holder.tvTodo to "transition_todo"
+                            )
+
+                            todoItemInterface.onTaskClick(
+                                this@run,
+                                absoluteAdapterPosition,
+                                extras
+                            )
                         }
                     }
                 }
@@ -73,7 +92,7 @@ class TodoAdapter(
                         itemView.tag = this@run
 
                         itemView.setOnLongClickListener {
-                            todoAdapterInterface.onLongClick(item)
+                            todoItemInterface.onLongClick(item)
                             return@setOnLongClickListener true
                         }
                     }
@@ -105,8 +124,11 @@ class TodoAdapter(
 
     class TaskViewHolder(private val binding: RecyclerTodoListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: TodoModel) {
-            binding.apply {
+        fun bind(
+            item: TodoModel,
+            todoItemInterface: TodoItemInterface
+        ): RecyclerTodoListItemBinding {
+            return binding.apply {
                 todoModel = item
                 executePendingBindings()
             }

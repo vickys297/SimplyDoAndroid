@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -20,6 +19,7 @@
 
         <TextView
             android:id="@+id/tvTitle"
+            android:transitionName="transition_title_small"
             style="@style/TodoCardTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -37,6 +37,7 @@
         <TextView
             android:id="@+id/tvTodo"
             style="@style/TodoCardTask"
+            android:transitionName="transition_todo_small"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"

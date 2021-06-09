@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.FragmentNavigator
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -85,10 +86,26 @@ class CalenderFragment : Fragment() {
 
     }
 
-    private var todoAdapterInterface = object : TodoAdapterInterface {
+    private var todoAdapterInterface = object : TodoItemInterface {
         override fun onLongClick(item: TodoModel) {
             TodoOptionsFragment.newInstance(todoOptionDialogFragments, item = item)
                 .show(requireActivity().supportFragmentManager, "dialog")
+        }
+
+        override fun onTaskClick(
+            item: TodoModel,
+            absoluteAdapterPosition: Int,
+            extras: FragmentNavigator.Extras
+        ) {
+            val bundle = Bundle()
+            bundle.putSerializable("todo", item)
+
+            findNavController().navigate(
+                R.id.action_toDoFragment_to_todoFullDetailsFragment,
+                bundle,
+                null,
+                extras
+            )
         }
 
     }
@@ -177,7 +194,7 @@ class CalenderFragment : Fragment() {
 
         calenderViewAdapter =
             CalenderViewAdapter(requireContext(), calenderAdapterInterface)
-        todoAdapter = TodoAdapter(todoAdapterInterface)
+        todoAdapter = TodoAdapter(todoAdapterInterface, requireContext())
 
         binding.recyclerViewCalenderView.apply {
             layoutManager =

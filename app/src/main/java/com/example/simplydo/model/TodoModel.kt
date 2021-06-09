@@ -6,9 +6,12 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.example.simplydo.utli.AppConstant
+import java.io.Serializable
+
 
 @Entity(tableName = "todoList", indices = [Index(value = ["dtId"], unique = true)])
 data class TodoModel(
+
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "dtId")
     val dtId: Long = 0,
@@ -50,7 +53,7 @@ data class TodoModel(
     var isCompleted: Boolean = false,
     @ColumnInfo(name = "completedDateTime", defaultValue = "")
     var completedDateTime: String = "",
-) {
+) : Serializable {
 
     fun isVisible(): Int {
         return if (isHighPriority) {

@@ -4,14 +4,19 @@ import android.content.Context
 import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.simplydo.databinding.RecyclerTodoCompletedListItemBinding
 import com.example.simplydo.databinding.RecyclerTodoListItemBinding
 import com.example.simplydo.model.TodoModel
+import com.example.simplydo.utli.TodoItemInterface
 
-class TodoListPagingAdapter internal constructor(val context: Context) :
+class TodoListPagingAdapter internal constructor(
+    val context: Context,
+    val todoItemInterface: TodoItemInterface
+) :
     PagingDataAdapter<TodoModel, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
     companion object {
@@ -34,8 +39,8 @@ class TodoListPagingAdapter internal constructor(val context: Context) :
     class TodoViewHolder(val binding: RecyclerTodoListItemBinding, requireContext: Context) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(todoModelData: TodoModel) {
-            binding.apply {
+        fun bind(todoModelData: TodoModel): RecyclerTodoListItemBinding {
+            return binding.apply {
                 todoModel = todoModelData
                 executePendingBindings()
             }
@@ -45,14 +50,18 @@ class TodoListPagingAdapter internal constructor(val context: Context) :
 
     class CompletedTaskViewHolder(private val binding: RecyclerTodoCompletedListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: TodoModel) {
-            binding.apply {
+        fun bind(item: TodoModel): RecyclerTodoCompletedListItemBinding {
+            binding.tvTitle.paintFlags = binding.tvTitle.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            binding.tvTodo.paintFlags = binding.tvTodo.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+
+            return binding.apply {
                 todoModel = item
                 executePendingBindings()
             }
-            binding.tvTitle.paintFlags = binding.tvTitle.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-            binding.tvTodo.paintFlags = binding.tvTodo.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+
         }
+
+
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -63,7 +72,23 @@ class TodoListPagingAdapter internal constructor(val context: Context) :
                 val item = getItem(position)
                 item?.run {
                     (holder as TodoViewHolder).apply {
-                        bind(this@run)
+                        val todoHolder = bind(this@run)
+
+                        todoHolder.tvTitle.transitionName = "past_task_title_$position"
+                        todoHolder.tvTodo.transitionName = "past_task_todo_$position"
+
+                        itemView.setOnClickListener {
+                            val extras = FragmentNavigatorExtras(
+                                todoHolder.tvTitle to "transition_title",
+                                todoHolder.tvTodo to "transition_todo"
+                            )
+
+                            todoItemInterface.onTaskClick(
+                                this@run,
+                                absoluteAdapterPosition,
+                                extras
+                            )
+                        }
                     }
                 }
             }
@@ -71,7 +96,23 @@ class TodoListPagingAdapter internal constructor(val context: Context) :
                 val item = getItem(position)
                 item?.run {
                     (holder as CompletedTaskViewHolder).apply {
-                        bind(this@run)
+                       val completedHolder =  bind(this@run)
+
+                        completedHolder.tvTitle.transitionName = "completed_task_title_$position"
+                        completedHolder.tvTodo.transitionName = "completed_task_todo_$position"
+
+                        itemView.setOnClickListener {
+                            val extras = FragmentNavigatorExtras(
+                                completedHolder.tvTitle to "transition_title",
+                                completedHolder.tvTodo to "transition_todo"
+                            )
+
+                            todoItemInterface.onTaskClick(
+                                this@run,
+                                absoluteAdapterPosition,
+                                extras
+                            )
+                        }
                     }
                 }
             }

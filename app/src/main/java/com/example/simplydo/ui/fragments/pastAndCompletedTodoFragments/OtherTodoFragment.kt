@@ -8,14 +8,16 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.FragmentNavigator
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simplydo.R
 import com.example.simplydo.databinding.OtherTodoFragmentBinding
 import com.example.simplydo.localDatabase.AppDatabase
-import com.example.simplydo.utli.AppConstant
-import com.example.simplydo.utli.AppRepository
-import com.example.simplydo.utli.ViewModelFactory
+import com.example.simplydo.model.TodoModel
+import com.example.simplydo.utli.*
 import com.example.simplydo.utli.adapters.TodoListPagingAdapter
+import com.example.simplydo.utli.bottomSheetDialogs.todoOptions.TodoOptionsFragment
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -31,6 +33,45 @@ class OtherTodoFragment : Fragment(), LifecycleObserver {
 
     private lateinit var todoListPagingAdapter: TodoListPagingAdapter
 
+    lateinit var recentSelectedItem: TodoModel
+
+    private val todoOptionDialogFragments = object : TodoOptionDialogFragments {
+        override fun onDelete(item: TodoModel) {
+            viewModel.removeTaskById(item)
+            AppConstant.showMessage("Task Removed", requireContext())
+        }
+
+        override fun onEdit(item: TodoModel) {
+        }
+
+        override fun onRestore(item: TodoModel) {
+        }
+    }
+
+    private val todoItemInterface = object : TodoItemInterface {
+        override fun onLongClick(item: TodoModel) {
+            recentSelectedItem = item
+            val options = TodoOptionsFragment.newInstance(todoOptionDialogFragments, item)
+            options.show(requireActivity().supportFragmentManager, "dialog")
+        }
+
+        override fun onTaskClick(
+            item: TodoModel,
+            absoluteAdapterPosition: Int,
+            extras: FragmentNavigator.Extras
+        ) {
+            val bundle = Bundle()
+            bundle.putSerializable("todo", item)
+            findNavController().navigate(
+                R.id.action_otherTodoFragment_to_todoFullDetailsFragment,
+                bundle,
+                null,
+                extras
+            )
+        }
+
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -44,7 +85,7 @@ class OtherTodoFragment : Fragment(), LifecycleObserver {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        todoListPagingAdapter = TodoListPagingAdapter(requireContext())
+        todoListPagingAdapter = TodoListPagingAdapter(requireContext(), todoItemInterface)
 
         binding.recyclerViewTodoList.apply {
             layoutManager = LinearLayoutManager(requireContext())

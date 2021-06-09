@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.FragmentNavigator
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -38,17 +39,15 @@ class ToDoFragment : Fragment() {
     private lateinit var todoObserver: Observer<CommonResponseModel>
     private lateinit var noNetworkObserver: Observer<String>
 
-
     private lateinit var viewModel: ToDoViewModel
     private lateinit var binding: TodoFragmentBinding
     private lateinit var todoAdapter: TodoAdapter
     private lateinit var todoModel: ArrayList<TodoModel>
 
-    lateinit var contactInfo: ArrayList<ContactModel>
-    lateinit var imagesList: ArrayList<String>
+    private lateinit var contactInfo: ArrayList<ContactModel>
+    private lateinit var imagesList: ArrayList<String>
 
-    lateinit var recentSelectedItem: TodoModel
-
+    private lateinit var recentSelectedItem: TodoModel
 
     private val todoOptionDialogFragments = object : TodoOptionDialogFragments {
         override fun onDelete(item: TodoModel) {
@@ -83,11 +82,27 @@ class ToDoFragment : Fragment() {
     }
 
 
-    private var todoAdapterInterface = object : TodoAdapterInterface {
+    private var todoAdapterInterface = object : TodoItemInterface {
         override fun onLongClick(item: TodoModel) {
             recentSelectedItem = item
             val options = TodoOptionsFragment.newInstance(todoOptionDialogFragments, item)
             options.show(requireActivity().supportFragmentManager, "dialog")
+        }
+
+        override fun onTaskClick(
+            item: TodoModel,
+            absoluteAdapterPosition: Int,
+            extras: FragmentNavigator.Extras
+        ) {
+            val bundle = Bundle()
+            bundle.putSerializable("todo", item)
+
+            findNavController().navigate(
+                R.id.action_toDoFragment_to_todoFullDetailsFragment,
+                bundle,
+                null,
+                extras
+            )
         }
 
     }
@@ -182,7 +197,7 @@ class ToDoFragment : Fragment() {
         // init
         contactInfo = ArrayList()
         imagesList = ArrayList()
-        todoAdapter = TodoAdapter(todoAdapterInterface)
+        todoAdapter = TodoAdapter(todoAdapterInterface, requireContext())
 
 
         binding.recyclerViewTodoList.layoutManager =

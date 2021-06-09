@@ -39,28 +39,29 @@ class ContactPagingSource(val context: Context) : PagingSource<Int, ContactModel
     private fun getContactList(nextPageNumber: Int): ContactPagingModel {
         val pageSize = 30
         val contactModel = ArrayList<ContactModel>()
+
+        val projection = arrayOf(
+            ContactsContract.Contacts._ID,
+            ContactsContract.Contacts.HAS_PHONE_NUMBER,
+            ContactsContract.Contacts.DISPLAY_NAME
+        )
+//        val sortOrder = "${ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME_PRIMARY} ASC LIMIT $pageSize OFFSET $nextPageNumber"
+        val sortOrder = "${ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME_PRIMARY} ASC"
         val cursor = context.contentResolver.query(
             ContactsContract.Contacts.CONTENT_URI,
+            projection,
             null,
             null,
-            null,
-            "${ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME_PRIMARY} ASC LIMIT $pageSize OFFSET $nextPageNumber"
+            sortOrder
         )
 
         cursor?.let {
 
             while (cursor.moveToNext()) {
+
                 val id = cursor.getString(
-                    cursor.getColumnIndex(
-                        ContactsContract.Contacts._ID
-                    )
+                    cursor.getColumnIndex(ContactsContract.Contacts._ID)
                 )
-
-                val thumbnailUri =
-                    cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI))
-
-                val photoUri =
-                    cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.PHOTO_URI))
 
                 val contactName = cursor.getString(
                     cursor.getColumnIndex(
@@ -85,15 +86,21 @@ class ContactPagingSource(val context: Context) : PagingSource<Int, ContactModel
                 phoneCursor?.let {
                     while (phoneCursor.moveToNext()) {
 
+//                        val thumbnailUri =
+//                            cursor.getString(phoneCursor.getColumnIndexOrThrow(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI))
+//
+//                        val photoUri =
+//                            cursor.getString(phoneCursor.getColumnIndexOrThrow(ContactsContract.Contacts.PHOTO_URI))
+
                         val phoneNumber = phoneCursor.getString(
-                            phoneCursor.getColumnIndex(
+                            phoneCursor.getColumnIndexOrThrow(
                                 ContactsContract.CommonDataKinds.Phone.NUMBER
                             )
                         )
 
                         val model = ContactModel(
-                            photoThumbnailUri = thumbnailUri,
-                            photoUri = photoUri,
+                            photoThumbnailUri = null,
+                            photoUri = null,
                             name = contactName,
                             mobile = phoneNumber
                         )
@@ -121,7 +128,9 @@ class ContactPagingSource(val context: Context) : PagingSource<Int, ContactModel
             -1
         }
 
-        return ContactPagingModel(nextPage = incrementer, contactModel)
+        remainingData?.close()
+
+        return ContactPagingModel(nextPage = -1, contactModel)
     }
 
 }

@@ -23,6 +23,14 @@
         <action
             android:id="@+id/action_toDoFragment_to_otherTodoFragment"
             app:destination="@id/otherTodoFragment" />
+        <action
+            android:id="@+id/action_toDoFragment_to_todoFullDetailsFragment"
+            app:destination="@id/todoFullDetailsFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/fade_out"
+            app:popUpTo="@id/toDoFragment" />
     </fragment>
     <fragment
         android:id="@+id/addNewTodo"
@@ -59,6 +67,10 @@
             app:popEnterAnim="@android:anim/fade_in"
             app:popExitAnim="@android:anim/fade_out"
             app:popUpTo="@id/calenderFragment" />
+        <action
+            android:id="@+id/action_calenderFragment_to_todoFullDetailsFragment"
+            app:destination="@id/todoFullDetailsFragment"
+            app:popUpTo="@id/calenderFragment" />
     </fragment>
     <fragment
         android:id="@+id/contactsFragment"
@@ -80,5 +92,15 @@
     <fragment
         android:id="@+id/otherTodoFragment"
         android:name="com.example.simplydo.ui.fragments.pastAndCompletedTodoFragments.OtherTodoFragment"
-        android:label="OtherTodoFragment" />
+        android:label="OtherTodoFragment" >
+        <action
+            android:id="@+id/action_otherTodoFragment_to_todoFullDetailsFragment"
+            app:destination="@id/todoFullDetailsFragment"
+            app:popUpTo="@id/otherTodoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/todoFullDetailsFragment"
+        android:name="com.example.simplydo.ui.fragments.todoListFullDetails.TodoFullDetailsFragment"
+        android:label="todo_full_details_fragment"
+        tools:layout="@layout/todo_full_details_fragment" />
 </navigation>

@@ -5,12 +5,17 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
+import com.example.simplydo.model.TodoModel
 import com.example.simplydo.utli.AppRepository
 
 
 class OtherTodoViewModel internal constructor(
     private val appRepository: AppRepository
 ) : ViewModel() {
+    fun removeTaskById(item: TodoModel) {
+        appRepository.deleteTaskByPosition(item)
+    }
+
     // TODO: Implement the ViewModel
     val flowGetPastTask = Pager(
         PagingConfig(
