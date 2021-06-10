@@ -56,7 +56,7 @@ class PlayAudioBottomSheetDialog(val audioModel: AudioModel) :
 
         Log.d(TAG, "onViewCreated: $audioModel")
 
-        myUri = audioModel.uri
+        myUri = Uri.parse(audioModel.uri)
 
         binding.textViewFileName.text = audioModel.name
         binding.textViewDuration.text = AppFunctions.millisecondsToMinutes(audioModel.duration)

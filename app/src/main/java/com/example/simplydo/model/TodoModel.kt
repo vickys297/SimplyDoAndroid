@@ -1,12 +1,19 @@
 package com.example.simplydo.model
 
+import android.util.Log
 import android.view.View
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.example.simplydo.model.attachmentModel.AudioModel
+import com.example.simplydo.model.attachmentModel.DocumentModel
+import com.example.simplydo.model.attachmentModel.GalleryModel
 import com.example.simplydo.utli.AppConstant
+import com.example.simplydo.utli.AppFunctions
 import java.io.Serializable
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 @Entity(tableName = "todoList", indices = [Index(value = ["dtId"], unique = true)])
@@ -24,19 +31,23 @@ data class TodoModel(
     @ColumnInfo(name = "eventTime")
     val eventTime: String,
     @ColumnInfo(name = "eventDate")
-    val eventDate: String,
+    val eventDate: Long,
 
     // priority
     @ColumnInfo(name = "isHighPriority", defaultValue = "1")
     val isHighPriority: Boolean = true,
 
     // attachments
-    @ColumnInfo(name = "locationInfo", defaultValue = "")
-    val locationInfo: String = "",
-    @ColumnInfo(name = "contactInfo", defaultValue = "")
-    val contactInfo: ArrayList<ContactModel>,
-    @ColumnInfo(name = "imageFiles", defaultValue = "")
-    val imageFiles: ArrayList<String>,
+    @ColumnInfo(name = "locationData", defaultValue = "")
+    val locationData: String = "",
+    @ColumnInfo(name = "contactAddress", defaultValue = "")
+    val contactAttachments: ArrayList<ContactModel> = ArrayList(),
+    @ColumnInfo(name = "galleryFiles", defaultValue = "")
+    val imageAttachments: ArrayList<GalleryModel> = ArrayList(),
+    @ColumnInfo(name = "audioFiles", defaultValue = "")
+    val audioAttachments: ArrayList<AudioModel> = ArrayList(),
+    @ColumnInfo(name = "documentFiles", defaultValue = "")
+    val documentAttachments: ArrayList<DocumentModel> = ArrayList(),
 
     // entries time stamp
     @ColumnInfo(name = "createdAt", defaultValue = "")
@@ -63,15 +74,45 @@ data class TodoModel(
         }
     }
 
-    fun getEventTextValue(): String {
-        return if (eventTime.isEmpty()) {
-            if (eventDate == AppConstant.getCurrentEventDate()) {
-                "Today"
-            } else {
-                eventDate
-            }
+    fun dateExpiredVisibility(): Int {
+        val currentDate = System.currentTimeMillis()
+
+        val calendar = Calendar.getInstance()
+        calendar.set(
+            AppFunctions.getYear(eventDate),
+            AppFunctions.getMonth(eventDate),
+            AppFunctions.getDay(eventDate),
+            eventTime.split(":")[0].toInt(),
+            eventTime.split(":")[1].toInt()
+        )
+
+        Log.i("Model", "dateExpiredVisibility: $title --> ${calendar.timeInMillis}/$currentDate")
+
+        return if (calendar.timeInMillis < currentDate) {
+            View.VISIBLE
         } else {
-            eventTime
+            View.GONE
+        }
+    }
+
+    fun getEventDateTextValue(): String {
+        val currentEventDate =
+            AppFunctions.getDateStringFromMilliseconds(
+                eventDate,
+                AppConstant.DATE_PATTERN_EVENT_DATE
+            )
+        val currentDate = AppFunctions.getDateStringFromMilliseconds(
+            System.currentTimeMillis(),
+            AppConstant.DATE_PATTERN_EVENT_DATE
+        )
+
+        return if (currentEventDate == currentDate) {
+            "Today"
+        } else {
+            AppFunctions.getDateStringFromMilliseconds(
+                eventDate,
+                AppConstant.DATE_PATTERN_EVENT_DATE
+            )
         }
     }
 }

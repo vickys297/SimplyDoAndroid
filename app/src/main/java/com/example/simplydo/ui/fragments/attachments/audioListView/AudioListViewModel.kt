@@ -70,7 +70,7 @@ class AudioListViewModel : ViewModel() {
                 // Stores column values and the contentUri in a local object
                 // that represents the media file.
 
-                audioArrayList.add(AudioModel(contentUri, name, duration, size))
+                audioArrayList.add(AudioModel(contentUri.toString(), name, duration, size))
             }
             audioList.postValue(audioArrayList)
             query.close()

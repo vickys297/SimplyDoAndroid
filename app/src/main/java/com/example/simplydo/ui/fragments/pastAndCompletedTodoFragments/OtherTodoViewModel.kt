@@ -25,7 +25,7 @@ class OtherTodoViewModel internal constructor(
             initialLoadSize = 10
         )
     ) {
-        appRepository.getPastTask
+        appRepository.PastOrderDatasource(System.currentTimeMillis())
     }.flow
         .cachedIn(viewModelScope)
 

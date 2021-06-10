@@ -166,8 +166,8 @@
 
 
     <style name="CardBackground" parent="Theme.MaterialComponents.DayNight">
+        <item name="android:radius">8dp</item>
         <item name="android:background">@drawable/card_background_dark</item>
-
         <item name="android:foreground">?attr/selectableItemBackground</item>
         <item name="android:clickable">true</item>
     </style>
@@ -203,6 +203,28 @@
         <item name="android:textColor">@color/red_800</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:textSize">10sp</item>
+    </style>
+
+
+    <style name="TextInputTextLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+        <item name="boxStrokeWidth">0dp</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">16dp</item>
+        <item name="android:background">@drawable/card_background_dark</item>
+    </style>
+
+    <style name="EditTextLayout" parent="Theme.MaterialComponents.DayNight">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:radius">8dp</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_marginEnd">8dp</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:background">@drawable/card_background_dark</item>
+        <item name="android:foreground">?attr/selectableItemBackground</item>
+        <item name="android:clickable">true</item>
     </style>
 
 </resources>

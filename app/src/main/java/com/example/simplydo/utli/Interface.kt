@@ -7,8 +7,14 @@ import com.example.simplydo.model.attachmentModel.AudioModel
 import com.example.simplydo.model.attachmentModel.GalleryModel
 
 interface CreateBasicTodoInterface {
-    fun onAddMoreDetails(eventDate: String)
-    fun onCreateTodo(title: String, task: String, eventDate: String, isPriority: Boolean)
+    fun onAddMoreDetails(eventDate: Long)
+    fun onCreateTodo(
+        title: String,
+        task: String,
+        eventDate: Long,
+        eventTime: String,
+        isPriority: Boolean
+    )
 }
 
 interface CalenderAdapterInterface {

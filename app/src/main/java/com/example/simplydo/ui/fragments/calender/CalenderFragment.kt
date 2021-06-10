@@ -22,7 +22,7 @@ import com.example.simplydo.model.TodoModel
 import com.example.simplydo.utli.*
 import com.example.simplydo.utli.adapters.CalenderViewAdapter
 import com.example.simplydo.utli.adapters.TodoAdapter
-import com.example.simplydo.utli.bottomSheetDialogs.addTodoBasic.AddTodoBasic
+import com.example.simplydo.utli.bottomSheetDialogs.basicAddTodoDialog.AddTodoBasic
 import com.example.simplydo.utli.bottomSheetDialogs.todoOptions.TodoOptionsFragment
 import java.util.*
 import kotlin.collections.ArrayList
@@ -75,7 +75,7 @@ class CalenderFragment : Fragment() {
     private val todoOptionDialogFragments = object : TodoOptionDialogFragments {
         override fun onDelete(item: TodoModel) {
             viewModel.removeTaskById(item)
-            AppConstant.showMessage("Task Removed", requireContext())
+            AppFunctions.showMessage("Task Removed", requireContext())
         }
 
         override fun onEdit(item: TodoModel) {
@@ -111,25 +111,27 @@ class CalenderFragment : Fragment() {
     }
 
     private val createBasicTodoInterface = object : CreateBasicTodoInterface {
-        override fun onAddMoreDetails(eventDate: String) {
+        override fun onAddMoreDetails(eventDate: Long) {
             val bundle = Bundle()
-            bundle.putString(getString(R.string.eventDateString), eventDate)
+            bundle.putString(getString(R.string.eventDateString), eventDate.toString())
             findNavController().navigate(R.id.action_calenderFragment_to_addNewTodo, bundle)
         }
 
         override fun onCreateTodo(
             title: String,
             task: String,
-            eventDate: String,
-            isPriority: Boolean,
+            eventDate: Long,
+            eventTime: String,
+            isPriority: Boolean
         ) {
             viewModel.createNewTodo(
                 title,
                 task,
                 eventDate = eventDate,
+                eventTime = eventTime,
                 priority = isPriority,
                 contactInfo,
-                imagesList
+                ArrayList()
             )
         }
     }
@@ -137,7 +139,7 @@ class CalenderFragment : Fragment() {
 
     init {
         selectedEventDate =
-            AppConstant.dateFormatter(AppConstant.DATE_PATTERN_COMMON).format(Date().time)
+            AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_COMMON).format(Date().time)
     }
 
 
@@ -233,7 +235,7 @@ class CalenderFragment : Fragment() {
 
                     viewModel.completeTaskByID(todoModel[position].dtId)
                     todoAdapter.notifyItemChanged(position)
-                    AppConstant.showMessage("Task Completed", requireContext())
+                    AppFunctions.showMessage("Task Completed", requireContext())
                 }
             }
         }
@@ -247,7 +249,7 @@ class CalenderFragment : Fragment() {
         binding.btnNewTodo.setOnClickListener {
             AddTodoBasic.newInstance(
                 createBasicTodoInterface = createBasicTodoInterface,
-                eventDate = selectedEventDate
+                eventDate = 0L
             ).show(requireActivity().supportFragmentManager, "dialog")
         }
 
@@ -299,10 +301,10 @@ class CalenderFragment : Fragment() {
             smallCalenderModels.add(
                 SmallCalenderModel(
                     calendar.get(Calendar.DAY_OF_MONTH).toString(),
-                    AppConstant.dateFormatter(AppConstant.DATE_PATTERN_MONTH_TEXT)
+                    AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_MONTH_TEXT)
                         .format(calendar.time)
                         .uppercase(Locale.getDefault()),
-                    AppConstant.dateFormatter(AppConstant.DATE_PATTERN_COMMON)
+                    AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_COMMON)
                         .format(calendar.time)
                 )
             )

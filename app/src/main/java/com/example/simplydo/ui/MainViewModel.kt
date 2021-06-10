@@ -5,7 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.simplydo.model.ContactModel
 import com.example.simplydo.model.TodoModel
+import com.example.simplydo.model.attachmentModel.GalleryModel
 import com.example.simplydo.utli.AppConstant
+import com.example.simplydo.utli.AppFunctions
 import com.example.simplydo.utli.AppRepository
 import java.util.*
 
@@ -26,23 +28,23 @@ class MainViewModel(val context: Context, val appRepository: AppRepository) : Vi
     fun insertDummyDataIntoLocalDatabase(
         task: String,
         title: String,
-        eventDate: String,
+        eventDate: Long,
         priority: Boolean,
         contactList: ArrayList<ContactModel>,
-        imageList: ArrayList<String>,
+        imageList: ArrayList<GalleryModel>,
     ) {
         appRepository.insertNewTodoTask(
             TodoModel(
                 title = title,
                 todo = task,
-                eventTime = "",
+                eventTime = "23:59",
                 eventDate = eventDate,
-                contactInfo = contactList,
-                imageFiles = imageList,
-                locationInfo = "",
-                createdAt = AppConstant.dateFormatter(AppConstant.DATE_PATTERN_ISO)
+                contactAttachments = contactList,
+                imageAttachments = imageList,
+                locationData = "",
+                createdAt = AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_ISO)
                     .format(Date().time),
-                updatedAt = AppConstant.dateFormatter(AppConstant.DATE_PATTERN_ISO)
+                updatedAt = AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_ISO)
                     .format(Date().time),
                 isHighPriority = priority
             ))

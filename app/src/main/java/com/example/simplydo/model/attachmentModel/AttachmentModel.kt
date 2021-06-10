@@ -1,6 +1,5 @@
 package com.example.simplydo.model.attachmentModel
 
-import android.net.Uri
 import com.example.simplydo.model.ContactModel
 
 
@@ -19,7 +18,7 @@ data class AttachmentModel(
 )
 
 data class AudioModel(
-    val uri: Uri,
+    val uri: String,
     val name: String,
     val duration: Int,
     val size: Int,
@@ -33,7 +32,18 @@ data class GalleryModel(
     val createdAt: String,
     val fileDataType: Int,
     val mimeType: String,
-    val contentUri: Uri,
+    val contentUri: String,
+    var isSelected: Boolean = false
+)
+
+data class DocumentModel(
+    val id: Long,
+    val name: String,
+    val size: Int,
+    val createdAt: String,
+    val fileDataType: Int,
+    val mimeType: String,
+    val contentUri: String,
     var isSelected: Boolean = false
 )
 

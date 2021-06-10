@@ -1,18 +1,19 @@
 package com.example.simplydo.ui.fragments.todoList
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.simplydo.model.CommonResponseModel
 import com.example.simplydo.model.ContactModel
 import com.example.simplydo.model.TodoModel
+import com.example.simplydo.model.attachmentModel.GalleryModel
 import com.example.simplydo.utli.AppConstant
+import com.example.simplydo.utli.AppFunctions
 import com.example.simplydo.utli.AppRepository
 import java.util.*
 
 
-class ToDoViewModel(context: Context, private val appRepository: AppRepository) :
+class ToDoViewModel(private val appRepository: AppRepository) :
     ViewModel() {
 
     // TODO: Implement the ViewModel
@@ -32,23 +33,24 @@ class ToDoViewModel(context: Context, private val appRepository: AppRepository) 
     fun createNewTodo(
         title: String,
         task: String,
-        eventDate: String,
+        eventDate: Long,
+        eventTime: String,
         priority: Boolean,
         contactInfo: ArrayList<ContactModel>,
-        imagesList: ArrayList<String>,
+        imagesList: ArrayList<GalleryModel>,
     ) {
         appRepository.insertNewTodoTask(
             TodoModel(
                 title = title,
                 todo = task,
-                eventTime = "",
+                eventTime = eventTime,
                 eventDate = eventDate,
-                contactInfo = contactInfo,
-                imageFiles = imagesList,
-                locationInfo = "",
-                createdAt = AppConstant.dateFormatter(AppConstant.DATE_PATTERN_ISO)
+                contactAttachments = contactInfo,
+                imageAttachments = imagesList,
+                locationData = "",
+                createdAt = AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_ISO)
                     .format(Date().time),
-                updatedAt = AppConstant.dateFormatter(AppConstant.DATE_PATTERN_ISO)
+                updatedAt = AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_ISO)
                     .format(Date().time),
                 isHighPriority = priority
             ))

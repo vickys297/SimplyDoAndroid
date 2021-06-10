@@ -14,7 +14,7 @@ import com.example.simplydo.databinding.MainActivityBinding
 import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.model.TodoModel
 import com.example.simplydo.ui.activity.SplashScreenActivity
-import com.example.simplydo.ui.fragments.login.LoginActivity
+import com.example.simplydo.ui.activity.login.LoginActivity
 import com.example.simplydo.utli.AppConstant
 import com.example.simplydo.utli.AppPreference
 import com.example.simplydo.utli.AppRepository
@@ -103,11 +103,11 @@ class MainActivity : AppCompatActivity() {
         totalTaskCountObserver = Observer {
             if (it.equals(0)) {
                 Log.d(TAG, "setUpObserver: No data available")
-                for (i in 1..100) {
+                for (i in 1..10) {
                     viewModel.insertDummyDataIntoLocalDatabase(
                         task = "Sample test task $i",
                         title = "Title $i",
-                        eventDate = "07-06-2021",
+                        eventDate = 1623349740000,
                         priority = true,
                         contactList = ArrayList(),
                         imageList = ArrayList()
@@ -115,7 +115,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-
     }
 
 

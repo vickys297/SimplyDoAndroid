@@ -117,7 +117,7 @@ class ContactsFragment :
                     selectedContact)
                 findNavController().popBackStack()
             } else {
-                AppConstant.showMessage("No contacts selected", requireContext())
+                AppFunctions.showMessage("No contacts selected", requireContext())
             }
         }
 

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.simplydo">
 
     <!--
@@ -12,12 +13,12 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_CONTACTS" /> <!-- storage permissions -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
 
     <meta-data
         android:name="com.google.android.geo.API_KEY"
         android:value="@string/MAP_API_KEY" />
-
 
     <application
         android:name=".MyApplication"
@@ -26,9 +27,9 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:networkSecurityConfig="@xml/networl_security_config"
         android:theme="@style/Theme.SimplyDo"
-        android:usesCleartextTraffic="true">
-
+        tools:ignore="UnusedAttribute">
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -46,7 +47,7 @@
             android:theme="@style/Theme.SimplyDo"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".ui.fragments.login.LoginActivity"
+            android:name=".ui.activity.login.LoginActivity"
             android:theme="@style/Theme.SimplyDo"
             android:windowSoftInputMode="adjustPan" />
         <activity

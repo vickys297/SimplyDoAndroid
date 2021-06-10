@@ -38,7 +38,7 @@ class OtherTodoFragment : Fragment(), LifecycleObserver {
     private val todoOptionDialogFragments = object : TodoOptionDialogFragments {
         override fun onDelete(item: TodoModel) {
             viewModel.removeTaskById(item)
-            AppConstant.showMessage("Task Removed", requireContext())
+            AppFunctions.showMessage("Task Removed", requireContext())
         }
 
         override fun onEdit(item: TodoModel) {

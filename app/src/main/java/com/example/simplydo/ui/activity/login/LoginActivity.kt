@@ -1,4 +1,4 @@
-package com.example.simplydo.ui.fragments.login
+package com.example.simplydo.ui.activity.login
 
 import android.content.Intent
 import android.os.Bundle
@@ -65,8 +65,6 @@ class LoginActivity : AppCompatActivity() {
                     when (it.result) {
                         AppConstant.API_RESULT_OK -> {
 
-
-
                             if (it.data.isVerified) {
 
                                 AppPreference.storePreferences(
@@ -74,11 +72,13 @@ class LoginActivity : AppCompatActivity() {
                                     it.data.uKey,
                                     this@LoginActivity
                                 )
+
                                 AppPreference.storePreferences(
                                     AppConstant.USER_MOBILE,
                                     it.data.mobile,
                                     this@LoginActivity
                                 )
+
                                 goToMainActivity()
                             } else {
                                 showOTPField()

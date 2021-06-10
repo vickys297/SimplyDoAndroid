@@ -46,7 +46,6 @@
     <string name="cancel">Cancel</string>
     <string name="close">Close</string>
     <string name="cancel_task">Cancel Task</string>
-    <string name="location">Location</string>
     <string name="contact">Contact</string>
     <string name="document">Document</string>
     <string name="audio">Audio</string>
@@ -58,4 +57,13 @@
     <string name="date_expired">Date Expired</string>
     <string name="play_audio">Play Audio</string>
     <string name="gallery">Gallery</string>
+    <string name="todo_audio_file">TODO Audio file</string>
+    <string name="event_date">Event Date</string>
+    <string name="set_a_title_to_task">Set a title to task</string>
+    <string name="describe_your_task_here">Describe your task here</string>
+    <string name="start_typing_things_here">Start typing things here</string>
+    <string name="event_time">Event Time</string>
+    <string name="attachments">Attachments</string>
+    <string name="contacts">Contacts</string>
+    <string name="location">Location</string>
 </resources>

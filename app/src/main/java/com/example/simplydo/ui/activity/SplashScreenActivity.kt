@@ -15,7 +15,7 @@ import com.example.simplydo.model.TokenResponse
 import com.example.simplydo.network.NoConnectivityException
 import com.example.simplydo.network.RetrofitServices
 import com.example.simplydo.ui.MainActivity
-import com.example.simplydo.ui.fragments.login.LoginActivity
+import com.example.simplydo.ui.activity.login.LoginActivity
 import com.example.simplydo.utli.AppConstant
 import com.example.simplydo.utli.AppPreference
 import com.example.simplydo.utli.AppRepository
@@ -24,8 +24,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-internal val TAG: String = SplashScreenActivity::class.java.canonicalName.toString()
-
+internal val TAG = SplashScreenActivity::class.java.canonicalName
 class SplashScreenActivity : AppCompatActivity() {
 
     lateinit var appRepository: AppRepository
@@ -44,7 +43,7 @@ class SplashScreenActivity : AppCompatActivity() {
 
             val uuid = AppPreference.getPreferences(AppConstant.UUID, "", this@SplashScreenActivity)
 
-            if (uuid.isNullOrEmpty() && uuid.isNullOrBlank()) {
+            if (uuid.isEmpty() && uuid.isBlank()) {
                 FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
                     if (!task.isSuccessful) {
                         Log.w(TAG, "Fetching FCM registration token failed", task.exception)
@@ -62,7 +61,7 @@ class SplashScreenActivity : AppCompatActivity() {
                 startActivity(intent)
                 finish()
             }
-        }, 3000)
+        }, 1000)
 
     }
 

@@ -20,12 +20,11 @@ open class ViewModelFactory internal constructor(
 
         return when (modelClass.canonicalName) {
             ToDoViewModel::class.java.canonicalName -> {
-                ToDoViewModel(context, this.appRepository) as T
+                ToDoViewModel(this.appRepository) as T
             }
 
             AddNewTodoViewModel::class.java.canonicalName -> {
                 AddNewTodoViewModel(
-                    context,
                     this.appRepository
                 ) as T
             }

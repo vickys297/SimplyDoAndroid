@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.simplydo.R
-import com.example.simplydo.utli.AppConstant
+import com.example.simplydo.utli.AppFunctions
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -44,7 +44,7 @@ class MapsFragment : Fragment() {
             MarkerOptions()
                 .position(home)
                 .title("Marker in Sydney")
-                .icon(AppConstant.getDrawableToBitmap(R.drawable.ic_map_marker, requireActivity())))
+                .icon(AppFunctions.getDrawableToBitmap(R.drawable.ic_map_marker, requireActivity())))
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(home))
 
 
@@ -56,7 +56,7 @@ class MapsFragment : Fragment() {
             googleMap.addMarker(
                 MarkerOptions()
                     .position(newMarker)
-                    .icon(AppConstant.getDrawableToBitmap(R.drawable.ic_map_marker,
+                    .icon(AppFunctions.getDrawableToBitmap(R.drawable.ic_map_marker,
                         requireActivity())))
         }
     }

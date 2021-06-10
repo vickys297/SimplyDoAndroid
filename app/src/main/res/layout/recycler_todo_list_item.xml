@@ -50,14 +50,14 @@
 
 
         <TextView
-            android:id="@+id/tvEventTime"
+            android:id="@+id/tvEventDate"
             style="@style/TodoCardEventDate"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:drawablePadding="4dp"
-            android:text="@{todoModel.getEventTextValue()}"
+            android:text="@{todoModel.getEventDateTextValue()}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvTodo" />
 
@@ -70,9 +70,9 @@
             android:layout_marginStart="8dp"
             android:text="@string/priority"
             android:visibility="@{todoModel.isVisible}"
-            app:layout_constraintBottom_toBottomOf="@+id/tvEventTime"
-            app:layout_constraintStart_toEndOf="@+id/tvEventTime"
-            app:layout_constraintTop_toTopOf="@+id/tvEventTime" />
+            app:layout_constraintBottom_toBottomOf="@+id/tvEventDate"
+            app:layout_constraintStart_toEndOf="@+id/tvEventDate"
+            app:layout_constraintTop_toTopOf="@+id/tvEventDate" />
 
         <TextView
             android:id="@+id/textViewDateExpired"
@@ -80,6 +80,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:visibility="@{todoModel.dateExpiredVisibility}"
             android:text="@string/date_expired"
             app:layout_constraintBottom_toBottomOf="@+id/textView6"
             app:layout_constraintStart_toEndOf="@+id/textView6"
@@ -96,7 +97,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvEventTime" />
+            app:layout_constraintTop_toBottomOf="@+id/tvEventDate" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.simplydo.databinding.GalleryListFragmentBinding
 import com.example.simplydo.model.attachmentModel.GalleryModel
 import com.example.simplydo.utli.AppConstant
+import com.example.simplydo.utli.AppFunctions
 import com.example.simplydo.utli.GalleryInterface
 import com.example.simplydo.utli.SimpleViewModelFactory
 import com.example.simplydo.utli.adapters.GalleryAdapter
@@ -29,7 +30,7 @@ class GalleryListFragment : Fragment() {
     private lateinit var viewModel: GalleryListViewModel
     lateinit var binding: GalleryListFragmentBinding
 
-    lateinit var galleryAdapter: GalleryAdapter
+    private lateinit var galleryAdapter: GalleryAdapter
 
     private val selectedGalleryArrayList = ArrayList<GalleryModel>()
 
@@ -49,7 +50,7 @@ class GalleryListFragment : Fragment() {
         }
 
         override fun onViewItem(galleryModel: GalleryModel) {
-            AppConstant.showMessage("Show Image Full Screen ", requireContext())
+            AppFunctions.showMessage("Show Image Full Screen ", requireContext())
         }
     }
 

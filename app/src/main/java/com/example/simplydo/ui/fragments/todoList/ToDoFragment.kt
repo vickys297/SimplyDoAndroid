@@ -1,4 +1,4 @@
-package com.example.simplydo.ui.fragments.todoList
+ package com.example.simplydo.ui.fragments.todoList
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,14 +17,14 @@ import com.example.simplydo.R
 import com.example.simplydo.databinding.TodoFragmentBinding
 import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.model.CommonResponseModel
-import com.example.simplydo.model.ContactModel
 import com.example.simplydo.model.TodoModel
 import com.example.simplydo.utli.*
 import com.example.simplydo.utli.adapters.TodoAdapter
-import com.example.simplydo.utli.bottomSheetDialogs.addTodoBasic.AddTodoBasic
+import com.example.simplydo.utli.bottomSheetDialogs.basicAddTodoDialog.AddTodoBasic
 import com.example.simplydo.utli.bottomSheetDialogs.calenderOptions.TodoOptions
 import com.example.simplydo.utli.bottomSheetDialogs.todoOptions.TodoOptionsFragment
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 internal val TAG = ToDoFragment::class.java.canonicalName
@@ -44,15 +44,12 @@ class ToDoFragment : Fragment() {
     private lateinit var todoAdapter: TodoAdapter
     private lateinit var todoModel: ArrayList<TodoModel>
 
-    private lateinit var contactInfo: ArrayList<ContactModel>
-    private lateinit var imagesList: ArrayList<String>
-
     private lateinit var recentSelectedItem: TodoModel
 
     private val todoOptionDialogFragments = object : TodoOptionDialogFragments {
         override fun onDelete(item: TodoModel) {
             viewModel.removeTaskById(item)
-            AppConstant.showMessage("Task Removed", requireContext())
+            AppFunctions.showMessage("Task Removed", requireContext())
         }
 
         override fun onEdit(item: TodoModel) {
@@ -108,25 +105,28 @@ class ToDoFragment : Fragment() {
     }
 
     private var appInterface = object : CreateBasicTodoInterface {
-        override fun onAddMoreDetails(eventDate: String) {
+
+        override fun onAddMoreDetails(eventDate: Long) {
             val bundle = Bundle()
-            bundle.putString(getString(R.string.eventDateString), eventDate)
+            bundle.putLong(getString(R.string.eventDateString), eventDate)
             findNavController().navigate(R.id.action_toDoFragment_to_addNewTodo, bundle)
         }
 
         override fun onCreateTodo(
             title: String,
             task: String,
-            eventDate: String,
-            isPriority: Boolean,
+            eventDate: Long,
+            eventTime: String,
+            isPriority: Boolean
         ) {
             viewModel.createNewTodo(
                 title,
                 task,
                 eventDate,
+                eventTime = eventTime,
                 isPriority,
-                contactInfo,
-                imagesList
+                ArrayList(),
+                ArrayList()
             )
         }
 
@@ -182,21 +182,15 @@ class ToDoFragment : Fragment() {
         }
 
 
-        viewModel.todoListObserver(
-            AppConstant.dateFormatter(AppConstant.DATE_PATTERN_COMMON)
-                .format(Date().time)
-        ).observe(viewLifecycleOwner, todoModelObserver)
+        viewModel.todoListObserver(System.currentTimeMillis().toString()).observe(viewLifecycleOwner, todoModelObserver)
 
         viewModel.todoListResponse.observe(viewLifecycleOwner, todoObserver)
         viewModel.noNetworkMessage.observe(viewLifecycleOwner, noNetworkObserver)
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // init
-        contactInfo = ArrayList()
-        imagesList = ArrayList()
         todoAdapter = TodoAdapter(todoAdapterInterface, requireContext())
 
 
@@ -207,7 +201,7 @@ class ToDoFragment : Fragment() {
         binding.btnNewTodo.setOnClickListener {
             AddTodoBasic.newInstance(
                 appInterface,
-                AppConstant.dateFormatter(AppConstant.DATE_PATTERN_COMMON).format(Date())
+                System.currentTimeMillis()
             )
                 .show(requireActivity().supportFragmentManager, "dialog")
         }

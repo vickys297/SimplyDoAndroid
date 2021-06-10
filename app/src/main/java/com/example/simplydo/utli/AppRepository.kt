@@ -20,27 +20,22 @@ import retrofit2.Response
 import java.util.*
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
+import javax.inject.Inject
 import kotlin.collections.HashMap
 
 
 internal val TAG = AppRepository::class.java.canonicalName
 
-class AppRepository private constructor(val context: Context, val appDatabase: AppDatabase) {
-
-
+class AppRepository @Inject private constructor(
+    val context: Context,
+    val appDatabase: AppDatabase
+) {
     private var db: TodoDAO = appDatabase.todoDao()
 
-
     companion object {
-
-        @Volatile
-        var instance: AppRepository? = null
-
-        fun getInstance(context: Context, appDatabase: AppDatabase) =
-            this.instance ?: synchronized(this) {
-                this.instance ?: AppRepository(context, appDatabase).also { this.instance = it }
-            }
-
+        fun getInstance(context: Context, appDatabase: AppDatabase): AppRepository {
+            return AppRepository(context, appDatabase)
+        }
     }
 
 
@@ -209,7 +204,14 @@ class AppRepository private constructor(val context: Context, val appDatabase: A
         if (data.isNotEmpty()) {
             data.forEach {
                 val callable =
-                    Callable { db.getTodoByCreatedDateEventDate(it.eventDate, it.createdAt) }
+                    Callable {
+                        db.getTodoByCreatedDateEventDate(
+                            AppFunctions.getDateStringFromMilliseconds(
+                                it.eventDate,
+                                AppConstant.DATE_PATTERN_EVENT_DATE
+                            ), it.createdAt
+                        )
+                    }
                 val executors = Executors.newSingleThreadExecutor().submit(callable)
 
                 val todo = executors.get()
@@ -240,14 +242,13 @@ class AppRepository private constructor(val context: Context, val appDatabase: A
         val callable = Callable {
             db.completeTaskById(
                 dtId,
-                AppConstant.dateFormatter(AppConstant.DATE_PATTERN_ISO).format(Date().time)
+                AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_ISO).format(Date().time)
             )
         }
         Executors.newSingleThreadExecutor().submit(callable)
     }
 
-
-    val getPastTask = object : PagingSource<Int, TodoModel>() {
+    inner class PastOrderDatasource(val currentTimeMillis: Long) : PagingSource<Int, TodoModel>() {
         override fun getRefreshKey(state: PagingState<Int, TodoModel>): Int? {
             return state.anchorPosition?.let { anchorPosition ->
                 val anchorPage = state.closestPageToPosition(anchorPosition)
@@ -258,7 +259,7 @@ class AppRepository private constructor(val context: Context, val appDatabase: A
         override suspend fun load(params: LoadParams<Int>): LoadResult<Int, TodoModel> {
             try {
                 val nextPageNumber = params.key ?: 0
-                val response = getPastTaskData(nextPageNumber)
+                val response = getPastTaskData(nextPageNumber, currentTimeMillis.toString())
                 Log.d(TAG, "load: ${response.data.size}")
 
                 return LoadResult.Page(
@@ -271,17 +272,19 @@ class AppRepository private constructor(val context: Context, val appDatabase: A
                 throw e
             }
         }
+
     }
 
-    private fun getPastTaskData(nextPageNumber: Int): TodoPagingModel {
+
+    private fun getPastTaskData(nextPageNumber: Int, currentTimeMillis: String): TodoPagingModel {
         val pageSize = 30
 
-        val callable1 = Callable { db.getPastTaskPaging(nextPageNumber, pageSize) }
+        val callable1 = Callable { db.getPastTaskPaging(nextPageNumber, pageSize, currentTimeMillis) }
         val executors1 = Executors.newSingleThreadExecutor().submit(callable1)
 
         val todoModelArrayList = executors1.get() as ArrayList<TodoModel>
 
-        val callable2 = Callable { db.getPastTaskCount(nextPageNumber, pageSize) }
+        val callable2 = Callable { db.getPastTaskCount(nextPageNumber, pageSize, currentTimeMillis) }
         val executors2 = Executors.newSingleThreadExecutor().submit(callable2)
 
         val remainingCount = executors2.get().toInt()

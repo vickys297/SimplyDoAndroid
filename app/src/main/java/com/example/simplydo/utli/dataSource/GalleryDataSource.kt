@@ -121,7 +121,7 @@ class GalleryDataSource internal constructor(private val context: Context) :
                     createdAt = createdAt,
                     fileDataType = fileDataType,
                     mimeType = mimeType,
-                    contentUri = contentUri
+                    contentUri = contentUri.toString()
                 )
                 galleryModelArrayList.add(newData)
             }

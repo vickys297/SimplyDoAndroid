@@ -1,16 +1,21 @@
-package com.example.simplydo.utli.bottomSheetDialogs.addTodoBasic
+package com.example.simplydo.utli.bottomSheetDialogs.basicAddTodoDialog
 
 import android.app.DatePickerDialog
+import android.content.Context
+import android.icu.util.Calendar
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import com.example.simplydo.databinding.FragmentAddTodoBasicListDialogBinding
 import com.example.simplydo.utli.AppConstant
+import com.example.simplydo.utli.AppFunctions
 import com.example.simplydo.utli.CreateBasicTodoInterface
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import java.util.*
+
 
 /**
  *
@@ -26,7 +31,7 @@ internal val TAG = AddTodoBasic::class.java.canonicalName
 
 class AddTodoBasic(
     private val appInterface: CreateBasicTodoInterface,
-    defaultEventDate: String,
+    defaultEventDate: Long,
 ) :
     BottomSheetDialogFragment() {
 
@@ -36,13 +41,7 @@ class AddTodoBasic(
     // onDestroyView.
     private val binding get() = _binding!!
 
-    private var eventDate: String
-
-    init {
-        // start with the given date
-        eventDate = defaultEventDate
-
-    }
+    private var eventDate = (defaultEventDate)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -52,8 +51,9 @@ class AddTodoBasic(
         return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
 
         binding.btnAddMoreDetails.setOnClickListener {
             appInterface.onAddMoreDetails(eventDate)
@@ -68,23 +68,47 @@ class AddTodoBasic(
             validateInput()
         }
 
-        binding.tvDayOfMonth.text =
-            AppConstant.parseStringDateToCalender(eventDate).get(Calendar.DAY_OF_MONTH).toString()
+        binding.linearLayoutTitle.setOnClickListener {
+            binding.etTitle.requestFocus()
+            requireActivity().runOnUiThread {
+                val inputMethodManager = requireActivity().getSystemService(
+                    Context.INPUT_METHOD_SERVICE
+                ) as InputMethodManager
 
-        binding.tvMonth.text = AppConstant.dateFormatter(AppConstant.DATE_PATTERN_MONTH_TEXT)
-            .format(AppConstant.parseStringDateToCalender(eventDate).time)
-            .uppercase(Locale.getDefault())
+                inputMethodManager.toggleSoftInputFromWindow(
+                    binding.etTitle.applicationWindowToken,
+                    InputMethodManager.SHOW_FORCED,
+                    0
+                )
+            }
+        }
 
-        binding.llDateSelector.setOnClickListener {
+        binding.linearLayoutTask.setOnClickListener {
+            binding.etTask.requestFocus()
+            requireActivity().runOnUiThread {
+                val inputMethodManager = requireActivity().getSystemService(
+                    Context.INPUT_METHOD_SERVICE
+                ) as InputMethodManager
+
+                inputMethodManager.toggleSoftInputFromWindow(
+                    binding.etTask.applicationWindowToken,
+                    InputMethodManager.SHOW_FORCED,
+                    0
+                )
+            }
+        }
+
+        binding.textViewEventDate.text = AppFunctions.getCurrentEventDate()
+
+        binding.linearLayoutEventDateSelector.setOnClickListener {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
 
 
-                val date = AppConstant.dateFormatter(AppConstant.DATE_PATTERN_COMMON).parse(eventDate)
-                val calendar = Calendar.getInstance()
-                calendar.time = date!!
-
                 val datePicker = DatePickerDialog(requireContext())
                 datePicker.datePicker.minDate = System.currentTimeMillis()
+
+                val calendar = Calendar.getInstance()
+                calendar.timeInMillis = eventDate
 
                 datePicker.datePicker.updateDate(
                     calendar.get(Calendar.YEAR),
@@ -92,18 +116,21 @@ class AddTodoBasic(
                     calendar.get(Calendar.DAY_OF_MONTH)
                 )
 
-                datePicker.setOnDateSetListener { picker, year, month, dayOfMonth ->
+                datePicker.setOnDateSetListener { _, year, month, dayOfMonth ->
                     val newDate = Calendar.getInstance()
                     newDate.set(year, month, dayOfMonth)
 
-                    eventDate = (AppConstant.dateFormatter(AppConstant.DATE_PATTERN_COMMON).format(newDate.time))
+                    Log.i(
+                        TAG,
+                        "timeInMillis: ${newDate.timeInMillis}/${System.currentTimeMillis()}"
+                    )
 
-                    binding.tvDayOfMonth.text =
-                        AppConstant.dateFormatter(AppConstant.DATE_PATTERN_DAY_OF_MONTH).format(newDate.time)
+                    eventDate = newDate.timeInMillis
 
-                    binding.tvMonth.text =
-                        AppConstant.dateFormatter(AppConstant.DATE_PATTERN_MONTH_TEXT).format(newDate.time)
-                            .uppercase(Locale.getDefault())
+                    binding.textViewEventDate.text = AppFunctions.getDateStringFromMilliseconds(
+                        newDate.timeInMillis,
+                        AppConstant.DATE_PATTERN_EVENT_DATE
+                    )
 
                     datePicker.dismiss()
                 }
@@ -125,10 +152,12 @@ class AddTodoBasic(
 
         if (flag) {
             appInterface.onCreateTodo(
-                binding.etTitle.text.toString(),
-                binding.etTask.text.toString(),
-                eventDate,
-                binding.cbPriority.isChecked)
+                title = binding.etTitle.text.toString(),
+                task = binding.etTask.text.toString(),
+                eventDate = eventDate,
+                eventTime = "23:59",
+                isPriority = binding.cbPriority.isChecked
+            )
             dismiss()
         }
     }
@@ -137,7 +166,7 @@ class AddTodoBasic(
     companion object {
         fun newInstance(
             createBasicTodoInterface: CreateBasicTodoInterface,
-            eventDate: String,
+            eventDate: Long,
         ): AddTodoBasic =
             AddTodoBasic(createBasicTodoInterface, eventDate)
     }
