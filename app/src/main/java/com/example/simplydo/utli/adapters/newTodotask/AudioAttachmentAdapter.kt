@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.simplydo.databinding.RecyclerAttachmentAudioListItemBinding
 import com.example.simplydo.model.attachmentModel.AudioModel
+import com.example.simplydo.utli.AudioAttachmentInterface
 
 class AudioAttachmentAdapter(private val audioAttachmentInterface: AudioAttachmentInterface) : RecyclerView.Adapter<AudioAttachmentAdapter.AudioViewHolder>() {
 
@@ -37,6 +38,7 @@ class AudioAttachmentAdapter(private val audioAttachmentInterface: AudioAttachme
         item.run {
             val viewHolder = holder.bind(this@run)
 
+            viewHolder.textView8.isSelected = true
             viewHolder.imageButtonPlay.setOnClickListener {
                 audioAttachmentInterface.onAudioSelect(item)
             }
@@ -52,7 +54,4 @@ class AudioAttachmentAdapter(private val audioAttachmentInterface: AudioAttachme
         notifyDataSetChanged()
     }
 
-    interface AudioAttachmentInterface{
-        fun onAudioSelect(item: AudioModel)
-    }
 }

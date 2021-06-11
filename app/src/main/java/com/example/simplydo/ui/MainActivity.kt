@@ -107,7 +107,7 @@ class MainActivity : AppCompatActivity() {
                     viewModel.insertDummyDataIntoLocalDatabase(
                         task = "Sample test task $i",
                         title = "Title $i",
-                        eventDate = 1623349740000,
+                        eventDate = System.currentTimeMillis(),
                         priority = true,
                         contactList = ArrayList(),
                         imageList = ArrayList()

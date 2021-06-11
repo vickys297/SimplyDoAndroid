@@ -1,28 +1,28 @@
 package com.example.simplydo.ui.fragments.attachments.location
 
 import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.simplydo.R
+import com.example.simplydo.databinding.FragmentMapsBinding
+import com.example.simplydo.utli.AppConstant
 import com.example.simplydo.utli.AppFunctions
-import com.google.android.gms.common.api.Status
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.libraries.places.api.Places
-import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.widget.AutocompleteSupportFragment
-import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 
 internal val TAG = MapsFragment::class.java.canonicalName
 
-class MapsFragment : Fragment() {
+class MapsFragment : Fragment(R.layout.fragment_maps) {
+
+    private lateinit var location: LatLng
+
+    private lateinit var _binding : FragmentMapsBinding
+    val binding : FragmentMapsBinding get() = _binding
 
     private val callback = OnMapReadyCallback { googleMap ->
         /**
@@ -35,70 +35,56 @@ class MapsFragment : Fragment() {
          * user has installed Google Play services and returned to the app.
          */
 
-        googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(requireContext(),
-            R.raw.map_styled_json))
+        googleMap.setMapStyle(
+            MapStyleOptions.loadRawResourceStyle(
+                requireContext(),
+                R.raw.map_styled_json
+            )
+        )
 
-        val home = LatLng(11.082096, 77.032576)
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(home, 12f))
+
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 12f))
         googleMap.addMarker(
             MarkerOptions()
-                .position(home)
+                .position(location)
                 .title("Marker in Sydney")
-                .icon(AppFunctions.getDrawableToBitmap(R.drawable.ic_map_marker, requireActivity())))
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(home))
+                .icon(AppFunctions.getDrawableToBitmap(R.drawable.ic_map_marker, requireActivity()))
+        )
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(location))
 
 
         googleMap.setOnMapClickListener {
-            val newMarker = it
+            location = it
 
             googleMap.clear()
 
             googleMap.addMarker(
                 MarkerOptions()
-                    .position(newMarker)
+                    .position(location)
                     .icon(AppFunctions.getDrawableToBitmap(R.drawable.ic_map_marker,
                         requireActivity())))
         }
     }
 
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View? {
-        return inflater.inflate(R.layout.fragment_maps, container, false)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        _binding = FragmentMapsBinding.bind(view)
+
+        location = LatLng(11.082096, 77.032576)
+
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
 
 
-        // Initialize the AutocompleteSupportFragment.
-        val autocompleteFragment = childFragmentManager.findFragmentById(R.id.autocomplete_fragment)
-                    as AutocompleteSupportFragment
-
-
-        Places.initialize(requireContext(),"AIzaSyCGc2VLW1Xg1Bj1KuOH_8e4VVN53Q85fBg")
-
-        // Specify the types of place data to return.
-        autocompleteFragment.setPlaceFields(listOf(Place.Field.ID, Place.Field.NAME))
-
-        // Set up a PlaceSelectionListener to handle the response.
-        autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
-            override fun onPlaceSelected(place: Place) {
-                // TODO: Get info about the selected place.
-                Log.d(TAG, "Place: ${place.name}, ${place.id}")
-                Log.d(TAG, "onPlaceSelected: latlng ${place.latLng}")
-            }
-
-            override fun onError(status: Status) {
-                // TODO: Handle the error.
-                Log.d(TAG, "An error occurred: $status")
-            }
-        })
-
+        binding.buttonSelectLocation.setOnClickListener {
+            findNavController().previousBackStackEntry?.savedStateHandle?.set(AppConstant.NAVIGATION_LOCATION_DATA_KEY, location)
+            findNavController().popBackStack()
+        }
+        binding.imageButtonClose.setOnClickListener {
+            findNavController().navigateUp()
+        }
     }
+
 }

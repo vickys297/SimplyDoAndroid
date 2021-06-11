@@ -43,7 +43,7 @@ class CalenderViewAdapter(
                 itemView.tag = this@run
 
                 itemView.setOnClickListener {
-                    calenderAdapterInterface.onDateSelect(bindingAdapterPosition, item.date)
+                    calenderAdapterInterface.onDateSelect(bindingAdapterPosition, item)
                 }
 
             }

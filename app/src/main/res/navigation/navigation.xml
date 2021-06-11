@@ -17,10 +17,6 @@
             app:popExitAnim="@android:anim/fade_out"
             app:popUpTo="@id/toDoFragment" />
         <action
-            android:id="@+id/action_toDoFragment_to_calenderFragment"
-            app:destination="@id/calenderFragment"
-            app:popUpTo="@id/toDoFragment" />
-        <action
             android:id="@+id/action_toDoFragment_to_otherTodoFragment"
             app:destination="@id/otherTodoFragment" />
         <action
@@ -30,6 +26,10 @@
             app:exitAnim="@android:anim/fade_out"
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/fade_out"
+            app:popUpTo="@id/toDoFragment" />
+        <action
+            android:id="@+id/action_toDoFragment_to_calenderFragment"
+            app:destination="@id/calenderFragment"
             app:popUpTo="@id/toDoFragment" />
     </fragment>
     <fragment

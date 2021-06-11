@@ -20,7 +20,8 @@ class AddNewTodoViewModel(val appRepository: AppRepository) :
         priority: Boolean,
         contactArray: ArrayList<ContactModel>,
         galleryArray: ArrayList<GalleryModel>,
-        audioArray: ArrayList<AudioModel>
+        audioArray: ArrayList<AudioModel>,
+        location: String
     ) {
         appRepository.insertNewTodoTask(
             TodoModel(
@@ -30,7 +31,7 @@ class AddNewTodoViewModel(val appRepository: AppRepository) :
                 eventTime = eventTime,
                 isHighPriority = priority,
                 contactAttachments = contactArray,
-                locationData = "",
+                locationData = location,
                 imageAttachments = galleryArray,
                 audioAttachments = audioArray,
                 createdAt = AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_ISO)

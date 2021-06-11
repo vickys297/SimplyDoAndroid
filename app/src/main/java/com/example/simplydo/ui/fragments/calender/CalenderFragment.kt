@@ -19,6 +19,7 @@ import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.model.ContactModel
 import com.example.simplydo.model.SmallCalenderModel
 import com.example.simplydo.model.TodoModel
+import com.example.simplydo.model.attachmentModel.CalenderDateSelectorModel
 import com.example.simplydo.utli.*
 import com.example.simplydo.utli.adapters.CalenderViewAdapter
 import com.example.simplydo.utli.adapters.TodoAdapter
@@ -36,7 +37,6 @@ class CalenderFragment : Fragment() {
         fun newInstance() = CalenderFragment()
     }
 
-
     private lateinit var nextAvailableDateObserver: Observer<List<TodoModel>>
     private lateinit var todoByDateObserver: Observer<List<TodoModel>>
     private lateinit var viewModel: CalenderViewModel
@@ -47,7 +47,10 @@ class CalenderFragment : Fragment() {
 
     private lateinit var todoAdapter: TodoAdapter
 
-    private var selectedEventDate: String
+    private var selectedEventDate: CalenderDateSelectorModel = CalenderDateSelectorModel(
+        startEventDate = AppFunctions.getCurrentDayMinInMilliSeconds(),
+        endEventDate = AppFunctions.getCurrentDayMaxInMilliSeconds()
+    )
 
     private var todoModel = ArrayList<TodoModel>()
 
@@ -56,18 +59,24 @@ class CalenderFragment : Fragment() {
 
 
     private val calenderAdapterInterface = object : CalenderAdapterInterface {
-        override fun onDateSelect(layoutPosition: Int, dateEvent: String) {
-            selectedEventDate = dateEvent
-            calenderViewAdapter.setActiveDate(layoutPosition)
+        override fun onDateSelect(layoutPosition: Int, smallCalenderModel: SmallCalenderModel) {
 
-            smallCalenderModels.forEach {
-                Log.d(TAG, "onDateSelect: Date-> ${it.date}/${it.isActive}")
+            // update current selected date
+            selectedEventDate.apply {
+                startEventDate = smallCalenderModel.startEventDate
+                endEventDate = smallCalenderModel.endEventDate
             }
 
-            viewModel.getTodoListByEventDate(selectedEventDate)
-                .observe(viewLifecycleOwner, todoByDateObserver)
+            // update calender time line to current date
+            calenderViewAdapter.setActiveDate(layoutPosition)
 
-            viewModel.requestDataFromCloud(selectedEventDate)
+            // get the task by current date from start morning to night
+            viewModel.getTodoListByEventDate(
+                smallCalenderModel.startEventDate,
+                smallCalenderModel.endEventDate
+            ).observe(viewLifecycleOwner, todoByDateObserver)
+
+//            viewModel.requestDataFromCloud(selectedEventDate)
         }
 
     }
@@ -137,12 +146,6 @@ class CalenderFragment : Fragment() {
     }
 
 
-    init {
-        selectedEventDate =
-            AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_COMMON).format(Date().time)
-    }
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -155,32 +158,62 @@ class CalenderFragment : Fragment() {
 
     private fun setObserver() {
 
+        // observer for task for the current or selected event date from morning till night
         todoByDateObserver = Observer {
 
-            Log.d(TAG, "todoList -> $it")
             todoModel = it as ArrayList<TodoModel>
 
+            // task available in the selected or current event date
             if (it.isNotEmpty()) {
                 todoAdapter.updateDataSet(it)
                 binding.llNoEventAvailable.visibility = View.GONE
                 binding.recyclerViewTodoList.visibility = View.VISIBLE
-            } else {
+            }
+            // task not available in the selected or current event date
+            else {
                 binding.llNoEventAvailable.visibility = View.VISIBLE
                 binding.recyclerViewTodoList.visibility = View.GONE
-                viewModel.getNextTaskAvailability(selectedEventDate)
+                viewModel.getNextTaskAvailability(selectedEventDate.endEventDate)
             }
 
         }
 
-        nextAvailableDateObserver = Observer {
+        nextAvailableDateObserver = Observer { todoList ->
 
-            Log.d(TAG, "Next available date observer $it")
-            it as ArrayList<TodoModel>
+            Log.d(TAG, "Next available date observer $todoList")
+            todoList as ArrayList<TodoModel>
 
-            if (it.isNotEmpty()) {
+            if (todoList.isNotEmpty()) {
                 binding.btnViewEventOnNextDate.visibility = View.VISIBLE
                 binding.tvNextEventAvailable.text =
-                    String.format("You have %d on %s", it.size, it[0].eventDate)
+                    String.format(
+                        "You have %d on %s",
+                        todoList.size,
+                        AppFunctions.getDateStringFromMilliseconds(
+                            todoList[0].eventDate,
+                            AppConstant.DATE_PATTERN_EVENT_DATE
+                        )
+                    )
+
+                binding.btnViewEventOnNextDate.setOnClickListener {
+
+                    val calendar = Calendar.getInstance()
+                    calendar.timeInMillis = todoList[0].eventDate
+
+                    calendar.set(Calendar.HOUR_OF_DAY, 0)
+                    calendar.set(Calendar.MINUTE, 0)
+                    calendar.set(Calendar.SECOND, 0)
+
+                    val startEventDate = calendar.timeInMillis
+
+                    calendar.set(Calendar.HOUR_OF_DAY, 23)
+                    calendar.set(Calendar.MINUTE, 59)
+                    calendar.set(Calendar.SECOND, 59)
+                    val endEventDate = calendar.timeInMillis
+
+                    viewModel.getTodoListByEventDate(startEventDate, endEventDate)
+                        .observe(viewLifecycleOwner, todoByDateObserver)
+                }
             } else {
                 binding.tvNextEventAvailable.text = String.format("You do not have upcoming task")
                 binding.btnViewEventOnNextDate.visibility = View.GONE
@@ -226,7 +259,7 @@ class CalenderFragment : Fragment() {
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
                 //Remove swiped item from list and notify the RecyclerView
-                val position = viewHolder.absoluteAdapterPosition
+                val position = viewHolder.layoutPosition
 
                 if (todoModel.isNotEmpty()) {
 
@@ -279,12 +312,16 @@ class CalenderFragment : Fragment() {
         // next task available date
         viewModel.nextAvailableDate.observe(viewLifecycleOwner, nextAvailableDateObserver)
 
+
         // get task list by event date
-        viewModel.getTodoListByEventDate(selectedEventDate)
+        viewModel.getTodoListByEventDate(
+            selectedEventDate.startEventDate,
+            selectedEventDate.endEventDate
+        )
             .observe(viewLifecycleOwner, todoByDateObserver)
 
         // check if there is any new data in cloud database
-        viewModel.requestDataFromCloud(selectedEventDate)
+//        viewModel.requestDataFromCloud(selectedEventDate)
     }
 
 
@@ -298,6 +335,20 @@ class CalenderFragment : Fragment() {
             val calendar = Calendar.getInstance()
             calendar.time = Date()
             calendar.add(Calendar.DAY_OF_MONTH, i)
+
+            calendar.set(Calendar.HOUR_OF_DAY, 0)
+            calendar.set(Calendar.MINUTE, 0)
+            calendar.set(Calendar.SECOND, 0)
+
+            val startEventDate = calendar.timeInMillis
+
+            calendar.set(Calendar.HOUR_OF_DAY, 23)
+            calendar.set(Calendar.MINUTE, 59)
+            calendar.set(Calendar.SECOND, 59)
+
+            val endEventDate = calendar.timeInMillis
+
+            Log.i(TAG, "populateRecyclerView: ${calendar.time}")
             smallCalenderModels.add(
                 SmallCalenderModel(
                     calendar.get(Calendar.DAY_OF_MONTH).toString(),
@@ -305,7 +356,9 @@ class CalenderFragment : Fragment() {
                         .format(calendar.time)
                         .uppercase(Locale.getDefault()),
                     AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_COMMON)
-                        .format(calendar.time)
+                        .format(calendar.time),
+                    startEventDate = startEventDate,
+                    endEventDate = endEventDate
                 )
             )
         }

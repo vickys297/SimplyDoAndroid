@@ -96,9 +96,7 @@ class ToDoFragment : Fragment() {
 
             findNavController().navigate(
                 R.id.action_toDoFragment_to_todoFullDetailsFragment,
-                bundle,
-                null,
-                extras
+                bundle
             )
         }
 

@@ -47,7 +47,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -179,13 +179,23 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
-                    android:text="@string/attachments" />
+                    android:text="@string/attachments"
+                    android:textColor="@color/purple_500"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <include
+                    android:id="@+id/noAttachmentFound"
+                    layout="@layout/no_attachment_found"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone" />
 
                 <LinearLayout
                     android:id="@+id/linearLayoutAudioAttachment"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_margin="8dp"
+
                     android:orientation="vertical"
                     android:padding="8dp"
                     android:visibility="gone">
@@ -209,12 +219,13 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    style="@style/TextInputTextLayout"
+                    android:id="@+id/linearLayoutGalleryAttachment"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_margin="8dp"
+
                     android:orientation="vertical"
-                    android:padding="8dp">
+                    android:padding="8dp"
+                    android:visibility="gone">
 
                     <TextView
                         android:id="@+id/textView19"
@@ -235,12 +246,12 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    style="@style/TextInputTextLayout"
+                    android:id="@+id/linearLayoutContactAttachment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
                     android:orientation="vertical"
-                    android:padding="8dp">
+                    android:padding="8dp"
+                    android:visibility="gone">
 
                     <TextView
                         android:id="@+id/textView20"
@@ -261,12 +272,12 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    style="@style/TextInputTextLayout"
+                    android:id="@+id/linearDocumentAttachment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
                     android:orientation="vertical"
-                    android:padding="8dp">
+                    android:padding="8dp"
+                    android:visibility="gone">
 
                     <TextView
                         android:id="@+id/textView21"
@@ -287,12 +298,12 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    style="@style/TextInputTextLayout"
+                    android:id="@+id/linearLocationAttachment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
                     android:orientation="vertical"
-                    android:padding="8dp">
+                    android:padding="8dp"
+                    android:visibility="gone">
 
                     <TextView
                         android:id="@+id/textView22"
@@ -303,12 +314,24 @@
                         android:textColor="@color/purple_500"
                         android:textStyle="bold" />
 
-                    <com.google.android.gms.maps.MapView
-                        android:id="@+id/mapView"
+                    <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
-                        android:layout_height="200dp"
-                        android:layout_margin="8dp" />
+                        android:layout_height="150dp"
+                        android:layout_margin="8dp"
+                        app:cardCornerRadius="8dp">
 
+                        <fragment
+                            android:id="@+id/mapView"
+                            android:name="com.google.android.gms.maps.SupportMapFragment"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            app:layout_constraintBottom_toTopOf="@+id/buttonSelectLocation"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/textView23"
+                            tools:context=".ui.fragments.addNewTodo.AddNewTodo" />
+
+                    </androidx.cardview.widget.CardView>
                 </LinearLayout>
 
             </LinearLayout>

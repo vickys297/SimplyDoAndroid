@@ -5,4 +5,6 @@ data class SmallCalenderModel(
     val month: String,
     val date: String,
     var isActive: Boolean = false,
+    val startEventDate: Long,
+    val endEventDate: Long,
 )

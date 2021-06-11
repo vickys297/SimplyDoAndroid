@@ -52,8 +52,8 @@ class TodoAdapter(
 
     override fun onBindViewHolder(holderTask: RecyclerView.ViewHolder, position: Int) {
 
-
         when (getItemViewType(position)) {
+
             0 -> {
                 val item = dataSet[position]
                 item.run {
@@ -66,13 +66,19 @@ class TodoAdapter(
                             return@setOnLongClickListener true
                         }
 
+
                         holder.tvTitle.transitionName = "task_title_$position"
                         holder.tvTodo.transitionName = "task_todo_$position"
+
+                        holder.textViewPriority.transitionName = "task_priority_$position"
+                        holder.textViewDateExpired.transitionName = "task_date_expired_$position"
 
                         itemView.setOnClickListener {
                             val extras = FragmentNavigatorExtras(
                                 holder.tvTitle to "transition_title",
-                                holder.tvTodo to "transition_todo"
+                                holder.tvTodo to "transition_todo",
+                                holder.textViewPriority to "transition_priority",
+                                holder.textViewDateExpired to "transition_date_expired"
                             )
 
                             todoItemInterface.onTaskClick(
@@ -84,6 +90,7 @@ class TodoAdapter(
                     }
                 }
             }
+
             1 -> {
                 val item = dataSet[position]
                 item.run {
@@ -128,6 +135,8 @@ class TodoAdapter(
             item: TodoModel,
             todoItemInterface: TodoItemInterface
         ): RecyclerTodoListItemBinding {
+
+
             return binding.apply {
                 todoModel = item
                 executePendingBindings()
@@ -146,7 +155,6 @@ class TodoAdapter(
 
             binding.tvTitle.paintFlags = binding.tvTitle.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             binding.tvTodo.paintFlags = binding.tvTodo.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-
 
         }
     }

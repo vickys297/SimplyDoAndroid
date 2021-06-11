@@ -42,4 +42,5 @@ object AppConstant {
     const val NAVIGATION_CONTACT_DATA_KEY: String ="SelectedContactList"
     const val NAVIGATION_AUDIO_DATA_KEY: String ="SelectedAudioList"
     const val NAVIGATION_GALLERY_DATA_KEY: String ="SelectedGalleryList"
+    const val NAVIGATION_LOCATION_DATA_KEY: String ="SelectedLocation"
 }

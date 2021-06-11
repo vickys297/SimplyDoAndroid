@@ -38,8 +38,8 @@ interface TodoDAO {
     fun getTodoForQuickView(eventDate: String): LiveData<List<TodoModel>>
 
     //    get task on current date
-    @Query("SELECT * FROM todoList WHERE eventDate =:eventDate ")
-    fun getTodoByEventDate(eventDate: String): LiveData<List<TodoModel>>
+    @Query("SELECT * FROM todoList WHERE eventDate >= :starEventDate AND eventDate <= :endEventDate")
+    fun getTodoByEventDate(starEventDate: Long, endEventDate: Long): LiveData<List<TodoModel>>
 
     //    complete task by dtid
     @Query("UPDATE todoList SET isCompleted = '1', synchronize ='0' , updatedAt =:updatedAt WHERE dtId =:dtId")
@@ -54,8 +54,8 @@ interface TodoDAO {
     fun getNotSynchronizedTodoData(): List<TodoModel>
 
     //    get task count on upcoming event date
-    @Query("SELECT * FROM todoList WHERE CAST(eventDate as DATE) > CAST(:date as DATE)")
-    fun getNextEventCountByDate(date: String): List<TodoModel>
+    @Query("SELECT * FROM todoList WHERE eventDate >= :currentEventDateMax limit 2")
+    fun getNextEventCountByDate(currentEventDateMax: Long): List<TodoModel>
 
 
     /*Cloud Purpose

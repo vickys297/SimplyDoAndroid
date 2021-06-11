@@ -155,7 +155,7 @@ class AddTodoBasic(
                 title = binding.etTitle.text.toString(),
                 task = binding.etTask.text.toString(),
                 eventDate = eventDate,
-                eventTime = "23:59",
+                eventTime = "",
                 isPriority = binding.cbPriority.isChecked
             )
             dismiss()

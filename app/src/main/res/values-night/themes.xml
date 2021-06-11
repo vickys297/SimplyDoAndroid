@@ -10,7 +10,9 @@
         <item name="colorSecondaryVariant">@color/teal_200</item>
         <item name="colorOnSecondary">#000000</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+
+        <item name="android:statusBarColor" tools:targetApi="l">#FF121212</item>
+        <item name="android:windowLightStatusBar">false</item>
         <!-- Customize your theme here. -->
     </style>
 
@@ -115,7 +117,8 @@
     <style name="ToolbarStyledText" parent="Theme.MaterialComponents.DayNight">
         <item name="android:fontFamily">@font/montserrat_regular</item>
         <item name="android:textSize">30sp</item>
-        <item name="android:textColor">#777777</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/purple_500</item>
     </style>
 
     <style name="TodoCard" parent="Theme.MaterialComponents.DayNight">

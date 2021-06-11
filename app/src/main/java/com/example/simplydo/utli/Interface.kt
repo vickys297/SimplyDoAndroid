@@ -2,6 +2,7 @@ package com.example.simplydo.utli
 
 import androidx.navigation.fragment.FragmentNavigator
 import com.example.simplydo.model.ContactModel
+import com.example.simplydo.model.SmallCalenderModel
 import com.example.simplydo.model.TodoModel
 import com.example.simplydo.model.attachmentModel.AudioModel
 import com.example.simplydo.model.attachmentModel.GalleryModel
@@ -18,7 +19,7 @@ interface CreateBasicTodoInterface {
 }
 
 interface CalenderAdapterInterface {
-    fun onDateSelect(layoutPosition: Int, dateEvent: String)
+    fun onDateSelect(layoutPosition: Int, smallCalenderModel: SmallCalenderModel)
 }
 
 interface TodoItemInterface {
@@ -64,7 +65,7 @@ interface AudioInterface {
     fun onAudioSelect(audioModel: AudioModel)
 }
 
-interface GalleryInterface{
+interface GalleryInterface {
     fun onGallerySelect(galleryModel: GalleryModel)
     fun onViewItem(galleryModel: GalleryModel)
 }
@@ -73,4 +74,16 @@ interface TodoTaskOptionsInterface {
     fun onCalenderView()
     fun onCompletedView()
     fun onPastTaskView()
+}
+
+
+interface GalleryAttachmentInterface {
+    fun onItemSelect(item: GalleryModel)
+}
+
+interface AudioAttachmentInterface {
+    fun onAudioSelect(item: AudioModel)
+}
+interface ContactAttachmentInterface {
+    fun onContactSelect(item: ContactModel)
 }

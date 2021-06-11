@@ -51,3 +51,8 @@ data class GalleryPagingModel(
     val nextPage: Int,
     val data: ArrayList<GalleryModel>,
 )
+
+data class CalenderDateSelectorModel(
+    var startEventDate: Long,
+    var endEventDate: Long,
+)

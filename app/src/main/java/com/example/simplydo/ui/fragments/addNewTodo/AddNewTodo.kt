@@ -21,7 +21,14 @@ import com.example.simplydo.model.attachmentModel.AudioModel
 import com.example.simplydo.model.attachmentModel.GalleryModel
 import com.example.simplydo.utli.*
 import com.example.simplydo.utli.adapters.newTodotask.AudioAttachmentAdapter
+import com.example.simplydo.utli.adapters.newTodotask.ContactAttachmentAdapter
+import com.example.simplydo.utli.adapters.newTodotask.GalleryAttachmentAdapter
 import com.example.simplydo.utli.bottomSheetDialogs.attachments.AddAttachmentsFragments
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
@@ -46,21 +53,36 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
 
     private var eventDate: Long = System.currentTimeMillis()
     private lateinit var eventTime: String
+    private var latLng: LatLng? = null
 
 
     // all adapter
-    lateinit var audioAttachmentAdapter: AudioAttachmentAdapter
+    private lateinit var audioAttachmentAdapter: AudioAttachmentAdapter
+    private lateinit var galleryAttachmentAdapter: GalleryAttachmentAdapter
+    private lateinit var contactAttachmentAdapter: ContactAttachmentAdapter
 
 
     // all interfaces
 
     private val audioAttachmentInterface =
-        object : AudioAttachmentAdapter.AudioAttachmentInterface {
+        object : AudioAttachmentInterface {
             override fun onAudioSelect(item: AudioModel) {
 
             }
 
         }
+    private val galleryAttachmentInterface =
+        object : GalleryAttachmentInterface {
+            override fun onItemSelect(item: GalleryModel) {
+
+            }
+        }
+
+    private val contactAttachmentInterface = object : ContactAttachmentInterface {
+        override fun onContactSelect(item: ContactModel) {
+
+        }
+    }
 
     private var addAttachmentInterface: AddAttachmentInterface = object : AddAttachmentInterface {
         override fun onAddDocument() {
@@ -152,8 +174,17 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
         ) { result ->
             // Do something with the result.
             contactArrayList = result
+
+            checkForAttachment()
+
             Log.d(TAG, "NAVIGATION_CONTACT_DATA_KEY: $result")
 
+            if (contactArrayList.isNotEmpty()) {
+                binding.linearLayoutContactAttachment.visibility = View.VISIBLE
+                contactAttachmentAdapter.updateDataSet(contactArrayList)
+            } else {
+                binding.linearLayoutContactAttachment.visibility = View.GONE
+            }
 
         }
 
@@ -165,9 +196,12 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
         ) { result ->
             // Do something with the result.
             audioArrayList = result
+
+            checkForAttachment()
+
             Log.d(TAG, "NAVIGATION_AUDIO_DATA_KEY: $result")
 
-            if (result.isNotEmpty()) {
+            if (audioArrayList.isNotEmpty()) {
                 binding.linearLayoutAudioAttachment.visibility = View.VISIBLE
                 audioAttachmentAdapter.updateDataSet(audioArrayList)
             } else {
@@ -184,10 +218,71 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
         ) { result ->
             // Do something with the result.
             galleryArrayList = result
+
+            checkForAttachment()
+
             Log.d(TAG, "NAVIGATION_GALLERY_DATA_KEY: $result")
+
+            if (galleryArrayList.isNotEmpty()) {
+                binding.linearLayoutGalleryAttachment.visibility = View.VISIBLE
+                galleryAttachmentAdapter.updateDataset(galleryArrayList)
+            } else {
+                binding.linearLayoutGalleryAttachment.visibility = View.GONE
+            }
+        }
+
+
+        // We use a String here, but any type that can be put in a Bundle is supported
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<LatLng>(
+            AppConstant.NAVIGATION_LOCATION_DATA_KEY
+        )?.observe(
+            viewLifecycleOwner
+        ) { result ->
+
+            latLng = result
+
+            checkForAttachment()
+
+
+            // Do something with the result.
+            Log.i(TAG, "attachmentDataObserver: latLng --> $result")
+
+            binding.linearLocationAttachment.visibility = View.GONE
+
+            result?.let { latlng ->
+
+                binding.linearLocationAttachment.visibility = View.VISIBLE
+
+                val mapFragment =
+                    childFragmentManager.findFragmentById(R.id.mapView) as SupportMapFragment?
+
+                mapFragment?.getMapAsync { googleMap ->
+                    googleMap.clear()
+
+                    Log.i(TAG, "attachmentDataObserver: $googleMap")
+
+                    googleMap.setMapStyle(
+                        MapStyleOptions.loadRawResourceStyle(
+                            requireContext(),
+                            R.raw.map_styled_json
+                        )
+                    )
+
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, 12f))
+                    googleMap.addMarker(
+                        MarkerOptions()
+                            .position(latlng)
+                            .icon(
+                                AppFunctions.getDrawableToBitmap(
+                                    R.drawable.ic_map_marker,
+                                    requireActivity()
+                                )
+                            )
+                    )
+                }
+            }
         }
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -317,7 +412,8 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
                     binding.cbPriority.isChecked,
                     galleryArray = galleryArrayList,
                     contactArray = contactArrayList,
-                    audioArray = audioArrayList
+                    audioArray = audioArrayList,
+                    location = "${latLng?.latitude},${latLng?.longitude}"
                 )
                 snackBar = Snackbar.make(binding.root, "New task add", Snackbar.LENGTH_SHORT)
                 findNavController().navigateUp()
@@ -340,6 +436,10 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
 
         audioAttachmentAdapter =
             AudioAttachmentAdapter(audioAttachmentInterface = audioAttachmentInterface)
+        galleryAttachmentAdapter =
+            GalleryAttachmentAdapter(requireContext(), galleryAttachmentInterface)
+        contactAttachmentAdapter =
+            ContactAttachmentAdapter(requireContext(), contactAttachmentInterface)
 
         binding.recyclerViewAudioAttachments.apply {
             layoutManager =
@@ -347,7 +447,34 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
             adapter = audioAttachmentAdapter
         }
 
+        binding.recyclerViewGalleryAttachments.apply {
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            adapter = galleryAttachmentAdapter
+        }
 
+        binding.recyclerViewContactAttachments.apply {
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            adapter = contactAttachmentAdapter
+        }
+
+        checkForAttachment()
+
+    }
+
+    private fun checkForAttachment() {
+        Log.i(TAG, "checkForAttachment: $")
+        if (
+            audioArrayList.isEmpty() &&
+            galleryArrayList.isEmpty() &&
+            contactArrayList.isEmpty() &&
+            latLng == null
+        ) {
+            binding.noAttachmentFound.root.visibility = View.VISIBLE
+        } else {
+            binding.noAttachmentFound.root.visibility = View.GONE
+        }
     }
 
 

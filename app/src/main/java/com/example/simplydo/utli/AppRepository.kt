@@ -62,14 +62,6 @@ class AppRepository @Inject private constructor(
 //        deleteTodoFromCloud(id)
     }
 
-    fun getTodoByEventDate(
-        date: String,
-    ) {
-        Thread {
-            db.getTodoByEventDate(date)
-        }.start()
-
-    }
 
     private fun deleteTodoFromCloud(id: Long) {
 
@@ -227,13 +219,12 @@ class AppRepository @Inject private constructor(
     }
 
     fun getNextTaskAvailability(
-        selectedEventDate: String,
+        currentEventDateMax: Long,
         nextAvailableDate: MutableLiveData<List<TodoModel>>,
     ) {
         val callable = Callable {
-            db.getNextEventCountByDate(date = selectedEventDate)
+            db.getNextEventCountByDate(currentEventDateMax = currentEventDateMax)
         }
-
         val executors = Executors.newSingleThreadExecutor().submit(callable)
         nextAvailableDate.postValue(executors.get())
     }

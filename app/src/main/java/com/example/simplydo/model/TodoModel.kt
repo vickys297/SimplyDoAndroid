@@ -75,6 +75,12 @@ data class TodoModel(
     }
 
     fun dateExpiredVisibility(): Int {
+
+        if (eventTime.isEmpty()) {
+            return View.GONE
+        }
+
+
         val currentDate = System.currentTimeMillis()
 
         val calendar = Calendar.getInstance()

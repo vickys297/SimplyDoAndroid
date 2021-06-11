@@ -15,8 +15,8 @@ class CalenderViewModel(val appRepository: AppRepository) : ViewModel() {
 
     val nextAvailableDate = MutableLiveData<List<TodoModel>>()
 
-    fun getTodoListByEventDate(date: String): LiveData<List<TodoModel>> {
-        return appRepository.appDatabase.todoDao().getTodoByEventDate(date)
+    fun getTodoListByEventDate(startEventDate: Long, endEventDate: Long): LiveData<List<TodoModel>> {
+        return appRepository.appDatabase.todoDao().getTodoByEventDate(startEventDate, endEventDate)
     }
 
     fun requestDataFromCloud(selectedEventDate: String) {
@@ -47,7 +47,7 @@ class CalenderViewModel(val appRepository: AppRepository) : ViewModel() {
 
     }
 
-    fun getNextTaskAvailability(selectedEventDate: String) {
+    fun getNextTaskAvailability(selectedEventDate: Long) {
         appRepository.getNextTaskAvailability(selectedEventDate, nextAvailableDate)
     }
 

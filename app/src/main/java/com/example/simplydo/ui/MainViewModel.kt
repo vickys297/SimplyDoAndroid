@@ -37,7 +37,7 @@ class MainViewModel(val context: Context, val appRepository: AppRepository) : Vi
             TodoModel(
                 title = title,
                 todo = task,
-                eventTime = "23:59",
+                eventTime = "",
                 eventDate = eventDate,
                 contactAttachments = contactList,
                 imageAttachments = imageList,

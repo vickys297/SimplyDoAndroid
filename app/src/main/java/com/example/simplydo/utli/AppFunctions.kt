@@ -91,4 +91,29 @@ object AppFunctions {
         calender.timeInMillis = currentTimeMillis
         return calender.get(Calendar.DAY_OF_MONTH)
     }
+
+    fun convertTimeStringToDisplayFormat(eventTime: String): String {
+        val et = eventTime.split(":".toRegex())
+        val hour = if (et[0].toInt() > 12) et[0].toInt() - 12 else et[0].toInt()
+        val minute = et[1].toInt()
+        return "$hour : $minute ${if (hour > 11) "AM" else "PM"}"
+    }
+
+    fun getCurrentDayMaxInMilliSeconds(): Long {
+        val calendar = Calendar.getInstance()
+        calendar.set(Calendar.HOUR_OF_DAY, 23)
+        calendar.set(Calendar.MINUTE, 59)
+        calendar.set(Calendar.SECOND, 59)
+
+        return calendar.timeInMillis
+    }
+
+    fun getCurrentDayMinInMilliSeconds(): Long {
+        val calendar = Calendar.getInstance()
+        calendar.set(Calendar.HOUR_OF_DAY, 0)
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.SECOND, 0)
+
+        return calendar.timeInMillis
+    }
 }

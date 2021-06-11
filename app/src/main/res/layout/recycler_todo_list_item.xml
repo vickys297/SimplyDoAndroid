@@ -56,20 +56,20 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
-            android:drawablePadding="4dp"
+            android:drawablePadding="10dp"
             android:text="@{todoModel.getEventDateTextValue()}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvTodo" />
 
 
         <TextView
-            android:id="@+id/textView6"
+            android:id="@+id/textViewPriority"
             style="@style/PriorityText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="@string/priority"
-            android:visibility="@{todoModel.isVisible}"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/tvEventDate"
             app:layout_constraintStart_toEndOf="@+id/tvEventDate"
             app:layout_constraintTop_toTopOf="@+id/tvEventDate" />
@@ -80,11 +80,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:visibility="@{todoModel.dateExpiredVisibility}"
             android:text="@string/date_expired"
-            app:layout_constraintBottom_toBottomOf="@+id/textView6"
-            app:layout_constraintStart_toEndOf="@+id/textView6"
-            app:layout_constraintTop_toTopOf="@+id/textView6"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/textViewPriority"
+            app:layout_constraintStart_toEndOf="@+id/textViewPriority"
+            app:layout_constraintTop_toTopOf="@+id/textViewPriority"
             app:layout_constraintVertical_bias="0.0" />
 
         <androidx.recyclerview.widget.RecyclerView
