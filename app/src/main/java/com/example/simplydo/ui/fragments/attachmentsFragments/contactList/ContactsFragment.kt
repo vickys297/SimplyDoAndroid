@@ -1,8 +1,9 @@
-package com.example.simplydo.ui.fragments.attachments.contactList
+package com.example.simplydo.ui.fragments.attachmentsFragments.contactList
 
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -148,7 +149,8 @@ class ContactsFragment :
 
     private fun getContactList() {
         lifecycleScope.launch {
-            viewModel.flow.collectLatest { pagingData ->
+            viewModel.getContactList(requireContext()).collectLatest { pagingData ->
+                Log.i(TAG, "getContactList: pagingData $pagingData")
                 contactAdapter.submitData(pagingData)
             }
         }

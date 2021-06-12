@@ -76,22 +76,8 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.12.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
 
-    def paging_version = "3.0.0"
-
-
+    def paging_version = "3.1.0-alpha01"
     implementation "androidx.paging:paging-runtime-ktx:$paging_version" // For Kotlin use paging-runtime-ktx
-
-    implementation "androidx.paging:paging-runtime-ktx:$paging_version"
-    // For Kotlin use paging-runtime-ktx
-
-    // alternatively - without Android dependencies for testing
-    testImplementation "androidx.paging:paging-common-ktx:$paging_version"
-    // For Kotlin use paging-common-ktx
-
-    // optional - RxJava support
-    implementation "androidx.paging:paging-rxjava2-ktx:$paging_version"
-    // For Kotlin use paging-rxjava2-ktx
-
 
     def room_version = "2.3.0"
     // Room database
@@ -101,7 +87,7 @@ dependencies {
 
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.0-native-mt'
 
-    def work_version = "2.5.0"
+    def work_version = "2.6.0-beta01"
     implementation "androidx.work:work-runtime-ktx:$work_version"
 
     // optional - GCMNetworkManager support

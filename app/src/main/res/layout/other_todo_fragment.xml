@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.example.simplydo.ui.fragments.pastAndCompletedTodoFragments.OtherTodoViewModel" />
+            type="com.example.simplydo.ui.fragments.otherTodoFragments.OtherTodoViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

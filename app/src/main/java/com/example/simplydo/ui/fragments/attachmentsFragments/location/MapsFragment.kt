@@ -1,4 +1,4 @@
-package com.example.simplydo.ui.fragments.attachments.location
+package com.example.simplydo.ui.fragments.attachmentsFragments.location
 
 import android.os.Bundle
 import android.view.View

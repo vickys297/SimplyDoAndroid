@@ -14,6 +14,7 @@ import com.example.simplydo.model.TodoModel
 import com.example.simplydo.model.TodoPagingModel
 import com.example.simplydo.network.NoConnectivityException
 import com.example.simplydo.network.RetrofitServices
+import com.example.simplydo.ui.fragments.quickTodoList.PAGE_SIZE
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -21,6 +22,7 @@ import java.util.*
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 
@@ -220,13 +222,13 @@ class AppRepository @Inject private constructor(
 
     fun getNextTaskAvailability(
         currentEventDateMax: Long,
-        nextAvailableDate: MutableLiveData<List<TodoModel>>,
+        nextAvailableDate: MutableLiveData<ArrayList<TodoModel>>,
     ) {
-        val callable = Callable {
+
+        val response = Executors.newSingleThreadExecutor().submit(Callable {
             db.getNextEventCountByDate(currentEventDateMax = currentEventDateMax)
-        }
-        val executors = Executors.newSingleThreadExecutor().submit(callable)
-        nextAvailableDate.postValue(executors.get())
+        }).get()
+        nextAvailableDate.postValue(response as ArrayList<TodoModel>)
     }
 
     fun completeTaskById(dtId: Long) {
@@ -345,4 +347,165 @@ class AppRepository @Inject private constructor(
         return TodoPagingModel(todoModelArrayList, incrementer)
     }
 
+
+    inner class QuickTodoPagingSource(private val eventStartDateTime: Long, val pageSize: Int) :
+        PagingSource<Int, TodoModel>() {
+
+        override fun getRefreshKey(state: PagingState<Int, TodoModel>): Int? {
+            return state.anchorPosition?.let { anchorPosition ->
+                val anchorPage = state.closestPageToPosition(anchorPosition)
+                anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
+            }
+        }
+
+        override suspend fun load(params: LoadParams<Int>): LoadResult<Int, TodoModel> {
+            try {
+                val nextPageNumber = params.key ?: 0
+                val response = getQuickTodoList(eventStartDateTime, nextPageNumber, pageSize)
+                Log.d(TAG, "load: ${response.data.size}")
+
+                return LoadResult.Page(
+                    data = response.data,
+                    prevKey = null, // Only paging forward.
+                    nextKey = if (response.nextPage == -1) null else response.nextPage
+                )
+
+            } catch (e: Exception) {
+                throw e
+            }
+        }
+
+    }
+
+    inner class CalenderTodoList(
+        private val startEventDate: Long,
+        private val endEventDate: Long,
+        val pageSize: Int
+    ) :
+        PagingSource<Int, TodoModel>() {
+
+        override fun getRefreshKey(state: PagingState<Int, TodoModel>): Int? {
+            return state.anchorPosition?.let { anchorPosition ->
+                val anchorPage = state.closestPageToPosition(anchorPosition)
+                anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
+            }
+        }
+
+        override suspend fun load(params: LoadParams<Int>): LoadResult<Int, TodoModel> {
+            return try {
+                val nextPageNumber = params.key ?: 0
+                val response =
+                    getTodoListOfADay(startEventDate, endEventDate, nextPageNumber, pageSize)
+                Log.d(TAG, "load: ${response.data.size}")
+
+                LoadResult.Page(
+                    data = response.data,
+                    prevKey = null, // Only paging forward.
+                    nextKey = if (response.nextPage == -1) null else response.nextPage
+                )
+
+            } catch (e: Exception) {
+                return LoadResult.Error(e)
+            }
+        }
+
+    }
+
+    private fun getTodoListOfADay(
+        startEventDate: Long,
+        endEventDate: Long,
+        nextPageNumber: Int,
+        pageSize: Int
+    ): TodoPagingModel {
+        Log.i(TAG, "getTodoListOfADay: startEventDate -> $startEventDate/$endEventDate ")
+
+        val todoListArrayList = Executors.newSingleThreadExecutor().submit(Callable {
+            db.getSingleDayTodoList(startEventDate, endEventDate, nextPageNumber, pageSize)
+        }).get()
+
+        Log.i(TAG, "getTodoListOfADay: ${todoListArrayList.size}")
+
+        if (todoListArrayList.isEmpty()) {
+            return TodoPagingModel(
+                nextPage = -1,
+                data = ArrayList()
+            )
+        }
+
+        val todoListNextAvailableDatCount = Executors.newSingleThreadExecutor().submit {
+            Callable {
+                db.getSingleDayTodoListCount(
+                    startEventDate,
+                    endEventDate,
+                    nextPageNumber + pageSize,
+                    pageSize
+                )
+            }
+        }.get()
+
+        val incrementer = if (todoListNextAvailableDatCount != 0) {
+            nextPageNumber + pageSize
+        } else {
+            -1
+        }
+
+        return TodoPagingModel(
+            nextPage = incrementer,
+            data = todoListArrayList as ArrayList<TodoModel>
+        )
+    }
+
+    private fun getQuickTodoList(
+        eventStartDateTime: Long,
+        nextPageNumber: Int,
+        pageSize: Int
+    ): TodoPagingModel {
+        val quickTodoListArray = Executors.newSingleThreadExecutor().submit(Callable {
+            db.getQuickTodoList(eventStartDateTime, nextPageNumber, pageSize)
+        }).get()
+
+        if (quickTodoListArray.isEmpty()) {
+            return TodoPagingModel(
+                nextPage = -1,
+                data = quickTodoListArray as ArrayList<TodoModel>
+            )
+        }
+
+        val checkNextAvailableData = Executors.newSingleThreadExecutor().submit(Callable {
+            db.getQuickTodoListCount(eventStartDateTime, nextPageNumber + pageSize, pageSize)
+        }).get()
+
+        val increment = if (checkNextAvailableData != 0) {
+            nextPageNumber + PAGE_SIZE
+        } else {
+            -1
+        }
+
+        Log.i(TAG, "getQuickTodoList: $eventStartDateTime")
+        Log.i(TAG, "getQuickTodoList: $checkNextAvailableData")
+        Log.i(TAG, "getQuickTodoList: $quickTodoListArray")
+
+        return TodoPagingModel(
+            nextPage = increment,
+            data = quickTodoListArray as ArrayList<TodoModel>
+        )
+
+    }
+
+    fun getSelectedEventDateItemCount(
+        startEventDate: Long,
+        endEventDate: Long,
+        selectedEventDateTotalCount: MutableLiveData<Int>
+    ) {
+        val response = Executors.newSingleThreadExecutor().submit(Callable {
+            db.getSingleDayTodoListTotalCount(
+                startEventDate,
+                endEventDate
+            )
+        }).get()
+        selectedEventDateTotalCount.postValue(response)
+    }
+
+
 }
+

@@ -6,7 +6,7 @@
     app:startDestination="@id/toDoFragment">
     <fragment
         android:id="@+id/toDoFragment"
-        android:name="com.example.simplydo.ui.fragments.todoList.ToDoFragment"
+        android:name="com.example.simplydo.ui.fragments.quickTodoList.QuickTodoFragment"
         android:label="ToDoFragment">
         <action
             android:id="@+id/action_toDoFragment_to_addNewTodo"
@@ -69,29 +69,28 @@
             app:popUpTo="@id/calenderFragment" />
         <action
             android:id="@+id/action_calenderFragment_to_todoFullDetailsFragment"
-            app:destination="@id/todoFullDetailsFragment"
-            app:popUpTo="@id/calenderFragment" />
+            app:destination="@id/todoFullDetailsFragment" />
     </fragment>
     <fragment
         android:id="@+id/contactsFragment"
-        android:name="com.example.simplydo.ui.fragments.attachments.contactList.ContactsFragment"
+        android:name="com.example.simplydo.ui.fragments.attachmentsFragments.contactList.ContactsFragment"
         android:label="ContactsFragment" />
     <fragment
         android:id="@+id/galleryListFragment"
-        android:name="com.example.simplydo.ui.fragments.attachments.gallaryList.GalleryListFragment"
+        android:name="com.example.simplydo.ui.fragments.attachmentsFragments.gallaryList.GalleryListFragment"
         android:label="GalleryListFragment" />
     <fragment
         android:id="@+id/mapsFragment"
-        android:name="com.example.simplydo.ui.fragments.attachments.location.MapsFragment"
+        android:name="com.example.simplydo.ui.fragments.attachmentsFragments.location.MapsFragment"
         android:label="fragment_maps"
         tools:layout="@layout/fragment_maps" />
     <fragment
         android:id="@+id/audioListFragment"
-        android:name="com.example.simplydo.ui.fragments.attachments.audioListView.AudioListFragment"
+        android:name="com.example.simplydo.ui.fragments.attachmentsFragments.audioListView.AudioListFragment"
         android:label="AudioListFragment" />
     <fragment
         android:id="@+id/otherTodoFragment"
-        android:name="com.example.simplydo.ui.fragments.pastAndCompletedTodoFragments.OtherTodoFragment"
+        android:name="com.example.simplydo.ui.fragments.otherTodoFragments.OtherTodoFragment"
         android:label="OtherTodoFragment" >
         <action
             android:id="@+id/action_otherTodoFragment_to_todoFullDetailsFragment"

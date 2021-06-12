@@ -14,14 +14,13 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.simplydo.model.attachmentModel.GalleryModel
 import com.example.simplydo.model.attachmentModel.GalleryPagingModel
-
+internal val TAG = GalleryDataSource::class.java.canonicalName
 class GalleryDataSource internal constructor(private val context: Context) :
     PagingSource<Int, GalleryModel>() {
+
+
     override fun getRefreshKey(state: PagingState<Int, GalleryModel>): Int? {
-        return state.anchorPosition?.let { anchorPosition ->
-            val anchorPage = state.closestPageToPosition(anchorPosition)
-            anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
-        }
+        return null
     }
 
     @SuppressLint("NewApi")

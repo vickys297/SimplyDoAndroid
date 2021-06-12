@@ -1,14 +1,18 @@
 package com.example.simplydo.utli.dataSource
 
+import android.content.ContentResolver
 import android.content.Context
+import android.os.Build
+import android.os.Bundle
 import android.provider.ContactsContract
 import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.simplydo.model.ContactModel
 import com.example.simplydo.model.attachmentModel.ContactPagingModel
+import java.util.*
 
-internal val TAG = ContactPagingSource::class.java.canonicalName
+private val TAG_CONTACT_PAGING = ContactPagingSource::class.java.canonicalName
 
 class ContactPagingSource(val context: Context) : PagingSource<Int, ContactModel>() {
     override fun getRefreshKey(state: PagingState<Int, ContactModel>): Int? {
@@ -20,98 +24,207 @@ class ContactPagingSource(val context: Context) : PagingSource<Int, ContactModel
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ContactModel> {
 
-        try {
+        return   try {
             val nextPageNumber = params.key ?: 0
             val response = getContactList(nextPageNumber)
-            Log.d(TAG, "load: ${response.contacts.size}")
+            Log.d(TAG_CONTACT_PAGING, "load: ${response.contacts.size}")
 
-            return LoadResult.Page(
+             LoadResult.Page(
                 data = response.contacts,
                 prevKey = null, // Only paging forward.
                 nextKey = if (response.nextPage == -1) null else response.nextPage
             )
 
         } catch (e: Exception) {
-            throw e
+            return LoadResult.Error(e)
         }
     }
 
     private fun getContactList(nextPageNumber: Int): ContactPagingModel {
-        val pageSize = 30
+        Log.i(com.example.simplydo.utli.TAG, "getContactList: $nextPageNumber")
+        val pageSize = 100
         val contactModel = ArrayList<ContactModel>()
 
         val projection = arrayOf(
             ContactsContract.Contacts._ID,
-            ContactsContract.Contacts.HAS_PHONE_NUMBER,
-            ContactsContract.Contacts.DISPLAY_NAME
+            ContactsContract.Contacts.HAS_PHONE_NUMBER
         )
-//        val sortOrder = "${ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME_PRIMARY} ASC LIMIT $pageSize OFFSET $nextPageNumber"
-        val sortOrder = "${ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME_PRIMARY} ASC"
-        val cursor = context.contentResolver.query(
-            ContactsContract.Contacts.CONTENT_URI,
-            projection,
-            null,
-            null,
-            sortOrder
-        )
+        val sortOrder =
+            "${ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME_PRIMARY} ASC LIMIT $pageSize, $nextPageNumber"
 
-        cursor?.let {
 
-            while (cursor.moveToNext()) {
 
-                val id = cursor.getString(
-                    cursor.getColumnIndex(ContactsContract.Contacts._ID)
-                )
 
-                val contactName = cursor.getString(
-                    cursor.getColumnIndex(
-                        ContactsContract.Contacts.DISPLAY_NAME
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+            Log.i(TAG, "getContactList: 1")
+            val cursor = context.contentResolver.query(
+                ContactsContract.Contacts.CONTENT_URI.buildUpon().encodedQuery("LIMIT $pageSize, $nextPageNumber").build(),
+                projection,
+                null,
+                null,
+                sortOrder
+            )
+            cursor?.let {
+
+                Log.i(TAG_CONTACT_PAGING, "getContactList: cursor --> ${cursor.count}")
+
+                while (cursor.moveToNext()) {
+
+                    val id = cursor.getString(
+                        cursor.getColumnIndex(ContactsContract.Contacts._ID)
                     )
-                )
 
-                val uriPhone = ContactsContract.CommonDataKinds.Phone.CONTENT_URI
+                    val selection =
+                        "${ContactsContract.CommonDataKinds.Phone.CONTACT_ID} LIKE ?"
 
-                val selection =
-                    "${ContactsContract.CommonDataKinds.Phone.CONTACT_ID} =?"
+                    val phoneProjection = arrayOf(
+                        ContactsContract.Contacts._ID,
+                        ContactsContract.Contacts.DISPLAY_NAME,
+                        ContactsContract.Contacts.PHOTO_THUMBNAIL_URI,
+                        ContactsContract.Contacts.PHOTO_URI,
+                        ContactsContract.CommonDataKinds.Phone.NUMBER
+                    )
 
+                    val phoneCursor = context.contentResolver.query(
+                        ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                        phoneProjection,
+                        selection,
+                        arrayOf<String>(id),
+                        null
+                    )
 
-                val phoneCursor = context.contentResolver.query(
-                    uriPhone,
-                    null,
-                    selection,
-                    arrayOf<String>(id),
-                    null
-                )
+                    phoneCursor?.let {
+                        while (phoneCursor.moveToNext()) {
 
-                phoneCursor?.let {
-                    while (phoneCursor.moveToNext()) {
+                            val thumbnailUri =
+                                phoneCursor.getString(
+                                    phoneCursor.getColumnIndexOrThrow(
+                                        ContactsContract.Contacts.PHOTO_THUMBNAIL_URI
+                                    )
+                                )
 
-//                        val thumbnailUri =
-//                            cursor.getString(phoneCursor.getColumnIndexOrThrow(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI))
-//
-//                        val photoUri =
-//                            cursor.getString(phoneCursor.getColumnIndexOrThrow(ContactsContract.Contacts.PHOTO_URI))
+                            val photoUri =
+                                phoneCursor.getString(
+                                    phoneCursor.getColumnIndexOrThrow(
+                                        ContactsContract.Contacts.PHOTO_URI
+                                    )
+                                )
 
-                        val phoneNumber = phoneCursor.getString(
-                            phoneCursor.getColumnIndexOrThrow(
-                                ContactsContract.CommonDataKinds.Phone.NUMBER
+                            val contactName = phoneCursor.getString(
+                                phoneCursor.getColumnIndexOrThrow(
+                                    ContactsContract.Contacts.DISPLAY_NAME
+                                )
                             )
-                        )
 
-                        val model = ContactModel(
-                            photoThumbnailUri = null,
-                            photoUri = null,
-                            name = contactName,
-                            mobile = phoneNumber
-                        )
-                        contactModel.add(model)
+                            val phoneNumber = phoneCursor.getString(
+                                phoneCursor.getColumnIndexOrThrow(
+                                    ContactsContract.CommonDataKinds.Phone.NUMBER
+                                )
+                            )
+
+                            val model = ContactModel(
+                                photoThumbnailUri = thumbnailUri,
+                                photoUri = photoUri,
+                                name = contactName,
+                                mobile = phoneNumber
+                            )
+                            contactModel.add(model)
+                        }
+                        phoneCursor.close()
                     }
-                    phoneCursor.close()
                 }
+
+            }
+            cursor?.close()
+        } else {
+            Log.i(TAG, "getContactList: 2")
+            val bundle = Bundle().apply {
+                putInt(ContentResolver.QUERY_ARG_LIMIT, 100)
+                putInt(ContentResolver.QUERY_ARG_OFFSET, nextPageNumber)
+                putString(
+                    ContentResolver.QUERY_ARG_SORT_COLUMNS,
+                    ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME_PRIMARY
+                )
             }
 
+
+            val cursor = context.contentResolver.query(
+                ContactsContract.Contacts.CONTENT_URI,
+                projection, bundle, null
+            )
+            cursor?.let {
+
+                Log.i(TAG_CONTACT_PAGING, "getContactList: cursor --> ${cursor.count}")
+
+                while (cursor.moveToNext()) {
+
+                    val id = cursor.getString(
+                        cursor.getColumnIndex(ContactsContract.Contacts._ID)
+                    )
+
+                    val selection =
+                        "${ContactsContract.CommonDataKinds.Phone.CONTACT_ID} LIKE ?"
+
+                    val phoneProjection = arrayOf(
+                        ContactsContract.Contacts._ID,
+                        ContactsContract.Contacts.DISPLAY_NAME,
+                        ContactsContract.Contacts.PHOTO_THUMBNAIL_URI,
+                        ContactsContract.Contacts.PHOTO_URI,
+                        ContactsContract.CommonDataKinds.Phone.NUMBER
+                    )
+
+                    val phoneCursor = context.contentResolver.query(
+                        ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                        phoneProjection,
+                        selection,
+                        arrayOf<String>(id),
+                        null
+                    )
+
+                    phoneCursor?.let {
+                        while (phoneCursor.moveToNext()) {
+
+                            val thumbnailUri =
+                                phoneCursor.getString(
+                                    phoneCursor.getColumnIndexOrThrow(
+                                        ContactsContract.Contacts.PHOTO_THUMBNAIL_URI
+                                    )
+                                )
+
+                            val photoUri =
+                                phoneCursor.getString(
+                                    phoneCursor.getColumnIndexOrThrow(
+                                        ContactsContract.Contacts.PHOTO_URI
+                                    )
+                                )
+
+                            val contactName = phoneCursor.getString(
+                                phoneCursor.getColumnIndexOrThrow(
+                                    ContactsContract.Contacts.DISPLAY_NAME
+                                )
+                            )
+
+                            val phoneNumber = phoneCursor.getString(
+                                phoneCursor.getColumnIndexOrThrow(
+                                    ContactsContract.CommonDataKinds.Phone.NUMBER
+                                )
+                            )
+
+                            val model = ContactModel(
+                                photoThumbnailUri = thumbnailUri,
+                                photoUri = photoUri,
+                                name = contactName,
+                                mobile = phoneNumber
+                            )
+                            contactModel.add(model)
+                        }
+                        phoneCursor.close()
+                    }
+                }
+
+            }
+            cursor?.close()
         }
-        cursor?.close()
 
 
         val remainingData = context.contentResolver.query(
@@ -130,7 +243,6 @@ class ContactPagingSource(val context: Context) : PagingSource<Int, ContactModel
 
         remainingData?.close()
 
-        return ContactPagingModel(nextPage = -1, contactModel)
+        return ContactPagingModel(nextPage = incrementer, contactModel)
     }
-
 }

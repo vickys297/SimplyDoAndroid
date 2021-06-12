@@ -99,7 +99,7 @@ object AppFunctions {
         return "$hour : $minute ${if (hour > 11) "AM" else "PM"}"
     }
 
-    fun getCurrentDayMaxInMilliSeconds(): Long {
+    fun getCurrentDayEndInMilliSeconds(): Long {
         val calendar = Calendar.getInstance()
         calendar.set(Calendar.HOUR_OF_DAY, 23)
         calendar.set(Calendar.MINUTE, 59)
@@ -108,7 +108,7 @@ object AppFunctions {
         return calendar.timeInMillis
     }
 
-    fun getCurrentDayMinInMilliSeconds(): Long {
+    fun getCurrentDayStartInMilliSeconds(): Long {
         val calendar = Calendar.getInstance()
         calendar.set(Calendar.HOUR_OF_DAY, 0)
         calendar.set(Calendar.MINUTE, 0)

@@ -1,27 +1,38 @@
 package com.example.simplydo.ui.fragments.calender
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.example.simplydo.model.ContactModel
 import com.example.simplydo.model.TodoModel
 import com.example.simplydo.model.attachmentModel.GalleryModel
+import com.example.simplydo.ui.fragments.quickTodoList.PAGE_SIZE
 import com.example.simplydo.utli.AppConstant
 import com.example.simplydo.utli.AppFunctions
 import com.example.simplydo.utli.AppRepository
+import kotlinx.coroutines.flow.Flow
 import java.util.*
 
 class CalenderViewModel(val appRepository: AppRepository) : ViewModel() {
 
-    val nextAvailableDate = MutableLiveData<List<TodoModel>>()
+    val nextAvailableDate = MutableLiveData<ArrayList<TodoModel>>()
+    val selectedEventDateTotalCount = MutableLiveData<Int>()
 
-    fun getTodoListByEventDate(startEventDate: Long, endEventDate: Long): LiveData<List<TodoModel>> {
-        return appRepository.appDatabase.todoDao().getTodoByEventDate(startEventDate, endEventDate)
+    fun getTodoListByEventDate(
+        startEventDate: Long,
+        endEventDate: Long
+    ): Flow<PagingData<TodoModel>> {
+        return Pager(
+            PagingConfig(pageSize = PAGE_SIZE, enablePlaceholders = false)
+        ) {
+            appRepository.CalenderTodoList(startEventDate, endEventDate, pageSize = PAGE_SIZE)
+        }.flow.cachedIn(viewModelScope)
     }
 
-    fun requestDataFromCloud(selectedEventDate: String) {
-        appRepository.downloadTaskByDate(selectedEventDate)
-    }
 
     fun createNewTodo(
         title: String,
@@ -40,15 +51,26 @@ class CalenderViewModel(val appRepository: AppRepository) : ViewModel() {
             contactAttachments = contactInfo,
             imageAttachments = imagesList,
             locationData = "",
-            createdAt = AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_ISO).format(Date().time),
-            updatedAt = AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_ISO).format(Date().time),
+            createdAt = AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_ISO)
+                .format(Date().time),
+            updatedAt = AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_ISO)
+                .format(Date().time),
             isHighPriority = priority
-        ))
+        )
+        )
 
     }
 
     fun getNextTaskAvailability(selectedEventDate: Long) {
         appRepository.getNextTaskAvailability(selectedEventDate, nextAvailableDate)
+    }
+
+    fun getSelectedEventDateItemCount(startEventDate: Long, endEventDate: Long) {
+        appRepository.getSelectedEventDateItemCount(
+            startEventDate,
+            endEventDate,
+            selectedEventDateTotalCount
+        )
     }
 
     fun removeTaskById(task: TodoModel) {
@@ -58,5 +80,6 @@ class CalenderViewModel(val appRepository: AppRepository) : ViewModel() {
     fun completeTaskByID(dtId: Long) {
         appRepository.completeTaskById(dtId)
     }
+
 
 }

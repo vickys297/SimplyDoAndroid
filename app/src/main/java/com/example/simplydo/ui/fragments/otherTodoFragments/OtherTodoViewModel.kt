@@ -1,4 +1,4 @@
-package com.example.simplydo.ui.fragments.pastAndCompletedTodoFragments
+package com.example.simplydo.ui.fragments.otherTodoFragments
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

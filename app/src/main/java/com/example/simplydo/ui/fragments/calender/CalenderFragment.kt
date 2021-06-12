@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.FragmentNavigator
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -22,9 +23,11 @@ import com.example.simplydo.model.TodoModel
 import com.example.simplydo.model.attachmentModel.CalenderDateSelectorModel
 import com.example.simplydo.utli.*
 import com.example.simplydo.utli.adapters.CalenderViewAdapter
-import com.example.simplydo.utli.adapters.TodoAdapter
+import com.example.simplydo.utli.adapters.QuickTodoListAdapter
 import com.example.simplydo.utli.bottomSheetDialogs.basicAddTodoDialog.AddTodoBasic
 import com.example.simplydo.utli.bottomSheetDialogs.todoOptions.TodoOptionsFragment
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -37,19 +40,20 @@ class CalenderFragment : Fragment() {
         fun newInstance() = CalenderFragment()
     }
 
+    private lateinit var selectedEventDateTotalItemCount: Observer<Int>
     private lateinit var nextAvailableDateObserver: Observer<List<TodoModel>>
-    private lateinit var todoByDateObserver: Observer<List<TodoModel>>
+
     private lateinit var viewModel: CalenderViewModel
 
     private lateinit var binding: CalenderFragmentBinding
     private lateinit var smallCalenderModels: ArrayList<SmallCalenderModel>
     private lateinit var calenderViewAdapter: CalenderViewAdapter
 
-    private lateinit var todoAdapter: TodoAdapter
+    private lateinit var quickTodoListAdapter: QuickTodoListAdapter
 
     private var selectedEventDate: CalenderDateSelectorModel = CalenderDateSelectorModel(
-        startEventDate = AppFunctions.getCurrentDayMinInMilliSeconds(),
-        endEventDate = AppFunctions.getCurrentDayMaxInMilliSeconds()
+        startEventDate = AppFunctions.getCurrentDayStartInMilliSeconds(),
+        endEventDate = AppFunctions.getCurrentDayEndInMilliSeconds()
     )
 
     private var todoModel = ArrayList<TodoModel>()
@@ -58,6 +62,7 @@ class CalenderFragment : Fragment() {
     var imagesList: ArrayList<String> = ArrayList()
 
 
+    // calender time line date selector
     private val calenderAdapterInterface = object : CalenderAdapterInterface {
         override fun onDateSelect(layoutPosition: Int, smallCalenderModel: SmallCalenderModel) {
 
@@ -71,10 +76,7 @@ class CalenderFragment : Fragment() {
             calenderViewAdapter.setActiveDate(layoutPosition)
 
             // get the task by current date from start morning to night
-            viewModel.getTodoListByEventDate(
-                smallCalenderModel.startEventDate,
-                smallCalenderModel.endEventDate
-            ).observe(viewLifecycleOwner, todoByDateObserver)
+            setupPagingDataObserverForSelectedDate()
 
 //            viewModel.requestDataFromCloud(selectedEventDate)
         }
@@ -110,7 +112,7 @@ class CalenderFragment : Fragment() {
             bundle.putSerializable("todo", item)
 
             findNavController().navigate(
-                R.id.action_toDoFragment_to_todoFullDetailsFragment,
+                R.id.action_calenderFragment_to_todoFullDetailsFragment,
                 bundle,
                 null,
                 extras
@@ -158,14 +160,13 @@ class CalenderFragment : Fragment() {
 
     private fun setObserver() {
 
-        // observer for task for the current or selected event date from morning till night
-        todoByDateObserver = Observer {
 
-            todoModel = it as ArrayList<TodoModel>
+        selectedEventDateTotalItemCount = Observer {
 
+            Log.i(TAG, "setObserver: selectedEventDateTotalCount $it")
             // task available in the selected or current event date
-            if (it.isNotEmpty()) {
-                todoAdapter.updateDataSet(it)
+            if (it != 0) {
+//                todoAdapter.updateDataSet(it)
                 binding.llNoEventAvailable.visibility = View.GONE
                 binding.recyclerViewTodoList.visibility = View.VISIBLE
             }
@@ -178,19 +179,18 @@ class CalenderFragment : Fragment() {
 
         }
 
-        nextAvailableDateObserver = Observer { todoList ->
 
-            Log.d(TAG, "Next available date observer $todoList")
-            todoList as ArrayList<TodoModel>
+        nextAvailableDateObserver = Observer {
+            val todoModel = it as ArrayList<TodoModel>
 
-            if (todoList.isNotEmpty()) {
+            Log.i(TAG, "nextAvailableDateObserver: ${it.size}")
+            if (it.isNotEmpty()) {
                 binding.btnViewEventOnNextDate.visibility = View.VISIBLE
                 binding.tvNextEventAvailable.text =
                     String.format(
-                        "You have %d on %s",
-                        todoList.size,
+                        "Next task available @ %s",
                         AppFunctions.getDateStringFromMilliseconds(
-                            todoList[0].eventDate,
+                            todoModel[0].eventDate,
                             AppConstant.DATE_PATTERN_EVENT_DATE
                         )
                     )
@@ -198,7 +198,7 @@ class CalenderFragment : Fragment() {
                 binding.btnViewEventOnNextDate.setOnClickListener {
 
                     val calendar = Calendar.getInstance()
-                    calendar.timeInMillis = todoList[0].eventDate
+                    calendar.timeInMillis = todoModel[0].eventDate
 
                     calendar.set(Calendar.HOUR_OF_DAY, 0)
                     calendar.set(Calendar.MINUTE, 0)
@@ -211,14 +211,18 @@ class CalenderFragment : Fragment() {
                     calendar.set(Calendar.SECOND, 59)
                     val endEventDate = calendar.timeInMillis
 
-                    viewModel.getTodoListByEventDate(startEventDate, endEventDate)
-                        .observe(viewLifecycleOwner, todoByDateObserver)
+                    selectedEventDate.startEventDate = startEventDate
+                    selectedEventDate.endEventDate = endEventDate
+
+                    setupPagingDataObserverForSelectedDate()
                 }
             } else {
                 binding.tvNextEventAvailable.text = String.format("You do not have upcoming task")
                 binding.btnViewEventOnNextDate.visibility = View.GONE
             }
         }
+
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -227,20 +231,25 @@ class CalenderFragment : Fragment() {
         clickListener(binding)
         smallCalenderModels = ArrayList()
 
+
+        // calender timeline view
         calenderViewAdapter =
             CalenderViewAdapter(requireContext(), calenderAdapterInterface)
-        todoAdapter = TodoAdapter(todoAdapterInterface, requireContext())
-
         binding.recyclerViewCalenderView.apply {
             layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             adapter = calenderViewAdapter
         }
 
+        // using quick todotask list adapter
+        quickTodoListAdapter = QuickTodoListAdapter(todoAdapterInterface, requireContext())
         binding.recyclerViewTodoList.apply {
             layoutManager = LinearLayoutManager(requireContext())
-            adapter = todoAdapter
+            adapter = quickTodoListAdapter
         }
+
+
+        setupPagingDataObserverForSelectedDate()
 
 
         val simpleItemTouchCallback: ItemTouchHelper.SimpleCallback = object :
@@ -267,7 +276,7 @@ class CalenderFragment : Fragment() {
                     Log.d(TAG, "onSwiped: position $position")
 
                     viewModel.completeTaskByID(todoModel[position].dtId)
-                    todoAdapter.notifyItemChanged(position)
+                    quickTodoListAdapter.notifyItemChanged(position)
                     AppFunctions.showMessage("Task Completed", requireContext())
                 }
             }
@@ -275,6 +284,26 @@ class CalenderFragment : Fragment() {
 
         val itemTouchHelper = ItemTouchHelper(simpleItemTouchCallback)
         itemTouchHelper.attachToRecyclerView(binding.recyclerViewTodoList)
+    }
+
+    private fun setupPagingDataObserverForSelectedDate() {
+        val pagingDataSource = viewModel.getTodoListByEventDate(
+            selectedEventDate.startEventDate,
+            selectedEventDate.endEventDate
+        )
+
+
+        lifecycleScope.launch {
+            pagingDataSource.collect {
+                quickTodoListAdapter.submitData(it)
+
+            }
+        }
+
+        viewModel.getSelectedEventDateItemCount(
+            selectedEventDate.startEventDate,
+            selectedEventDate.endEventDate
+        )
     }
 
 
@@ -309,16 +338,22 @@ class CalenderFragment : Fragment() {
             executePendingBindings()
         }
 
-        // next task available date
-        viewModel.nextAvailableDate.observe(viewLifecycleOwner, nextAvailableDateObserver)
-
-
-        // get task list by event date
-        viewModel.getTodoListByEventDate(
+        viewModel.getSelectedEventDateItemCount(
             selectedEventDate.startEventDate,
             selectedEventDate.endEventDate
         )
-            .observe(viewLifecycleOwner, todoByDateObserver)
+
+        viewModel.selectedEventDateTotalCount.observe(
+            viewLifecycleOwner,
+            selectedEventDateTotalItemCount
+        )
+
+        viewModel.nextAvailableDate.observe(
+            viewLifecycleOwner,
+            nextAvailableDateObserver
+        )
+
+        // next task available date
 
         // check if there is any new data in cloud database
 //        viewModel.requestDataFromCloud(selectedEventDate)

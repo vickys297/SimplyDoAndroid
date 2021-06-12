@@ -1,8 +1,12 @@
-package com.example.simplydo.ui.fragments.todoList
+package com.example.simplydo.ui.fragments.quickTodoList
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.example.simplydo.model.CommonResponseModel
 import com.example.simplydo.model.ContactModel
 import com.example.simplydo.model.TodoModel
@@ -10,10 +14,13 @@ import com.example.simplydo.model.attachmentModel.GalleryModel
 import com.example.simplydo.utli.AppConstant
 import com.example.simplydo.utli.AppFunctions
 import com.example.simplydo.utli.AppRepository
+import kotlinx.coroutines.flow.Flow
 import java.util.*
 
 
-class ToDoViewModel(private val appRepository: AppRepository) :
+internal const val PAGE_SIZE = 25
+
+class QuickTodoViewModel(private val appRepository: AppRepository) :
     ViewModel() {
 
     // TODO: Implement the ViewModel
@@ -21,12 +28,7 @@ class ToDoViewModel(private val appRepository: AppRepository) :
     val noNetworkMessage = MutableLiveData<String>()
 
 
-    fun todoListObserver(eventDate: String): LiveData<List<TodoModel>> {
-        return appRepository.appDatabase.todoDao().getTodoForQuickView(eventDate)
-    }
-
-
-    fun removeTaskById(item :TodoModel) {
+    fun removeTaskById(item: TodoModel) {
         return appRepository.deleteTaskByPosition(item)
     }
 
@@ -53,13 +55,22 @@ class ToDoViewModel(private val appRepository: AppRepository) :
                 updatedAt = AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_ISO)
                     .format(Date().time),
                 isHighPriority = priority
-            ))
-
+            )
+        )
     }
 
 
     fun completeTaskByID(dtId: Long) {
         appRepository.completeTaskById(dtId)
+    }
+
+    fun getQuickTodoList(eventStartDateTime: Long): Flow<PagingData<TodoModel>> {
+        return Pager(
+            PagingConfig(pageSize = PAGE_SIZE, enablePlaceholders = true)
+
+        ) {
+            appRepository.QuickTodoPagingSource(eventStartDateTime, PAGE_SIZE)
+        }.flow.cachedIn(viewModelScope)
     }
 
 }

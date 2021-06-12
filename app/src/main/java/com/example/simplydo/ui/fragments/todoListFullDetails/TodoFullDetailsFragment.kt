@@ -1,5 +1,7 @@
 package com.example.simplydo.ui.fragments.todoListFullDetails
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.transition.TransitionInflater
 import android.util.Log
@@ -178,6 +180,13 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
                                 )
                             )
                     )
+                }
+
+                val mapUri = Uri.parse("google.navigation:q=$latitude,$longitude")
+                binding.buttonViewInMap.setOnClickListener {
+                    val mapIntent = Intent(Intent.ACTION_VIEW, mapUri)
+                    mapIntent.setPackage("com.google.android.apps.maps")
+                    startActivity(mapIntent)
                 }
             }
         }

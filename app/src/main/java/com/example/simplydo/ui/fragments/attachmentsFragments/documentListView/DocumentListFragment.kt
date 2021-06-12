@@ -1,4 +1,4 @@
-package com.example.simplydo.ui.fragments.attachments.documentListView
+package com.example.simplydo.ui.fragments.attachmentsFragments.documentListView
 
 import android.os.Bundle
 import android.view.View

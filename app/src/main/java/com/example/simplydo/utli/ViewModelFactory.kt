@@ -5,11 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.simplydo.ui.MainViewModel
 import com.example.simplydo.ui.fragments.addNewTodo.AddNewTodoViewModel
-import com.example.simplydo.ui.fragments.attachments.contactList.ContactsViewModel
-import com.example.simplydo.ui.fragments.attachments.gallaryList.GalleryListViewModel
+import com.example.simplydo.ui.fragments.attachmentsFragments.contactList.ContactsViewModel
+import com.example.simplydo.ui.fragments.attachmentsFragments.gallaryList.GalleryListViewModel
 import com.example.simplydo.ui.fragments.calender.CalenderViewModel
-import com.example.simplydo.ui.fragments.pastAndCompletedTodoFragments.OtherTodoViewModel
-import com.example.simplydo.ui.fragments.todoList.ToDoViewModel
+import com.example.simplydo.ui.fragments.otherTodoFragments.OtherTodoViewModel
+import com.example.simplydo.ui.fragments.quickTodoList.QuickTodoViewModel
 
 open class ViewModelFactory internal constructor(
     private val context: Context,
@@ -19,8 +19,8 @@ open class ViewModelFactory internal constructor(
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
 
         return when (modelClass.canonicalName) {
-            ToDoViewModel::class.java.canonicalName -> {
-                ToDoViewModel(this.appRepository) as T
+            QuickTodoViewModel::class.java.canonicalName -> {
+                QuickTodoViewModel(this.appRepository) as T
             }
 
             AddNewTodoViewModel::class.java.canonicalName -> {
@@ -38,7 +38,7 @@ open class ViewModelFactory internal constructor(
             }
 
             ContactsViewModel::class.java.canonicalName -> {
-                ContactsViewModel(context) as T
+                ContactsViewModel(appRepository) as T
             }
 
             MainViewModel::class.java.canonicalName -> {

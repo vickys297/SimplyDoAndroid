@@ -6,23 +6,36 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.Nullable
 import androidx.navigation.fragment.FragmentNavigatorExtras
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.simplydo.databinding.RecyclerTodoCompletedListItemBinding
 import com.example.simplydo.databinding.RecyclerTodoListItemBinding
 import com.example.simplydo.model.TodoModel
 import com.example.simplydo.utli.TodoItemInterface
 
-class TodoAdapter(
+class QuickTodoListAdapter(
     @Nullable
     private val todoItemInterface: TodoItemInterface,
     val requireContext: Context,
 ) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private var dataSet = ArrayList<TodoModel>()
+    PagingDataAdapter<TodoModel, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
+
 
     companion object {
         const val VIEW_TYPE_TASK = 0
         const val VIEW_TYPE_TASK_COMPLETED = 1
+
+        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<TodoModel>() {
+            override fun areItemsTheSame(oldItem: TodoModel, newItem: TodoModel): Boolean {
+                return oldItem.dtId == newItem.dtId
+            }
+
+            override fun areContentsTheSame(oldItem: TodoModel, newItem: TodoModel): Boolean {
+                return oldItem == newItem
+            }
+
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -55,8 +68,8 @@ class TodoAdapter(
         when (getItemViewType(position)) {
 
             0 -> {
-                val item = dataSet[position]
-                item.run {
+                val item = getItem(position)
+                item?.run {
                     (holderTask as TaskViewHolder).apply {
                         val holder = bind(this@run, todoItemInterface)
                         itemView.tag = this@run
@@ -92,8 +105,8 @@ class TodoAdapter(
             }
 
             1 -> {
-                val item = dataSet[position]
-                item.run {
+                val item = getItem(position)
+                item?.run {
                     (holderTask as CompletedTaskViewHolder).apply {
                         bind(this@run)
                         itemView.tag = this@run
@@ -108,19 +121,12 @@ class TodoAdapter(
 
         }
 
-
     }
 
-    override fun getItemCount(): Int = dataSet.size
-
-    fun updateDataSet(it: ArrayList<TodoModel>) {
-        this.dataSet = it
-        notifyDataSetChanged()
-    }
 
 
     override fun getItemViewType(position: Int): Int {
-        return if (dataSet[position].isCompleted) VIEW_TYPE_TASK_COMPLETED else VIEW_TYPE_TASK
+        return if (getItem(position)?.isCompleted == true) VIEW_TYPE_TASK_COMPLETED else VIEW_TYPE_TASK
     }
 
     fun removeItemAtPosition(position: Int) {

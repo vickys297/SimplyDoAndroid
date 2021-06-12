@@ -1,13 +1,13 @@
- package com.example.simplydo.ui.fragments.todoList
+package com.example.simplydo.ui.fragments.quickTodoList
 
 import android.os.Bundle
-import android.view.LayoutInflater
+import android.util.Log
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.FragmentNavigator
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -19,29 +19,34 @@ import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.model.CommonResponseModel
 import com.example.simplydo.model.TodoModel
 import com.example.simplydo.utli.*
-import com.example.simplydo.utli.adapters.TodoAdapter
+import com.example.simplydo.utli.adapters.QuickTodoListAdapter
 import com.example.simplydo.utli.bottomSheetDialogs.basicAddTodoDialog.AddTodoBasic
 import com.example.simplydo.utli.bottomSheetDialogs.calenderOptions.TodoOptions
 import com.example.simplydo.utli.bottomSheetDialogs.todoOptions.TodoOptionsFragment
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.flow.collectLatest
 import java.util.*
 import kotlin.collections.ArrayList
 
 
-internal val TAG = ToDoFragment::class.java.canonicalName
+internal val TAG = QuickTodoFragment::class.java.canonicalName
 
-class ToDoFragment : Fragment() {
+class QuickTodoFragment : Fragment(R.layout.todo_fragment) {
 
     companion object {
-        fun newInstance() = ToDoFragment()
+        fun newInstance() = QuickTodoFragment()
     }
 
     private lateinit var todoModelObserver: Observer<List<TodoModel>>
     private lateinit var todoObserver: Observer<CommonResponseModel>
     private lateinit var noNetworkObserver: Observer<String>
 
-    private lateinit var viewModel: ToDoViewModel
-    private lateinit var binding: TodoFragmentBinding
-    private lateinit var todoAdapter: TodoAdapter
+    private lateinit var viewModel: QuickTodoViewModel
+
+    private lateinit var _binding: TodoFragmentBinding
+    private val binding get() = _binding
+
+    private lateinit var quickTodoListAdapter: QuickTodoListAdapter
     private lateinit var todoModel: ArrayList<TodoModel>
 
     private lateinit var recentSelectedItem: TodoModel
@@ -77,7 +82,6 @@ class ToDoFragment : Fragment() {
         }
 
     }
-
 
     private var todoAdapterInterface = object : TodoItemInterface {
         override fun onLongClick(item: TodoModel) {
@@ -130,78 +134,38 @@ class ToDoFragment : Fragment() {
 
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
-        binding = TodoFragmentBinding.inflate(layoutInflater, container, false)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        _binding = TodoFragmentBinding.bind(view)
+
         setObserver()
         setupViewModel()
-        return binding.root
-    }
+        // init
 
-    private fun setObserver() {
-
-        todoModelObserver = Observer {
-            todoModel = it as ArrayList<TodoModel>
-            todoAdapter.updateDataSet(it)
+        quickTodoListAdapter = QuickTodoListAdapter(todoAdapterInterface, requireContext())
+        binding.recyclerViewTodoList.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = quickTodoListAdapter
         }
 
-        todoObserver = Observer {
-            if (it.result == AppConstant.API_RESULT_OK) {
-                Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
+
+        val livePagingData =
+            viewModel.getQuickTodoList(AppFunctions.getCurrentDayStartInMilliSeconds())
+
+        lifecycleScope.launchWhenResumed {
+            livePagingData.collectLatest {
+                Log.i(TAG, "onViewCreated: Paging Data $it")
+                quickTodoListAdapter.submitData(it)
             }
         }
 
-        noNetworkObserver = Observer {
-            Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
-        }
 
-
-    }
-
-    private fun setupViewModel() {
-        viewModel =
-            ViewModelProvider(
-                this,
-                ViewModelFactory(
-                    requireContext(), AppRepository.getInstance(
-                        requireContext(),
-                        AppDatabase.getInstance(context = requireContext())
-                    )
-                )
-            ).get(
-                ToDoViewModel::class.java
-            )
-        binding.apply {
-            todoViewModel = this@ToDoFragment.viewModel
-            lifecycleOwner = this@ToDoFragment
-            executePendingBindings()
-        }
-
-
-        viewModel.todoListObserver(System.currentTimeMillis().toString()).observe(viewLifecycleOwner, todoModelObserver)
-
-        viewModel.todoListResponse.observe(viewLifecycleOwner, todoObserver)
-        viewModel.noNetworkMessage.observe(viewLifecycleOwner, noNetworkObserver)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        // init
-        todoAdapter = TodoAdapter(todoAdapterInterface, requireContext())
-
-
-        binding.recyclerViewTodoList.layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        binding.recyclerViewTodoList.adapter = todoAdapter
 
         binding.btnNewTodo.setOnClickListener {
             AddTodoBasic.newInstance(
                 appInterface,
                 System.currentTimeMillis()
-            )
-                .show(requireActivity().supportFragmentManager, "dialog")
+            ).show(requireActivity().supportFragmentManager, "dialog")
         }
 
         binding.buttonTodoOption.setOnClickListener {
@@ -229,11 +193,12 @@ class ToDoFragment : Fragment() {
                 val position = viewHolder.absoluteAdapterPosition
                 if (todoModel.isNotEmpty()) {
                     viewModel.completeTaskByID(todoModel[position].dtId)
-                    todoAdapter.notifyItemChanged(position)
-                    Toast.makeText(
-                        requireContext(),
+                    quickTodoListAdapter.notifyItemChanged(position)
+
+                    Snackbar.make(
+                        binding.root,
                         getString(R.string.task_completed_label),
-                        Toast.LENGTH_LONG
+                        Snackbar.LENGTH_SHORT
                     ).show()
                 }
 
@@ -245,4 +210,47 @@ class ToDoFragment : Fragment() {
     }
 
 
+    private fun setObserver() {
+
+
+        todoObserver = Observer {
+            if (it.result == AppConstant.API_RESULT_OK) {
+                Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
+            }
+        }
+
+        noNetworkObserver = Observer {
+            Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
+        }
+
+
+    }
+
+    private fun setupViewModel() {
+        viewModel =
+            ViewModelProvider(
+                this,
+                ViewModelFactory(
+                    requireActivity(),
+                    AppRepository.getInstance(
+                        requireActivity(),
+                        AppDatabase.getInstance(
+                            context = requireActivity()
+                        )
+                    )
+                )
+            ).get(
+                QuickTodoViewModel::class.java
+            )
+        binding.apply {
+            todoViewModel = this@QuickTodoFragment.viewModel
+            lifecycleOwner = this@QuickTodoFragment
+            executePendingBindings()
+        }
+
+
+
+        viewModel.todoListResponse.observe(viewLifecycleOwner, todoObserver)
+        viewModel.noNetworkMessage.observe(viewLifecycleOwner, noNetworkObserver)
+    }
 }

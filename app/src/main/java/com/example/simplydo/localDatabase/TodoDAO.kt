@@ -10,6 +10,41 @@ interface TodoDAO {
     /*
     * Application Purpose
     * */
+
+    //    get tasks from current date to upcoming date in quick view
+    @Query("SELECT * FROM todoList WHERE eventDate >= :eventDate OR isCompleted = '0' ORDER BY eventDate ASC LIMIT :pageSize OFFSET :nextPageNumber")
+    fun getQuickTodoList(
+        eventDate: Long,
+        nextPageNumber: Int,
+        pageSize: Int
+    ): List<TodoModel>
+
+    //      get next quick task count
+    @Query("SELECT COUNT(*) FROM todoList WHERE eventDate >= :eventDate OR isCompleted = '0' ORDER BY eventDate ASC LIMIT :pageSize OFFSET :nextPageNumber")
+    fun getQuickTodoListCount(eventDate: Long, nextPageNumber: Int, pageSize: Int): Int
+
+    @Query("SELECT * FROM todoList WHERE eventDate >= :startEventDate AND  eventDate <= :endEventDate ORDER BY eventDate ASC LIMIT :pageSize OFFSET :nextPageNumber")
+    fun getSingleDayTodoList(
+        startEventDate: Long,
+        endEventDate: Long,
+        nextPageNumber: Int,
+        pageSize: Int
+    ): List<TodoModel>
+
+    @Query("SELECT COUNT(*) FROM todoList WHERE eventDate >= :startEventDate AND  eventDate <= :endEventDate ORDER BY eventDate ASC LIMIT :pageSize OFFSET :nextPageNumber")
+    fun getSingleDayTodoListCount(
+        startEventDate: Long,
+        endEventDate: Long,
+        nextPageNumber: Int,
+        pageSize: Int
+    ): Int
+
+    @Query("SELECT COUNT(*) FROM todoList WHERE eventDate >= :startEventDate AND  eventDate <= :endEventDate")
+    fun getSingleDayTodoListTotalCount(
+        startEventDate: Long,
+        endEventDate: Long,
+    ): Int
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(todoModel: TodoModel): Long
 
@@ -19,7 +54,11 @@ interface TodoDAO {
 
     //    get past task with paging
     @Query("SELECT * FROM todoList WHERE eventDate < :currentTimeMillis LIMIT :pageSize OFFSET :nextPageNumber")
-    fun getPastTaskPaging(nextPageNumber: Int, pageSize: Int, currentTimeMillis: String): List<TodoModel>
+    fun getPastTaskPaging(
+        nextPageNumber: Int,
+        pageSize: Int,
+        currentTimeMillis: String
+    ): List<TodoModel>
 
     //    get past task count
     @Query("SELECT COUNT(*) FROM todoList WHERE eventDate < :currentTimeMillis LIMIT :pageSize OFFSET :nextPageNumber")
@@ -33,9 +72,6 @@ interface TodoDAO {
     @Query("SELECT COUNT(*) FROM todoList WHERE isCompleted = '1' LIMIT :pageSize OFFSET :nextPageNumber")
     fun getCompletedTaskCount(nextPageNumber: Int, pageSize: Int): Long
 
-    //    get tasks from current date to upcoming date in quick view
-    @Query("SELECT * FROM todoList WHERE eventDate = :eventDate OR eventDate > :eventDate AND isCompleted  = '1' OR isCompleted ='0' ORDER BY createdAt ASC")
-    fun getTodoForQuickView(eventDate: String): LiveData<List<TodoModel>>
 
     //    get task on current date
     @Query("SELECT * FROM todoList WHERE eventDate >= :starEventDate AND eventDate <= :endEventDate")
@@ -54,7 +90,7 @@ interface TodoDAO {
     fun getNotSynchronizedTodoData(): List<TodoModel>
 
     //    get task count on upcoming event date
-    @Query("SELECT * FROM todoList WHERE eventDate >= :currentEventDateMax limit 2")
+    @Query("SELECT * FROM todoList WHERE eventDate >= :currentEventDateMax limit 1")
     fun getNextEventCountByDate(currentEventDateMax: Long): List<TodoModel>
 
 
