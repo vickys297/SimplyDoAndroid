@@ -11,7 +11,7 @@ import com.example.simplydo.utli.AppConstant
 @Database(
     entities = [TodoModel::class],
     version = 1,
-    exportSchema = false
+    exportSchema = true
 )
 @TypeConverters(ConverterHelper::class)
 abstract class AppDatabase : RoomDatabase() {

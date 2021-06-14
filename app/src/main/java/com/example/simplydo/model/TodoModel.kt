@@ -130,6 +130,7 @@ data class TodoPagingModel(
 
 
 data class ContactModel(
+    val id: Long? = null,
     val photoThumbnailUri: String?,
     val photoUri: String?,
     val name: String,

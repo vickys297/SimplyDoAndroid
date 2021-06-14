@@ -5,7 +5,6 @@ import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.Nullable
-import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -36,6 +35,10 @@ class QuickTodoListAdapter(
             }
 
         }
+    }
+
+    init {
+        hasStableIds()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -80,24 +83,10 @@ class QuickTodoListAdapter(
                         }
 
 
-                        holder.tvTitle.transitionName = "task_title_$position"
-                        holder.tvTodo.transitionName = "task_todo_$position"
-
-                        holder.textViewPriority.transitionName = "task_priority_$position"
-                        holder.textViewDateExpired.transitionName = "task_date_expired_$position"
-
                         itemView.setOnClickListener {
-                            val extras = FragmentNavigatorExtras(
-                                holder.tvTitle to "transition_title",
-                                holder.tvTodo to "transition_todo",
-                                holder.textViewPriority to "transition_priority",
-                                holder.textViewDateExpired to "transition_date_expired"
-                            )
-
                             todoItemInterface.onTaskClick(
                                 this@run,
-                                absoluteAdapterPosition,
-                                extras
+                                absoluteAdapterPosition
                             )
                         }
                     }
@@ -124,6 +113,10 @@ class QuickTodoListAdapter(
     }
 
 
+    fun getItemAtPosition(position: Int): TodoModel? {
+        return getItem(position)
+    }
+
 
     override fun getItemViewType(position: Int): Int {
         return if (getItem(position)?.isCompleted == true) VIEW_TYPE_TASK_COMPLETED else VIEW_TYPE_TASK
@@ -131,7 +124,6 @@ class QuickTodoListAdapter(
 
     fun removeItemAtPosition(position: Int) {
         notifyItemRemoved(position)
-        notifyDataSetChanged()
     }
 
 
@@ -164,4 +156,5 @@ class QuickTodoListAdapter(
 
         }
     }
+
 }

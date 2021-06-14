@@ -86,6 +86,7 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
 
     private var addAttachmentInterface: AddAttachmentInterface = object : AddAttachmentInterface {
         override fun onAddDocument() {
+            findNavController().navigate(R.id.action_addNewTodo_to_documentListFragment)
         }
 
         override fun onAddAudio() {

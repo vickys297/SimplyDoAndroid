@@ -6,13 +6,13 @@
     <data>
         <variable
             name="galleryViewModel"
-            type="com.example.simplydo.ui.fragments.attachmentsFragments.gallaryList.GalleryListViewModel" />
+            type="com.example.simplydo.ui.fragments.attachmentsFragments.gallery.GalleryListViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.fragments.attachmentsFragments.gallaryList.GalleryListFragment">
+        tools:context=".ui.fragments.attachmentsFragments.gallery.GalleryListFragment">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewGalleryView"

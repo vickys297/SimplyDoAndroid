@@ -5,11 +5,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.simplydo.ui.MainViewModel
 import com.example.simplydo.ui.fragments.addNewTodo.AddNewTodoViewModel
-import com.example.simplydo.ui.fragments.attachmentsFragments.contactList.ContactsViewModel
-import com.example.simplydo.ui.fragments.attachmentsFragments.gallaryList.GalleryListViewModel
+import com.example.simplydo.ui.fragments.attachmentsFragments.contact.ContactsViewModel
+import com.example.simplydo.ui.fragments.attachmentsFragments.gallery.GalleryListViewModel
 import com.example.simplydo.ui.fragments.calender.CalenderViewModel
 import com.example.simplydo.ui.fragments.otherTodoFragments.OtherTodoViewModel
 import com.example.simplydo.ui.fragments.quickTodoList.QuickTodoViewModel
+import com.example.simplydo.ui.fragments.todoListFullDetails.TodoFullDetailsViewModel
 
 open class ViewModelFactory internal constructor(
     private val context: Context,
@@ -43,6 +44,10 @@ open class ViewModelFactory internal constructor(
 
             MainViewModel::class.java.canonicalName -> {
                 MainViewModel(context, appRepository) as T
+            }
+
+            TodoFullDetailsViewModel::class.java.canonicalName->{
+                TodoFullDetailsViewModel(appRepository) as T
             }
             else -> {
                 throw IllegalArgumentException("ViewModel not found")

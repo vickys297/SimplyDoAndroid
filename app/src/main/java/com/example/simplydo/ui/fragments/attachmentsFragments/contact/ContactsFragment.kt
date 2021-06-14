@@ -1,4 +1,4 @@
-package com.example.simplydo.ui.fragments.attachmentsFragments.contactList
+package com.example.simplydo.ui.fragments.attachmentsFragments.contact
 
 import android.Manifest
 import android.content.pm.PackageManager

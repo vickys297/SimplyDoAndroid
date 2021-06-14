@@ -2,10 +2,24 @@ package com.example.simplydo.model.attachmentModel
 
 import com.example.simplydo.model.ContactModel
 
+data class AudioPagingModel(
+    val nextPage: Int,
+    val data: ArrayList<AudioModel>
+)
 
 data class ContactPagingModel(
     val nextPage: Int,
-    val contacts: ArrayList<ContactModel>,
+    val data: ArrayList<ContactModel>
+)
+data class DocumentDataSourceModel(
+    val nextPage: Int,
+    val data: ArrayList<DocumentModel>
+)
+
+
+data class GalleryPagingModel(
+    val nextPage: Int,
+    val data: ArrayList<GalleryModel>
 )
 
 
@@ -47,10 +61,6 @@ data class DocumentModel(
     var isSelected: Boolean = false
 )
 
-data class GalleryPagingModel(
-    val nextPage: Int,
-    val data: ArrayList<GalleryModel>,
-)
 
 data class CalenderDateSelectorModel(
     var startEventDate: Long,

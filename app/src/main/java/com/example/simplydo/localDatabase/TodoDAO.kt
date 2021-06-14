@@ -1,6 +1,7 @@
 package com.example.simplydo.localDatabase
 
 import androidx.lifecycle.LiveData
+import androidx.paging.PagingSource
 import androidx.room.*
 import com.example.simplydo.model.TodoModel
 
@@ -11,25 +12,26 @@ interface TodoDAO {
     * Application Purpose
     * */
 
+
     //    get tasks from current date to upcoming date in quick view
-    @Query("SELECT * FROM todoList WHERE eventDate >= :eventDate OR isCompleted = '0' ORDER BY eventDate ASC LIMIT :pageSize OFFSET :nextPageNumber")
-    fun getQuickTodoList(
-        eventDate: Long,
-        nextPageNumber: Int,
-        pageSize: Int
-    ): List<TodoModel>
+    @Query("SELECT * FROM todoList WHERE eventDate >= :eventDate OR isCompleted = '0' ORDER BY eventDate ASC")
+    fun getQuickTodoList(eventDate: Long): PagingSource<Int, TodoModel>
+
+    @Query("SELECT * FROM todoList WHERE eventDate >= :startEventDate AND eventDate <= :endEventDate ORDER BY eventDate ASC")
+    fun getSingleDayTodoList(
+        startEventDate: Long,
+        endEventDate: Long,
+    ): PagingSource<Int, TodoModel>
+
 
     //      get next quick task count
     @Query("SELECT COUNT(*) FROM todoList WHERE eventDate >= :eventDate OR isCompleted = '0' ORDER BY eventDate ASC LIMIT :pageSize OFFSET :nextPageNumber")
     fun getQuickTodoListCount(eventDate: Long, nextPageNumber: Int, pageSize: Int): Int
 
-    @Query("SELECT * FROM todoList WHERE eventDate >= :startEventDate AND  eventDate <= :endEventDate ORDER BY eventDate ASC LIMIT :pageSize OFFSET :nextPageNumber")
-    fun getSingleDayTodoList(
-        startEventDate: Long,
-        endEventDate: Long,
-        nextPageNumber: Int,
-        pageSize: Int
-    ): List<TodoModel>
+
+    @Query("SELECT * FROM todoList WHERE dtId = :dtId")
+    fun getTodoById(dtId: Long): TodoModel
+
 
     @Query("SELECT COUNT(*) FROM todoList WHERE eventDate >= :startEventDate AND  eventDate <= :endEventDate ORDER BY eventDate ASC LIMIT :pageSize OFFSET :nextPageNumber")
     fun getSingleDayTodoListCount(

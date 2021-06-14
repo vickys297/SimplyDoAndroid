@@ -1,4 +1,4 @@
-package com.example.simplydo.utli.dataSource
+package com.example.simplydo.dataSource
 
 import android.annotation.SuppressLint
 import android.content.ContentUris
@@ -125,7 +125,7 @@ class GalleryDataSource internal constructor(private val context: Context) :
                 galleryModelArrayList.add(newData)
             }
 
-            cursor.close()
+
         }
 
         return GalleryPagingModel(nextPageNumber, galleryModelArrayList)

@@ -1,6 +1,5 @@
 package com.example.simplydo.utli
 
-import androidx.navigation.fragment.FragmentNavigator
 import com.example.simplydo.model.ContactModel
 import com.example.simplydo.model.SmallCalenderModel
 import com.example.simplydo.model.TodoModel
@@ -24,7 +23,7 @@ interface CalenderAdapterInterface {
 
 interface TodoItemInterface {
     fun onLongClick(item: TodoModel)
-    fun onTaskClick(item: TodoModel, absoluteAdapterPosition: Int, extras: FragmentNavigator.Extras)
+    fun onTaskClick(item: TodoModel, absoluteAdapterPosition: Int)
 }
 
 interface AddAttachmentInterface {

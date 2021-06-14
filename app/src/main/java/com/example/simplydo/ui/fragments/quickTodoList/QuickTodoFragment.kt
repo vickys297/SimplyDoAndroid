@@ -1,16 +1,15 @@
 package com.example.simplydo.ui.fragments.quickTodoList
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.FragmentNavigator
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.ItemTouchHelper.ACTION_STATE_DRAG
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.simplydo.R
@@ -24,7 +23,8 @@ import com.example.simplydo.utli.bottomSheetDialogs.basicAddTodoDialog.AddTodoBa
 import com.example.simplydo.utli.bottomSheetDialogs.calenderOptions.TodoOptions
 import com.example.simplydo.utli.bottomSheetDialogs.todoOptions.TodoOptionsFragment
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -37,7 +37,6 @@ class QuickTodoFragment : Fragment(R.layout.todo_fragment) {
         fun newInstance() = QuickTodoFragment()
     }
 
-    private lateinit var todoModelObserver: Observer<List<TodoModel>>
     private lateinit var todoObserver: Observer<CommonResponseModel>
     private lateinit var noNetworkObserver: Observer<String>
 
@@ -92,12 +91,10 @@ class QuickTodoFragment : Fragment(R.layout.todo_fragment) {
 
         override fun onTaskClick(
             item: TodoModel,
-            absoluteAdapterPosition: Int,
-            extras: FragmentNavigator.Extras
+            absoluteAdapterPosition: Int
         ) {
             val bundle = Bundle()
-            bundle.putSerializable("todo", item)
-
+            bundle.putLong(getString(R.string.TODO_ITEM_KEY), item.dtId)
             findNavController().navigate(
                 R.id.action_toDoFragment_to_todoFullDetailsFragment,
                 bundle
@@ -149,18 +146,6 @@ class QuickTodoFragment : Fragment(R.layout.todo_fragment) {
         }
 
 
-        val livePagingData =
-            viewModel.getQuickTodoList(AppFunctions.getCurrentDayStartInMilliSeconds())
-
-        lifecycleScope.launchWhenResumed {
-            livePagingData.collectLatest {
-                Log.i(TAG, "onViewCreated: Paging Data $it")
-                quickTodoListAdapter.submitData(it)
-            }
-        }
-
-
-
         binding.btnNewTodo.setOnClickListener {
             AddTodoBasic.newInstance(
                 appInterface,
@@ -179,21 +164,50 @@ class QuickTodoFragment : Fragment(R.layout.todo_fragment) {
                 0,
                 ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
             ) {
+
+            override fun isLongPressDragEnabled(): Boolean {
+                return true
+            }
+
+
             override fun onMove(
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder,
                 target: RecyclerView.ViewHolder,
             ): Boolean {
+
+
+                val from = viewHolder.absoluteAdapterPosition
+                val to = target.absoluteAdapterPosition
+
+                val item1 = quickTodoListAdapter.getItemAtPosition(from)
+                val item2 = quickTodoListAdapter.getItemAtPosition(to)
+
+
+                if (item1 != null && item2 != null) {
+
+//                    quickTodoListAdapter.notifyItemMoved(from, to)
+                    return true
+                }
+
+
                 return false
             }
+
 
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
                 //Remove swiped item from list and notify the RecyclerView
                 val position = viewHolder.absoluteAdapterPosition
-                if (todoModel.isNotEmpty()) {
-                    viewModel.completeTaskByID(todoModel[position].dtId)
-                    quickTodoListAdapter.notifyItemChanged(position)
+                val item = quickTodoListAdapter.getItemAtPosition(position)
+
+                item?.let {
+
+                    viewModel.completeTaskByID(item.dtId)
+
+                    if (item.eventDate < AppFunctions.getCurrentDayStartInMilliSeconds()) {
+                        quickTodoListAdapter.notifyItemRemoved(position)
+                    }
 
                     Snackbar.make(
                         binding.root,
@@ -201,7 +215,23 @@ class QuickTodoFragment : Fragment(R.layout.todo_fragment) {
                         Snackbar.LENGTH_SHORT
                     ).show()
                 }
+            }
 
+            override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
+                super.onSelectedChanged(viewHolder, actionState)
+                if (actionState == ACTION_STATE_DRAG) {
+                    viewHolder?.itemView?.alpha = 0.5f
+                }
+            }
+
+            override fun clearView(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder
+            ) {
+                super.clearView(recyclerView, viewHolder)
+                viewHolder.itemView.alpha = 1.0f
+
+                // Don't need to do anything here
             }
         }
 
@@ -249,8 +279,19 @@ class QuickTodoFragment : Fragment(R.layout.todo_fragment) {
         }
 
 
-
         viewModel.todoListResponse.observe(viewLifecycleOwner, todoObserver)
         viewModel.noNetworkMessage.observe(viewLifecycleOwner, noNetworkObserver)
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.getQuickTodoList(AppFunctions.getCurrentDayStartInMilliSeconds())
+                .collect {
+                    quickTodoListAdapter.submitData(it)
+                }
+        }
+
     }
 }

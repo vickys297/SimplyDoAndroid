@@ -1,5 +1,6 @@
 package com.example.simplydo.ui.fragments.quickTodoList
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -18,7 +19,7 @@ import kotlinx.coroutines.flow.Flow
 import java.util.*
 
 
-internal const val PAGE_SIZE = 25
+internal const val PAGE_SIZE = 30
 
 class QuickTodoViewModel(private val appRepository: AppRepository) :
     ViewModel() {
@@ -41,7 +42,7 @@ class QuickTodoViewModel(private val appRepository: AppRepository) :
         contactInfo: ArrayList<ContactModel>,
         imagesList: ArrayList<GalleryModel>,
     ) {
-        appRepository.insertNewTodoTask(
+        val inserted = appRepository.insertNewTodoTask(
             TodoModel(
                 title = title,
                 todo = task,
@@ -57,6 +58,7 @@ class QuickTodoViewModel(private val appRepository: AppRepository) :
                 isHighPriority = priority
             )
         )
+        Log.i(TAG, "createNewTodo: $inserted")
     }
 
 
@@ -64,13 +66,18 @@ class QuickTodoViewModel(private val appRepository: AppRepository) :
         appRepository.completeTaskById(dtId)
     }
 
-    fun getQuickTodoList(eventStartDateTime: Long): Flow<PagingData<TodoModel>> {
+    fun getQuickTodoList(
+        eventStartDateTime: Long
+    ): Flow<PagingData<TodoModel>> {
         return Pager(
-            PagingConfig(pageSize = PAGE_SIZE, enablePlaceholders = true)
-
+            PagingConfig(
+                pageSize = PAGE_SIZE,
+                enablePlaceholders = false
+            )
         ) {
-            appRepository.QuickTodoPagingSource(eventStartDateTime, PAGE_SIZE)
-        }.flow.cachedIn(viewModelScope)
+            appRepository.appDatabase.todoDao().getQuickTodoList(eventDate = eventStartDateTime)
+        }.flow
+            .cachedIn(viewModelScope)
     }
 
 }

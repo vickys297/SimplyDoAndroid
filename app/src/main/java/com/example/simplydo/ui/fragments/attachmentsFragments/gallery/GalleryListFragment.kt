@@ -1,4 +1,4 @@
-package com.example.simplydo.ui.fragments.attachmentsFragments.gallaryList
+package com.example.simplydo.ui.fragments.attachmentsFragments.gallery
 
 import android.os.Bundle
 import android.util.Log

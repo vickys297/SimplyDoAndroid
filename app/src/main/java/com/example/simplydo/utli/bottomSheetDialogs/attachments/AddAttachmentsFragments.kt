@@ -52,6 +52,11 @@ class AddAttachmentsFragments(private val addAttachmentInterface: AddAttachmentI
             dismiss()
         }
 
+        binding.buttonAddDocument.setOnClickListener {
+            addAttachmentInterface.onAddDocument()
+            dismiss()
+        }
+
 
     }
 

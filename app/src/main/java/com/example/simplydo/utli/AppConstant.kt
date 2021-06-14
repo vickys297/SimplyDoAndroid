@@ -5,6 +5,8 @@ object AppConstant {
 
     const val DATABASE_NAME: String = "todoDatabase"
 
+    const val DEFAULT_PAGE_SIZE = 25
+
     const val API_RESULT_OK = "OK"
     const val API_RESULT_ERROR = "ERROR"
 

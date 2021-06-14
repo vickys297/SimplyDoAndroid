@@ -1,4 +1,4 @@
-package com.example.simplydo.ui.fragments.attachmentsFragments.gallaryList
+package com.example.simplydo.ui.fragments.attachmentsFragments.gallery
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
-import com.example.simplydo.utli.dataSource.GalleryDataSource
+import com.example.simplydo.dataSource.GalleryDataSource
 
 internal val TAG = GalleryListViewModel::class.java.canonicalName
 class GalleryListViewModel(context: Context) : ViewModel() {

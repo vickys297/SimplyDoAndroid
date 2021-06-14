@@ -6,6 +6,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import com.example.simplydo.model.TodoModel
+import com.example.simplydo.utli.AppFunctions
 import com.example.simplydo.utli.AppRepository
 
 
@@ -25,7 +26,7 @@ class OtherTodoViewModel internal constructor(
             initialLoadSize = 10
         )
     ) {
-        appRepository.PastOrderDatasource(System.currentTimeMillis())
+        appRepository.PastOrderDatasource(AppFunctions.getCurrentDayStartInMilliSeconds())
     }.flow
         .cachedIn(viewModelScope)
 

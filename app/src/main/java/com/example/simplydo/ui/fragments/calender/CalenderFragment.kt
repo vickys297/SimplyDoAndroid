@@ -9,8 +9,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.FragmentNavigator
 import androidx.navigation.fragment.findNavController
+import androidx.paging.PagingData
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,7 +26,8 @@ import com.example.simplydo.utli.adapters.CalenderViewAdapter
 import com.example.simplydo.utli.adapters.QuickTodoListAdapter
 import com.example.simplydo.utli.bottomSheetDialogs.basicAddTodoDialog.AddTodoBasic
 import com.example.simplydo.utli.bottomSheetDialogs.todoOptions.TodoOptionsFragment
-import kotlinx.coroutines.flow.collect
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.collections.ArrayList
@@ -105,17 +106,14 @@ class CalenderFragment : Fragment() {
 
         override fun onTaskClick(
             item: TodoModel,
-            absoluteAdapterPosition: Int,
-            extras: FragmentNavigator.Extras
+            absoluteAdapterPosition: Int
         ) {
             val bundle = Bundle()
             bundle.putSerializable("todo", item)
 
             findNavController().navigate(
                 R.id.action_calenderFragment_to_todoFullDetailsFragment,
-                bundle,
-                null,
-                extras
+                bundle
             )
         }
 
@@ -164,6 +162,8 @@ class CalenderFragment : Fragment() {
         selectedEventDateTotalItemCount = Observer {
 
             Log.i(TAG, "setObserver: selectedEventDateTotalCount $it")
+
+
             // task available in the selected or current event date
             if (it != 0) {
 //                todoAdapter.updateDataSet(it)
@@ -257,28 +257,74 @@ class CalenderFragment : Fragment() {
                 0,
                 ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
             ) {
+            override fun isLongPressDragEnabled(): Boolean {
+                return true
+            }
+
+
             override fun onMove(
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder,
                 target: RecyclerView.ViewHolder,
             ): Boolean {
+
+
+                val from = viewHolder.absoluteAdapterPosition
+                val to = target.absoluteAdapterPosition
+
+                val item1 = quickTodoListAdapter.getItemAtPosition(from)
+                val item2 = quickTodoListAdapter.getItemAtPosition(to)
+
+
+                if (item1 != null && item2 != null) {
+
+//                    quickTodoListAdapter.notifyItemMoved(from, to)
+                    return true
+                }
+
+
                 return false
             }
 
 
+
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
                 //Remove swiped item from list and notify the RecyclerView
-                val position = viewHolder.layoutPosition
+                val position = viewHolder.absoluteAdapterPosition
+                val item = quickTodoListAdapter.getItemAtPosition(position)
 
-                if (todoModel.isNotEmpty()) {
+                item?.let {
 
-                    Log.d(TAG, "onSwiped: $todoModel")
-                    Log.d(TAG, "onSwiped: position $position")
+                    viewModel.completeTaskByID(item.dtId)
 
-                    viewModel.completeTaskByID(todoModel[position].dtId)
-                    quickTodoListAdapter.notifyItemChanged(position)
-                    AppFunctions.showMessage("Task Completed", requireContext())
+                    if (item.eventDate < AppFunctions.getCurrentDayStartInMilliSeconds()) {
+                        quickTodoListAdapter.notifyItemRemoved(position)
+                    }
+
+                    Snackbar.make(
+                        binding.root,
+                        getString(R.string.task_completed_label),
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+
                 }
+            }
+
+            override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
+                super.onSelectedChanged(viewHolder, actionState)
+                if (actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
+                    viewHolder?.itemView?.alpha = 0.5f
+                }
+            }
+
+            override fun clearView(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder
+            ) {
+                super.clearView(recyclerView, viewHolder)
+                viewHolder.itemView.alpha = 1.0f
+
+                // Don't need to do anything here
             }
         }
 
@@ -287,19 +333,18 @@ class CalenderFragment : Fragment() {
     }
 
     private fun setupPagingDataObserverForSelectedDate() {
+        if (quickTodoListAdapter.itemCount > 0) {
+            quickTodoListAdapter.submitData(viewLifecycleOwner.lifecycle, PagingData.empty())
+        }
         val pagingDataSource = viewModel.getTodoListByEventDate(
             selectedEventDate.startEventDate,
             selectedEventDate.endEventDate
         )
-
-
         lifecycleScope.launch {
-            pagingDataSource.collect {
+            pagingDataSource.collectLatest {
                 quickTodoListAdapter.submitData(it)
-
             }
         }
-
         viewModel.getSelectedEventDateItemCount(
             selectedEventDate.startEventDate,
             selectedEventDate.endEventDate

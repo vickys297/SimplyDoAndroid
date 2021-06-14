@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.FragmentNavigator
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simplydo.R
@@ -57,16 +56,13 @@ class OtherTodoFragment : Fragment(), LifecycleObserver {
 
         override fun onTaskClick(
             item: TodoModel,
-            absoluteAdapterPosition: Int,
-            extras: FragmentNavigator.Extras
+            absoluteAdapterPosition: Int
         ) {
             val bundle = Bundle()
             bundle.putSerializable("todo", item)
             findNavController().navigate(
                 R.id.action_otherTodoFragment_to_todoFullDetailsFragment,
-                bundle,
-                null,
-                extras
+                bundle
             )
         }
 

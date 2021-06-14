@@ -11,6 +11,8 @@ class MyApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         Log.i(TAG_MY, "onCreate: ${Build.VERSION.RELEASE}/${Build.VERSION.BASE_OS}")
+
+
     }
 
 

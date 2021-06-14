@@ -85,25 +85,25 @@ class MainActivity : AppCompatActivity() {
 
     private fun setUpObserver() {
         allTodoListDataObserver = Observer { tasks ->
-            if (tasks.isNotEmpty()) {
-                (tasks as ArrayList<TodoModel>).forEach {
-                    Log.d(
-                        TAG, "Un Synced data :\n" +
-                                "dtId: ${it.dtId}\n" +
-                                "Title: ${it.title}\n" +
-                                "Task: ${it.todo}\n" +
-                                "Event Date: ${it.eventDate}\n" +
-                                "Event Time: ${it.eventTime}"
-                    )
-                }
-                viewModel.syncDataWithCloud(tasks)
-            }
+//            if (tasks.isNotEmpty()) {
+//                (tasks as ArrayList<TodoModel>).forEach {
+//                    Log.d(
+//                        TAG, "Un Synced data :\n" +
+//                                "dtId: ${it.dtId}\n" +
+//                                "Title: ${it.title}\n" +
+//                                "Task: ${it.todo}\n" +
+//                                "Event Date: ${it.eventDate}\n" +
+//                                "Event Time: ${it.eventTime}"
+//                    )
+//                }
+//                viewModel.syncDataWithCloud(tasks)
+//            }
         }
 
         totalTaskCountObserver = Observer {
             if (it.equals(0)) {
                 Log.d(TAG, "setUpObserver: No data available")
-                for (i in 1..10) {
+                for (i in 1..1000000) {
                     viewModel.insertDummyDataIntoLocalDatabase(
                         task = "Sample test task $i",
                         title = "Title $i",

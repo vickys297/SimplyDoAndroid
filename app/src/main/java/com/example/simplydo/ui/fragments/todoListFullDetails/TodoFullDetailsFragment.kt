@@ -11,14 +11,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simplydo.R
 import com.example.simplydo.databinding.TodoFullDetailsFragmentBinding
+import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.model.ContactModel
 import com.example.simplydo.model.TodoModel
 import com.example.simplydo.model.attachmentModel.AudioModel
 import com.example.simplydo.model.attachmentModel.GalleryModel
-import com.example.simplydo.utli.AppFunctions
-import com.example.simplydo.utli.AudioAttachmentInterface
-import com.example.simplydo.utli.ContactAttachmentInterface
-import com.example.simplydo.utli.GalleryAttachmentInterface
+import com.example.simplydo.utli.*
 import com.example.simplydo.utli.adapters.newTodotask.AudioAttachmentAdapter
 import com.example.simplydo.utli.adapters.newTodotask.ContactAttachmentAdapter
 import com.example.simplydo.utli.adapters.newTodotask.GalleryAttachmentAdapter
@@ -36,6 +34,8 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
         fun newInstance() = TodoFullDetailsFragment()
     }
 
+
+    private lateinit var todoData: TodoModel
     private lateinit var _binding: TodoFullDetailsFragmentBinding
     private val binding: TodoFullDetailsFragmentBinding get() = _binding
 
@@ -83,34 +83,49 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
         _binding = TodoFullDetailsFragmentBinding.bind(view)
 
         setupBinding()
-
-        viewModel = ViewModelProvider(this).get(TodoFullDetailsViewModel::class.java)
+        val appDatabase = AppDatabase.getInstance(requireContext())
+        val appRepository = AppRepository.getInstance(requireContext(), appDatabase)
+        viewModel = ViewModelProvider(
+            this, ViewModelFactory(
+                requireContext(),
+                appRepository
+            )
+        ).get(TodoFullDetailsViewModel::class.java)
 
         arguments?.let {
-            Log.d(TAG, "onViewCreated: ${it.getSerializable("todo")}")
+            todoData = getTodoData(dtId = it.getLong(getString(R.string.TODO_ITEM_KEY)))
+            Log.i(TAG, "onViewCreated: todoData --> $todoData")
+        }
+    }
 
-            val todoModel = it.getSerializable("todo") as TodoModel
-            binding.tvTitle.text = todoModel.title
-            binding.tvTodo.text = todoModel.todo
-            binding.textViewDateExpired.visibility = todoModel.dateExpiredVisibility()
-            binding.textViewPriority.visibility = todoModel.isVisible()
+    private fun getTodoData(dtId: Long): TodoModel {
+        return viewModel.getTodoDataById(dtId = dtId)
+    }
 
-            if (todoModel.eventTime.isEmpty()) {
-                binding.textViewEventDateAndTime.text = todoModel.getEventDateTextValue()
+    override fun onStart() {
+        super.onStart()
+        todoData.let { data ->
+            binding.tvTitle.text = data.title
+            binding.tvTodo.text = data.todo
+            binding.textViewDateExpired.visibility = data.dateExpiredVisibility()
+            binding.textViewPriority.visibility = data.isVisible()
+
+            if (data.eventTime.isEmpty()) {
+                binding.textViewEventDateAndTime.text = data.getEventDateTextValue()
             } else {
                 binding.textViewEventDateAndTime.text =
                     String.format(
                         "%s @ %s",
-                        todoModel.getEventDateTextValue(),
-                        AppFunctions.convertTimeStringToDisplayFormat(todoModel.eventTime)
+                        data.getEventDateTextValue(),
+                        AppFunctions.convertTimeStringToDisplayFormat(data.eventTime)
                     )
             }
 
             if (
-                todoModel.audioAttachments.isEmpty() &&
-                todoModel.imageAttachments.isEmpty() &&
-                todoModel.contactAttachments.isEmpty() &&
-                todoModel.locationData.isEmpty()
+                data.audioAttachments.isEmpty() &&
+                data.imageAttachments.isEmpty() &&
+                data.contactAttachments.isEmpty() &&
+                data.locationData.isEmpty()
             ) {
                 binding.noAttachmentFound.root.visibility = View.VISIBLE
             } else {
@@ -118,41 +133,41 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
             }
 
 
-            if (todoModel.audioAttachments.isEmpty()) {
+            if (data.audioAttachments.isEmpty()) {
                 binding.linearLayoutAudioAttachment.visibility = View.GONE
             } else {
-                audioAttachmentAdapter.updateDataSet(todoModel.audioAttachments)
+                audioAttachmentAdapter.updateDataSet(data.audioAttachments)
                 binding.linearLayoutAudioAttachment.visibility = View.VISIBLE
             }
 
-            if (todoModel.imageAttachments.isEmpty()) {
+            if (data.imageAttachments.isEmpty()) {
                 binding.linearLayoutGalleryAttachment.visibility = View.GONE
             } else {
-                galleryAttachmentAdapter.updateDataset(todoModel.imageAttachments)
+                galleryAttachmentAdapter.updateDataset(data.imageAttachments)
                 binding.linearLayoutGalleryAttachment.visibility = View.VISIBLE
             }
 
-            if (todoModel.contactAttachments.isEmpty()) {
+            if (data.contactAttachments.isEmpty()) {
                 binding.linearLayoutContactAttachment.visibility = View.GONE
             } else {
-                contactAttachmentAdapter.updateDataSet(todoModel.contactAttachments)
+                contactAttachmentAdapter.updateDataSet(data.contactAttachments)
                 binding.linearLayoutContactAttachment.visibility = View.VISIBLE
             }
 
-            if (todoModel.documentAttachments.isEmpty()) {
+            if (data.documentAttachments.isEmpty()) {
                 binding.linearDocumentAttachment.visibility = View.GONE
             } else {
                 binding.linearDocumentAttachment.visibility = View.VISIBLE
             }
 
-            if (todoModel.locationData.isEmpty()) {
+            if (data.locationData.isEmpty()) {
                 binding.linearLocationAttachment.visibility = View.GONE
             } else {
                 binding.linearLocationAttachment.visibility = View.VISIBLE
                 val mapFragment =
                     childFragmentManager.findFragmentById(R.id.mapView) as SupportMapFragment?
 
-                val latLng = todoModel.locationData.split(",".toRegex()).toTypedArray()
+                val latLng = data.locationData.split(",".toRegex()).toTypedArray()
 
                 val latitude: Double = latLng[0].toDouble()
                 val longitude: Double = latLng[1].toDouble()
@@ -190,8 +205,6 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
                 }
             }
         }
-
-
     }
 
     private fun setupBinding() {

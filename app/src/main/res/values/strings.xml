@@ -69,4 +69,5 @@
     <string name="select_location">Select Location</string>
     <string name="your_task_here">Your task here</string>
     <string name="view_in_map">View in map</string>
+    <string name="TODO_ITEM_KEY">todo_dtid</string>
 </resources>

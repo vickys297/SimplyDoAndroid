@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.example.simplydo.ui.fragments.attachmentsFragments.audioListView.AudioListViewModel" />
+            type="com.example.simplydo.ui.fragments.attachmentsFragments.audio.AudioListViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

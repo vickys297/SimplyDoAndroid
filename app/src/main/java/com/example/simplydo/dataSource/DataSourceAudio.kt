@@ -1,22 +1,45 @@
-package com.example.simplydo.ui.fragments.attachmentsFragments.audioListView
+package com.example.simplydo.dataSource
 
-import android.annotation.SuppressLint
 import android.content.ContentUris
+import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import android.util.Log
+import androidx.paging.PagingSource
+import androidx.paging.PagingState
 import com.example.simplydo.model.attachmentModel.AudioModel
+import com.example.simplydo.model.attachmentModel.AudioPagingModel
 
-class AudioListViewModel : ViewModel() {
-    // TODO: Implement the ViewModel
+internal val TAG_DS_AUDIO = DataSourceAudio::class.java.canonicalName
 
-    val audioList = MutableLiveData<ArrayList<AudioModel>>()
+class DataSourceAudio(val context: Context) : PagingSource<Int, AudioModel>() {
 
-    @SuppressLint("InlinedApi")
-    fun getAudioList(requireActivity: FragmentActivity) {
+    override fun getRefreshKey(state: PagingState<Int, AudioModel>): Int? {
+        return state.anchorPosition?.let { anchorPosition ->
+            val anchorPage = state.closestPageToPosition(anchorPosition)
+            anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
+        }
+    }
+
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, AudioModel> {
+        return try {
+            val nextPageNumber = params.key ?: 0
+            val response = getAudio(nextPageNumber)
+            Log.d(TAG_DS_AUDIO, "load: ${response.data.size}")
+
+            LoadResult.Page(
+                data = response.data,
+                prevKey = null, // Only paging forward.
+                nextKey = if (response.nextPage == -1) null else response.nextPage
+            )
+
+        } catch (e: Exception) {
+            return LoadResult.Error(e)
+        }
+    }
+
+    private fun getAudio(nextPageNumber: Int): AudioPagingModel {
         val audioArrayList = ArrayList<AudioModel>()
         val collection =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -34,11 +57,10 @@ class AudioListViewModel : ViewModel() {
             MediaStore.Audio.Media.DURATION
         )
 
-
         // Display videos in alphabetical order based on their display name.
         val sortOrder = "${MediaStore.Audio.Media.DISPLAY_NAME} ASC"
 
-        val query = requireActivity.contentResolver.query(
+        val query = context.contentResolver.query(
             collection,
             projection,
             null,
@@ -72,8 +94,9 @@ class AudioListViewModel : ViewModel() {
 
                 audioArrayList.add(AudioModel(contentUri.toString(), name, duration, size))
             }
-            audioList.postValue(audioArrayList)
             query.close()
         }
+
+        return AudioPagingModel(nextPage = -1, data = audioArrayList)
     }
 }

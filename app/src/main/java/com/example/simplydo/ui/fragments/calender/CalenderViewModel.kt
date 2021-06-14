@@ -29,7 +29,7 @@ class CalenderViewModel(val appRepository: AppRepository) : ViewModel() {
         return Pager(
             PagingConfig(pageSize = PAGE_SIZE, enablePlaceholders = false)
         ) {
-            appRepository.CalenderTodoList(startEventDate, endEventDate, pageSize = PAGE_SIZE)
+            appRepository.appDatabase.todoDao().getSingleDayTodoList(startEventDate, endEventDate)
         }.flow.cachedIn(viewModelScope)
     }
 

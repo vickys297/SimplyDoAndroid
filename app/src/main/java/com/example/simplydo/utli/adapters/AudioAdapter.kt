@@ -4,14 +4,28 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.simplydo.databinding.RecyclerAudioListItemBinding
 import com.example.simplydo.model.attachmentModel.AudioModel
 import com.example.simplydo.utli.AudioInterface
 
-class AudioAdapter(val context: Context, private var dataSet: ArrayList<AudioModel>, val audioInterface: AudioInterface) :
-    RecyclerView.Adapter<AudioAdapter.AudioViewHolder>() {
+class AudioAdapter(val context: Context,val audioInterface: AudioInterface) :
+    PagingDataAdapter<AudioModel, AudioAdapter.AudioViewHolder>(DIFF_CALLBACK) {
 
+    companion object{
+        val DIFF_CALLBACK = object :DiffUtil.ItemCallback<AudioModel>() {
+            override fun areItemsTheSame(oldItem: AudioModel, newItem: AudioModel): Boolean {
+                return oldItem.name == newItem.name
+            }
+
+            override fun areContentsTheSame(oldItem: AudioModel, newItem: AudioModel): Boolean {
+                return oldItem == newItem
+            }
+
+        }
+    }
     class AudioViewHolder(val binding: RecyclerAudioListItemBinding,val  audioInterface: AudioInterface) :
         RecyclerView.ViewHolder(binding.root) {
 
@@ -47,8 +61,8 @@ class AudioAdapter(val context: Context, private var dataSet: ArrayList<AudioMod
     }
 
     override fun onBindViewHolder(holder: AudioViewHolder, position: Int) {
-        val item = dataSet[position]
-        item.run {
+        val item = getItem(position)
+        item?.run {
             holder.bind(this@run)
 
             holder.itemView.setOnClickListener {
@@ -61,6 +75,5 @@ class AudioAdapter(val context: Context, private var dataSet: ArrayList<AudioMod
         }
     }
 
-    override fun getItemCount(): Int = dataSet.size
 
 }

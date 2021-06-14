@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -73,20 +72,10 @@ class TodoListPagingAdapter internal constructor(
                 item?.run {
                     (holder as TodoViewHolder).apply {
                         val todoHolder = bind(this@run)
-
-                        todoHolder.tvTitle.transitionName = "past_task_title_$position"
-                        todoHolder.tvTodo.transitionName = "past_task_todo_$position"
-
                         itemView.setOnClickListener {
-                            val extras = FragmentNavigatorExtras(
-                                todoHolder.tvTitle to "transition_title",
-                                todoHolder.tvTodo to "transition_todo"
-                            )
-
                             todoItemInterface.onTaskClick(
                                 this@run,
-                                absoluteAdapterPosition,
-                                extras
+                                absoluteAdapterPosition
                             )
                         }
                     }
@@ -96,21 +85,12 @@ class TodoListPagingAdapter internal constructor(
                 val item = getItem(position)
                 item?.run {
                     (holder as CompletedTaskViewHolder).apply {
-                       val completedHolder =  bind(this@run)
-
-                        completedHolder.tvTitle.transitionName = "completed_task_title_$position"
-                        completedHolder.tvTodo.transitionName = "completed_task_todo_$position"
+                     bind(this@run)
 
                         itemView.setOnClickListener {
-                            val extras = FragmentNavigatorExtras(
-                                completedHolder.tvTitle to "transition_title",
-                                completedHolder.tvTodo to "transition_todo"
-                            )
-
                             todoItemInterface.onTaskClick(
                                 this@run,
-                                absoluteAdapterPosition,
-                                extras
+                                absoluteAdapterPosition
                             )
                         }
                     }
