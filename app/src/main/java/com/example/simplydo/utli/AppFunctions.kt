@@ -3,10 +3,12 @@ package com.example.simplydo.utli
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.material.snackbar.Snackbar
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -116,4 +118,17 @@ object AppFunctions {
 
         return calendar.timeInMillis
     }
+
+    fun formatSize(v: Long): String {
+        if (v < 1024) return "$v B"
+        val z = (63 - java.lang.Long.numberOfLeadingZeros(v)) / 10
+        return String.format("%.1f %sB", v.toDouble() / (1L shl z * 10), " KMGTPE"[z])
+    }
+
+    fun showSnackBar(view: View, message: String){
+       val snackBar:Snackbar =  Snackbar.make(view, message, Snackbar.LENGTH_SHORT)
+        snackBar.animationMode = Snackbar.ANIMATION_MODE_SLIDE
+        snackBar.show()
+    }
+
 }

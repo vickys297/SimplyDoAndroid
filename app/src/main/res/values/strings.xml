@@ -47,7 +47,7 @@
     <string name="close">Close</string>
     <string name="cancel_task">Cancel Task</string>
     <string name="contact">Contact</string>
-    <string name="document">Document</string>
+    <string name="file">Files</string>
     <string name="audio">Audio</string>
     <string name="add_audio">Add audio</string>
     <string name="view_todo_option">View todo option</string>
@@ -70,4 +70,10 @@
     <string name="your_task_here">Your task here</string>
     <string name="view_in_map">View in map</string>
     <string name="TODO_ITEM_KEY">todo_dtid</string>
+    <string name="click_add_documents_to_add_files_documents_or_any_other_file">Click Select File to add files, documents or any other file types.</string>
+    <string name="no_documents_available">No files available to display.</string>
+    <string name="add_documents">Add Documents</string>
+    <string name="select_file">Select File</string>
+    <string name="add_files">Add Files</string>
+    <string name="close_button">close button</string>
 </resources>

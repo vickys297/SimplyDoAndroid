@@ -3,8 +3,6 @@ package com.example.simplydo.ui.fragments.todoListFullDetails
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.transition.TransitionInflater
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -69,20 +67,13 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val animation =
-            TransitionInflater.from(requireContext()).inflateTransition(android.R.transition.move)
-        sharedElementEnterTransition = animation
-        sharedElementReturnTransition = animation
-    }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = TodoFullDetailsFragmentBinding.bind(view)
 
         setupBinding()
+
         val appDatabase = AppDatabase.getInstance(requireContext())
         val appRepository = AppRepository.getInstance(requireContext(), appDatabase)
         viewModel = ViewModelProvider(
@@ -94,16 +85,8 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
 
         arguments?.let {
             todoData = getTodoData(dtId = it.getLong(getString(R.string.TODO_ITEM_KEY)))
-            Log.i(TAG, "onViewCreated: todoData --> $todoData")
         }
-    }
 
-    private fun getTodoData(dtId: Long): TodoModel {
-        return viewModel.getTodoDataById(dtId = dtId)
-    }
-
-    override fun onStart() {
-        super.onStart()
         todoData.let { data ->
             binding.tvTitle.text = data.title
             binding.tvTodo.text = data.todo
@@ -154,10 +137,10 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
                 binding.linearLayoutContactAttachment.visibility = View.VISIBLE
             }
 
-            if (data.documentAttachments.isEmpty()) {
-                binding.linearDocumentAttachment.visibility = View.GONE
+            if (data.fileAttachments.isEmpty()) {
+                binding.linearFilesAttachment.visibility = View.GONE
             } else {
-                binding.linearDocumentAttachment.visibility = View.VISIBLE
+                binding.linearFilesAttachment.visibility = View.VISIBLE
             }
 
             if (data.locationData.isEmpty()) {
@@ -206,6 +189,11 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
             }
         }
     }
+
+    private fun getTodoData(dtId: Long): TodoModel {
+        return viewModel.getTodoDataById(dtId = dtId)
+    }
+
 
     private fun setupBinding() {
         audioAttachmentAdapter =

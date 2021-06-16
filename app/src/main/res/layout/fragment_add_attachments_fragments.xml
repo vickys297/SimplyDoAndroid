@@ -39,7 +39,7 @@
             style="@style/ButtonOptions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/document" />
+            android:text="@string/file" />
 
         <Button
             android:id="@+id/buttonAddAudio"

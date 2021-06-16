@@ -196,7 +196,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/linearDocumentAttachment"
+                android:id="@+id/linear_files_attachment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -214,7 +214,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
-                    android:text="@string/document"
+                    android:text="@string/file"
                     android:textColor="@color/purple_500"
                     android:textStyle="bold" />
 
@@ -239,7 +239,7 @@
                 android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/linearDocumentAttachment">
+                app:layout_constraintTop_toBottomOf="@+id/linear_files_attachment">
 
                 <TextView
                     android:id="@+id/textView22"

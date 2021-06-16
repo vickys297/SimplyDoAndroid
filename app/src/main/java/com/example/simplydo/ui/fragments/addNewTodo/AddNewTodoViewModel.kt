@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.example.simplydo.model.ContactModel
 import com.example.simplydo.model.TodoModel
 import com.example.simplydo.model.attachmentModel.AudioModel
+import com.example.simplydo.model.attachmentModel.FileModel
 import com.example.simplydo.model.attachmentModel.GalleryModel
 import com.example.simplydo.utli.AppConstant
 import com.example.simplydo.utli.AppFunctions
@@ -21,7 +22,8 @@ class AddNewTodoViewModel(val appRepository: AppRepository) :
         contactArray: ArrayList<ContactModel>,
         galleryArray: ArrayList<GalleryModel>,
         audioArray: ArrayList<AudioModel>,
-        location: String
+        location: String,
+        filesArray: ArrayList<FileModel>
     ) {
         appRepository.insertNewTodoTask(
             TodoModel(
@@ -34,6 +36,7 @@ class AddNewTodoViewModel(val appRepository: AppRepository) :
                 locationData = location,
                 imageAttachments = galleryArray,
                 audioAttachments = audioArray,
+                fileAttachments = filesArray,
                 createdAt = AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_ISO)
                     .format(Date().time),
                 updatedAt = AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_ISO)

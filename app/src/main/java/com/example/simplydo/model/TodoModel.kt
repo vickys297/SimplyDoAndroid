@@ -7,7 +7,7 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.example.simplydo.model.attachmentModel.AudioModel
-import com.example.simplydo.model.attachmentModel.DocumentModel
+import com.example.simplydo.model.attachmentModel.FileModel
 import com.example.simplydo.model.attachmentModel.GalleryModel
 import com.example.simplydo.utli.AppConstant
 import com.example.simplydo.utli.AppFunctions
@@ -47,7 +47,7 @@ data class TodoModel(
     @ColumnInfo(name = "audioFiles", defaultValue = "")
     val audioAttachments: ArrayList<AudioModel> = ArrayList(),
     @ColumnInfo(name = "documentFiles", defaultValue = "")
-    val documentAttachments: ArrayList<DocumentModel> = ArrayList(),
+    val fileAttachments: ArrayList<FileModel> = ArrayList(),
 
     // entries time stamp
     @ColumnInfo(name = "createdAt", defaultValue = "")

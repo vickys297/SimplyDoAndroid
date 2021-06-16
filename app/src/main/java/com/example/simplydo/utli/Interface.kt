@@ -4,6 +4,7 @@ import com.example.simplydo.model.ContactModel
 import com.example.simplydo.model.SmallCalenderModel
 import com.example.simplydo.model.TodoModel
 import com.example.simplydo.model.attachmentModel.AudioModel
+import com.example.simplydo.model.attachmentModel.FileModel
 import com.example.simplydo.model.attachmentModel.GalleryModel
 
 interface CreateBasicTodoInterface {
@@ -85,4 +86,7 @@ interface AudioAttachmentInterface {
 }
 interface ContactAttachmentInterface {
     fun onContactSelect(item: ContactModel)
+}
+interface FileAttachmentInterface {
+    fun onFileSelect(item: FileModel)
 }

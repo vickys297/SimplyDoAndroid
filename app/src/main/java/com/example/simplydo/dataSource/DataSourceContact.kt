@@ -60,6 +60,7 @@ class DataSourceContactNew(val context: Context) : PagingSource<Int, ContactMode
         val sortOrder = ContactsContract.Contacts.SORT_KEY_PRIMARY
         val uri: Uri = ContactsContract.CommonDataKinds.Contactables.CONTENT_URI
 
+
         val cursor: Cursor? =
             context.contentResolver.query(uri, projection, selection, selectionArgs, sortOrder)
 

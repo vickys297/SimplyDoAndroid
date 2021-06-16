@@ -47,7 +47,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -272,7 +272,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/linearDocumentAttachment"
+                    android:id="@+id/linearFilesAttachment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
@@ -284,7 +284,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="8dp"
-                        android:text="@string/document"
+                        android:text="@string/file"
                         android:textColor="@color/purple_500"
                         android:textStyle="bold" />
 
@@ -320,7 +320,7 @@
                         android:layout_margin="8dp"
                         app:cardCornerRadius="8dp">
 
-                        <fragment
+                        <androidx.fragment.app.FragmentContainerView
                             android:id="@+id/mapView"
                             android:name="com.google.android.gms.maps.SupportMapFragment"
                             android:layout_width="match_parent"

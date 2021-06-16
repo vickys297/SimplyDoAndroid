@@ -18,10 +18,12 @@ import com.example.simplydo.databinding.AddNewTodoFragmentBinding
 import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.model.ContactModel
 import com.example.simplydo.model.attachmentModel.AudioModel
+import com.example.simplydo.model.attachmentModel.FileModel
 import com.example.simplydo.model.attachmentModel.GalleryModel
 import com.example.simplydo.utli.*
 import com.example.simplydo.utli.adapters.newTodotask.AudioAttachmentAdapter
 import com.example.simplydo.utli.adapters.newTodotask.ContactAttachmentAdapter
+import com.example.simplydo.utli.adapters.newTodotask.FileAttachmentAdapter
 import com.example.simplydo.utli.adapters.newTodotask.GalleryAttachmentAdapter
 import com.example.simplydo.utli.bottomSheetDialogs.attachments.AddAttachmentsFragments
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -50,6 +52,7 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
     private lateinit var contactArrayList: ArrayList<ContactModel>
     private lateinit var galleryArrayList: ArrayList<GalleryModel>
     private lateinit var audioArrayList: ArrayList<AudioModel>
+    private lateinit var filesArrayList: ArrayList<FileModel>
 
     private var eventDate: Long = System.currentTimeMillis()
     private lateinit var eventTime: String
@@ -60,6 +63,7 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
     private lateinit var audioAttachmentAdapter: AudioAttachmentAdapter
     private lateinit var galleryAttachmentAdapter: GalleryAttachmentAdapter
     private lateinit var contactAttachmentAdapter: ContactAttachmentAdapter
+    private lateinit var fileAttachmentAdapter: FileAttachmentAdapter
 
 
     // all interfaces
@@ -82,6 +86,13 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
         override fun onContactSelect(item: ContactModel) {
 
         }
+    }
+
+    private val fileAttachmentInterface = object  : FileAttachmentInterface{
+        override fun onFileSelect(item: FileModel) {
+
+        }
+
     }
 
     private var addAttachmentInterface: AddAttachmentInterface = object : AddAttachmentInterface {
@@ -137,6 +148,7 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
         contactArrayList = ArrayList()
         galleryArrayList = ArrayList()
         audioArrayList = ArrayList()
+        filesArrayList = ArrayList()
 
         return binding.root
     }
@@ -230,6 +242,28 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
             } else {
                 binding.linearLayoutGalleryAttachment.visibility = View.GONE
             }
+        }
+
+        // We use a String here, but any type that can be put in a Bundle is supported
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<ArrayList<FileModel>>(
+            AppConstant.NAVIGATION_FILES_DATA_KEY
+        )?.observe(
+            viewLifecycleOwner
+        ) { result ->
+
+            filesArrayList = result
+
+            checkForAttachment()
+
+            Log.i(TAG, "NAVIGATION_FILES_DATA_KEY: $result")
+
+            if (filesArrayList.isNotEmpty()){
+                binding.linearFilesAttachment.visibility = View.VISIBLE
+                fileAttachmentAdapter.updateDataSet(filesArrayList)
+            }else{
+                binding.linearFilesAttachment.visibility = View.GONE
+            }
+
         }
 
 
@@ -414,6 +448,7 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
                     galleryArray = galleryArrayList,
                     contactArray = contactArrayList,
                     audioArray = audioArrayList,
+                    filesArray = filesArrayList,
                     location = "${latLng?.latitude},${latLng?.longitude}"
                 )
                 snackBar = Snackbar.make(binding.root, "New task add", Snackbar.LENGTH_SHORT)
@@ -441,6 +476,9 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
             GalleryAttachmentAdapter(requireContext(), galleryAttachmentInterface)
         contactAttachmentAdapter =
             ContactAttachmentAdapter(requireContext(), contactAttachmentInterface)
+        fileAttachmentAdapter =
+            FileAttachmentAdapter(fileAttachmentInterface)
+
 
         binding.recyclerViewAudioAttachments.apply {
             layoutManager =
@@ -460,6 +498,11 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
             adapter = contactAttachmentAdapter
         }
 
+        binding.recyclerViewDocumentAttachments.apply {
+            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            adapter = fileAttachmentAdapter
+        }
+
         checkForAttachment()
 
     }
@@ -470,6 +513,7 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
             audioArrayList.isEmpty() &&
             galleryArrayList.isEmpty() &&
             contactArrayList.isEmpty() &&
+            filesArrayList.isEmpty() &&
             latLng == null
         ) {
             binding.noAttachmentFound.root.visibility = View.VISIBLE

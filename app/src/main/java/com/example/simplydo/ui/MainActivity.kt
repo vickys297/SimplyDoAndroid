@@ -3,6 +3,7 @@ package com.example.simplydo.ui
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import androidx.annotation.WorkerThread
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -100,6 +101,11 @@ class MainActivity : AppCompatActivity() {
 //            }
         }
 
+        preLoadDummyData()
+    }
+
+    @WorkerThread
+    private fun preLoadDummyData() {
         totalTaskCountObserver = Observer {
             if (it.equals(0)) {
                 Log.d(TAG, "setUpObserver: No data available")

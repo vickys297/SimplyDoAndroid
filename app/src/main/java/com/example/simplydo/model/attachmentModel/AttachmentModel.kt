@@ -1,6 +1,7 @@
 package com.example.simplydo.model.attachmentModel
 
 import com.example.simplydo.model.ContactModel
+import java.io.Serializable
 
 data class AudioPagingModel(
     val nextPage: Int,
@@ -11,11 +12,6 @@ data class ContactPagingModel(
     val nextPage: Int,
     val data: ArrayList<ContactModel>
 )
-data class DocumentDataSourceModel(
-    val nextPage: Int,
-    val data: ArrayList<DocumentModel>
-)
-
 
 data class GalleryPagingModel(
     val nextPage: Int,
@@ -24,7 +20,7 @@ data class GalleryPagingModel(
 
 
 data class AttachmentModel(
-    val documentsList: ArrayList<String>,
+    val documentsList: ArrayList<FileModel>,
     val audioList: ArrayList<AudioModel>,
     val imagesList: ArrayList<String>,
     val contactArray: ArrayList<ContactModel>,
@@ -37,7 +33,7 @@ data class AudioModel(
     val duration: Int,
     val size: Int,
     var isSelected: Boolean = false
-)
+) : Serializable
 
 data class GalleryModel(
     val id: Long,
@@ -48,18 +44,18 @@ data class GalleryModel(
     val mimeType: String,
     val contentUri: String,
     var isSelected: Boolean = false
-)
+) : Serializable
 
-data class DocumentModel(
+data class FileModel(
     val id: Long,
     val name: String,
     val size: Int,
-    val createdAt: String,
+    val createdAt: String?,
     val fileDataType: Int,
     val mimeType: String,
     val contentUri: String,
     var isSelected: Boolean = false
-)
+) : Serializable
 
 
 data class CalenderDateSelectorModel(

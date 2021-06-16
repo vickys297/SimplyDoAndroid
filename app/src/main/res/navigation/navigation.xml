@@ -119,6 +119,6 @@
         tools:layout="@layout/todo_full_details_fragment" />
     <fragment
         android:id="@+id/documentListFragment"
-        android:name="com.example.simplydo.ui.fragments.attachmentsFragments.document.DocumentListFragment"
+        android:name="com.example.simplydo.ui.fragments.attachmentsFragments.document.FileListFragment"
         android:label="DocumentListFragment" />
 </navigation>

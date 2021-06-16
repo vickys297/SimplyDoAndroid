@@ -3,7 +3,7 @@ package com.example.simplydo.localDatabase
 import androidx.room.TypeConverter
 import com.example.simplydo.model.ContactModel
 import com.example.simplydo.model.attachmentModel.AudioModel
-import com.example.simplydo.model.attachmentModel.DocumentModel
+import com.example.simplydo.model.attachmentModel.FileModel
 import com.example.simplydo.model.attachmentModel.GalleryModel
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -46,13 +46,13 @@ class ConverterHelper {
     }
 
     @TypeConverter
-    fun fromDocumentFilesList(list: ArrayList<DocumentModel>): String {
+    fun fromDocumentFilesList(list: ArrayList<FileModel>): String {
         return gson.toJson(list)
     }
 
     @TypeConverter
-    fun toDocumentFilesList(json: String): ArrayList<DocumentModel> {
-        return gson.fromJson(json, object : TypeToken<ArrayList<DocumentModel?>?>() {}.type)
+    fun toDocumentFilesList(json: String): ArrayList<FileModel> {
+        return gson.fromJson(json, object : TypeToken<ArrayList<FileModel?>?>() {}.type)
     }
 
     @TypeConverter
