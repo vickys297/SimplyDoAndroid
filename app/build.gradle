@@ -85,7 +85,7 @@ dependencies {
     kapt "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
 
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.0-native-mt'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.0'
 
     def work_version = "2.6.0-beta01"
     implementation "androidx.work:work-runtime-ktx:$work_version"
@@ -98,6 +98,9 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:17.0.1'
 
 
+//  lottie
+    def lottieVersion = "3.7.0"
+    implementation "com.airbnb.android:lottie:$lottieVersion"
 
 
 }

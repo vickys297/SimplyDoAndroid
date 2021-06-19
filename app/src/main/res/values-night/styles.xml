@@ -4,4 +4,8 @@
         <item name="android:background">@color/gray_600</item>
         <item name="exampleColor">@color/light_blue_600</item>
     </style>
+
+    <style name="LottieStyle">
+        <item name="android:background">@drawable/lottie_background_circle_dark</item>
+    </style>
 </resources>

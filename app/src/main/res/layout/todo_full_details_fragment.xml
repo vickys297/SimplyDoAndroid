@@ -21,18 +21,31 @@
             <TextView
                 android:id="@+id/tvTitle"
                 style="@style/ToolbarStyledText"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="8dp"
                 android:text="Hello"
                 android:textSize="24sp"
                 android:transitionName="transition_title"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintEnd_toStartOf="@+id/imCompleted"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/imCompleted"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/primary_color_circle"
+                android:cropToPadding="false"
+                android:src="@drawable/ic_baseline_check_12_white"
+                app:layout_constraintBottom_toBottomOf="@+id/tvTitle"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tvTitle"
+                app:layout_constraintTop_toTopOf="@+id/tvTitle" />
 
 
             <LinearLayout
@@ -53,6 +66,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
+                    android:singleLine="false"
+                    android:textIsSelectable="true"
                     android:text="@string/your_task_here"
                     android:transitionName="transition_todo" />
             </LinearLayout>
@@ -74,29 +89,31 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout3" />
 
-            <TextView
-                android:id="@+id/textViewPriority"
-                style="@style/PriorityText"
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipPriority"
+                style="@style/ChipTaskPriority"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:text="@string/priority"
+                android:visibility="gone"
                 android:transitionName="transition_priority"
-                app:layout_constraintBottom_toBottomOf="@+id/textViewEventDateAndTime"
-                app:layout_constraintStart_toEndOf="@+id/textViewEventDateAndTime"
-                app:layout_constraintTop_toTopOf="@+id/textViewEventDateAndTime" />
+                app:layout_constraintBottom_toBottomOf="@+id/textViewEventTime"
+                app:layout_constraintStart_toEndOf="@+id/textViewEventTime"
+                app:layout_constraintTop_toTopOf="@+id/textViewEventTime" />
 
-            <TextView
-                android:id="@+id/textViewDateExpired"
-                style="@style/PastTask"
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipDateExpired"
+                style="@style/ChipTaskDateExpired"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
+                android:visibility="gone"
                 android:text="@string/date_expired"
                 android:transitionName="transition_date_expired"
-                app:layout_constraintBottom_toBottomOf="@+id/textViewPriority"
-                app:layout_constraintStart_toEndOf="@+id/textViewPriority"
-                app:layout_constraintTop_toTopOf="@+id/textViewPriority" />
+                app:layout_constraintBottom_toBottomOf="@+id/chipPriority"
+                app:layout_constraintStart_toEndOf="@+id/chipPriority"
+                app:layout_constraintTop_toTopOf="@+id/chipPriority" />
 
             <LinearLayout
                 android:id="@+id/linearLayoutAudioAttachment"
@@ -299,13 +316,25 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:drawableStart="@drawable/ic_baseline_calendar_today_24"
                 android:drawablePadding="10dp"
                 android:gravity="center"
                 android:textSize="16sp"
                 android:transitionName="transistion_eventDateTime"
                 app:layout_constraintStart_toStartOf="parent"
+                app:drawableStartCompat="@drawable/ic_baseline_calendar_today_16"
                 app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+
+            <TextView
+                android:id="@+id/textViewEventTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:gravity="center"
+                android:textSize="16sp"
+                android:transitionName="transistion_eventDateTime"
+                app:layout_constraintBottom_toBottomOf="@+id/textViewEventDateAndTime"
+                app:layout_constraintStart_toEndOf="@+id/textViewEventDateAndTime"
+                app:layout_constraintTop_toTopOf="@+id/textViewEventDateAndTime" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

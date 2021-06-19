@@ -1,6 +1,7 @@
 package com.example.simplydo.ui.fragments.quickTodoList
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -22,7 +23,6 @@ import com.example.simplydo.utli.adapters.QuickTodoListAdapter
 import com.example.simplydo.utli.bottomSheetDialogs.basicAddTodoDialog.AddTodoBasic
 import com.example.simplydo.utli.bottomSheetDialogs.calenderOptions.TodoOptions
 import com.example.simplydo.utli.bottomSheetDialogs.todoOptions.TodoOptionsFragment
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.util.*
@@ -30,6 +30,8 @@ import kotlin.collections.ArrayList
 
 
 internal val TAG = QuickTodoFragment::class.java.canonicalName
+internal const val CHANNEL_ID = "task_channel_id"
+internal const val NOTIFICATION_ID = 8888
 
 class QuickTodoFragment : Fragment(R.layout.todo_fragment) {
 
@@ -38,6 +40,8 @@ class QuickTodoFragment : Fragment(R.layout.todo_fragment) {
     }
 
     private lateinit var todoObserver: Observer<CommonResponseModel>
+    private lateinit var totalTaskCountObserver: Observer<Int>
+
     private lateinit var noNetworkObserver: Observer<String>
 
     private lateinit var viewModel: QuickTodoViewModel
@@ -46,7 +50,6 @@ class QuickTodoFragment : Fragment(R.layout.todo_fragment) {
     private val binding get() = _binding
 
     private lateinit var quickTodoListAdapter: QuickTodoListAdapter
-    private lateinit var todoModel: ArrayList<TodoModel>
 
     private lateinit var recentSelectedItem: TodoModel
 
@@ -118,7 +121,7 @@ class QuickTodoFragment : Fragment(R.layout.todo_fragment) {
             eventTime: String,
             isPriority: Boolean
         ) {
-            viewModel.createNewTodo(
+            val newInert = viewModel.createNewTodo(
                 title,
                 task,
                 eventDate,
@@ -127,6 +130,46 @@ class QuickTodoFragment : Fragment(R.layout.todo_fragment) {
                 ArrayList(),
                 ArrayList()
             )
+
+
+
+            newInert.let {
+
+                val bundle = Bundle()
+                bundle.putLong("dtId", it)
+                bundle.putString("title", title)
+                bundle.putString("task", task)
+                bundle.putBoolean("priority", isPriority)
+
+                AppFunctions.showSnackBar(binding.root, "New task added")
+
+                setupNotification(it, eventDate, bundle)
+
+            }
+        }
+    }
+
+    private fun setupNotification(tasKId: Long, eventDate: Long, bundle: Bundle) {
+
+        if (System.currentTimeMillis() < eventDate) {
+            val calendar = AppFunctions.getCurrentDateCalender()
+            calendar.timeInMillis = eventDate
+            calendar.set(Calendar.HOUR_OF_DAY, 7)
+            calendar.set(Calendar.MINUTE, 0)
+            calendar.set(Calendar.SECOND, 0)
+
+            AppFunctions.setNotificationTrigger(
+                requireActivity(),
+                tasKId.toString(),
+                calendar.timeInMillis,
+                bundle,
+                AppConstant.ALERT_TYPE_SILENT
+            )
+            val isEnabled = AppFunctions.checkHasNotificationEnabled(
+                requireActivity(),
+                dtId = tasKId.toString()
+            )
+            Log.i(TAG, "setupNotification: $isEnabled")
         }
 
     }
@@ -199,21 +242,18 @@ class QuickTodoFragment : Fragment(R.layout.todo_fragment) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
                 //Remove swiped item from list and notify the RecyclerView
                 val position = viewHolder.absoluteAdapterPosition
-                val item = quickTodoListAdapter.getItemAtPosition(position)
-
-                item?.let {
-
-                    viewModel.completeTaskByID(item.dtId)
-
-                    if (item.eventDate < AppFunctions.getCurrentDayStartInMilliSeconds()) {
+                quickTodoListAdapter.getItemAtPosition(position)?.let {
+                    quickTodoListAdapter.notifyItemRemoved(position)
+                    quickTodoListAdapter.notifyDataSetChanged()
+                    if (it.eventDate < AppFunctions.getCurrentDayStartInMilliSeconds()) {
                         quickTodoListAdapter.notifyItemRemoved(position)
                     }
-
-                    Snackbar.make(
-                        binding.root,
-                        getString(R.string.task_completed_label),
-                        Snackbar.LENGTH_SHORT
-                    ).show()
+                    viewModel.completeTaskByID(it.dtId).let {
+                        AppFunctions.showSnackBar(
+                            binding.root,
+                            getString(R.string.task_completed_label)
+                        )
+                    }
                 }
             }
 
@@ -237,6 +277,7 @@ class QuickTodoFragment : Fragment(R.layout.todo_fragment) {
 
         val itemTouchHelper = ItemTouchHelper(simpleItemTouchCallback)
         itemTouchHelper.attachToRecyclerView(binding.recyclerViewTodoList)
+
     }
 
 
@@ -253,6 +294,15 @@ class QuickTodoFragment : Fragment(R.layout.todo_fragment) {
             Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
         }
 
+        totalTaskCountObserver = Observer {
+            if (it > 0) {
+                binding.recyclerViewTodoList.visibility = View.VISIBLE
+                binding.noTaskAvailable.linearLayoutEmptyTask.visibility = View.GONE
+            } else {
+                binding.noTaskAvailable.linearLayoutEmptyTask.visibility = View.VISIBLE
+                binding.recyclerViewTodoList.visibility = View.GONE
+            }
+        }
 
     }
 
@@ -281,6 +331,9 @@ class QuickTodoFragment : Fragment(R.layout.todo_fragment) {
 
         viewModel.todoListResponse.observe(viewLifecycleOwner, todoObserver)
         viewModel.noNetworkMessage.observe(viewLifecycleOwner, noNetworkObserver)
+        viewModel.getTotalTaskCount().observe(viewLifecycleOwner, totalTaskCountObserver)
+
+
     }
 
 

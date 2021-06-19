@@ -66,7 +66,7 @@ data class TodoModel(
     var completedDateTime: String = "",
 ) : Serializable {
 
-    fun isVisible(): Int {
+    fun isPriorityVisible(): Int {
         return if (isHighPriority) {
             View.VISIBLE
         } else {

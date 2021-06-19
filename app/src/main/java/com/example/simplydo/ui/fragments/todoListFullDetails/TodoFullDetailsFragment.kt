@@ -3,7 +3,10 @@ package com.example.simplydo.ui.fragments.todoListFullDetails
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -67,6 +70,16 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
         }
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+
+        Log.i(TAG, "onCreateView: ")
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -84,24 +97,47 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
         ).get(TodoFullDetailsViewModel::class.java)
 
         arguments?.let {
-            todoData = getTodoData(dtId = it.getLong(getString(R.string.TODO_ITEM_KEY)))
+            todoData = getTodoData(dtId = it.getLong(AppConstant.NAVIGATION_TASK_KEY))
         }
 
         todoData.let { data ->
             binding.tvTitle.text = data.title
             binding.tvTodo.text = data.todo
-            binding.textViewDateExpired.visibility = data.dateExpiredVisibility()
-            binding.textViewPriority.visibility = data.isVisible()
 
-            if (data.eventTime.isEmpty()) {
-                binding.textViewEventDateAndTime.text = data.getEventDateTextValue()
-            } else {
-                binding.textViewEventDateAndTime.text =
-                    String.format(
-                        "%s @ %s",
-                        data.getEventDateTextValue(),
-                        AppFunctions.convertTimeStringToDisplayFormat(data.eventTime)
-                    )
+            if (AppFunctions.checkForDateTimeExpire(data)) {
+                binding.chipDateExpired.visibility = View.VISIBLE
+            }
+
+            binding.chipPriority.visibility = data.isPriorityVisible()
+
+            if (data.isCompleted) {
+                binding.imCompleted.visibility = View.VISIBLE
+            }
+
+            when (AppFunctions.getEventDateText(data.eventDate)) {
+                AppConstant.EVENT_TODAY -> {
+                    binding.textViewEventDateAndTime.text = AppConstant.EVENT_TODAY
+                }
+                AppConstant.EVENT_TOMORROW -> {
+                    binding.textViewEventDateAndTime.text = AppConstant.EVENT_TOMORROW
+                }
+                AppConstant.EVENT_YESTERDAY -> {
+                    binding.textViewEventDateAndTime.text = AppConstant.EVENT_YESTERDAY
+                }
+                else -> {
+                    binding.textViewEventDateAndTime.text =
+                        AppFunctions.getDateStringFromMilliseconds(
+                            data.eventDate,
+                            AppConstant.DATE_PATTERN_EVENT_DATE
+                        )
+                }
+            }
+
+            if (data.eventTime.isNotEmpty()) {
+                binding.textViewEventTime.text = String.format(
+                    "@ %s",
+                    AppFunctions.convertTimeStringToDisplayFormat(data.eventTime)
+                )
             }
 
             if (

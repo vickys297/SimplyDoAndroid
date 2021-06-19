@@ -13,17 +13,28 @@
         style="@style/CardBackground"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp">
+        android:layout_margin="8dp"
+        android:padding="16dp">
 
+        <TextView
+            android:id="@+id/tvTitle"
+            style="@style/TodoCardTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_regular"
+            android:text="@{todoModel.title}"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:transitionName="transition_title_small"
+            app:layout_constraintEnd_toStartOf="@+id/imCompleted"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
             android:id="@+id/imCompleted"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_margin="10dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
             android:background="@drawable/primary_color_circle"
             android:cropToPadding="false"
             android:src="@drawable/ic_baseline_check_12_white"
@@ -32,67 +43,87 @@
             app:layout_constraintStart_toEndOf="@+id/tvTitle"
             app:layout_constraintTop_toTopOf="@+id/tvTitle" />
 
-        <TextView
-            android:id="@+id/tvTitle"
-            style="@style/TodoCardTitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="8dp"
-            android:text="@{todoModel.title}"
-            app:layout_constraintEnd_toStartOf="@+id/imCompleted"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tvTodo"
             style="@style/TodoCardTask"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
+            android:ellipsize="end"
+            android:singleLine="false"
+            android:maxLines="4"
+            android:textIsSelectable="false"
             android:text="@{todoModel.todo}"
+            android:transitionName="transition_todo_small"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
 
+
         <TextView
-            android:id="@+id/tvEventTime"
+            android:id="@+id/tvEventDate"
             style="@style/TodoCardEventDate"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
-            android:text="@{todoModel.getEventDateTextValue()}"
+            android:drawablePadding="10dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvTodo" />
 
 
         <TextView
-            android:id="@+id/textView6"
-            style="@style/PriorityText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="@string/priority"
-            android:visibility="@{todoModel.isVisible}"
-            app:layout_constraintBottom_toBottomOf="@+id/tvEventTime"
-            app:layout_constraintStart_toEndOf="@+id/tvEventTime"
-            app:layout_constraintTop_toTopOf="@+id/tvEventTime" />
-
-        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/tvEventTime"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/tvEventDate"
+            app:layout_constraintStart_toEndOf="@+id/tvEventDate"
+            app:layout_constraintTop_toTopOf="@+id/tvEventDate" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvEventTime" />
+            app:layout_constraintTop_toBottomOf="@+id/tvEventDate">
+
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipPriority"
+                style="@style/ChipTaskPriority"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:text="@string/priority"
+                android:textStyle="bold"
+                android:visibility="@{todoModel.isPriorityVisible()}" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipDateExpired"
+                style="@style/ChipTaskDateExpired"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:text="@string/date_expired"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipAttachmentsAdded"
+                style="@style/ChipTaskAttachment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/attachments"
+                android:textStyle="bold"
+                android:visibility="gone"
+                app:chipIconEnabled="false"
+                app:chipIconSize="16dp" />
+
+        </LinearLayout>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

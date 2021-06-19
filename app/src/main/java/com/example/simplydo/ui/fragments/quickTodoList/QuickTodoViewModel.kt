@@ -1,6 +1,6 @@
 package com.example.simplydo.ui.fragments.quickTodoList
 
-import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -33,6 +33,10 @@ class QuickTodoViewModel(private val appRepository: AppRepository) :
         return appRepository.deleteTaskByPosition(item)
     }
 
+    fun getTotalTaskCount(): LiveData<Int> {
+        return appRepository.appDatabase.todoDao().getTotalTaskCount()
+    }
+
     fun createNewTodo(
         title: String,
         task: String,
@@ -41,8 +45,8 @@ class QuickTodoViewModel(private val appRepository: AppRepository) :
         priority: Boolean,
         contactInfo: ArrayList<ContactModel>,
         imagesList: ArrayList<GalleryModel>,
-    ) {
-        val inserted = appRepository.insertNewTodoTask(
+    ): Long {
+        return appRepository.insertNewTodoTask(
             TodoModel(
                 title = title,
                 todo = task,
@@ -58,12 +62,11 @@ class QuickTodoViewModel(private val appRepository: AppRepository) :
                 isHighPriority = priority
             )
         )
-        Log.i(TAG, "createNewTodo: $inserted")
     }
 
 
-    fun completeTaskByID(dtId: Long) {
-        appRepository.completeTaskById(dtId)
+    fun completeTaskByID(dtId: Long): Int {
+      return appRepository.completeTaskById(dtId)
     }
 
     fun getQuickTodoList(

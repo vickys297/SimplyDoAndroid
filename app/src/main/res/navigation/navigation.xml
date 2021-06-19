@@ -80,7 +80,8 @@
             app:popUpTo="@id/calenderFragment" />
         <action
             android:id="@+id/action_calenderFragment_to_todoFullDetailsFragment"
-            app:destination="@id/todoFullDetailsFragment" />
+            app:destination="@id/todoFullDetailsFragment"
+            app:popUpTo="@id/toDoFragment" />
     </fragment>
     <fragment
         android:id="@+id/contactsFragment"

@@ -1,6 +1,5 @@
 package com.example.simplydo.ui
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.simplydo.model.ContactModel
@@ -11,7 +10,7 @@ import com.example.simplydo.utli.AppFunctions
 import com.example.simplydo.utli.AppRepository
 import java.util.*
 
-class MainViewModel(val context: Context, val appRepository: AppRepository) : ViewModel() {
+class MainViewModel(val appRepository: AppRepository) : ViewModel() {
 
     fun getAllTodoListNotSynced(): LiveData<List<TodoModel>> {
         return appRepository.appDatabase.todoDao().getAllTodoNotSynced()
@@ -21,15 +20,14 @@ class MainViewModel(val context: Context, val appRepository: AppRepository) : Vi
         appRepository.uploadDataToCloudDatabase(arrayList)
     }
 
-    fun getTotalTaskCount(): LiveData<Int> {
-        return appRepository.appDatabase.todoDao().getTotalTaskCount()
-    }
 
     fun insertDummyDataIntoLocalDatabase(
         task: String,
         title: String,
         eventDate: Long,
         priority: Boolean,
+        eventTime: String = "",
+        isCompleted: Boolean = false,
         contactList: ArrayList<ContactModel>,
         imageList: ArrayList<GalleryModel>,
     ) {
@@ -37,11 +35,12 @@ class MainViewModel(val context: Context, val appRepository: AppRepository) : Vi
             TodoModel(
                 title = title,
                 todo = task,
-                eventTime = "",
+                eventTime = eventTime,
                 eventDate = eventDate,
                 contactAttachments = contactList,
                 imageAttachments = imageList,
                 locationData = "",
+                isCompleted = isCompleted,
                 createdAt = AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_ISO)
                     .format(Date().time),
                 updatedAt = AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_ISO)

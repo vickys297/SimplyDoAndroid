@@ -42,12 +42,12 @@ class CalenderFragment : Fragment() {
     }
 
     private lateinit var selectedEventDateTotalItemCount: Observer<Int>
-    private lateinit var nextAvailableDateObserver: Observer<List<TodoModel>>
+    private lateinit var nextAvailableDateObserver: Observer<TodoModel>
 
     private lateinit var viewModel: CalenderViewModel
 
     private lateinit var binding: CalenderFragmentBinding
-    private lateinit var smallCalenderModels: ArrayList<SmallCalenderModel>
+    private lateinit var arrayListSmallCalenderModels: ArrayList<SmallCalenderModel>
     private lateinit var calenderViewAdapter: CalenderViewAdapter
 
     private lateinit var quickTodoListAdapter: QuickTodoListAdapter
@@ -62,10 +62,15 @@ class CalenderFragment : Fragment() {
     var contactInfo: ArrayList<ContactModel> = ArrayList()
     var imagesList: ArrayList<String> = ArrayList()
 
+    private lateinit var calenderLinearLayoutManager: LinearLayoutManager
+
 
     // calender time line date selector
     private val calenderAdapterInterface = object : CalenderAdapterInterface {
         override fun onDateSelect(layoutPosition: Int, smallCalenderModel: SmallCalenderModel) {
+
+            Log.i(TAG, "onDateSelect: $layoutPosition")
+            calenderLinearLayoutManager.scrollToPositionWithOffset(layoutPosition, 1)
 
             // update current selected date
             selectedEventDate.apply {
@@ -180,46 +185,63 @@ class CalenderFragment : Fragment() {
         }
 
 
-        nextAvailableDateObserver = Observer {
-            val todoModel = it as ArrayList<TodoModel>
+        nextAvailableDateObserver = Observer { task ->
 
-            Log.i(TAG, "nextAvailableDateObserver: ${it.size}")
-            if (it.isNotEmpty()) {
-                binding.btnViewEventOnNextDate.visibility = View.VISIBLE
+            if (task == null) {
+                binding.tvNextEventAvailable.text = String.format("You do not have upcoming task")
+                binding.btnViewEventOnNextDate.visibility = View.GONE
+            }
+
+
+            task?.let {
                 binding.tvNextEventAvailable.text =
                     String.format(
                         "Next task available @ %s",
                         AppFunctions.getDateStringFromMilliseconds(
-                            todoModel[0].eventDate,
+                            task.eventDate,
                             AppConstant.DATE_PATTERN_EVENT_DATE
                         )
                     )
 
-                binding.btnViewEventOnNextDate.setOnClickListener {
+                binding.btnViewEventOnNextDate.apply {
+                    visibility = View.VISIBLE
+                    setOnClickListener {
+                        val calendar = Calendar.getInstance()
+                        calendar.timeInMillis = task.eventDate
 
-                    val calendar = Calendar.getInstance()
-                    calendar.timeInMillis = todoModel[0].eventDate
+                        calendar.set(Calendar.HOUR_OF_DAY, 0)
+                        calendar.set(Calendar.MINUTE, 0)
+                        calendar.set(Calendar.SECOND, 0)
+                        calendar.set(Calendar.MILLISECOND, 0)
 
-                    calendar.set(Calendar.HOUR_OF_DAY, 0)
-                    calendar.set(Calendar.MINUTE, 0)
-                    calendar.set(Calendar.SECOND, 0)
+                        val startEventDate = calendar.timeInMillis
 
-                    val startEventDate = calendar.timeInMillis
+                        calendar.set(Calendar.HOUR_OF_DAY, 23)
+                        calendar.set(Calendar.MINUTE, 59)
+                        calendar.set(Calendar.SECOND, 59)
+                        calendar.set(Calendar.MILLISECOND, 59)
+                        val endEventDate = calendar.timeInMillis
 
-                    calendar.set(Calendar.HOUR_OF_DAY, 23)
-                    calendar.set(Calendar.MINUTE, 59)
-                    calendar.set(Calendar.SECOND, 59)
-                    val endEventDate = calendar.timeInMillis
+                        selectedEventDate.startEventDate = startEventDate
+                        selectedEventDate.endEventDate = endEventDate
 
-                    selectedEventDate.startEventDate = startEventDate
-                    selectedEventDate.endEventDate = endEventDate
+                        setupPagingDataObserverForSelectedDate()
 
-                    setupPagingDataObserverForSelectedDate()
+                        var layoutPosition = 0
+                        for (item in arrayListSmallCalenderModels) {
+                            Log.i(TAG, "layoutPosition: $startEventDate/${item.startEventDate}")
+                            if (item.startEventDate == startEventDate) {
+                                layoutPosition = arrayListSmallCalenderModels.indexOf(item)
+                            }
+                        }
+                        Log.i(TAG, "layoutPosition: $layoutPosition")
+
+                        calenderLinearLayoutManager.scrollToPositionWithOffset(layoutPosition, 1)
+                    }
                 }
-            } else {
-                binding.tvNextEventAvailable.text = String.format("You do not have upcoming task")
-                binding.btnViewEventOnNextDate.visibility = View.GONE
             }
+
+
         }
 
 
@@ -229,17 +251,42 @@ class CalenderFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         // TODO: Use the ViewModel
         clickListener(binding)
-        smallCalenderModels = ArrayList()
+        arrayListSmallCalenderModels = ArrayList()
 
 
         // calender timeline view
+
+        calenderLinearLayoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+
         calenderViewAdapter =
             CalenderViewAdapter(requireContext(), calenderAdapterInterface)
         binding.recyclerViewCalenderView.apply {
-            layoutManager =
-                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            layoutManager = calenderLinearLayoutManager
             adapter = calenderViewAdapter
         }
+
+        ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
+            0,
+            ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+        ) {
+
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                TODO("Not yet implemented")
+            }
+
+        }).apply {
+            attachToRecyclerView(binding.recyclerViewCalenderView)
+        }
+
 
         // using quick todotask list adapter
         quickTodoListAdapter = QuickTodoListAdapter(todoAdapterInterface, requireContext())
@@ -413,7 +460,7 @@ class CalenderFragment : Fragment() {
     private fun populateRecyclerView() {
         for (i in 0..60) {
             val calendar = Calendar.getInstance()
-            calendar.time = Date()
+            calendar.timeInMillis = System.currentTimeMillis()
             calendar.add(Calendar.DAY_OF_MONTH, i)
 
             calendar.set(Calendar.HOUR_OF_DAY, 0)
@@ -428,8 +475,8 @@ class CalenderFragment : Fragment() {
 
             val endEventDate = calendar.timeInMillis
 
-            Log.i(TAG, "populateRecyclerView: ${calendar.time}")
-            smallCalenderModels.add(
+            Log.i(TAG, "populateRecyclerView: $startEventDate")
+            arrayListSmallCalenderModels.add(
                 SmallCalenderModel(
                     calendar.get(Calendar.DAY_OF_MONTH).toString(),
                     AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_MONTH_TEXT)
@@ -443,8 +490,8 @@ class CalenderFragment : Fragment() {
             )
         }
 
-        smallCalenderModels[0].isActive = true
+        arrayListSmallCalenderModels[0].isActive = true
 
-        calenderViewAdapter.updateList(smallCalenderModels)
+        calenderViewAdapter.updateList(arrayListSmallCalenderModels)
     }
 }

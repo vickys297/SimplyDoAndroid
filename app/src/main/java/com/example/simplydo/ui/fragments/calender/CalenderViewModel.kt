@@ -19,7 +19,7 @@ import java.util.*
 
 class CalenderViewModel(val appRepository: AppRepository) : ViewModel() {
 
-    val nextAvailableDate = MutableLiveData<ArrayList<TodoModel>>()
+    val nextAvailableDate = MutableLiveData<TodoModel>()
     val selectedEventDateTotalCount = MutableLiveData<Int>()
 
     fun getTodoListByEventDate(

@@ -78,6 +78,15 @@ object MimeTypes {
 }
 object AppConstant {
 
+   const val NAVIGATION_TASK_KEY: String = "todo_dtid"
+
+    // Silent alert user about the upcoming task
+   const val ALERT_TYPE_SILENT: Int = 10
+    // Alert user show notification at the task event date time
+   const val ALERT_TYPE_NOTIFY: Int = 11
+
+    const val ACTION_COMPLETE: String = "action_task_complete"
+    const val ACTION_VIEW: String = "action_task_view"
 
     const val DATABASE_NAME: String = "todoDatabase"
 
@@ -110,6 +119,11 @@ object AppConstant {
     const val DATE_PATTERN_MONTH_TEXT = "MMM"
     const val DATE_PATTERN_DAY_OF_MONTH = "dd"
 
+    const val EVENT_TODAY = "Today"
+    const val EVENT_TOMORROW = "Tomorrow"
+    const val EVENT_YESTERDAY = "Yesterday"
+    const val EVENT_CUSTOM = "Custom"
+
 
     // Work Manger
 
@@ -117,9 +131,20 @@ object AppConstant {
 
 
     // navigation data call back
-    const val NAVIGATION_CONTACT_DATA_KEY: String ="SelectedContactList"
-    const val NAVIGATION_FILES_DATA_KEY: String ="SelectedFilesList"
-    const val NAVIGATION_AUDIO_DATA_KEY: String ="SelectedAudioList"
-    const val NAVIGATION_GALLERY_DATA_KEY: String ="SelectedGalleryList"
-    const val NAVIGATION_LOCATION_DATA_KEY: String ="SelectedLocation"
+    const val NAVIGATION_CONTACT_DATA_KEY: String = "SelectedContactList"
+    const val NAVIGATION_FILES_DATA_KEY: String = "SelectedFilesList"
+    const val NAVIGATION_AUDIO_DATA_KEY: String = "SelectedAudioList"
+    const val NAVIGATION_GALLERY_DATA_KEY: String = "SelectedGalleryList"
+    const val NAVIGATION_LOCATION_DATA_KEY: String = "SelectedLocation"
+
+
+    // broadcast receiver
+
+    const val ACTION_ALARM_RECEIVER = "taskNotification"
+
+    const val ACTION_DISMISS =
+        "com.example.android.wearable.wear.wearnotifications.handlers.action.DISMISS"
+
+    const val ACTION_SNOOZE =
+        "com.example.android.wearable.wear.wearnotifications.handlers.action.SNOOZE"
 }

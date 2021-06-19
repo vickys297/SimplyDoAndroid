@@ -1,19 +1,19 @@
 package com.example.simplydo.dataSource
 
-import android.annotation.SuppressLint
 import android.content.ContentUris
 import android.content.Context
 import android.net.Uri
-import android.os.Build
 import android.provider.MediaStore
 import android.provider.MediaStore.Files.FileColumns
 import android.provider.MediaStore.Files.getContentUri
 import android.util.Log
-import androidx.annotation.RequiresApi
+import androidx.annotation.WorkerThread
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.simplydo.model.attachmentModel.GalleryModel
 import com.example.simplydo.model.attachmentModel.GalleryPagingModel
+import com.example.simplydo.utli.AppConstant
+
 internal val TAG = GalleryDataSource::class.java.canonicalName
 class GalleryDataSource internal constructor(private val context: Context) :
     PagingSource<Int, GalleryModel>() {
@@ -23,7 +23,6 @@ class GalleryDataSource internal constructor(private val context: Context) :
         return null
     }
 
-    @SuppressLint("NewApi")
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, GalleryModel> {
 
         try {
@@ -44,7 +43,7 @@ class GalleryDataSource internal constructor(private val context: Context) :
     }
 
 
-    @RequiresApi(Build.VERSION_CODES.Q)
+    @WorkerThread
     private fun getGalleryData(nextPageNumber: Int): GalleryPagingModel {
 
         val galleryModelArrayList = ArrayList<GalleryModel>()
@@ -69,14 +68,14 @@ class GalleryDataSource internal constructor(private val context: Context) :
                 + FileColumns.MEDIA_TYPE + "="
                 + FileColumns.MEDIA_TYPE_VIDEO)
 
-        val queryUri: Uri = getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
+        val queryUri: Uri = getContentUri(MediaStore.VOLUME_EXTERNAL)
 
         val cursor = context.contentResolver.query(
             queryUri,
             projection,
             selection,
             null,
-            FileColumns.DATE_ADDED + " DESC"
+            FileColumns.DATE_ADDED + " DESC LIMIT ${AppConstant.DEFAULT_PAGE_SIZE}"
         )
 
         cursor?.use {
@@ -125,9 +124,9 @@ class GalleryDataSource internal constructor(private val context: Context) :
                 galleryModelArrayList.add(newData)
             }
 
-
+            cursor.close()
         }
 
-        return GalleryPagingModel(nextPageNumber, galleryModelArrayList)
+        return GalleryPagingModel(-1, galleryModelArrayList)
     }
 }

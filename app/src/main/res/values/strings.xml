@@ -76,4 +76,13 @@
     <string name="select_file">Select File</string>
     <string name="add_files">Add Files</string>
     <string name="close_button">close button</string>
+    <string name="app_task_id">task_dtId</string>
+    <string name="app_notification_chennel_id">simplyDo_notifi_task</string>
+    <string name="notification_title">"Hi , you have as task "</string>
+    <string name="mark_as_completed">Mark as completed</string>
+    <string name="preload_sample_data">sample preload</string>
+    <string name="you_have_no_task">No task available</string>
+    <string name="click_new_todo_to_add_new_task_to_your_list">Click NEW TODO to add new task to your list</string>
+    <string name="view_task">View Task</string>
+    <string name="complete_task">Complete Task</string>
 </resources>

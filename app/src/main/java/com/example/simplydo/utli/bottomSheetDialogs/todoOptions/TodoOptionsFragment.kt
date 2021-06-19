@@ -45,7 +45,7 @@ class TodoOptionsFragment internal constructor(
     }
 
 
-    companion object {
+    companion   object {
         fun newInstance(todoOptionDialogFragments: TodoOptionDialogFragments, item: TodoModel) =
             TodoOptionsFragment(todoOptionDialogFragments, item)
     }

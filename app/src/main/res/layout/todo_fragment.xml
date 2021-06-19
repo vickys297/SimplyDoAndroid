@@ -41,25 +41,31 @@
             android:id="@+id/recyclerViewTodoList"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/btnNewTodo"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            tools:listitem="@layout/recycler_todo_list_item"
-            app:layout_constraintTop_toBottomOf="@+id/todoToolbar" />
+            app:layout_constraintTop_toBottomOf="@+id/todoToolbar"
+            tools:listitem="@layout/recycler_todo_list_item" />
 
+        <include
+            android:id="@+id/noTaskAvailable"
+            layout="@layout/no_task_available"
+            app:layout_constraintBottom_toTopOf="@+id/btnNewTodo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/todoToolbar" />
 
         <Button
             android:id="@+id/btnNewTodo"
             style="@style/PrimaryButton"
             android:layout_width="0dp"
             android:layout_height="68dp"
-            android:background="@drawable/button_background"
             android:text="@string/new_todo"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/buttonTodoOption"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/recyclerViewTodoList" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <ImageButton
             android:id="@+id/buttonTodoOption"

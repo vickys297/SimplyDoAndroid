@@ -220,23 +220,23 @@ class AppRepository @Inject private constructor(
 
     fun getNextTaskAvailability(
         currentEventDateMax: Long,
-        nextAvailableDate: MutableLiveData<ArrayList<TodoModel>>,
+        nextAvailableDate: MutableLiveData<TodoModel>,
     ) {
 
         val response = Executors.newSingleThreadExecutor().submit(Callable {
             db.getNextEventCountByDate(currentEventDateMax = currentEventDateMax)
         }).get()
-        nextAvailableDate.postValue(response as ArrayList<TodoModel>)
+        nextAvailableDate.postValue(response)
     }
 
-    fun completeTaskById(dtId: Long) {
+    fun completeTaskById(dtId: Long): Int {
         val callable = Callable {
             db.completeTaskById(
                 dtId,
                 AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_ISO).format(Date().time)
             )
         }
-        Executors.newSingleThreadExecutor().submit(callable)
+        return Executors.newSingleThreadExecutor().submit(callable).get()!!
     }
 
     inner class PastOrderDatasource(val currentTimeMillis: Long) : PagingSource<Int, TodoModel>() {

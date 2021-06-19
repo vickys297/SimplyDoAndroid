@@ -43,7 +43,7 @@ open class ViewModelFactory internal constructor(
             }
 
             MainViewModel::class.java.canonicalName -> {
-                MainViewModel(context, appRepository) as T
+                MainViewModel(appRepository) as T
             }
 
             TodoFullDetailsViewModel::class.java.canonicalName->{

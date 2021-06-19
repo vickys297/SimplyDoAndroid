@@ -59,7 +59,7 @@ class OtherTodoFragment : Fragment(), LifecycleObserver {
             absoluteAdapterPosition: Int
         ) {
             val bundle = Bundle()
-            bundle.putSerializable("todo", item)
+            bundle.putLong(getString(R.string.TODO_ITEM_KEY), item.dtId)
             findNavController().navigate(
                 R.id.action_otherTodoFragment_to_todoFullDetailsFragment,
                 bundle

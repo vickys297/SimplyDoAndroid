@@ -81,7 +81,7 @@ interface TodoDAO {
 
     //    complete task by dtid
     @Query("UPDATE todoList SET isCompleted = '1', synchronize ='0' , updatedAt =:updatedAt WHERE dtId =:dtId")
-    fun completeTaskById(dtId: Long, updatedAt: String)
+    fun completeTaskById(dtId: Long, updatedAt: String): Int
 
     //    delete task by dtid
     @Delete
@@ -93,7 +93,7 @@ interface TodoDAO {
 
     //    get task count on upcoming event date
     @Query("SELECT * FROM todoList WHERE eventDate >= :currentEventDateMax limit 1")
-    fun getNextEventCountByDate(currentEventDateMax: Long): List<TodoModel>
+    fun getNextEventCountByDate(currentEventDateMax: Long): TodoModel
 
 
     /*Cloud Purpose
