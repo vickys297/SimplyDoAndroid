@@ -40,7 +40,7 @@ class CalenderViewAdapter(
         item.run {
             holder.apply {
                 bind(this@run)
-                itemView.tag = this@run
+                itemView.tag = this@run.id
 
                 itemView.setOnClickListener {
                     calenderAdapterInterface.onDateSelect(bindingAdapterPosition, item)
@@ -85,5 +85,6 @@ class CalenderViewAdapter(
         dataset[activePosition].isActive = true
         notifyItemChanged(activePosition)
     }
+
 
 }

@@ -84,9 +84,15 @@ interface GalleryAttachmentInterface {
 interface AudioAttachmentInterface {
     fun onAudioSelect(item: AudioModel)
 }
+
 interface ContactAttachmentInterface {
     fun onContactSelect(item: ContactModel)
 }
+
 interface FileAttachmentInterface {
     fun onFileSelect(item: FileModel)
+}
+
+interface UndoInterface {
+    fun onUndo(task: TodoModel, type: Int)
 }

@@ -85,4 +85,6 @@
     <string name="click_new_todo_to_add_new_task_to_your_list">Click NEW TODO to add new task to your list</string>
     <string name="view_task">View Task</string>
     <string name="complete_task">Complete Task</string>
+    <string name="edit_text">Edit Text</string>
+    <string name="hello">Hello</string>
 </resources>

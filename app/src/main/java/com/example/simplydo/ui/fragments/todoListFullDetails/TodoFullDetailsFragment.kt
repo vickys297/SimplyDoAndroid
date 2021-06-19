@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simplydo.R
 import com.example.simplydo.databinding.TodoFullDetailsFragmentBinding
@@ -114,6 +115,13 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
                 binding.imCompleted.visibility = View.VISIBLE
             }
 
+            binding.buttonEdit.setOnClickListener {
+                val bundle = Bundle()
+                bundle.putInt(AppConstant.NAVIGATION_TASK_ACTION_EDIT_KEY, AppConstant.TASK_ACTION_EDIT)
+                bundle.putSerializable(AppConstant.NAVIGATION_TASK_DATA_KEY, data)
+                findNavController().navigate(R.id.action_todoFullDetailsFragment_to_editFragment, bundle)
+            }
+
             when (AppFunctions.getEventDateText(data.eventDate)) {
                 AppConstant.EVENT_TODAY -> {
                     binding.textViewEventDateAndTime.text = AppConstant.EVENT_TODAY
@@ -179,6 +187,8 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
                 binding.linearFilesAttachment.visibility = View.VISIBLE
             }
 
+
+
             if (data.locationData.isEmpty()) {
                 binding.linearLocationAttachment.visibility = View.GONE
             } else {
@@ -190,7 +200,7 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
 
                 val latitude: Double = latLng[0].toDouble()
                 val longitude: Double = latLng[1].toDouble()
-
+                
                 mapFragment?.getMapAsync { googleMap ->
                     googleMap.setMapStyle(
                         MapStyleOptions.loadRawResourceStyle(

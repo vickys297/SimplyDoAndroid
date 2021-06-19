@@ -9,9 +9,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.simplydo.model.CommonResponseModel
-import com.example.simplydo.model.ContactModel
 import com.example.simplydo.model.TodoModel
-import com.example.simplydo.model.attachmentModel.GalleryModel
 import com.example.simplydo.utli.AppConstant
 import com.example.simplydo.utli.AppFunctions
 import com.example.simplydo.utli.AppRepository
@@ -42,9 +40,7 @@ class QuickTodoViewModel(private val appRepository: AppRepository) :
         task: String,
         eventDate: Long,
         eventTime: String,
-        priority: Boolean,
-        contactInfo: ArrayList<ContactModel>,
-        imagesList: ArrayList<GalleryModel>,
+        priority: Boolean
     ): Long {
         return appRepository.insertNewTodoTask(
             TodoModel(
@@ -52,14 +48,11 @@ class QuickTodoViewModel(private val appRepository: AppRepository) :
                 todo = task,
                 eventTime = eventTime,
                 eventDate = eventDate,
-                contactAttachments = contactInfo,
-                imageAttachments = imagesList,
-                locationData = "",
+                isHighPriority = priority,
                 createdAt = AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_ISO)
                     .format(Date().time),
                 updatedAt = AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_ISO)
                     .format(Date().time),
-                isHighPriority = priority
             )
         )
     }
@@ -81,6 +74,14 @@ class QuickTodoViewModel(private val appRepository: AppRepository) :
             appRepository.appDatabase.todoDao().getQuickTodoList(eventDate = eventStartDateTime)
         }.flow
             .cachedIn(viewModelScope)
+    }
+
+    fun restoreTask(dtId: Long) {
+        appRepository.restoreTask(dtId)
+    }
+
+    fun undoTaskRemove(task: TodoModel) {
+        appRepository.insertNewTodoTask(task)
     }
 
 }

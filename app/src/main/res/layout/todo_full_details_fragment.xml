@@ -6,11 +6,19 @@
     <data>
 
     </data>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
 
     <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:nestedScrollingEnabled="false"
+        app:layout_constraintBottom_toTopOf="@+id/buttonEdit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:context=".ui.fragments.todoListFullDetails.TodoFullDetailsFragment">
 
 
@@ -26,26 +34,12 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="8dp"
-                android:text="Hello"
+                android:text="@string/hello"
                 android:textSize="24sp"
                 android:transitionName="transition_title"
                 app:layout_constraintEnd_toStartOf="@+id/imCompleted"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageButton
-                android:id="@+id/imCompleted"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="16dp"
-                android:background="@drawable/primary_color_circle"
-                android:cropToPadding="false"
-                android:src="@drawable/ic_baseline_check_12_white"
-                app:layout_constraintBottom_toBottomOf="@+id/tvTitle"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvTitle"
-                app:layout_constraintTop_toTopOf="@+id/tvTitle" />
 
 
             <LinearLayout
@@ -67,8 +61,9 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
                     android:singleLine="false"
-                    android:textIsSelectable="true"
                     android:text="@string/your_task_here"
+                    android:textIsSelectable="true"
+                    android:textSize="16sp"
                     android:transitionName="transition_todo" />
             </LinearLayout>
 
@@ -96,8 +91,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:text="@string/priority"
-                android:visibility="gone"
                 android:transitionName="transition_priority"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@+id/textViewEventTime"
                 app:layout_constraintStart_toEndOf="@+id/textViewEventTime"
                 app:layout_constraintTop_toTopOf="@+id/textViewEventTime" />
@@ -108,9 +103,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:visibility="gone"
                 android:text="@string/date_expired"
                 android:transitionName="transition_date_expired"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@+id/chipPriority"
                 app:layout_constraintStart_toEndOf="@+id/chipPriority"
                 app:layout_constraintTop_toTopOf="@+id/chipPriority" />
@@ -282,7 +277,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/textView23"
-                        tools:context=".ui.fragments.addNewTodo.AddNewTodo" />
+                        tools:context=".ui.fragments.addNewTodo.EditTodo" />
 
                 </androidx.cardview.widget.CardView>
 
@@ -320,8 +315,8 @@
                 android:gravity="center"
                 android:textSize="16sp"
                 android:transitionName="transistion_eventDateTime"
-                app:layout_constraintStart_toStartOf="parent"
                 app:drawableStartCompat="@drawable/ic_baseline_calendar_today_16"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
 
             <TextView
@@ -336,6 +331,29 @@
                 app:layout_constraintStart_toEndOf="@+id/textViewEventDateAndTime"
                 app:layout_constraintTop_toTopOf="@+id/textViewEventDateAndTime" />
 
+            <ImageView
+                android:id="@+id/imCompleted"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/primary_color_circle"
+                android:padding="6dp"
+                app:layout_constraintBottom_toBottomOf="@+id/tvTitle"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tvTitle"
+                app:srcCompat="@drawable/ic_baseline_check_12_white" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
+
+    <Button
+        android:id="@+id/buttonEdit"
+        style="@style/PrimaryButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/edit"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

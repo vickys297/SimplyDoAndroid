@@ -78,7 +78,11 @@ object MimeTypes {
 }
 object AppConstant {
 
-   const val NAVIGATION_TASK_KEY: String = "todo_dtid"
+
+    const val TASK_ACTION_RESTORE: Int = 10
+    const val TASK_ACTION_DELETE: Int = 11
+    const val TASK_ACTION_EDIT: Int = 12
+
 
     // Silent alert user about the upcoming task
    const val ALERT_TYPE_SILENT: Int = 10
@@ -136,6 +140,10 @@ object AppConstant {
     const val NAVIGATION_AUDIO_DATA_KEY: String = "SelectedAudioList"
     const val NAVIGATION_GALLERY_DATA_KEY: String = "SelectedGalleryList"
     const val NAVIGATION_LOCATION_DATA_KEY: String = "SelectedLocation"
+
+    const val NAVIGATION_TASK_ACTION_EDIT_KEY: String ="navigation_action_edit_key"
+    const val NAVIGATION_TASK_DATA_KEY: String ="task_data"
+    const val NAVIGATION_TASK_KEY: String = "todo_dtid"
 
 
     // broadcast receiver

@@ -41,6 +41,7 @@ class OtherTodoFragment : Fragment(), LifecycleObserver {
         }
 
         override fun onEdit(item: TodoModel) {
+            findNavController().navigate(R.id.action_otherTodoFragment_to_editFragment)
         }
 
         override fun onRestore(item: TodoModel) {

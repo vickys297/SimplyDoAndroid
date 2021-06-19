@@ -83,6 +83,11 @@ interface TodoDAO {
     @Query("UPDATE todoList SET isCompleted = '1', synchronize ='0' , updatedAt =:updatedAt WHERE dtId =:dtId")
     fun completeTaskById(dtId: Long, updatedAt: String): Int
 
+    //    restore task by dtid
+    @Query("UPDATE todoList SET isCompleted = '0', synchronize ='0' , updatedAt =:updatedAt WHERE dtId =:dtId")
+    fun restoreTask(dtId: Long, updatedAt: String): Int
+
+
     //    delete task by dtid
     @Delete
     fun deleteTaskById(item: TodoModel): Int

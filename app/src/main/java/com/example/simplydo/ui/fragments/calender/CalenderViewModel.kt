@@ -82,4 +82,11 @@ class CalenderViewModel(val appRepository: AppRepository) : ViewModel() {
     }
 
 
+    fun undoTaskRemove(task: TodoModel) {
+        appRepository.insertNewTodoTask(task)
+    }
+    fun restoreTask(dtId: Long) {
+        appRepository.restoreTask(dtId)
+    }
+
 }

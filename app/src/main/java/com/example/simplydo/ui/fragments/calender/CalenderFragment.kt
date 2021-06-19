@@ -57,20 +57,29 @@ class CalenderFragment : Fragment() {
         endEventDate = AppFunctions.getCurrentDayEndInMilliSeconds()
     )
 
-    private var todoModel = ArrayList<TodoModel>()
-
     var contactInfo: ArrayList<ContactModel> = ArrayList()
-    var imagesList: ArrayList<String> = ArrayList()
 
     private lateinit var calenderLinearLayoutManager: LinearLayoutManager
 
+    private val undoInterface = object : UndoInterface {
+        override fun onUndo(task: TodoModel, type: Int) {
+            when (type) {
+                AppConstant.TASK_ACTION_RESTORE -> {
+                    viewModel.undoTaskRemove(task)
+                }
+                AppConstant.TASK_ACTION_DELETE -> {
+                    viewModel.undoTaskRemove(task)
+                }
+            }
+        }
+    }
 
     // calender time line date selector
     private val calenderAdapterInterface = object : CalenderAdapterInterface {
         override fun onDateSelect(layoutPosition: Int, smallCalenderModel: SmallCalenderModel) {
 
             Log.i(TAG, "onDateSelect: $layoutPosition")
-            calenderLinearLayoutManager.scrollToPositionWithOffset(layoutPosition, 1)
+            calenderLinearLayoutManager.scrollToPositionWithOffset(layoutPosition, 0)
 
             // update current selected date
             selectedEventDate.apply {
@@ -92,13 +101,30 @@ class CalenderFragment : Fragment() {
     private val todoOptionDialogFragments = object : TodoOptionDialogFragments {
         override fun onDelete(item: TodoModel) {
             viewModel.removeTaskById(item)
-            AppFunctions.showMessage("Task Removed", requireContext())
+            AppFunctions.showSnackBar(
+                task = item,
+                view = binding.root,
+                message = "Task Removed",
+                actionButtonName = "Undo",
+                type = AppConstant.TASK_ACTION_DELETE,
+                undoInterface = undoInterface
+            )
         }
 
         override fun onEdit(item: TodoModel) {
+            findNavController().navigate(R.id.action_calenderFragment_to_editFragment)
         }
 
         override fun onRestore(item: TodoModel) {
+            viewModel.restoreTask(item.dtId)
+            AppFunctions.showSnackBar(
+                task = item,
+                view = binding.root,
+                message = "Task Restored",
+                actionButtonName = "Undo",
+                type = AppConstant.TASK_ACTION_RESTORE,
+                undoInterface = undoInterface
+            )
         }
 
     }
@@ -227,16 +253,15 @@ class CalenderFragment : Fragment() {
 
                         setupPagingDataObserverForSelectedDate()
 
-                        var layoutPosition = 0
+                        var itemPosition = 0
                         for (item in arrayListSmallCalenderModels) {
-                            Log.i(TAG, "layoutPosition: $startEventDate/${item.startEventDate}")
                             if (item.startEventDate == startEventDate) {
-                                layoutPosition = arrayListSmallCalenderModels.indexOf(item)
+                                itemPosition = item.id
+                                break
                             }
                         }
-                        Log.i(TAG, "layoutPosition: $layoutPosition")
-
-                        calenderLinearLayoutManager.scrollToPositionWithOffset(layoutPosition, 1)
+                        calenderViewAdapter.setActiveDate(itemPosition)
+                        calenderLinearLayoutManager.scrollToPositionWithOffset(itemPosition, 0)
                     }
                 }
             }
@@ -258,6 +283,7 @@ class CalenderFragment : Fragment() {
 
         calenderLinearLayoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        calenderLinearLayoutManager.isSmoothScrollbarEnabled = true
 
         calenderViewAdapter =
             CalenderViewAdapter(requireContext(), calenderAdapterInterface)
@@ -280,7 +306,20 @@ class CalenderFragment : Fragment() {
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                TODO("Not yet implemented")
+                val position = viewHolder.absoluteAdapterPosition
+                quickTodoListAdapter.getItemAtPosition(position)?.let {
+                    quickTodoListAdapter.notifyItemRemoved(position)
+                    quickTodoListAdapter.notifyDataSetChanged()
+                    if (it.eventDate < AppFunctions.getCurrentDayStartInMilliSeconds()) {
+                        quickTodoListAdapter.notifyItemRemoved(position)
+                    }
+                    viewModel.completeTaskByID(it.dtId).let {
+                        AppFunctions.showSnackBar(
+                            binding.root,
+                            getString(R.string.task_completed_label)
+                        )
+                    }
+                }
             }
 
         }).apply {
@@ -288,7 +327,7 @@ class CalenderFragment : Fragment() {
         }
 
 
-        // using quick todotask list adapter
+        // using quick task list adapter
         quickTodoListAdapter = QuickTodoListAdapter(todoAdapterInterface, requireContext())
         binding.recyclerViewTodoList.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -314,22 +353,17 @@ class CalenderFragment : Fragment() {
                 viewHolder: RecyclerView.ViewHolder,
                 target: RecyclerView.ViewHolder,
             ): Boolean {
-
-
                 val from = viewHolder.absoluteAdapterPosition
                 val to = target.absoluteAdapterPosition
 
                 val item1 = quickTodoListAdapter.getItemAtPosition(from)
                 val item2 = quickTodoListAdapter.getItemAtPosition(to)
 
-
                 if (item1 != null && item2 != null) {
 
 //                    quickTodoListAdapter.notifyItemMoved(from, to)
                     return true
                 }
-
-
                 return false
             }
 
@@ -466,18 +500,20 @@ class CalenderFragment : Fragment() {
             calendar.set(Calendar.HOUR_OF_DAY, 0)
             calendar.set(Calendar.MINUTE, 0)
             calendar.set(Calendar.SECOND, 0)
+            calendar.set(Calendar.MILLISECOND, 0)
 
             val startEventDate = calendar.timeInMillis
 
             calendar.set(Calendar.HOUR_OF_DAY, 23)
             calendar.set(Calendar.MINUTE, 59)
             calendar.set(Calendar.SECOND, 59)
+            calendar.set(Calendar.MILLISECOND, 0)
 
             val endEventDate = calendar.timeInMillis
 
-            Log.i(TAG, "populateRecyclerView: $startEventDate")
             arrayListSmallCalenderModels.add(
                 SmallCalenderModel(
+                    id = i,
                     calendar.get(Calendar.DAY_OF_MONTH).toString(),
                     AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_MONTH_TEXT)
                         .format(calendar.time)
@@ -489,9 +525,7 @@ class CalenderFragment : Fragment() {
                 )
             )
         }
-
         arrayListSmallCalenderModels[0].isActive = true
-
         calenderViewAdapter.updateList(arrayListSmallCalenderModels)
     }
 }

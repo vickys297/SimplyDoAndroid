@@ -38,9 +38,21 @@ class TodoOptionsFragment internal constructor(
             todoOptionDialogFragments.onDelete(item)
             dismiss()
         }
-        binding.btnOptionRestore.setOnClickListener {
-            todoOptionDialogFragments.onRestore(item)
-            dismiss()
+
+        if (item.isCompleted) {
+            binding.btnOptionRestore.apply {
+                isClickable = true
+                isEnabled = true
+                setOnClickListener {
+                    todoOptionDialogFragments.onRestore(item)
+                    dismiss()
+                }
+            }
+        } else {
+            binding.btnOptionRestore.apply {
+                isClickable = false
+                isEnabled = false
+            }
         }
     }
 

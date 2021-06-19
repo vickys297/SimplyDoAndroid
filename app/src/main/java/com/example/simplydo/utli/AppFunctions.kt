@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -138,6 +139,24 @@ object AppFunctions {
     fun showSnackBar(view: View, message: String) {
         val snackBar: Snackbar = Snackbar.make(view, message, Snackbar.LENGTH_SHORT)
         snackBar.animationMode = Snackbar.ANIMATION_MODE_SLIDE
+        snackBar.setBackgroundTintMode(PorterDuff.Mode.DARKEN)
+        snackBar.show()
+    }
+
+    fun showSnackBar(
+        view: View,
+        message: String,
+        actionButtonName: String,
+        type: Int,
+        task: TodoModel,
+        undoInterface: UndoInterface,
+    ) {
+        val snackBar: Snackbar = Snackbar.make(view, message, Snackbar.LENGTH_LONG)
+        snackBar.animationMode = Snackbar.ANIMATION_MODE_SLIDE
+        snackBar.setAction(actionButtonName) {
+            undoInterface.onUndo(task, type)
+        }
+        snackBar.setBackgroundTintMode(PorterDuff.Mode.DARKEN)
         snackBar.show()
     }
 

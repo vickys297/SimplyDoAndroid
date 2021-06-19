@@ -26,7 +26,6 @@ import com.example.simplydo.utli.bottomSheetDialogs.todoOptions.TodoOptionsFragm
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 internal val TAG = QuickTodoFragment::class.java.canonicalName
@@ -53,16 +52,46 @@ class QuickTodoFragment : Fragment(R.layout.todo_fragment) {
 
     private lateinit var recentSelectedItem: TodoModel
 
+    private val undoInterface = object : UndoInterface {
+        override fun onUndo(task: TodoModel, type: Int) {
+            when(type){
+                AppConstant.TASK_ACTION_RESTORE->{
+                    viewModel.undoTaskRemove(task)
+                }
+            }
+        }
+    }
+
     private val todoOptionDialogFragments = object : TodoOptionDialogFragments {
         override fun onDelete(item: TodoModel) {
+            recentSelectedItem = item
             viewModel.removeTaskById(item)
-            AppFunctions.showMessage("Task Removed", requireContext())
+            AppFunctions.showSnackBar(
+                task = item,
+                view = binding.root,
+                message = "Task Removed",
+                actionButtonName = "Undo",
+                type = AppConstant.TASK_ACTION_RESTORE,
+                undoInterface = undoInterface
+            )
         }
 
         override fun onEdit(item: TodoModel) {
+            recentSelectedItem = item
+            findNavController().navigate(R.id.action_toDoFragment_to_editFragment)
         }
 
         override fun onRestore(item: TodoModel) {
+            recentSelectedItem = item
+            viewModel.restoreTask(item.dtId)
+            AppFunctions.showSnackBar(
+                task = item,
+                view = binding.root,
+                message = "Task Restored",
+                actionButtonName = "Undo",
+                type = AppConstant.TASK_ACTION_RESTORE,
+                undoInterface = undoInterface
+            )
         }
     }
 
@@ -127,24 +156,16 @@ class QuickTodoFragment : Fragment(R.layout.todo_fragment) {
                 eventDate,
                 eventTime = eventTime,
                 isPriority,
-                ArrayList(),
-                ArrayList()
             )
 
-
-
             newInert.let {
-
                 val bundle = Bundle()
                 bundle.putLong("dtId", it)
                 bundle.putString("title", title)
                 bundle.putString("task", task)
                 bundle.putBoolean("priority", isPriority)
-
                 AppFunctions.showSnackBar(binding.root, "New task added")
-
                 setupNotification(it, eventDate, bundle)
-
             }
         }
     }
@@ -236,8 +257,6 @@ class QuickTodoFragment : Fragment(R.layout.todo_fragment) {
 
                 return false
             }
-
-
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
                 //Remove swiped item from list and notify the RecyclerView

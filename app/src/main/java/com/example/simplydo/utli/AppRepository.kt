@@ -367,6 +367,12 @@ class AppRepository @Inject private constructor(
         }).get()
     }
 
+    fun restoreTask(dtId: Long) {
+        Thread(Runnable {
+            db.restoreTask(dtId, AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_ISO).format(Date().time))
+        }).start()
+    }
+
 
 }
 
