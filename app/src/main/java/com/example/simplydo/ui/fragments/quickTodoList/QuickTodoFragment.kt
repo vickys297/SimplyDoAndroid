@@ -1,7 +1,10 @@
 package com.example.simplydo.ui.fragments.quickTodoList
 
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -18,6 +21,7 @@ import com.example.simplydo.databinding.TodoFragmentBinding
 import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.model.CommonResponseModel
 import com.example.simplydo.model.TodoModel
+import com.example.simplydo.ui.activity.SettingsActivity
 import com.example.simplydo.utli.*
 import com.example.simplydo.utli.adapters.QuickTodoListAdapter
 import com.example.simplydo.utli.bottomSheetDialogs.basicAddTodoDialog.AddTodoBasic
@@ -64,16 +68,7 @@ class QuickTodoFragment : Fragment(R.layout.todo_fragment) {
 
     private val todoOptionDialogFragments = object : TodoOptionDialogFragments {
         override fun onDelete(item: TodoModel) {
-            recentSelectedItem = item
-            viewModel.removeTaskById(item)
-            AppFunctions.showSnackBar(
-                task = item,
-                view = binding.root,
-                message = "Task Removed",
-                actionButtonName = "Undo",
-                type = AppConstant.TASK_ACTION_RESTORE,
-                undoInterface = undoInterface
-            )
+            deleteSingleTask(item)
         }
 
         override fun onEdit(item: TodoModel) {
@@ -93,6 +88,19 @@ class QuickTodoFragment : Fragment(R.layout.todo_fragment) {
                 undoInterface = undoInterface
             )
         }
+    }
+
+    private fun deleteSingleTask(item: TodoModel) {
+        recentSelectedItem = item
+        viewModel.removeTask(item)
+        AppFunctions.showSnackBar(
+            task = item,
+            view = binding.root,
+            message = "Task Removed",
+            actionButtonName = "Undo",
+            type = AppConstant.TASK_ACTION_RESTORE,
+            undoInterface = undoInterface
+        )
     }
 
     private val todoTaskOptionsInterface = object : TodoTaskOptionsInterface {
@@ -165,39 +173,18 @@ class QuickTodoFragment : Fragment(R.layout.todo_fragment) {
                 bundle.putString("task", task)
                 bundle.putBoolean("priority", isPriority)
                 AppFunctions.showSnackBar(binding.root, "New task added")
-                setupNotification(it, eventDate, bundle)
+                AppFunctions.setupNotification(it, eventDate, bundle, requireActivity())
             }
         }
-    }
-
-    private fun setupNotification(tasKId: Long, eventDate: Long, bundle: Bundle) {
-
-        if (System.currentTimeMillis() < eventDate) {
-            val calendar = AppFunctions.getCurrentDateCalender()
-            calendar.timeInMillis = eventDate
-            calendar.set(Calendar.HOUR_OF_DAY, 7)
-            calendar.set(Calendar.MINUTE, 0)
-            calendar.set(Calendar.SECOND, 0)
-
-            AppFunctions.setNotificationTrigger(
-                requireActivity(),
-                tasKId.toString(),
-                calendar.timeInMillis,
-                bundle,
-                AppConstant.ALERT_TYPE_SILENT
-            )
-            val isEnabled = AppFunctions.checkHasNotificationEnabled(
-                requireActivity(),
-                dtId = tasKId.toString()
-            )
-            Log.i(TAG, "setupNotification: $isEnabled")
-        }
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = TodoFragmentBinding.bind(view)
+
+//        (activity as MainActivity).setSupportActionBar(binding.todoToolbar)
+//        (activity as MainActivity).supportActionBar!!.setDisplayShowTitleEnabled(false)
+//        setHasOptionsMenu(true)
 
         setObserver()
         setupViewModel()
@@ -263,15 +250,20 @@ class QuickTodoFragment : Fragment(R.layout.todo_fragment) {
                 val position = viewHolder.absoluteAdapterPosition
                 quickTodoListAdapter.getItemAtPosition(position)?.let {
                     quickTodoListAdapter.notifyItemRemoved(position)
-                    quickTodoListAdapter.notifyDataSetChanged()
+
                     if (it.eventDate < AppFunctions.getCurrentDayStartInMilliSeconds()) {
                         quickTodoListAdapter.notifyItemRemoved(position)
                     }
-                    viewModel.completeTaskByID(it.dtId).let {
-                        AppFunctions.showSnackBar(
-                            binding.root,
-                            getString(R.string.task_completed_label)
-                        )
+
+                    if (!it.isCompleted)
+                        viewModel.completeTaskByID(it.dtId).let {
+                            AppFunctions.showSnackBar(
+                                binding.root,
+                                getString(R.string.task_completed_label)
+                            )
+                        }
+                    if (it.isCompleted) {
+                        deleteSingleTask(it)
                     }
                 }
             }
@@ -297,6 +289,21 @@ class QuickTodoFragment : Fragment(R.layout.todo_fragment) {
         val itemTouchHelper = ItemTouchHelper(simpleItemTouchCallback)
         itemTouchHelper.attachToRecyclerView(binding.recyclerViewTodoList)
 
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.todo_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menuSettings -> {
+                val intent = Intent(requireContext(), SettingsActivity::class.java)
+                requireContext().startActivity(intent)
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
 
@@ -350,7 +357,8 @@ class QuickTodoFragment : Fragment(R.layout.todo_fragment) {
 
         viewModel.todoListResponse.observe(viewLifecycleOwner, todoObserver)
         viewModel.noNetworkMessage.observe(viewLifecycleOwner, noNetworkObserver)
-        viewModel.getTotalTaskCount().observe(viewLifecycleOwner, totalTaskCountObserver)
+        viewModel.getTotalTaskCount(AppFunctions.getCurrentDayStartInMilliSeconds())
+            .observe(viewLifecycleOwner, totalTaskCountObserver)
 
 
     }

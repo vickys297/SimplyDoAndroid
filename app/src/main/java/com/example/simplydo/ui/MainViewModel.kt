@@ -3,6 +3,7 @@ package com.example.simplydo.ui
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.simplydo.model.ContactModel
+import com.example.simplydo.model.LatLngModel
 import com.example.simplydo.model.TodoModel
 import com.example.simplydo.model.attachmentModel.GalleryModel
 import com.example.simplydo.utli.AppConstant
@@ -31,7 +32,7 @@ class MainViewModel(val appRepository: AppRepository) : ViewModel() {
         contactList: ArrayList<ContactModel>,
         imageList: ArrayList<GalleryModel>,
     ) {
-        appRepository.insertNewTodoTask(
+        appRepository.reinsertTodoTask(
             TodoModel(
                 title = title,
                 todo = task,
@@ -39,7 +40,7 @@ class MainViewModel(val appRepository: AppRepository) : ViewModel() {
                 eventDate = eventDate,
                 contactAttachments = contactList,
                 imageAttachments = imageList,
-                locationData = "",
+                locationData = LatLngModel(),
                 isCompleted = isCompleted,
                 createdAt = AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_ISO)
                     .format(Date().time),

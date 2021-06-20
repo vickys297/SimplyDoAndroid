@@ -77,7 +77,10 @@ class TodoListPagingAdapter internal constructor(
             if (todoModelData.eventTime.isNotEmpty()) {
                 binding.tvEventTime.text = String.format(
                     "@ %s",
-                    AppFunctions.convertTimeStringToDisplayFormat(todoModelData.eventTime)
+                    AppFunctions.convertTimeStringToDisplayFormat(
+                        todoModelData.eventDate,
+                        todoModelData.eventTime
+                    )
                 )
             }
 
@@ -120,7 +123,10 @@ class TodoListPagingAdapter internal constructor(
             if (todoModelData.eventTime.isNotEmpty()) {
                 binding.tvEventTime.text = String.format(
                     "@ %s",
-                    AppFunctions.convertTimeStringToDisplayFormat(todoModelData.eventTime)
+                    AppFunctions.convertTimeStringToDisplayFormat(
+                        todoModelData.eventDate,
+                        todoModelData.eventTime
+                    )
                 )
             }
 
@@ -140,6 +146,13 @@ class TodoListPagingAdapter internal constructor(
                 item?.run {
                     (holder as TodoViewHolder).apply {
                         val todoHolder = bind(this@run)
+
+                        itemView.setOnLongClickListener {
+                            todoItemInterface.onLongClick(item)
+                            return@setOnLongClickListener true
+                        }
+
+
                         itemView.setOnClickListener {
                             todoItemInterface.onTaskClick(
                                 this@run,
@@ -153,7 +166,12 @@ class TodoListPagingAdapter internal constructor(
                 val item = getItem(position)
                 item?.run {
                     (holder as CompletedTaskViewHolder).apply {
-                     bind(this@run)
+                        bind(this@run)
+
+                        itemView.setOnLongClickListener {
+                            todoItemInterface.onLongClick(item)
+                            return@setOnLongClickListener true
+                        }
 
                         itemView.setOnClickListener {
                             todoItemInterface.onTaskClick(
@@ -204,4 +222,7 @@ class TodoListPagingAdapter internal constructor(
         }
     }
 
+    fun getItemAtPosition(position: Int): TodoModel? {
+        return getItem(position)
+    }
 }

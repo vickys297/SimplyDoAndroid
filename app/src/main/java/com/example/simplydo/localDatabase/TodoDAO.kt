@@ -51,8 +51,8 @@ interface TodoDAO {
     fun insert(todoModel: TodoModel): Long
 
     //    Get total task count
-    @Query("SELECT COUNT(*) FROM todoList")
-    fun getTotalTaskCount(): LiveData<Int>
+    @Query("SELECT COUNT(*) FROM todoList WHERE eventDate >= :eventDateStartTime")
+    fun getTotalTaskCount(eventDateStartTime: Long): LiveData<Int>
 
     //    get past task with paging
     @Query("SELECT * FROM todoList WHERE eventDate < :currentTimeMillis LIMIT :pageSize OFFSET :nextPageNumber")
@@ -61,6 +61,12 @@ interface TodoDAO {
         pageSize: Int,
         currentTimeMillis: String
     ): List<TodoModel>
+
+    @Query("SELECT COUNT(*) FROM todoList WHERE eventDate < :currentEventDate LIMIT 1")
+    fun checkPastTask(currentEventDate: Long): Int
+
+    @Query("SELECT COUNT(*) FROM todoList WHERE eventDate <= :currentDateEndTime AND isCompleted='1' LIMIT 1")
+    fun checkCompletedTask(currentDateEndTime: Long): Int
 
     //    get past task count
     @Query("SELECT COUNT(*) FROM todoList WHERE eventDate < :currentTimeMillis LIMIT :pageSize OFFSET :nextPageNumber")
@@ -74,6 +80,8 @@ interface TodoDAO {
     @Query("SELECT COUNT(*) FROM todoList WHERE isCompleted = '1' LIMIT :pageSize OFFSET :nextPageNumber")
     fun getCompletedTaskCount(nextPageNumber: Int, pageSize: Int): Long
 
+    @Update
+    fun updateTaskData(updateModel: TodoModel): Int
 
     //    get task on current date
     @Query("SELECT * FROM todoList WHERE eventDate >= :starEventDate AND eventDate <= :endEventDate")

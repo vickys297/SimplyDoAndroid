@@ -48,6 +48,21 @@ class CloseNotificationReceiver : BroadcastReceiver() {
                 cancelNotification(intent, context)
                 updateTaskCompleted(intent, context)
             }
+            AppConstant.ACTION_VIEW_MY_TASK->{
+
+                Log.i(TAG, "onReceive: ACTION_VIEW_MY_TASK")
+                cancelNotification(intent, context)
+
+                val notificationID = intent.getLongExtra(AppConstant.NAVIGATION_TASK_KEY, 0L)
+                val bundle = Bundle()
+                bundle.putLong(AppConstant.NAVIGATION_TASK_KEY, notificationID)
+                val mainActivityIntent = Intent(context, MainActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    putExtra(AppConstant.NAVIGATION_TASK_KEY, notificationID)
+                }
+
+                context.startActivity(mainActivityIntent)
+            }
         }
     }
 

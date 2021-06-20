@@ -13,8 +13,29 @@ import com.example.simplydo.utli.AppRepository
 class OtherTodoViewModel internal constructor(
     private val appRepository: AppRepository
 ) : ViewModel() {
-    fun removeTaskById(item: TodoModel) {
+
+    fun removeTask(item: TodoModel) {
         appRepository.deleteTaskByPosition(item)
+    }
+
+    fun getPastTaskCount(eventDate: Long): Int {
+        return appRepository.checkPastTask(eventDate)
+    }
+
+    fun getCompletedCount(currentDateEndTime: Long): Int {
+        return appRepository.checkCompletedTask(currentDateEndTime)
+    }
+
+    fun restoreTask(dtId: Long) {
+        appRepository.restoreTask(dtId = dtId)
+    }
+
+    fun undoTaskRemove(task: TodoModel) {
+        appRepository.reinsertTodoTask(task)
+    }
+
+    fun completeTaskByID(dtId: Long): Int {
+        return appRepository.completeTaskById(dtId = dtId)
     }
 
     // TODO: Implement the ViewModel

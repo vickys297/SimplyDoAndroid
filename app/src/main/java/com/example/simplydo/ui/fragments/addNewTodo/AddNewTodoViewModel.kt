@@ -1,7 +1,9 @@
 package com.example.simplydo.ui.fragments.addNewTodo
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.simplydo.model.ContactModel
+import com.example.simplydo.model.LatLngModel
 import com.example.simplydo.model.TodoModel
 import com.example.simplydo.model.attachmentModel.AudioModel
 import com.example.simplydo.model.attachmentModel.FileModel
@@ -22,10 +24,10 @@ class AddNewTodoViewModel(val appRepository: AppRepository) :
         contactArray: ArrayList<ContactModel>,
         galleryArray: ArrayList<GalleryModel>,
         audioArray: ArrayList<AudioModel>,
-        location: String,
+        location: LatLngModel,
         filesArray: ArrayList<FileModel>
-    ) {
-        appRepository.insertNewTodoTask(
+    ): Long {
+        return appRepository.reinsertTodoTask(
             TodoModel(
                 title = title,
                 todo = task,
@@ -43,5 +45,39 @@ class AddNewTodoViewModel(val appRepository: AppRepository) :
                     .format(Date().time),
             )
         )
+    }
+
+    fun updateTodo(
+        title: String,
+        task: String,
+        eventDate: Long,
+        eventTime: String,
+        priority: Boolean,
+        galleryArray: ArrayList<GalleryModel>,
+        contactArray: ArrayList<ContactModel>,
+        audioArray: ArrayList<AudioModel>,
+        filesArray: ArrayList<FileModel>,
+        location: LatLngModel,
+        createAt: String
+    ): Int {
+       val updateModel =  TodoModel(
+            title = title,
+            todo = task,
+            eventDate = eventDate,
+            eventTime = eventTime,
+            isHighPriority = priority,
+            contactAttachments = contactArray,
+            locationData = location,
+            imageAttachments = galleryArray,
+            audioAttachments = audioArray,
+            fileAttachments = filesArray,
+            createdAt = createAt,
+            updatedAt = AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_ISO)
+                .format(Date().time)
+        )
+
+        Log.i(TAG, "updateTodo: $updateModel")
+
+        return appRepository.updateTodoData(updateModel)
     }
 }

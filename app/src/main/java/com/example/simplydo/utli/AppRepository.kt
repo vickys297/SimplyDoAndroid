@@ -48,7 +48,7 @@ class AppRepository @Inject private constructor(
     * */
 
 
-    fun insertNewTodoTask(todoModel: TodoModel): Long {
+    fun reinsertTodoTask(todoModel: TodoModel): Long {
         val callable = Callable { db.insert(todoModel = todoModel) }
         val future = Executors.newSingleThreadExecutor().submit(callable)
         return future!!.get()
@@ -368,9 +368,30 @@ class AppRepository @Inject private constructor(
     }
 
     fun restoreTask(dtId: Long) {
-        Thread(Runnable {
-            db.restoreTask(dtId, AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_ISO).format(Date().time))
-        }).start()
+        Thread {
+            db.restoreTask(
+                dtId,
+                AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_ISO).format(Date().time)
+            )
+        }.start()
+    }
+
+    fun checkPastTask(eventDate: Long): Int {
+        return Executors.newSingleThreadExecutor().submit(Callable {
+            db.checkPastTask(eventDate)
+        }).get()
+    }
+
+    fun checkCompletedTask(currentDateEndTime: Long): Int {
+        return  Executors.newSingleThreadExecutor().submit(Callable {
+            db.checkCompletedTask(currentDateEndTime)
+        }).get()
+    }
+
+    fun updateTodoData(updateModel: TodoModel): Int {
+        return Executors.newSingleThreadExecutor().submit(Callable {
+            db.updateTaskData(updateModel)
+        }).get()
     }
 
 

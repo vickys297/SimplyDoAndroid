@@ -79,18 +79,23 @@ object MimeTypes {
 object AppConstant {
 
 
+
     const val TASK_ACTION_RESTORE: Int = 10
     const val TASK_ACTION_DELETE: Int = 11
     const val TASK_ACTION_EDIT: Int = 12
 
+    const val NOTIFICATION_TASK_NEW: Int = 13
+    const val NOTIFICATION_TASK_DAILY_REMAINDER: Int = 14
+
 
     // Silent alert user about the upcoming task
-   const val ALERT_TYPE_SILENT: Int = 10
+   const val ALERT_TYPE_SILENT: Int = 15
     // Alert user show notification at the task event date time
    const val ALERT_TYPE_NOTIFY: Int = 11
 
     const val ACTION_COMPLETE: String = "action_task_complete"
     const val ACTION_VIEW: String = "action_task_view"
+    const val ACTION_VIEW_MY_TASK: String = "action_task_view_my_task"
 
     const val DATABASE_NAME: String = "todoDatabase"
 

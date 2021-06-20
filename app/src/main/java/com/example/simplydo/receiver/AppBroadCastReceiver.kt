@@ -27,17 +27,15 @@ class AppBroadCastReceiver : BroadcastReceiver() {
 
             intent.extras?.let {
                 notificationManager.sendNotification(
-                    it.getLong("dtId"),
-                    it.getString("title", ""),
-                    it.getString("task", ""),
-                    it.getBoolean("priority", true),
-                    context
+                    notificationId = it.getLong("dtId"),
+                    title = it.getString("title", ""),
+                    task = it.getString("task", ""),
+                    priority = it.getBoolean("priority", true),
+                    applicationContext = context,
+                    type = AppConstant.NOTIFICATION_TASK_NEW
                 )
             }
-
         }
-
-
     }
 
 

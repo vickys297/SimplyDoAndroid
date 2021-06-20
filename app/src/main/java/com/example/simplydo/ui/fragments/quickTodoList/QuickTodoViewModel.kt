@@ -27,12 +27,12 @@ class QuickTodoViewModel(private val appRepository: AppRepository) :
     val noNetworkMessage = MutableLiveData<String>()
 
 
-    fun removeTaskById(item: TodoModel) {
+    fun removeTask(item: TodoModel) {
         return appRepository.deleteTaskByPosition(item)
     }
 
-    fun getTotalTaskCount(): LiveData<Int> {
-        return appRepository.appDatabase.todoDao().getTotalTaskCount()
+    fun getTotalTaskCount(eventDateStartTime: Long): LiveData<Int> {
+        return appRepository.appDatabase.todoDao().getTotalTaskCount(eventDateStartTime)
     }
 
     fun createNewTodo(
@@ -42,7 +42,7 @@ class QuickTodoViewModel(private val appRepository: AppRepository) :
         eventTime: String,
         priority: Boolean
     ): Long {
-        return appRepository.insertNewTodoTask(
+        return appRepository.reinsertTodoTask(
             TodoModel(
                 title = title,
                 todo = task,
@@ -81,7 +81,7 @@ class QuickTodoViewModel(private val appRepository: AppRepository) :
     }
 
     fun undoTaskRemove(task: TodoModel) {
-        appRepository.insertNewTodoTask(task)
+        appRepository.reinsertTodoTask(task)
     }
 
 }

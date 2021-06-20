@@ -7,6 +7,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.example.simplydo.R
@@ -19,17 +20,10 @@ fun NotificationManager.sendNotification(
     title: String,
     task: String,
     priority: Boolean,
-    applicationContext: Context
+    applicationContext: Context,
+    type: Int = AppConstant.NOTIFICATION_TASK_NEW
 ) {
-
     val channelId = "task_notification_$notificationId"
-
-
-    val bigTextStyle = NotificationCompat.BigTextStyle()
-        .bigText(title)
-        .setBigContentTitle(task)
-        .setSummaryText("Summary Title")
-
 
     // 3. Set up main Intent for notification.
     val notifyIntent = Intent(applicationContext, MainActivity::class.java).apply {
@@ -99,13 +93,37 @@ fun NotificationManager.sendNotification(
         0
     )
 
+    // View List Action.
+    val viewListTask =
+        Intent(applicationContext, CloseNotificationReceiver::class.java).apply {
+            action = AppConstant.ACTION_VIEW_MY_TASK
+        }
+    val viewTodayTaskPendingList = PendingIntent.getBroadcast(
+        applicationContext,
+        notificationId.toInt(),
+        viewListTask,
+        0
+    )
+
 
     // Create the NotificationChannel, but only on API 26+ because
     // the NotificationChannel class is new and not in the support library
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         val name = "Notification Name"
         val descriptionText = "Notification Description"
-        val importance = NotificationManager.IMPORTANCE_HIGH
+
+        val importance = when (type) {
+            AppConstant.NOTIFICATION_TASK_NEW -> {
+                NotificationManager.IMPORTANCE_HIGH
+            }
+            AppConstant.NOTIFICATION_TASK_DAILY_REMAINDER -> {
+                NotificationManager.IMPORTANCE_LOW
+            }
+            else -> {
+                NotificationManager.IMPORTANCE_DEFAULT
+            }
+        }
+
         val channel = NotificationChannel(
             channelId,
             name,
@@ -125,26 +143,47 @@ fun NotificationManager.sendNotification(
         channelId
     )
         .setSmallIcon(R.drawable.app_icon)
-        .setContentTitle(title)
-        .setStyle(bigTextStyle)
-        .setContentText(task)
+        .setStyle(
+            NotificationCompat.BigTextStyle()
+                .setBigContentTitle(title)
+                .setSummaryText(task)
+        )
         .setDefaults(NotificationCompat.DEFAULT_ALL)
         .setContentIntent(notifyPendingIntent)
         .setCategory(NotificationCompat.CATEGORY_REMINDER)
-
-        .addAction(
-            R.drawable.ic_baseline_close_24_primary,
-            applicationContext.getString(R.string.view_task),
-            viewTaskPendingIntent
-        )
-        .addAction(
-            R.drawable.ic_baseline_check_24_primary,
-            applicationContext.getString(R.string.complete_task),
-            completeTaskPendingIntent
-        )
-
-        .setPriority(NotificationCompat.PRIORITY_MAX)
         .setAutoCancel(true)
+
+    when (type) {
+        AppConstant.NOTIFICATION_TASK_NEW -> {
+            Log.i(TAG, "sendNotification: 1")
+            builder.setContentTitle(title)
+                .setContentText(task)
+                .addAction(
+                    R.drawable.ic_baseline_close_24_primary,
+                    applicationContext.getString(R.string.view_task),
+                    viewTaskPendingIntent
+                )
+                .addAction(
+                    R.drawable.ic_baseline_check_24_primary,
+                    applicationContext.getString(R.string.complete_task),
+                    completeTaskPendingIntent
+                )
+                .priority = NotificationCompat.PRIORITY_MAX
+        }
+        AppConstant.NOTIFICATION_TASK_DAILY_REMAINDER -> {
+            Log.i(TAG, "sendNotification: 2")
+            builder.setContentTitle(title)
+                .setContentText(task)
+                .addAction(
+                    R.drawable.ic_baseline_close_24_primary,
+                    applicationContext.getString(R.string.view_my_task),
+                    viewTodayTaskPendingList
+                ).priority = NotificationCompat.PRIORITY_DEFAULT
+        }
+        else -> {
+
+        }
+    }
 
     if (priority) {
         builder.setSubText("Is High Priority")

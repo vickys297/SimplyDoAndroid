@@ -39,7 +39,7 @@ data class TodoModel(
 
     // attachments
     @ColumnInfo(name = "locationData", defaultValue = "")
-    val locationData: String = "",
+    val locationData: LatLngModel = LatLngModel(),
     @ColumnInfo(name = "contactAddress", defaultValue = "")
     val contactAttachments: ArrayList<ContactModel> = ArrayList(),
     @ColumnInfo(name = "galleryFiles", defaultValue = "")
@@ -122,6 +122,11 @@ data class TodoModel(
         }
     }
 }
+
+data class LatLngModel(
+    var lat: Double = 0.0,
+    var lng: Double = 0.0
+)
 
 data class TodoPagingModel(
     val data: ArrayList<TodoModel>,

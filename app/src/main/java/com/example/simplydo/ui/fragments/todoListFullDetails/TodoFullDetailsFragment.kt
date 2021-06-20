@@ -117,7 +117,6 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
 
             binding.buttonEdit.setOnClickListener {
                 val bundle = Bundle()
-                bundle.putInt(AppConstant.NAVIGATION_TASK_ACTION_EDIT_KEY, AppConstant.TASK_ACTION_EDIT)
                 bundle.putSerializable(AppConstant.NAVIGATION_TASK_DATA_KEY, data)
                 findNavController().navigate(R.id.action_todoFullDetailsFragment_to_editFragment, bundle)
             }
@@ -144,7 +143,7 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
             if (data.eventTime.isNotEmpty()) {
                 binding.textViewEventTime.text = String.format(
                     "@ %s",
-                    AppFunctions.convertTimeStringToDisplayFormat(data.eventTime)
+                    AppFunctions.convertTimeStringToDisplayFormat(data.eventDate,data.eventTime)
                 )
             }
 
@@ -152,7 +151,7 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
                 data.audioAttachments.isEmpty() &&
                 data.imageAttachments.isEmpty() &&
                 data.contactAttachments.isEmpty() &&
-                data.locationData.isEmpty()
+                data.locationData.lat == 0.0 && data.locationData.lng == 0.0
             ) {
                 binding.noAttachmentFound.root.visibility = View.VISIBLE
             } else {
@@ -189,18 +188,14 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
 
 
 
-            if (data.locationData.isEmpty()) {
+            if (data.locationData.lat == 0.toDouble() && data.locationData.lng == 0.toDouble()) {
                 binding.linearLocationAttachment.visibility = View.GONE
             } else {
                 binding.linearLocationAttachment.visibility = View.VISIBLE
                 val mapFragment =
                     childFragmentManager.findFragmentById(R.id.mapView) as SupportMapFragment?
 
-                val latLng = data.locationData.split(",".toRegex()).toTypedArray()
 
-                val latitude: Double = latLng[0].toDouble()
-                val longitude: Double = latLng[1].toDouble()
-                
                 mapFragment?.getMapAsync { googleMap ->
                     googleMap.setMapStyle(
                         MapStyleOptions.loadRawResourceStyle(
@@ -211,12 +206,12 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
                     googleMap.moveCamera(
                         CameraUpdateFactory
                             .newLatLngZoom(
-                                LatLng(latitude, longitude), 12f
+                                LatLng(data.locationData.lat, data.locationData.lng), 12f
                             )
                     )
                     googleMap.addMarker(
                         MarkerOptions()
-                            .position(LatLng(latitude, longitude))
+                            .position(LatLng(data.locationData.lat, data.locationData.lng))
                             .icon(
                                 AppFunctions.getDrawableToBitmap(
                                     R.drawable.ic_map_marker,
@@ -226,7 +221,8 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
                     )
                 }
 
-                val mapUri = Uri.parse("google.navigation:q=$latitude,$longitude")
+                val mapUri =
+                    Uri.parse("google.navigation:q=${data.locationData.lat},${data.locationData.lng}")
                 binding.buttonViewInMap.setOnClickListener {
                     val mapIntent = Intent(Intent.ACTION_VIEW, mapUri)
                     mapIntent.setPackage("com.google.android.apps.maps")

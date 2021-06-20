@@ -104,12 +104,34 @@ object AppFunctions {
         return calender.get(Calendar.DAY_OF_MONTH)
     }
 
-    fun convertTimeStringToDisplayFormat(eventTime: String): String {
-        val et = eventTime.trim().split(":".toRegex())
-        Log.i(TAG, "convertTimeStringToDisplayFormat: $et")
-        val hour = if (et[0].toInt() > 12) et[0].toInt() - 12 else et[0].toInt()
-        val minute = et[1].toInt()
-        return "$hour : $minute ${if (hour > 11) "PM" else "AM"}"
+    fun convertTimeStringToDisplayFormat(
+        eventDate: Long,
+        eventTime: String,
+        default: String = "00:00"
+    ): String {
+
+        Log.i(TAG, "convertTimeStringToDisplayFormat: $eventTime")
+
+        val et: String = if (eventTime.isNotEmpty()) {
+            eventTime
+        } else {
+            default
+        }
+
+        val time = et.split(":".toRegex())
+        val hour =
+            if (time[0].trim().toInt() > 12) time[0].trim().toInt() - 12 else time[0].trim().toInt()
+        val minute = time[1].trim().toInt()
+
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = eventDate
+
+        calendar.set(Calendar.HOUR_OF_DAY, hour)
+        calendar.set(Calendar.MINUTE, minute)
+        calendar.set(Calendar.SECOND, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
+
+        return SimpleDateFormat("hh:mm a", Locale.getDefault()).format(calendar.time).toString()
     }
 
     fun getCurrentDayEndInMilliSeconds(): Long {
@@ -286,6 +308,99 @@ object AppFunctions {
         }
 
         return false
+    }
+
+    @WorkerThread
+    fun setupNotification(tasKId: Long, eventDate: Long, bundle: Bundle, activity: Activity) {
+
+        // alert when this is the future task
+        if (System.currentTimeMillis() < eventDate) {
+            val calendar = getCurrentDateCalender()
+            calendar.timeInMillis = eventDate
+            calendar.set(Calendar.HOUR_OF_DAY, 7)
+            calendar.set(Calendar.MINUTE, 0)
+            calendar.set(Calendar.SECOND, 0)
+            calendar.set(Calendar.MILLISECOND, 0)
+
+            setNotificationTrigger(
+                activity,
+                tasKId.toString(),
+                calendar.timeInMillis,
+                bundle,
+                AppConstant.ALERT_TYPE_SILENT
+            )
+
+            val isEnabled = checkHasNotificationEnabled(
+                activity,
+                dtId = tasKId.toString()
+            )
+
+            Log.i(
+                com.example.simplydo.ui.fragments.quickTodoList.TAG,
+                "setupNotification: $isEnabled"
+            )
+        } else {
+            Log.i(TAG, "setupNotification: unable to set notification 2")
+        }
+    }
+
+    @WorkerThread
+    fun setupNotification(
+        tasKId: Long,
+        eventDate: Long,
+        eventTime: String,
+        bundle: Bundle,
+        activity: Activity
+    ) {
+
+        val timeArray = eventTime.trim().split(":".toRegex())
+        val calendar = getCurrentDateCalender()
+        calendar.timeInMillis = eventDate
+        calendar.set(Calendar.HOUR_OF_DAY, timeArray[0].toInt())
+        calendar.set(Calendar.MINUTE, timeArray[1].toInt())
+        calendar.set(Calendar.SECOND, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
+
+        // alert when this is the future task
+        if (System.currentTimeMillis() < calendar.timeInMillis) {
+
+            setNotificationTrigger(
+                activity,
+                tasKId.toString(),
+                calendar.timeInMillis,
+                bundle,
+                AppConstant.ALERT_TYPE_SILENT
+            )
+
+            val isEnabled = checkHasNotificationEnabled(
+                activity,
+                dtId = tasKId.toString()
+            )
+
+            Log.i(
+                com.example.simplydo.ui.fragments.quickTodoList.TAG,
+                "setupNotification: $isEnabled"
+            )
+
+        } else {
+            Log.i(TAG, "setupNotification: unable to set notification 2")
+        }
+    }
+
+    fun combineEventDateEventTimeAsCalender(eventDate: Long, eventTime: String): Calendar {
+
+        val evenTime = if (eventTime.isNotEmpty()) eventTime else "00:00"
+
+
+        Log.i(TAG, "combineEventDateEventTimeAsCalender: $eventTime")
+        val et = evenTime.trim().split(":".toRegex())
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = eventDate
+        calendar.set(Calendar.HOUR_OF_DAY, et[0].trim().toInt())
+        calendar.set(Calendar.MINUTE, et[1].trim().toInt())
+        calendar.set(Calendar.SECOND, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
+        return calendar
     }
 
 }

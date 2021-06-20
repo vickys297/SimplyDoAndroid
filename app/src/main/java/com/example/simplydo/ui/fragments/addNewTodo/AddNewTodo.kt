@@ -16,6 +16,7 @@ import com.example.simplydo.R
 import com.example.simplydo.databinding.AddNewTodoFragmentBinding
 import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.model.ContactModel
+import com.example.simplydo.model.LatLngModel
 import com.example.simplydo.model.attachmentModel.AudioModel
 import com.example.simplydo.model.attachmentModel.FileModel
 import com.example.simplydo.model.attachmentModel.GalleryModel
@@ -54,7 +55,7 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
 
     private var eventDate: Long = System.currentTimeMillis()
     private lateinit var eventTime: String
-    private var latLng: LatLng? = null
+    private var latLng: LatLngModel = LatLngModel(0.0, 0.0)
 
 
     // all adapter
@@ -272,7 +273,11 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
             viewLifecycleOwner
         ) { result ->
 
-            latLng = result
+            latLng.apply {
+                lat = result.latitude
+                lng = result.longitude
+            }
+
 
             checkForAttachment()
 
@@ -435,20 +440,38 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
 
         binding.btnCreateTodoTask.setOnClickListener {
 
-            Log.i(TAG, "onViewCreated: latlong $latLng")
+            Log.i(TAG, "onViewCreated: $latLng")
+
             if (validateDetails()) {
-                viewModel.createTodo(
-                    binding.etTitle.text.toString(),
-                    binding.etTask.text.toString(),
+
+                val title = binding.etTitle.text.toString()
+                val task = binding.etTask.text.toString()
+                val isPriority = binding.cbPriority.isChecked
+
+                val newInsertId = viewModel.createTodo(
+                    title,
+                    task,
                     eventDate,
                     eventTime,
-                    binding.cbPriority.isChecked,
+                    isPriority,
                     galleryArray = galleryArrayList,
                     contactArray = contactArrayList,
                     audioArray = audioArrayList,
                     filesArray = filesArrayList,
-                    location = "${latLng?.latitude},${latLng?.longitude}"
+                    location = latLng
                 )
+
+
+                newInsertId.let {
+                    val bundle = Bundle()
+                    bundle.putLong("dtId", it)
+                    bundle.putString("title", title)
+                    bundle.putString("task", task)
+                    bundle.putBoolean("priority", isPriority)
+                    AppFunctions.showSnackBar(binding.root, "New task added")
+
+                    AppFunctions.setupNotification(it, eventDate,eventTime, bundle, requireActivity())
+                }
 
                 AppFunctions.showSnackBar(binding.root, "New task added")
                 findNavController().navigateUp()
@@ -492,13 +515,15 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
         }
 
         binding.recyclerViewDocumentAttachments.apply {
-            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             adapter = fileAttachmentAdapter
         }
 
         checkForAttachment()
 
     }
+
 
     private fun checkForAttachment() {
         Log.i(TAG, "checkForAttachment: $")
@@ -507,7 +532,7 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
             galleryArrayList.isEmpty() &&
             contactArrayList.isEmpty() &&
             filesArrayList.isEmpty() &&
-            latLng == null
+            latLng.lat == 0.0 && latLng.lng == 0.0
         ) {
             binding.noAttachmentFound.root.visibility = View.VISIBLE
         } else {

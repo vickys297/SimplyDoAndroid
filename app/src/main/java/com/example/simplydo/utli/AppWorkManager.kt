@@ -50,11 +50,12 @@ class AppWorkManager(val context: Context) {
     }
 
     private fun createWorkRequest() {
-        val regularNotificationWorker = PeriodicWorkRequest.Builder(
-            RegularNotificationWorker::class.java,
-            15,
-            TimeUnit.MINUTES
-        ).build()
+        val regularNotificationWorker = PeriodicWorkRequest
+            .Builder(
+                RegularNotificationWorker::class.java,
+                15, TimeUnit.MINUTES
+            )
+            .build()
 
         val instance = WorkManager.getInstance(context)
         instance.enqueueUniquePeriodicWork(

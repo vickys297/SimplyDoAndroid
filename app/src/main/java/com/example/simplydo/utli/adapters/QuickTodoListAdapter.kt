@@ -178,7 +178,7 @@ class QuickTodoListAdapter(
             if (todoModelData.eventTime.isNotEmpty()) {
                 binding.tvEventTime.text = String.format(
                     "@ %s",
-                    AppFunctions.convertTimeStringToDisplayFormat(todoModelData.eventTime)
+                    AppFunctions.convertTimeStringToDisplayFormat(todoModelData.eventDate,todoModelData.eventTime)
                 )
             }
 
@@ -218,7 +218,7 @@ class QuickTodoListAdapter(
             if (item.eventTime.isNotEmpty()) {
                 binding.tvEventTime.text = String.format(
                     "@ %s",
-                    AppFunctions.convertTimeStringToDisplayFormat(item.eventTime)
+                    AppFunctions.convertTimeStringToDisplayFormat(item.eventDate,item.eventTime)
                 )
             }
 

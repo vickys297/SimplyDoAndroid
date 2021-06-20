@@ -100,7 +100,7 @@
                         android:backgroundTint="@android:color/transparent"
                         android:hint="@string/start_typing_things_here"
                         android:importantForAutofill="no"
-                        android:inputType="text"
+                        android:inputType="text|textMultiLine|textImeMultiLine"
                         android:textSize="16sp" />
                 </LinearLayout>
 

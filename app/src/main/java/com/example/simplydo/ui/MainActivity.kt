@@ -72,6 +72,8 @@ class MainActivity : AppCompatActivity() {
                 val bundle = Bundle()
                 bundle.putLong(AppConstant.NAVIGATION_TASK_KEY, it)
                 navController.navigate(R.id.todoFullDetailsFragment, bundle)
+            }else{
+
             }
         }
     }

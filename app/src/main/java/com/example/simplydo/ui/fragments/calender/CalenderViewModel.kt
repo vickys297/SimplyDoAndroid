@@ -8,6 +8,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.simplydo.model.ContactModel
+import com.example.simplydo.model.LatLngModel
 import com.example.simplydo.model.TodoModel
 import com.example.simplydo.model.attachmentModel.GalleryModel
 import com.example.simplydo.ui.fragments.quickTodoList.PAGE_SIZE
@@ -43,14 +44,14 @@ class CalenderViewModel(val appRepository: AppRepository) : ViewModel() {
         contactInfo: ArrayList<ContactModel>,
         imagesList: ArrayList<GalleryModel>,
     ) {
-        appRepository.insertNewTodoTask(TodoModel(
+        appRepository.reinsertTodoTask(TodoModel(
             title = title,
             todo = task,
             eventTime = eventTime,
             eventDate = eventDate,
             contactAttachments = contactInfo,
             imageAttachments = imagesList,
-            locationData = "",
+            locationData = LatLngModel(),
             createdAt = AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_ISO)
                 .format(Date().time),
             updatedAt = AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_ISO)
@@ -73,7 +74,7 @@ class CalenderViewModel(val appRepository: AppRepository) : ViewModel() {
         )
     }
 
-    fun removeTaskById(task: TodoModel) {
+    fun removeTask(task: TodoModel) {
         appRepository.deleteTaskByPosition(task)
     }
 
@@ -83,7 +84,7 @@ class CalenderViewModel(val appRepository: AppRepository) : ViewModel() {
 
 
     fun undoTaskRemove(task: TodoModel) {
-        appRepository.insertNewTodoTask(task)
+        appRepository.reinsertTodoTask(task)
     }
     fun restoreTask(dtId: Long) {
         appRepository.restoreTask(dtId)

@@ -100,7 +100,7 @@ class CalenderFragment : Fragment() {
 
     private val todoOptionDialogFragments = object : TodoOptionDialogFragments {
         override fun onDelete(item: TodoModel) {
-            viewModel.removeTaskById(item)
+            viewModel.removeTask(item)
             AppFunctions.showSnackBar(
                 task = item,
                 view = binding.root,
@@ -292,6 +292,17 @@ class CalenderFragment : Fragment() {
             adapter = calenderViewAdapter
         }
 
+
+        // using quick task list adapter
+        quickTodoListAdapter = QuickTodoListAdapter(todoAdapterInterface, requireContext())
+        binding.recyclerViewTodoList.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = quickTodoListAdapter
+        }
+
+
+        setupPagingDataObserverForSelectedDate()
+
         ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
             0,
             ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
@@ -306,36 +317,39 @@ class CalenderFragment : Fragment() {
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                //Remove swiped item from list and notify the RecyclerView
                 val position = viewHolder.absoluteAdapterPosition
                 quickTodoListAdapter.getItemAtPosition(position)?.let {
                     quickTodoListAdapter.notifyItemRemoved(position)
-                    quickTodoListAdapter.notifyDataSetChanged()
+
                     if (it.eventDate < AppFunctions.getCurrentDayStartInMilliSeconds()) {
                         quickTodoListAdapter.notifyItemRemoved(position)
                     }
-                    viewModel.completeTaskByID(it.dtId).let {
+
+                    if (!it.isCompleted)
+                        viewModel.completeTaskByID(it.dtId).let {
+                            AppFunctions.showSnackBar(
+                                binding.root,
+                                getString(R.string.task_completed_label)
+                            )
+                        }
+                    if (it.isCompleted) {
+                        viewModel.removeTask(it)
                         AppFunctions.showSnackBar(
-                            binding.root,
-                            getString(R.string.task_completed_label)
+                            view = binding.root,
+                            message = "Task Removed",
+                            actionButtonName = "Undo",
+                            type = AppConstant.TASK_ACTION_DELETE,
+                            task = it,
+                            undoInterface = undoInterface
                         )
                     }
                 }
             }
 
         }).apply {
-            attachToRecyclerView(binding.recyclerViewCalenderView)
+            attachToRecyclerView(binding.recyclerViewTodoList)
         }
-
-
-        // using quick task list adapter
-        quickTodoListAdapter = QuickTodoListAdapter(todoAdapterInterface, requireContext())
-        binding.recyclerViewTodoList.apply {
-            layoutManager = LinearLayoutManager(requireContext())
-            adapter = quickTodoListAdapter
-        }
-
-
-        setupPagingDataObserverForSelectedDate()
 
 
         val simpleItemTouchCallback: ItemTouchHelper.SimpleCallback = object :
@@ -360,7 +374,6 @@ class CalenderFragment : Fragment() {
                 val item2 = quickTodoListAdapter.getItemAtPosition(to)
 
                 if (item1 != null && item2 != null) {
-
 //                    quickTodoListAdapter.notifyItemMoved(from, to)
                     return true
                 }
@@ -408,9 +421,6 @@ class CalenderFragment : Fragment() {
                 // Don't need to do anything here
             }
         }
-
-        val itemTouchHelper = ItemTouchHelper(simpleItemTouchCallback)
-        itemTouchHelper.attachToRecyclerView(binding.recyclerViewTodoList)
     }
 
     private fun setupPagingDataObserverForSelectedDate() {

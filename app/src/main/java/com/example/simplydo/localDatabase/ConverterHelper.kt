@@ -2,6 +2,7 @@ package com.example.simplydo.localDatabase
 
 import androidx.room.TypeConverter
 import com.example.simplydo.model.ContactModel
+import com.example.simplydo.model.LatLngModel
 import com.example.simplydo.model.attachmentModel.AudioModel
 import com.example.simplydo.model.attachmentModel.FileModel
 import com.example.simplydo.model.attachmentModel.GalleryModel
@@ -66,13 +67,13 @@ class ConverterHelper {
     }
 
     @TypeConverter
-    fun fromStringList(list: ArrayList<String>): String {
-        return gson.toJson(list)
+    fun fromLatLng(latLng: LatLngModel): String {
+        return gson.toJson(latLng)
     }
 
     @TypeConverter
-    fun toStringList(json: String): ArrayList<String> {
-        return gson.fromJson(json, object : TypeToken<ArrayList<String?>?>() {}.type)
+    fun toLatLng(json: String): LatLngModel {
+        return gson.fromJson(json, object : TypeToken<LatLngModel?>() {}.type)
     }
 
 
