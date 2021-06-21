@@ -17,16 +17,17 @@ import androidx.recyclerview.widget.ItemTouchHelper.ACTION_STATE_DRAG
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.simplydo.R
+import com.example.simplydo.adapters.QuickTodoListAdapter
+import com.example.simplydo.bottomSheetDialogs.basicAddTodoDialog.AddTodoBasic
+import com.example.simplydo.bottomSheetDialogs.basicAddTodoDialog.EditTodoBasic
+import com.example.simplydo.bottomSheetDialogs.calenderOptions.TodoOptions
+import com.example.simplydo.bottomSheetDialogs.todoOptions.TodoOptionsFragment
 import com.example.simplydo.databinding.TodoFragmentBinding
 import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.model.CommonResponseModel
 import com.example.simplydo.model.TodoModel
 import com.example.simplydo.ui.activity.SettingsActivity
 import com.example.simplydo.utli.*
-import com.example.simplydo.utli.adapters.QuickTodoListAdapter
-import com.example.simplydo.utli.bottomSheetDialogs.basicAddTodoDialog.AddTodoBasic
-import com.example.simplydo.utli.bottomSheetDialogs.calenderOptions.TodoOptions
-import com.example.simplydo.utli.bottomSheetDialogs.todoOptions.TodoOptionsFragment
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.util.*
@@ -58,13 +59,27 @@ class QuickTodoFragment : Fragment(R.layout.todo_fragment) {
 
     private val undoInterface = object : UndoInterface {
         override fun onUndo(task: TodoModel, type: Int) {
-            when(type){
-                AppConstant.TASK_ACTION_RESTORE->{
+            when (type) {
+                AppConstant.TASK_ACTION_RESTORE -> {
                     viewModel.undoTaskRemove(task)
                 }
             }
         }
     }
+
+    private val editBasicTodoInterface = object : EditBasicTodoInterface {
+        override fun onUpdateDetails(todoModel: TodoModel) {
+            viewModel.updateTaskModel(todoModel)
+        }
+
+        override fun onAddMoreDetails(todoModel: TodoModel) {
+            // show edit fragment
+            val bundle = Bundle()
+            bundle.putSerializable(AppConstant.NAVIGATION_TASK_DATA_KEY, todoModel)
+            findNavController().navigate(R.id.action_toDoFragment_to_editFragment, bundle)
+        }
+    }
+
 
     private val todoOptionDialogFragments = object : TodoOptionDialogFragments {
         override fun onDelete(item: TodoModel) {
@@ -73,7 +88,21 @@ class QuickTodoFragment : Fragment(R.layout.todo_fragment) {
 
         override fun onEdit(item: TodoModel) {
             recentSelectedItem = item
-            findNavController().navigate(R.id.action_toDoFragment_to_editFragment)
+
+            if (item.taskType == AppConstant.TASK_TYPE_BASIC) {
+                // show basic edit
+                EditTodoBasic.newInstance(editBasicTodoInterface, item)
+                    .show(requireActivity().supportFragmentManager, "dialog")
+            }
+
+            if (item.taskType == AppConstant.TASK_TYPE_EVENT) {
+                // show edit fragment
+                val bundle = Bundle()
+                bundle.putSerializable(AppConstant.NAVIGATION_TASK_DATA_KEY, item)
+                findNavController().navigate(R.id.action_toDoFragment_to_editFragment, bundle)
+            }
+
+//            findNavController().navigate(R.id.action_toDoFragment_to_editFragment)
         }
 
         override fun onRestore(item: TodoModel) {
@@ -121,7 +150,6 @@ class QuickTodoFragment : Fragment(R.layout.todo_fragment) {
         }
 
     }
-
     private var todoAdapterInterface = object : TodoItemInterface {
         override fun onLongClick(item: TodoModel) {
             recentSelectedItem = item
@@ -142,7 +170,6 @@ class QuickTodoFragment : Fragment(R.layout.todo_fragment) {
         }
 
     }
-
     private var appInterface = object : CreateBasicTodoInterface {
 
         override fun onAddMoreDetails(eventDate: Long) {
@@ -155,14 +182,12 @@ class QuickTodoFragment : Fragment(R.layout.todo_fragment) {
             title: String,
             task: String,
             eventDate: Long,
-            eventTime: String,
             isPriority: Boolean
         ) {
             val newInert = viewModel.createNewTodo(
                 title,
                 task,
                 eventDate,
-                eventTime = eventTime,
                 isPriority,
             )
 
@@ -226,22 +251,16 @@ class QuickTodoFragment : Fragment(R.layout.todo_fragment) {
                 viewHolder: RecyclerView.ViewHolder,
                 target: RecyclerView.ViewHolder,
             ): Boolean {
-
-
                 val from = viewHolder.absoluteAdapterPosition
                 val to = target.absoluteAdapterPosition
 
                 val item1 = quickTodoListAdapter.getItemAtPosition(from)
                 val item2 = quickTodoListAdapter.getItemAtPosition(to)
 
-
                 if (item1 != null && item2 != null) {
-
 //                    quickTodoListAdapter.notifyItemMoved(from, to)
                     return true
                 }
-
-
                 return false
             }
 
@@ -251,7 +270,7 @@ class QuickTodoFragment : Fragment(R.layout.todo_fragment) {
                 quickTodoListAdapter.getItemAtPosition(position)?.let {
                     quickTodoListAdapter.notifyItemRemoved(position)
 
-                    if (it.eventDate < AppFunctions.getCurrentDayStartInMilliSeconds()) {
+                    if (it.eventDateTime < AppFunctions.getCurrentDayStartInMilliSeconds()) {
                         quickTodoListAdapter.notifyItemRemoved(position)
                     }
 

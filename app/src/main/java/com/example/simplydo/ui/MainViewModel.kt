@@ -27,17 +27,16 @@ class MainViewModel(val appRepository: AppRepository) : ViewModel() {
         title: String,
         eventDate: Long,
         priority: Boolean,
-        eventTime: String = "",
         isCompleted: Boolean = false,
         contactList: ArrayList<ContactModel>,
         imageList: ArrayList<GalleryModel>,
+        taskType: Int
     ) {
         appRepository.reinsertTodoTask(
             TodoModel(
                 title = title,
                 todo = task,
-                eventTime = eventTime,
-                eventDate = eventDate,
+                eventDateTime = eventDate,
                 contactAttachments = contactList,
                 imageAttachments = imageList,
                 locationData = LatLngModel(),
@@ -46,7 +45,8 @@ class MainViewModel(val appRepository: AppRepository) : ViewModel() {
                     .format(Date().time),
                 updatedAt = AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_ISO)
                     .format(Date().time),
-                isHighPriority = priority
+                isHighPriority = priority,
+                taskType = taskType
             ))
     }
 }

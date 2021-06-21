@@ -16,7 +16,7 @@ import com.example.simplydo.utli.AppConstant
 import com.example.simplydo.utli.AppFunctions
 import com.example.simplydo.utli.GalleryInterface
 import com.example.simplydo.utli.SimpleViewModelFactory
-import com.example.simplydo.utli.adapters.GalleryAdapter
+import com.example.simplydo.adapters.GalleryAdapter
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 

@@ -198,8 +198,8 @@ class AppRepository @Inject private constructor(
                 val callable =
                     Callable {
                         db.getTodoByCreatedDateEventDate(
-                            AppFunctions.getDateStringFromMilliseconds(
-                                it.eventDate,
+                            AppFunctions.convertTimeInMillsecToPattern(
+                                it.eventDateTime,
                                 AppConstant.DATE_PATTERN_EVENT_DATE
                             ), it.createdAt
                         )

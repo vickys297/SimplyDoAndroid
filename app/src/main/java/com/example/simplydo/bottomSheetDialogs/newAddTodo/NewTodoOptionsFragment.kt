@@ -1,4 +1,4 @@
-package com.example.simplydo.utli.bottomSheetDialogs.newAddTodo
+package com.example.simplydo.bottomSheetDialogs.newAddTodo
 
 import android.os.Bundle
 import android.view.LayoutInflater

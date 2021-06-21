@@ -1,6 +1,5 @@
 package com.example.simplydo.model
 
-import android.util.Log
 import android.view.View
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -12,8 +11,6 @@ import com.example.simplydo.model.attachmentModel.GalleryModel
 import com.example.simplydo.utli.AppConstant
 import com.example.simplydo.utli.AppFunctions
 import java.io.Serializable
-import java.util.*
-import kotlin.collections.ArrayList
 
 
 @Entity(tableName = "todoList", indices = [Index(value = ["dtId"], unique = true)])
@@ -22,16 +19,15 @@ data class TodoModel(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "dtId")
     val dtId: Long = 0,
+
     @ColumnInfo(name = "title")
     val title: String,
+
     @ColumnInfo(name = "todo")
     val todo: String,
 
-    // event date time
-    @ColumnInfo(name = "eventTime")
-    val eventTime: String,
     @ColumnInfo(name = "eventDate")
-    val eventDate: Long,
+    val eventDateTime: Long,
 
     // priority
     @ColumnInfo(name = "isHighPriority", defaultValue = "1")
@@ -52,6 +48,7 @@ data class TodoModel(
     // entries time stamp
     @ColumnInfo(name = "createdAt", defaultValue = "")
     val createdAt: String,
+
     @ColumnInfo(name = "updatedAt", defaultValue = "")
     val updatedAt: String,
 
@@ -62,9 +59,25 @@ data class TodoModel(
     // task  status
     @ColumnInfo(name = "isCompleted", defaultValue = "0")
     var isCompleted: Boolean = false,
+
     @ColumnInfo(name = "completedDateTime", defaultValue = "")
     var completedDateTime: String = "",
-) : Serializable {
+
+    @ColumnInfo(name = "deleted", defaultValue = "0")
+    var deleted: Boolean = false,
+
+    @ColumnInfo(name = "deletedDateTimeStamp", defaultValue = "")
+    var deletedDateTimeStamp: String = "",
+
+    @ColumnInfo(name = "taskType")
+    var taskType: Int = AppConstant.TASK_TYPE_DEFAULT,
+
+    ) : Serializable {
+
+
+    fun isCompletedVisible(): Int {
+        return if (isCompleted) View.VISIBLE else View.GONE
+    }
 
     fun isPriorityVisible(): Int {
         return if (isHighPriority) {
@@ -74,51 +87,73 @@ data class TodoModel(
         }
     }
 
-    fun dateExpiredVisibility(): Int {
-
-        if (eventTime.isEmpty()) {
-            return View.GONE
-        }
-
-
-        val currentDate = System.currentTimeMillis()
-
-        val calendar = Calendar.getInstance()
-        calendar.set(
-            AppFunctions.getYear(eventDate),
-            AppFunctions.getMonth(eventDate),
-            AppFunctions.getDay(eventDate),
-            eventTime.split(":")[0].toInt(),
-            eventTime.split(":")[1].toInt()
-        )
-
-        Log.i("Model", "dateExpiredVisibility: $title --> ${calendar.timeInMillis}/$currentDate")
-
-        return if (calendar.timeInMillis < currentDate) {
-            View.VISIBLE
-        } else {
-            View.GONE
+    fun getEventDate(): String {
+        return when (AppFunctions.getEventDateText(eventDateTime)) {
+            AppConstant.EVENT_TODAY -> {
+                AppConstant.EVENT_TODAY
+            }
+            AppConstant.EVENT_TOMORROW -> {
+                AppConstant.EVENT_TOMORROW
+            }
+            AppConstant.EVENT_YESTERDAY -> {
+                AppConstant.EVENT_YESTERDAY
+            }
+            else -> {
+                AppFunctions.convertTimeInMillsecToPattern(
+                    eventDateTime,
+                    AppConstant.DATE_PATTERN_EVENT_DATE
+                )
+            }
         }
     }
 
-    fun getEventDateTextValue(): String {
-        val currentEventDate =
-            AppFunctions.getDateStringFromMilliseconds(
-                eventDate,
-                AppConstant.DATE_PATTERN_EVENT_DATE
-            )
-        val currentDate = AppFunctions.getDateStringFromMilliseconds(
-            System.currentTimeMillis(),
-            AppConstant.DATE_PATTERN_EVENT_DATE
-        )
+    fun isEventTimeVisible(): Int {
+        return if (taskType == AppConstant.TASK_TYPE_BASIC) View.GONE else View.VISIBLE
+    }
 
-        return if (currentEventDate == currentDate) {
-            "Today"
+    fun getEventTime(): String {
+        return if (taskType == AppConstant.TASK_TYPE_EVENT) {
+            "@ ${
+                AppFunctions.convertTimeInMillsecToPattern(
+                    eventDateTime,
+                    AppConstant.TIME_PATTERN_EVENT_TIME
+                )
+            }"
         } else {
-            AppFunctions.getDateStringFromMilliseconds(
-                eventDate,
-                AppConstant.DATE_PATTERN_EVENT_DATE
-            )
+            ""
+        }
+    }
+
+
+    fun isDateExpiredVisible(): Int {
+        return if (System.currentTimeMillis() < eventDateTime) View.GONE else View.VISIBLE
+    }
+
+    fun isAttachmentVisible(): Int {
+        return if (audioAttachments.isEmpty() &&
+            imageAttachments.isEmpty() &&
+            audioAttachments.isEmpty() &&
+            contactAttachments.isEmpty() &&
+            locationData.lat == 0.0 &&
+            locationData.lng == 0.0
+        ) {
+            View.GONE
+        } else {
+            View.VISIBLE
+        }
+    }
+
+    fun isEmptyStateVisible(): Int {
+        return if (audioAttachments.isEmpty() &&
+            imageAttachments.isEmpty() &&
+            audioAttachments.isEmpty() &&
+            contactAttachments.isEmpty() &&
+            locationData.lat == 0.0 &&
+            locationData.lng == 0.0
+        ) {
+            View.VISIBLE
+        } else {
+            View.GONE
         }
     }
 }

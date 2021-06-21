@@ -15,6 +15,10 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.simplydo.R
+import com.example.simplydo.adapters.CalenderViewAdapter
+import com.example.simplydo.adapters.QuickTodoListAdapter
+import com.example.simplydo.bottomSheetDialogs.basicAddTodoDialog.AddTodoBasic
+import com.example.simplydo.bottomSheetDialogs.todoOptions.TodoOptionsFragment
 import com.example.simplydo.databinding.CalenderFragmentBinding
 import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.model.ContactModel
@@ -22,10 +26,6 @@ import com.example.simplydo.model.SmallCalenderModel
 import com.example.simplydo.model.TodoModel
 import com.example.simplydo.model.attachmentModel.CalenderDateSelectorModel
 import com.example.simplydo.utli.*
-import com.example.simplydo.utli.adapters.CalenderViewAdapter
-import com.example.simplydo.utli.adapters.QuickTodoListAdapter
-import com.example.simplydo.utli.bottomSheetDialogs.basicAddTodoDialog.AddTodoBasic
-import com.example.simplydo.utli.bottomSheetDialogs.todoOptions.TodoOptionsFragment
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -79,7 +79,7 @@ class CalenderFragment : Fragment() {
         override fun onDateSelect(layoutPosition: Int, smallCalenderModel: SmallCalenderModel) {
 
             Log.i(TAG, "onDateSelect: $layoutPosition")
-            calenderLinearLayoutManager.scrollToPositionWithOffset(layoutPosition, 0)
+            calenderLinearLayoutManager.scrollToPositionWithOffset(layoutPosition-1, 0)
 
             // update current selected date
             selectedEventDate.apply {
@@ -140,8 +140,7 @@ class CalenderFragment : Fragment() {
             absoluteAdapterPosition: Int
         ) {
             val bundle = Bundle()
-            bundle.putSerializable("todo", item)
-
+            bundle.putLong(AppConstant.NAVIGATION_TASK_KEY, item.dtId)
             findNavController().navigate(
                 R.id.action_calenderFragment_to_todoFullDetailsFragment,
                 bundle
@@ -161,14 +160,12 @@ class CalenderFragment : Fragment() {
             title: String,
             task: String,
             eventDate: Long,
-            eventTime: String,
             isPriority: Boolean
         ) {
             viewModel.createNewTodo(
                 title,
                 task,
                 eventDate = eventDate,
-                eventTime = eventTime,
                 priority = isPriority,
                 contactInfo,
                 ArrayList()
@@ -223,8 +220,8 @@ class CalenderFragment : Fragment() {
                 binding.tvNextEventAvailable.text =
                     String.format(
                         "Next task available @ %s",
-                        AppFunctions.getDateStringFromMilliseconds(
-                            task.eventDate,
+                        AppFunctions.convertTimeInMillsecToPattern(
+                            task.eventDateTime,
                             AppConstant.DATE_PATTERN_EVENT_DATE
                         )
                     )
@@ -233,7 +230,7 @@ class CalenderFragment : Fragment() {
                     visibility = View.VISIBLE
                     setOnClickListener {
                         val calendar = Calendar.getInstance()
-                        calendar.timeInMillis = task.eventDate
+                        calendar.timeInMillis = task.eventDateTime
 
                         calendar.set(Calendar.HOUR_OF_DAY, 0)
                         calendar.set(Calendar.MINUTE, 0)
@@ -261,7 +258,7 @@ class CalenderFragment : Fragment() {
                             }
                         }
                         calenderViewAdapter.setActiveDate(itemPosition)
-                        calenderLinearLayoutManager.scrollToPositionWithOffset(itemPosition, 0)
+                        calenderLinearLayoutManager.scrollToPositionWithOffset(itemPosition-1, 0)
                     }
                 }
             }
@@ -322,7 +319,7 @@ class CalenderFragment : Fragment() {
                 quickTodoListAdapter.getItemAtPosition(position)?.let {
                     quickTodoListAdapter.notifyItemRemoved(position)
 
-                    if (it.eventDate < AppFunctions.getCurrentDayStartInMilliSeconds()) {
+                    if (it.eventDateTime < AppFunctions.getCurrentDayStartInMilliSeconds()) {
                         quickTodoListAdapter.notifyItemRemoved(position)
                     }
 
@@ -391,7 +388,7 @@ class CalenderFragment : Fragment() {
 
                     viewModel.completeTaskByID(item.dtId)
 
-                    if (item.eventDate < AppFunctions.getCurrentDayStartInMilliSeconds()) {
+                    if (item.eventDateTime < AppFunctions.getCurrentDayStartInMilliSeconds()) {
                         quickTodoListAdapter.notifyItemRemoved(position)
                     }
 
@@ -502,7 +499,7 @@ class CalenderFragment : Fragment() {
     }
 
     private fun populateRecyclerView() {
-        for (i in 0..60) {
+        for (i in -30..60) {
             val calendar = Calendar.getInstance()
             calendar.timeInMillis = System.currentTimeMillis()
             calendar.add(Calendar.DAY_OF_MONTH, i)
@@ -535,7 +532,9 @@ class CalenderFragment : Fragment() {
                 )
             )
         }
-        arrayListSmallCalenderModels[0].isActive = true
+        arrayListSmallCalenderModels[30].isActive = true
         calenderViewAdapter.updateList(arrayListSmallCalenderModels)
+
+        calenderLinearLayoutManager.scrollToPositionWithOffset(29, 0)
     }
 }

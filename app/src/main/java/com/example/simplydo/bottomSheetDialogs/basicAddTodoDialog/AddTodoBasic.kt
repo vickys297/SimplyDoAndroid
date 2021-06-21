@@ -1,11 +1,10 @@
-package com.example.simplydo.utli.bottomSheetDialogs.basicAddTodoDialog
+package com.example.simplydo.bottomSheetDialogs.basicAddTodoDialog
 
 import android.app.DatePickerDialog
 import android.content.Context
 import android.icu.util.Calendar
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,7 +26,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
  * </pre>
  */
 
-internal val TAG = AddTodoBasic::class.java.canonicalName
+
 
 class AddTodoBasic(
     private val appInterface: CreateBasicTodoInterface,
@@ -118,16 +117,11 @@ class AddTodoBasic(
 
                 datePicker.setOnDateSetListener { _, year, month, dayOfMonth ->
                     val newDate = Calendar.getInstance()
-                    newDate.set(year, month, dayOfMonth)
-
-                    Log.i(
-                        TAG,
-                        "timeInMillis: ${newDate.timeInMillis}/${System.currentTimeMillis()}"
-                    )
-
+                    
+                    // default time to be end of the data
+                    newDate.set(year, month, dayOfMonth, 23, 59, 59)
                     eventDate = newDate.timeInMillis
-
-                    binding.textViewEventDate.text = AppFunctions.getDateStringFromMilliseconds(
+                    binding.textViewEventDate.text = AppFunctions.convertTimeInMillsecToPattern(
                         newDate.timeInMillis,
                         AppConstant.DATE_PATTERN_EVENT_DATE
                     )
@@ -155,7 +149,6 @@ class AddTodoBasic(
                 title = binding.etTitle.text.toString(),
                 task = binding.etTask.text.toString(),
                 eventDate = eventDate,
-                eventTime = "",
                 isPriority = binding.cbPriority.isChecked
             )
             dismiss()

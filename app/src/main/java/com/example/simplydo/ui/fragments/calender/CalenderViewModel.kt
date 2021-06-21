@@ -39,7 +39,6 @@ class CalenderViewModel(val appRepository: AppRepository) : ViewModel() {
         title: String,
         task: String,
         eventDate: Long,
-        eventTime: String,
         priority: Boolean,
         contactInfo: ArrayList<ContactModel>,
         imagesList: ArrayList<GalleryModel>,
@@ -47,8 +46,7 @@ class CalenderViewModel(val appRepository: AppRepository) : ViewModel() {
         appRepository.reinsertTodoTask(TodoModel(
             title = title,
             todo = task,
-            eventTime = eventTime,
-            eventDate = eventDate,
+            eventDateTime = eventDate,
             contactAttachments = contactInfo,
             imageAttachments = imagesList,
             locationData = LatLngModel(),

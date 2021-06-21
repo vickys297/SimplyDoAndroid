@@ -39,15 +39,13 @@ class QuickTodoViewModel(private val appRepository: AppRepository) :
         title: String,
         task: String,
         eventDate: Long,
-        eventTime: String,
         priority: Boolean
     ): Long {
         return appRepository.reinsertTodoTask(
             TodoModel(
                 title = title,
                 todo = task,
-                eventTime = eventTime,
-                eventDate = eventDate,
+                eventDateTime = eventDate,
                 isHighPriority = priority,
                 createdAt = AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_ISO)
                     .format(Date().time),
@@ -82,6 +80,10 @@ class QuickTodoViewModel(private val appRepository: AppRepository) :
 
     fun undoTaskRemove(task: TodoModel) {
         appRepository.reinsertTodoTask(task)
+    }
+
+    fun updateTaskModel(todoModel: TodoModel) {
+        appRepository.updateTodoData(todoModel)
     }
 
 }

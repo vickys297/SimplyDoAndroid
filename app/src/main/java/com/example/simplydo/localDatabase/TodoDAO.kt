@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.paging.PagingSource
 import androidx.room.*
 import com.example.simplydo.model.TodoModel
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TodoDAO {
@@ -51,8 +52,8 @@ interface TodoDAO {
     fun insert(todoModel: TodoModel): Long
 
     //    Get total task count
-    @Query("SELECT COUNT(*) FROM todoList WHERE eventDate >= :eventDateStartTime")
-    fun getTotalTaskCount(eventDateStartTime: Long): LiveData<Int>
+    @Query("SELECT Count(*) FROM todoList WHERE eventDate >= :eventDate OR isCompleted = '0' ORDER BY eventDate LIMIT 1")
+    fun getTotalTaskCount(eventDate: Long): LiveData<Int>
 
     //    get past task with paging
     @Query("SELECT * FROM todoList WHERE eventDate < :currentTimeMillis LIMIT :pageSize OFFSET :nextPageNumber")
@@ -121,6 +122,9 @@ interface TodoDAO {
 
     @Query("SELECT * FROM todoList WHERE synchronize ='0'")
     fun getAllTodoNotSynced(): LiveData<List<TodoModel>>
+
+    @Query("SELECT * FROM todoList WHERE dtId = :dtId")
+    fun getTaskLiveDataById(dtId: Long): Flow<TodoModel>
 
 
 }

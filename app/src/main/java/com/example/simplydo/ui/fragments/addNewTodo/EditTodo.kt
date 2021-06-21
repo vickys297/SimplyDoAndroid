@@ -12,6 +12,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simplydo.R
+import com.example.simplydo.adapters.newTodotask.AudioAttachmentAdapter
+import com.example.simplydo.adapters.newTodotask.ContactAttachmentAdapter
+import com.example.simplydo.adapters.newTodotask.FileAttachmentAdapter
+import com.example.simplydo.adapters.newTodotask.GalleryAttachmentAdapter
+import com.example.simplydo.bottomSheetDialogs.attachments.AddAttachmentsFragments
 import com.example.simplydo.databinding.EditTodoFragmentBinding
 import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.model.ContactModel
@@ -21,11 +26,6 @@ import com.example.simplydo.model.attachmentModel.AudioModel
 import com.example.simplydo.model.attachmentModel.FileModel
 import com.example.simplydo.model.attachmentModel.GalleryModel
 import com.example.simplydo.utli.*
-import com.example.simplydo.utli.adapters.newTodotask.AudioAttachmentAdapter
-import com.example.simplydo.utli.adapters.newTodotask.ContactAttachmentAdapter
-import com.example.simplydo.utli.adapters.newTodotask.FileAttachmentAdapter
-import com.example.simplydo.utli.adapters.newTodotask.GalleryAttachmentAdapter
-import com.example.simplydo.utli.bottomSheetDialogs.attachments.AddAttachmentsFragments
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
@@ -53,7 +53,7 @@ class EditTodo : Fragment(), NewTodoOptionsFragmentsInterface {
     private lateinit var audioArrayList: ArrayList<AudioModel>
     private lateinit var filesArrayList: ArrayList<FileModel>
 
-    private var eventDate: Long = System.currentTimeMillis()
+    private var eventDateTime: Long = System.currentTimeMillis()
     private lateinit var eventTime: String
     private var latLng: LatLngModel = LatLngModel()
 
@@ -153,20 +153,19 @@ class EditTodo : Fragment(), NewTodoOptionsFragmentsInterface {
             binding.etTitle.setText(task.title)
             binding.etTask.setText(task.todo)
 
+            eventDateTime = task.eventDateTime
 
-            eventDate = task.eventDate
-
-            Log.i(TAG, "onCreateView: ${task.eventTime}")
-            eventTime = task.eventTime
+//            Log.i(TAG, "onCreateView: ${task.eventTime}")
+//            eventTime = task.eventTime
 
             binding.textViewEventDate.text =
-                AppFunctions.getDateStringFromMilliseconds(
-                    eventDate,
+                AppFunctions.convertTimeInMillsecToPattern(
+                    eventDateTime,
                     AppConstant.DATE_PATTERN_EVENT_DATE
                 )
 
-            binding.textViewEventTime.text =
-                AppFunctions.convertTimeStringToDisplayFormat(task.eventDate, task.eventTime)
+//            binding.textViewEventTime.text =
+//                AppFunctions.convertTimeStringToDisplayFormat(task.eventDateTime, task.eventTime)
 
             binding.cbPriority.isChecked = task.isHighPriority
 
@@ -351,7 +350,7 @@ class EditTodo : Fragment(), NewTodoOptionsFragmentsInterface {
         super.onViewCreated(view, savedInstanceState)
 
         binding.linearLayoutEventTimeSelector.setOnClickListener {
-            val et = AppFunctions.combineEventDateEventTimeAsCalender(eventDate, eventTime)
+            val et = AppFunctions.combineEventDateEventTimeAsCalender(eventDateTime, eventTime)
 
             val hour = et.get(Calendar.HOUR)
             val minute = et.get(Calendar.MINUTE)
@@ -383,7 +382,7 @@ class EditTodo : Fragment(), NewTodoOptionsFragmentsInterface {
                 datePicker.datePicker.minDate = System.currentTimeMillis()
 
                 val calendar = Calendar.getInstance()
-                calendar.timeInMillis = eventDate
+                calendar.timeInMillis = eventDateTime
 
                 datePicker.datePicker.updateDate(
                     calendar.get(Calendar.YEAR),
@@ -395,8 +394,8 @@ class EditTodo : Fragment(), NewTodoOptionsFragmentsInterface {
                     val newDate = Calendar.getInstance()
                     newDate.set(year, month, dayOfMonth)
 
-                    eventDate = newDate.timeInMillis
-                    binding.textViewEventDate.text = AppFunctions.getDateStringFromMilliseconds(
+                    eventDateTime = newDate.timeInMillis
+                    binding.textViewEventDate.text = AppFunctions.convertTimeInMillsecToPattern(
                         newDate.timeInMillis,
                         AppConstant.DATE_PATTERN_EVENT_DATE
                     )

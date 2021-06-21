@@ -15,8 +15,8 @@ import com.example.simplydo.databinding.OtherTodoFragmentBinding
 import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.model.TodoModel
 import com.example.simplydo.utli.*
-import com.example.simplydo.utli.adapters.TodoListPagingAdapter
-import com.example.simplydo.utli.bottomSheetDialogs.todoOptions.TodoOptionsFragment
+import com.example.simplydo.adapters.TodoListPagingAdapter
+import com.example.simplydo.bottomSheetDialogs.todoOptions.TodoOptionsFragment
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -190,7 +190,7 @@ class OtherTodoFragment : Fragment(R.layout.other_todo_fragment), LifecycleObser
                 todoListPagingAdapter.getItemAtPosition(position)?.let {
                     todoListPagingAdapter.notifyItemRemoved(position)
                     todoListPagingAdapter.notifyDataSetChanged()
-                    if (it.eventDate < AppFunctions.getCurrentDayStartInMilliSeconds()) {
+                    if (it.eventDateTime < AppFunctions.getCurrentDayStartInMilliSeconds()) {
                         todoListPagingAdapter.notifyItemRemoved(position)
                     }
 

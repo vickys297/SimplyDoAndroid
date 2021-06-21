@@ -12,6 +12,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simplydo.R
+import com.example.simplydo.adapters.newTodotask.AudioAttachmentAdapter
+import com.example.simplydo.adapters.newTodotask.ContactAttachmentAdapter
+import com.example.simplydo.adapters.newTodotask.GalleryAttachmentAdapter
+import com.example.simplydo.bottomSheetDialogs.basicAddTodoDialog.EditTodoBasic
 import com.example.simplydo.databinding.TodoFullDetailsFragmentBinding
 import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.model.ContactModel
@@ -19,9 +23,6 @@ import com.example.simplydo.model.TodoModel
 import com.example.simplydo.model.attachmentModel.AudioModel
 import com.example.simplydo.model.attachmentModel.GalleryModel
 import com.example.simplydo.utli.*
-import com.example.simplydo.utli.adapters.newTodotask.AudioAttachmentAdapter
-import com.example.simplydo.utli.adapters.newTodotask.ContactAttachmentAdapter
-import com.example.simplydo.utli.adapters.newTodotask.GalleryAttachmentAdapter
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
@@ -71,6 +72,19 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
         }
     }
 
+    private val editBasicTodoInterface = object : EditBasicTodoInterface {
+        override fun onUpdateDetails(todoModel: TodoModel) {
+            viewModel.updateTaskModel(todoModel)
+        }
+
+        override fun onAddMoreDetails(todoModel: TodoModel) {
+            // show edit fragment
+            val bundle = Bundle()
+            bundle.putSerializable(AppConstant.NAVIGATION_TASK_DATA_KEY, todoModel)
+            findNavController().navigate(R.id.action_todoFullDetailsFragment_to_editFragment, bundle)
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -93,7 +107,7 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
         viewModel = ViewModelProvider(
             this, ViewModelFactory(
                 requireContext(),
-                appRepository
+                appRepository,
             )
         ).get(TodoFullDetailsViewModel::class.java)
 
@@ -105,59 +119,14 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
             binding.tvTitle.text = data.title
             binding.tvTodo.text = data.todo
 
-            if (AppFunctions.checkForDateTimeExpire(data)) {
-                binding.chipDateExpired.visibility = View.VISIBLE
-            }
+            binding.textViewEventDateAndTime.text = data.getEventDate()
+            binding.textViewEventTime.visibility = data.isEventTimeVisible()
+            binding.textViewEventTime.text = data.getEventTime()
+            binding.imCompleted.visibility = data.isCompletedVisible()
+            binding.chipPriority.visibility = data.isCompletedVisible()
+            binding.chipDateExpired.visibility = data.isDateExpiredVisible()
 
-            binding.chipPriority.visibility = data.isPriorityVisible()
-
-            if (data.isCompleted) {
-                binding.imCompleted.visibility = View.VISIBLE
-            }
-
-            binding.buttonEdit.setOnClickListener {
-                val bundle = Bundle()
-                bundle.putSerializable(AppConstant.NAVIGATION_TASK_DATA_KEY, data)
-                findNavController().navigate(R.id.action_todoFullDetailsFragment_to_editFragment, bundle)
-            }
-
-            when (AppFunctions.getEventDateText(data.eventDate)) {
-                AppConstant.EVENT_TODAY -> {
-                    binding.textViewEventDateAndTime.text = AppConstant.EVENT_TODAY
-                }
-                AppConstant.EVENT_TOMORROW -> {
-                    binding.textViewEventDateAndTime.text = AppConstant.EVENT_TOMORROW
-                }
-                AppConstant.EVENT_YESTERDAY -> {
-                    binding.textViewEventDateAndTime.text = AppConstant.EVENT_YESTERDAY
-                }
-                else -> {
-                    binding.textViewEventDateAndTime.text =
-                        AppFunctions.getDateStringFromMilliseconds(
-                            data.eventDate,
-                            AppConstant.DATE_PATTERN_EVENT_DATE
-                        )
-                }
-            }
-
-            if (data.eventTime.isNotEmpty()) {
-                binding.textViewEventTime.text = String.format(
-                    "@ %s",
-                    AppFunctions.convertTimeStringToDisplayFormat(data.eventDate,data.eventTime)
-                )
-            }
-
-            if (
-                data.audioAttachments.isEmpty() &&
-                data.imageAttachments.isEmpty() &&
-                data.contactAttachments.isEmpty() &&
-                data.locationData.lat == 0.0 && data.locationData.lng == 0.0
-            ) {
-                binding.noAttachmentFound.root.visibility = View.VISIBLE
-            } else {
-                binding.noAttachmentFound.root.visibility = View.GONE
-            }
-
+            checkAttachment(data)
 
             if (data.audioAttachments.isEmpty()) {
                 binding.linearLayoutAudioAttachment.visibility = View.GONE
@@ -185,7 +154,6 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
             } else {
                 binding.linearFilesAttachment.visibility = View.VISIBLE
             }
-
 
 
             if (data.locationData.lat == 0.toDouble() && data.locationData.lng == 0.toDouble()) {
@@ -229,6 +197,35 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
                     startActivity(mapIntent)
                 }
             }
+        }
+
+        binding.buttonEdit.setOnClickListener {
+
+            if (todoData.taskType == AppConstant.TASK_TYPE_BASIC) {
+                // show basic edit
+                EditTodoBasic.newInstance(editBasicTodoInterface, todoData)
+                    .show(requireActivity().supportFragmentManager, "dialog")
+            }
+
+            if (todoData.taskType == AppConstant.TASK_TYPE_EVENT) {
+                // show edit fragment
+                val bundle = Bundle()
+                bundle.putSerializable(AppConstant.NAVIGATION_TASK_DATA_KEY, todoData)
+                findNavController().navigate(R.id.action_todoFullDetailsFragment_to_editFragment, bundle)
+            }
+        }
+    }
+
+    private fun checkAttachment(data: TodoModel) {
+        if (
+            data.audioAttachments.isEmpty() &&
+            data.imageAttachments.isEmpty() &&
+            data.contactAttachments.isEmpty() &&
+            data.locationData.lat == 0.0 && data.locationData.lng == 0.0
+        ) {
+            binding.noAttachmentFound.root.visibility = View.VISIBLE
+        } else {
+            binding.noAttachmentFound.root.visibility = View.GONE
         }
     }
 

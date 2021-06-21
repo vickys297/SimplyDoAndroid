@@ -72,8 +72,6 @@ class MainActivity : AppCompatActivity() {
                 val bundle = Bundle()
                 bundle.putLong(AppConstant.NAVIGATION_TASK_KEY, it)
                 navController.navigate(R.id.todoFullDetailsFragment, bundle)
-            }else{
-
             }
         }
     }
@@ -109,19 +107,19 @@ class MainActivity : AppCompatActivity() {
 
     private fun setUpObserver() {
         allTodoListDataObserver = Observer { tasks ->
-            if (tasks.isNotEmpty()) {
-                (tasks as ArrayList<TodoModel>).forEach {
-                    Log.d(
-                        TAG, "Un Synced data :\n" +
-                                "dtId: ${it.dtId}\n" +
-                                "Title: ${it.title}\n" +
-                                "Task: ${it.todo}\n" +
-                                "Event Date: ${it.eventDate}\n" +
-                                "Event Time: ${it.eventTime}"
-                    )
-                }
+//            if (tasks.isNotEmpty()) {
+//                (tasks as ArrayList<TodoModel>).forEach {
+//                    Log.d(
+//                        TAG, "Un Synced data :\n" +
+//                                "dtId: ${it.dtId}\n" +
+//                                "Title: ${it.title}\n" +
+//                                "Task: ${it.todo}\n" +
+//                                "Event Date: ${it.eventDateTime}\n" +
+//                                "Event Time: ${it.eventTime}"
+//                    )
+//                }
 //                viewModel.syncDataWithCloud(tasks)
-            }
+//            }
         }
 
 
@@ -130,25 +128,34 @@ class MainActivity : AppCompatActivity() {
 
     private fun preLoadDummyData() {
 
+        val calender = AppFunctions.getCurrentDateCalender()
+        calender.set(Calendar.HOUR_OF_DAY, 23)
+        calender.set(Calendar.MINUTE, 59)
+        calender.set(Calendar.SECOND, 59)
+        calender.set(Calendar.MILLISECOND, 0)
+
+
         viewModel.insertDummyDataIntoLocalDatabase(
             title = "Hi, your task title goes here",
             task = "Your task description here.\n" +
                     "Just swipe left or right to complete the task.",
-            eventDate = System.currentTimeMillis(),
+            eventDate = calender.timeInMillis,
             priority = false,
             contactList = ArrayList(),
-            imageList = ArrayList()
+            imageList = ArrayList(),
+            taskType = AppConstant.TASK_TYPE_BASIC
         )
         viewModel.insertDummyDataIntoLocalDatabase(
             title = "Task Completed",
             task = "Your completed task looks like this.\n" +
                     "Completed task will be hidden if the date expires.\n" +
                     "You can access completed task by clicking options button.",
-            eventDate = System.currentTimeMillis(),
+            eventDate = calender.timeInMillis,
             priority = false,
             isCompleted = true,
             contactList = ArrayList(),
-            imageList = ArrayList()
+            imageList = ArrayList(),
+            taskType = AppConstant.TASK_TYPE_BASIC
         )
 
         viewModel.insertDummyDataIntoLocalDatabase(
@@ -156,16 +163,18 @@ class MainActivity : AppCompatActivity() {
             task = "This is the basic priority task, you will be notified by every morning before you start the day.\n" +
                     "You can change the notification time of the basic task.\n" +
                     "Goto Settings -> Notifications -> Basic Notification Time.",
-            eventDate = System.currentTimeMillis(),
+            eventDate = calender.timeInMillis,
             priority = true,
             contactList = ArrayList(),
-            imageList = ArrayList()
+            imageList = ArrayList(),
+            taskType = AppConstant.TASK_TYPE_BASIC
         )
-        val calender = AppFunctions.getCurrentDateCalender()
+
         calender.add(Calendar.DAY_OF_MONTH, 1)
         calender.set(Calendar.HOUR_OF_DAY, 10)
         calender.set(Calendar.MINUTE, 10)
         calender.set(Calendar.SECOND, 0)
+        calender.set(Calendar.MILLISECOND, 0)
 
         viewModel.insertDummyDataIntoLocalDatabase(
             title = "Task with priority",
@@ -174,10 +183,10 @@ class MainActivity : AppCompatActivity() {
                     "You can change the notification time of the basic task.\n" +
                     "Goto Settings -> Notifications -> Basic Notification Time.",
             eventDate = calender.timeInMillis,
-            eventTime = "10:10",
             priority = true,
             contactList = ArrayList(),
-            imageList = ArrayList()
+            imageList = ArrayList(),
+            taskType = AppConstant.TASK_TYPE_EVENT
         )
 
         AppPreference.storePreferences(

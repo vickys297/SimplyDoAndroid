@@ -1,4 +1,4 @@
-package com.example.simplydo.utli.bottomSheetDialogs.playAudio
+package com.example.simplydo.bottomSheetDialogs.playAudio
 
 import android.content.DialogInterface
 import android.media.AudioAttributes

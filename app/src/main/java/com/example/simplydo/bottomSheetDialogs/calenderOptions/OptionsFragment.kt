@@ -1,4 +1,4 @@
-package com.example.simplydo.utli.bottomSheetDialogs.calenderOptions
+package com.example.simplydo.bottomSheetDialogs.calenderOptions
 
 import android.os.Bundle
 import android.view.LayoutInflater

@@ -13,9 +13,13 @@ interface CreateBasicTodoInterface {
         title: String,
         task: String,
         eventDate: Long,
-        eventTime: String,
         isPriority: Boolean
     )
+}
+
+interface EditBasicTodoInterface{
+    fun onUpdateDetails(todoModel: TodoModel)
+    fun onAddMoreDetails(todoModel: TodoModel)
 }
 
 interface CalenderAdapterInterface {

@@ -1,9 +1,8 @@
-package com.example.simplydo.utli.adapters
+package com.example.simplydo.adapters
 
 import android.content.Context
 import android.graphics.Paint
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.Nullable
 import androidx.paging.PagingDataAdapter
@@ -12,8 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.simplydo.databinding.RecyclerTodoCompletedListItemBinding
 import com.example.simplydo.databinding.RecyclerTodoListItemBinding
 import com.example.simplydo.model.TodoModel
-import com.example.simplydo.utli.AppConstant
-import com.example.simplydo.utli.AppFunctions
 import com.example.simplydo.utli.TodoItemInterface
 import java.util.*
 
@@ -150,38 +147,6 @@ class QuickTodoListAdapter(
                 executePendingBindings()
             }
 
-            when (AppFunctions.getEventDateText(todoModelData.eventDate)) {
-                AppConstant.EVENT_TODAY -> {
-                    binding.tvEventDate.text = AppConstant.EVENT_TODAY
-                }
-                AppConstant.EVENT_TOMORROW -> {
-                    binding.tvEventDate.text = AppConstant.EVENT_TOMORROW
-                }
-                AppConstant.EVENT_YESTERDAY -> {
-                    binding.tvEventDate.text = AppConstant.EVENT_YESTERDAY
-                    binding.chipDateExpired.visibility = View.VISIBLE
-                }
-                else -> {
-                    binding.tvEventDate.text = AppFunctions.getDateStringFromMilliseconds(
-                        todoModelData.eventDate,
-                        AppConstant.DATE_PATTERN_EVENT_DATE
-                    )
-                }
-            }
-
-            if (AppFunctions.checkForDateTimeExpire(todoModelData) && !todoModelData.isCompleted) {
-                binding.chipDateExpired.visibility = View.VISIBLE
-            } else {
-                binding.chipDateExpired.visibility = View.GONE
-            }
-
-            if (todoModelData.eventTime.isNotEmpty()) {
-                binding.tvEventTime.text = String.format(
-                    "@ %s",
-                    AppFunctions.convertTimeStringToDisplayFormat(todoModelData.eventDate,todoModelData.eventTime)
-                )
-            }
-
             return binding
         }
     }
@@ -196,32 +161,6 @@ class QuickTodoListAdapter(
 
             binding.tvTitle.paintFlags = binding.tvTitle.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             binding.tvTodo.paintFlags = binding.tvTodo.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-
-            when (AppFunctions.getEventDateText(item.eventDate)) {
-                AppConstant.EVENT_TODAY -> {
-                    binding.tvEventDate.text = AppConstant.EVENT_TODAY
-                }
-                AppConstant.EVENT_TOMORROW -> {
-                    binding.tvEventDate.text = AppConstant.EVENT_TOMORROW
-                }
-                AppConstant.EVENT_YESTERDAY -> {
-                    binding.tvEventDate.text = AppConstant.EVENT_YESTERDAY
-                }
-                else -> {
-                    binding.tvEventDate.text = AppFunctions.getDateStringFromMilliseconds(
-                        item.eventDate,
-                        AppConstant.DATE_PATTERN_EVENT_DATE
-                    )
-                }
-            }
-
-            if (item.eventTime.isNotEmpty()) {
-                binding.tvEventTime.text = String.format(
-                    "@ %s",
-                    AppFunctions.convertTimeStringToDisplayFormat(item.eventDate,item.eventTime)
-                )
-            }
-
 
         }
     }

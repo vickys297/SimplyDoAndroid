@@ -36,7 +36,7 @@ object AppFunctions {
         return SimpleDateFormat(format, Locale.getDefault())
     }
 
-    fun getDateStringFromMilliseconds(milliseconds: Long, datePattern: String): String {
+    fun convertTimeInMillsecToPattern(milliseconds: Long, datePattern: String): String {
         val formatter = SimpleDateFormat(datePattern, Locale.getDefault())
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = milliseconds
@@ -139,7 +139,6 @@ object AppFunctions {
         calendar.set(Calendar.HOUR_OF_DAY, 23)
         calendar.set(Calendar.MINUTE, 59)
         calendar.set(Calendar.SECOND, 59)
-
         return calendar.timeInMillis
     }
 
@@ -148,7 +147,6 @@ object AppFunctions {
         calendar.set(Calendar.HOUR_OF_DAY, 0)
         calendar.set(Calendar.MINUTE, 0)
         calendar.set(Calendar.SECOND, 0)
-
         return calendar.timeInMillis
     }
 
@@ -291,24 +289,6 @@ object AppFunctions {
         }
     }
 
-    @WorkerThread
-    fun checkForDateTimeExpire(item: TodoModel): Boolean {
-        if (item.eventTime.isNotEmpty()) {
-            val eventTime = item.eventTime.trim().split(":".toRegex())
-            val calender = Calendar.getInstance()
-            calender.timeInMillis = item.eventDate
-            calender.set(Calendar.HOUR_OF_DAY, eventTime[0].toInt())
-            calender.set(Calendar.MINUTE, eventTime[1].toInt())
-            calender.set(Calendar.SECOND, 0)
-            return calender.timeInMillis < System.currentTimeMillis() && !item.isCompleted
-        }
-
-        if (item.eventTime.isEmpty()) {
-            return item.eventDate < getCurrentDayStartInMilliSeconds() && !item.isCompleted
-        }
-
-        return false
-    }
 
     @WorkerThread
     fun setupNotification(tasKId: Long, eventDate: Long, bundle: Bundle, activity: Activity) {

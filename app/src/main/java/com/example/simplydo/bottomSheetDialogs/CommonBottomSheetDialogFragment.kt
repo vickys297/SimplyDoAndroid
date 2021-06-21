@@ -1,4 +1,4 @@
-package com.example.simplydo.utli.bottomSheetDialogs
+package com.example.simplydo.bottomSheetDialogs
 
 import android.os.Bundle
 import android.view.LayoutInflater

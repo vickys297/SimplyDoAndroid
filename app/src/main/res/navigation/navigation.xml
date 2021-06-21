@@ -32,7 +32,11 @@
             app:exitAnim="@android:anim/slide_out_right"
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right"
-            app:popUpTo="@id/toDoFragment" />
+            app:popUpTo="@id/toDoFragment">
+            <argument
+                android:name="@string/app_task_id"
+                app:argType="long" />
+        </action>
         <action
             android:id="@+id/action_toDoFragment_to_calenderFragment"
             app:destination="@id/calenderFragment"
@@ -93,7 +97,7 @@
         <action
             android:id="@+id/action_calenderFragment_to_todoFullDetailsFragment"
             app:destination="@id/todoFullDetailsFragment"
-            app:popUpTo="@id/toDoFragment" />
+            app:popUpTo="@id/calenderFragment" />
         <action
             android:id="@+id/action_calenderFragment_to_editFragment"
             app:destination="@id/editFragment"

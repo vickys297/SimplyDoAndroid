@@ -21,11 +21,11 @@ import com.example.simplydo.model.attachmentModel.AudioModel
 import com.example.simplydo.model.attachmentModel.FileModel
 import com.example.simplydo.model.attachmentModel.GalleryModel
 import com.example.simplydo.utli.*
-import com.example.simplydo.utli.adapters.newTodotask.AudioAttachmentAdapter
-import com.example.simplydo.utli.adapters.newTodotask.ContactAttachmentAdapter
-import com.example.simplydo.utli.adapters.newTodotask.FileAttachmentAdapter
-import com.example.simplydo.utli.adapters.newTodotask.GalleryAttachmentAdapter
-import com.example.simplydo.utli.bottomSheetDialogs.attachments.AddAttachmentsFragments
+import com.example.simplydo.adapters.newTodotask.AudioAttachmentAdapter
+import com.example.simplydo.adapters.newTodotask.ContactAttachmentAdapter
+import com.example.simplydo.adapters.newTodotask.FileAttachmentAdapter
+import com.example.simplydo.adapters.newTodotask.GalleryAttachmentAdapter
+import com.example.simplydo.bottomSheetDialogs.attachments.AddAttachmentsFragments
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
@@ -325,12 +325,12 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.textViewEventDate.text = AppFunctions.getDateStringFromMilliseconds(
+        binding.textViewEventDate.text = AppFunctions.convertTimeInMillsecToPattern(
             eventDate,
             AppConstant.DATE_PATTERN_EVENT_DATE
         )
 
-        binding.textViewEventTime.text = AppFunctions.getDateStringFromMilliseconds(
+        binding.textViewEventTime.text = AppFunctions.convertTimeInMillsecToPattern(
             eventDate,
             AppConstant.TIME_PATTERN_EVENT_TIME
         )
@@ -390,13 +390,13 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
                     newDate.set(year, month, dayOfMonth)
 
                     Log.i(
-                        com.example.simplydo.utli.bottomSheetDialogs.basicAddTodoDialog.TAG,
+                        com.example.simplydo.bottomSheetDialogs.basicAddTodoDialog.TAG,
                         "timeInMillis: ${newDate.timeInMillis}/${System.currentTimeMillis()}"
                     )
 
                     eventDate = newDate.timeInMillis
 
-                    binding.textViewEventDate.text = AppFunctions.getDateStringFromMilliseconds(
+                    binding.textViewEventDate.text = AppFunctions.convertTimeInMillsecToPattern(
                         newDate.timeInMillis,
                         AppConstant.DATE_PATTERN_EVENT_DATE
                     )

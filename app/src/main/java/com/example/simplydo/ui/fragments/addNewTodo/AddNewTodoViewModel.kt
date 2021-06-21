@@ -31,8 +31,7 @@ class AddNewTodoViewModel(val appRepository: AppRepository) :
             TodoModel(
                 title = title,
                 todo = task,
-                eventDate = eventDate,
-                eventTime = eventTime,
+                eventDateTime = eventDate,
                 isHighPriority = priority,
                 contactAttachments = contactArray,
                 locationData = location,
@@ -63,8 +62,7 @@ class AddNewTodoViewModel(val appRepository: AppRepository) :
        val updateModel =  TodoModel(
             title = title,
             todo = task,
-            eventDate = eventDate,
-            eventTime = eventTime,
+            eventDateTime = eventDate,
             isHighPriority = priority,
             contactAttachments = contactArray,
             locationData = location,

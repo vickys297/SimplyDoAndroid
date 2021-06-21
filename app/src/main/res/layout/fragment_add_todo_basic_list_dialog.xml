@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:paddingTop="@dimen/list_item_spacing_half"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
-    tools:context=".utli.bottomSheetDialogs.basicAddTodoDialog.AddTodoBasic">
+    tools:context=".bottomSheetDialogs.basicAddTodoDialog.EditTodoBasic">
 
     <TextView
         android:id="@+id/textView5"

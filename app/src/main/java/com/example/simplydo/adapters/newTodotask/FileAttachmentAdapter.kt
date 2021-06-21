@@ -1,19 +1,19 @@
-package com.example.simplydo.utli.adapters.newTodotask
+package com.example.simplydo.adapters.newTodotask
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.simplydo.databinding.RecyclerAttachmentAudioListItemBinding
-import com.example.simplydo.model.attachmentModel.AudioModel
-import com.example.simplydo.utli.AudioAttachmentInterface
+import com.example.simplydo.databinding.RecyclerAttachmentFilesListItemBinding
+import com.example.simplydo.model.attachmentModel.FileModel
+import com.example.simplydo.utli.FileAttachmentInterface
 
-class AudioAttachmentAdapter(private val audioAttachmentInterface: AudioAttachmentInterface) : RecyclerView.Adapter<AudioAttachmentAdapter.AudioViewHolder>() {
+class FileAttachmentAdapter(private val fileAttachmentInterface: FileAttachmentInterface) : RecyclerView.Adapter<FileAttachmentAdapter.AudioViewHolder>() {
 
-    class AudioViewHolder(val binding: RecyclerAttachmentAudioListItemBinding) :
+    class AudioViewHolder(val binding: RecyclerAttachmentFilesListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(audioModel: AudioModel): RecyclerAttachmentAudioListItemBinding {
+        fun bind(fileModel: FileModel): RecyclerAttachmentFilesListItemBinding {
              binding.apply {
-                audioDataModel = audioModel
+                dataModel = fileModel
                 executePendingBindings()
             }
             return binding
@@ -21,11 +21,11 @@ class AudioAttachmentAdapter(private val audioAttachmentInterface: AudioAttachme
 
     }
 
-    private var dataSet = ArrayList<AudioModel>()
+    private var dataSet = ArrayList<FileModel>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AudioViewHolder {
         return AudioViewHolder(
-            RecyclerAttachmentAudioListItemBinding.inflate(
+            RecyclerAttachmentFilesListItemBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -40,7 +40,7 @@ class AudioAttachmentAdapter(private val audioAttachmentInterface: AudioAttachme
 
             viewHolder.textView8.isSelected = true
             viewHolder.imageButtonPlay.setOnClickListener {
-                audioAttachmentInterface.onAudioSelect(item)
+                fileAttachmentInterface.onFileSelect(item)
             }
         }
     }
@@ -49,8 +49,8 @@ class AudioAttachmentAdapter(private val audioAttachmentInterface: AudioAttachme
         return dataSet.size
     }
 
-    fun updateDataSet(contactArrayList: ArrayList<AudioModel>) {
-        this.dataSet = contactArrayList
+    fun updateDataSet(fileModel: ArrayList<FileModel>) {
+        this.dataSet = fileModel
         notifyDataSetChanged()
     }
 

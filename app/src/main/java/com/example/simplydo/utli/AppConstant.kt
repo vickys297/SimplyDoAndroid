@@ -78,8 +78,7 @@ object MimeTypes {
 }
 object AppConstant {
 
-
-
+    // task
     const val TASK_ACTION_RESTORE: Int = 10
     const val TASK_ACTION_DELETE: Int = 11
     const val TASK_ACTION_EDIT: Int = 12
@@ -87,11 +86,17 @@ object AppConstant {
     const val NOTIFICATION_TASK_NEW: Int = 13
     const val NOTIFICATION_TASK_DAILY_REMAINDER: Int = 14
 
+    const val TASK_TYPE_DEFAULT: Int = 100
+    const val TASK_TYPE_BASIC: Int = 100
+    const val TASK_TYPE_EVENT: Int = 101
+    const val TASK_TYPE_ATTACHMENT: Int = 102
+
 
     // Silent alert user about the upcoming task
-   const val ALERT_TYPE_SILENT: Int = 15
+    const val ALERT_TYPE_SILENT: Int = 15
+
     // Alert user show notification at the task event date time
-   const val ALERT_TYPE_NOTIFY: Int = 11
+    const val ALERT_TYPE_NOTIFY: Int = 11
 
     const val ACTION_COMPLETE: String = "action_task_complete"
     const val ACTION_VIEW: String = "action_task_view"
@@ -120,9 +125,11 @@ object AppConstant {
     // view completed order in other fragments
     const val TODO_VIEW_COMPLETED: Int = 2
 
+
+    const val DATE_PATTERN_EVENT_DATE = "dd-MM-yyyy"
     const val TIME_PATTERN_EVENT_TIME = "hh:mm a"
     const val DATE_PATTERN_COMMON = "dd-MM-yyyy"
-    const val DATE_PATTERN_EVENT_DATE = "dd-MM-yyyy"
+
     private const val DATE_PATTERN_DISPLAY = "dd MMMM yyyy"
     const val DATE_PATTERN_ISO = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
     const val DATE_PATTERN_MONTH_TEXT = "MMM"

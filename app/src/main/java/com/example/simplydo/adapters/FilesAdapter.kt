@@ -1,4 +1,4 @@
-package com.example.simplydo.utli.adapters
+package com.example.simplydo.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
