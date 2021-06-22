@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.example.simplydo.ui.fragments.addNewTodo.AddNewTodoViewModel" />
+            type="com.example.simplydo.ui.fragments.addOrEditTodoTask.AddNewTodoViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -329,7 +329,7 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/textView23"
-                            tools:context=".ui.fragments.addNewTodo.EditTodo" />
+                            tools:context=".ui.fragments.addOrEditTodoTask.EditTodo" />
 
                     </androidx.cardview.widget.CardView>
                 </LinearLayout>

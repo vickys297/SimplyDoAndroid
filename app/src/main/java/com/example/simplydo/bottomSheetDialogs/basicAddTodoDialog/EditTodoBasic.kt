@@ -13,6 +13,10 @@ import com.example.simplydo.utli.AppConstant
 import com.example.simplydo.utli.AppFunctions
 import com.example.simplydo.utli.EditBasicTodoInterface
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.DateValidatorPointForward
+import com.google.android.material.datepicker.MaterialDatePicker
+import java.util.*
 
 
 /**
@@ -28,7 +32,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 internal val TAG = EditTodoBasic::class.java.canonicalName
 
 class EditTodoBasic(
-    private val todoModel: TodoModel,
+    private val currentTodoModel: TodoModel,
     private val editBasicTodoInterface: EditBasicTodoInterface
 ) :
     BottomSheetDialogFragment() {
@@ -39,7 +43,8 @@ class EditTodoBasic(
     // onDestroyView.
     private val binding get() = _binding!!
 
-    private val ediTodoModel: TodoModel get() = todoModel
+    private val ediTodoModel: TodoModel get() = currentTodoModel
+    private var eventDateTime: Long = System.currentTimeMillis()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,6 +63,8 @@ class EditTodoBasic(
         setupData()
 
         Log.i(TAG, "onViewCreated: ")
+
+        eventDateTime = currentTodoModel.eventDateTime
 
         binding.btnAddMoreDetails.setOnClickListener {
             editBasicTodoInterface.onAddMoreDetails(ediTodoModel)
@@ -105,35 +112,37 @@ class EditTodoBasic(
         binding.textViewEventDate.text = AppFunctions.getCurrentEventDate()
 
         binding.linearLayoutEventDateSelector.setOnClickListener {
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//
-//                val datePicker = DatePickerDialog(requireContext())
-//                datePicker.datePicker.minDate = System.currentTimeMillis()
-//
-//                val calendar = Calendar.getInstance()
-//                calendar.timeInMillis = eventDate
-//
-//                datePicker.datePicker.updateDate(
-//                    calendar.get(Calendar.YEAR),
-//                    calendar.get(Calendar.MONTH),
-//                    calendar.get(Calendar.DAY_OF_MONTH)
-//                )
-//
-//                datePicker.setOnDateSetListener { _, year, month, dayOfMonth ->
-//                    val newDate = Calendar.getInstance()
-//
-//                    // default time to be end of the data
-//                    newDate.set(year, month, dayOfMonth, 23, 59, 59)
-//                    eventDate = newDate.timeInMillis
-//                    binding.textViewEventDate.text = AppFunctions.convertTimeInMillsecToPattern(
-//                        newDate.timeInMillis,
-//                        AppConstant.DATE_PATTERN_EVENT_DATE
-//                    )
-//
-//                    datePicker.dismiss()
-//                }
-//                datePicker.show()
-//            }
+            val calender = Calendar.getInstance()
+            calender.timeInMillis = eventDateTime
+            calender.add(Calendar.DAY_OF_MONTH, -1)
+
+            val constrain = CalendarConstraints.Builder()
+                .setValidator(DateValidatorPointForward.from(calender.timeInMillis))
+                .setStart(calender.timeInMillis)
+
+            calender.add(Calendar.DAY_OF_MONTH, 1)
+            val datePicker = MaterialDatePicker.Builder.datePicker()
+                .setTitleText("Select Event Date")
+                .setSelection(calender.timeInMillis)
+                .setCalendarConstraints(constrain.build())
+                .build()
+
+            datePicker.show(requireActivity().supportFragmentManager, "TAG_DATE_PICKER")
+
+            datePicker.addOnPositiveButtonClickListener {
+
+                calender.timeInMillis = it
+                calender.set(Calendar.HOUR, 23)
+                calender.set(Calendar.MINUTE, 59)
+                calender.set(Calendar.SECOND, 59)
+                calender.set(Calendar.MILLISECOND, 0)
+
+                eventDateTime = calender.timeInMillis
+                binding.textViewEventDate.text = AppFunctions.convertTimeInMillsecToPattern(
+                    eventDateTime,
+                    AppConstant.DATE_PATTERN_EVENT_DATE
+                )
+            }
         }
     }
 
@@ -147,7 +156,7 @@ class EditTodoBasic(
     }
 
     private fun validateInput() {
-        val view = arrayListOf(binding.etTitle, binding.etTask)
+        val view = arrayListOf(binding.etTitle, binding.etTask, binding.textViewEventDate)
 
         var flag = true
         for (v in view) {
@@ -159,7 +168,18 @@ class EditTodoBasic(
 
         if (flag) {
             editBasicTodoInterface.onUpdateDetails(
-                ediTodoModel
+                TodoModel(
+                    dtId = currentTodoModel.dtId,
+                    title = binding.etTitle.text.toString(),
+                    todo = binding.etTask.text.toString(),
+                    eventDateTime = eventDateTime,
+                    imageAttachments = currentTodoModel.imageAttachments,
+                    contactAttachments = currentTodoModel.contactAttachments,
+                    locationData = currentTodoModel.locationData,
+                    fileAttachments = currentTodoModel.fileAttachments,
+                    createdAt = currentTodoModel.createdAt,
+                    updatedAt = System.currentTimeMillis().toString()
+                )
             )
             dismiss()
         }

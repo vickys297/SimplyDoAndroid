@@ -1,9 +1,6 @@
-package com.example.simplydo.ui.fragments.addNewTodo
+package com.example.simplydo.ui.fragments.addOrEditTodoTask
 
-import android.app.DatePickerDialog
 import android.content.Context
-import android.icu.util.Calendar
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -13,32 +10,36 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simplydo.R
-import com.example.simplydo.databinding.AddNewTodoFragmentBinding
-import com.example.simplydo.localDatabase.AppDatabase
-import com.example.simplydo.model.ContactModel
-import com.example.simplydo.model.LatLngModel
-import com.example.simplydo.model.attachmentModel.AudioModel
-import com.example.simplydo.model.attachmentModel.FileModel
-import com.example.simplydo.model.attachmentModel.GalleryModel
-import com.example.simplydo.utli.*
 import com.example.simplydo.adapters.newTodotask.AudioAttachmentAdapter
 import com.example.simplydo.adapters.newTodotask.ContactAttachmentAdapter
 import com.example.simplydo.adapters.newTodotask.FileAttachmentAdapter
 import com.example.simplydo.adapters.newTodotask.GalleryAttachmentAdapter
 import com.example.simplydo.bottomSheetDialogs.attachments.AddAttachmentsFragments
+import com.example.simplydo.databinding.EditTodoFragmentBinding
+import com.example.simplydo.localDatabase.AppDatabase
+import com.example.simplydo.model.ContactModel
+import com.example.simplydo.model.LatLngModel
+import com.example.simplydo.model.TodoModel
+import com.example.simplydo.model.attachmentModel.AudioModel
+import com.example.simplydo.model.attachmentModel.FileModel
+import com.example.simplydo.model.attachmentModel.GalleryModel
+import com.example.simplydo.utli.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.DateValidatorPointForward
+import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
-internal val TAG = EditTodo::class.java.canonicalName
 
-class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
+internal val TAG_EDIT = EditTodo::class.java.canonicalName
+
+class EditTodo : Fragment(), NewTodoOptionsFragmentsInterface {
 
     companion object {
         fun newInstance() = EditTodo()
@@ -46,16 +47,19 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
 
 
     private lateinit var viewModel: AddNewTodoViewModel
-    private lateinit var binding: AddNewTodoFragmentBinding
+    private lateinit var binding: EditTodoFragmentBinding
 
     private lateinit var contactArrayList: ArrayList<ContactModel>
     private lateinit var galleryArrayList: ArrayList<GalleryModel>
     private lateinit var audioArrayList: ArrayList<AudioModel>
     private lateinit var filesArrayList: ArrayList<FileModel>
 
-    private var eventDate: Long = System.currentTimeMillis()
-    private lateinit var eventTime: String
-    private var latLng: LatLngModel = LatLngModel(0.0, 0.0)
+    private var eventDateTime: Long = System.currentTimeMillis()
+
+    private var latLng: LatLngModel = LatLngModel()
+
+
+    private lateinit var currentTodoModel: TodoModel
 
 
     // all adapter
@@ -74,6 +78,7 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
             }
 
         }
+
     private val galleryAttachmentInterface =
         object : GalleryAttachmentInterface {
             override fun onItemSelect(item: GalleryModel) {
@@ -87,7 +92,7 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
         }
     }
 
-    private val fileAttachmentInterface = object  : FileAttachmentInterface{
+    private val fileAttachmentInterface = object : FileAttachmentInterface {
         override fun onFileSelect(item: FileModel) {
 
         }
@@ -126,22 +131,13 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        binding = AddNewTodoFragmentBinding.inflate(inflater, container, false)
-        setupObserver()
+        binding = EditTodoFragmentBinding.inflate(inflater, container, false)
+
         setViewModel()
+        attachmentDataObserver()
 
-
-        eventTime =
-            "${AppFunctions.getHoursOfDay(System.currentTimeMillis())}:${
-                AppFunctions.getMinutes(
-                    System.currentTimeMillis()
-                )
-            }"
-        Log.i(TAG, "onCreateView: eventTime --> $eventTime")
-
-        arguments?.let {
-            eventDate = it.getLong(getString(R.string.eventDateString))
-        }
+        val sampleText = "0:0".split(":".toRegex())
+        Log.d(TAG_EDIT, "onCreateView: ${sampleText[0].toInt()}")
 
         // setup array list
         contactArrayList = ArrayList()
@@ -149,11 +145,41 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
         audioArrayList = ArrayList()
         filesArrayList = ArrayList()
 
+
+        arguments?.let {
+
+            currentTodoModel = it.getSerializable(AppConstant.NAVIGATION_TASK_DATA_KEY) as TodoModel
+            val task = it.getSerializable(AppConstant.NAVIGATION_TASK_DATA_KEY) as TodoModel
+
+            binding.etTitle.setText(task.title)
+            binding.etTask.setText(task.todo)
+
+            eventDateTime = task.eventDateTime
+
+            binding.textViewEventDate.text =
+                AppFunctions.convertTimeInMillsecToPattern(
+                    eventDateTime,
+                    AppConstant.DATE_PATTERN_EVENT_DATE
+                )
+
+            binding.textViewEventTime.text =
+                AppFunctions.convertTimeInMillsecToPattern(
+                    eventDateTime,
+                    AppConstant.TIME_PATTERN_EVENT_TIME
+                )
+
+            binding.cbPriority.isChecked = task.isHighPriority
+
+            contactArrayList = task.contactAttachments
+            galleryArrayList = task.imageAttachments
+            audioArrayList = task.audioAttachments
+            filesArrayList = task.fileAttachments
+            latLng = task.locationData
+        }
+
         return binding.root
     }
 
-    private fun setupObserver() {
-    }
 
     private fun setViewModel() {
         viewModel = ViewModelProvider(
@@ -169,12 +195,12 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
             AddNewTodoViewModel::class.java
         )
         binding.apply {
-            this.viewModel = this@AddNewTodo.viewModel
-            lifecycleOwner = this@AddNewTodo
+            this.viewModel = this@EditTodo.viewModel
+            lifecycleOwner = this@EditTodo
             executePendingBindings()
         }
 
-        attachmentDataObserver()
+
     }
 
     private fun attachmentDataObserver() {
@@ -189,7 +215,7 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
 
             checkForAttachment()
 
-            Log.d(TAG, "NAVIGATION_CONTACT_DATA_KEY: $result")
+            Log.d(TAG_EDIT, "NAVIGATION_CONTACT_DATA_KEY: $result")
 
             if (contactArrayList.isNotEmpty()) {
                 binding.linearLayoutContactAttachment.visibility = View.VISIBLE
@@ -211,7 +237,7 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
 
             checkForAttachment()
 
-            Log.d(TAG, "NAVIGATION_AUDIO_DATA_KEY: $result")
+            Log.d(TAG_EDIT, "NAVIGATION_AUDIO_DATA_KEY: $result")
 
             if (audioArrayList.isNotEmpty()) {
                 binding.linearLayoutAudioAttachment.visibility = View.VISIBLE
@@ -233,7 +259,7 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
 
             checkForAttachment()
 
-            Log.d(TAG, "NAVIGATION_GALLERY_DATA_KEY: $result")
+            Log.d(TAG_EDIT, "NAVIGATION_GALLERY_DATA_KEY: $result")
 
             if (galleryArrayList.isNotEmpty()) {
                 binding.linearLayoutGalleryAttachment.visibility = View.VISIBLE
@@ -254,12 +280,12 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
 
             checkForAttachment()
 
-            Log.i(TAG, "NAVIGATION_FILES_DATA_KEY: $result")
+            Log.d(TAG_EDIT, "NAVIGATION_FILES_DATA_KEY: $result")
 
-            if (filesArrayList.isNotEmpty()){
+            if (filesArrayList.isNotEmpty()) {
                 binding.linearFilesAttachment.visibility = View.VISIBLE
                 fileAttachmentAdapter.updateDataSet(filesArrayList)
-            }else{
+            } else {
                 binding.linearFilesAttachment.visibility = View.GONE
             }
 
@@ -278,12 +304,10 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
                 lng = result.longitude
             }
 
-
             checkForAttachment()
 
-
             // Do something with the result.
-            Log.i(TAG, "attachmentDataObserver: latLng --> $result")
+            Log.d(TAG_EDIT, "attachmentDataObserver: latLng --> $result")
 
             binding.linearLocationAttachment.visibility = View.GONE
 
@@ -297,7 +321,7 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
                 mapFragment?.getMapAsync { googleMap ->
                     googleMap.clear()
 
-                    Log.i(TAG, "attachmentDataObserver: $googleMap")
+                    Log.d(TAG_EDIT, "attachmentDataObserver: $googleMap")
 
                     googleMap.setMapStyle(
                         MapStyleOptions.loadRawResourceStyle(
@@ -325,86 +349,74 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.textViewEventDate.text = AppFunctions.convertTimeInMillsecToPattern(
-            eventDate,
-            AppConstant.DATE_PATTERN_EVENT_DATE
-        )
-
-        binding.textViewEventTime.text = AppFunctions.convertTimeInMillsecToPattern(
-            eventDate,
-            AppConstant.TIME_PATTERN_EVENT_TIME
-        )
-
         binding.linearLayoutEventTimeSelector.setOnClickListener {
-
+            val et = AppFunctions.getCurrentDateCalender()
+            et.timeInMillis = eventDateTime
+            val hour = et.get(Calendar.HOUR_OF_DAY)
+            val minute = et.get(Calendar.MINUTE)
 
             val picker = MaterialTimePicker.Builder()
                 .setTimeFormat(TimeFormat.CLOCK_12H)
-                .setHour(AppFunctions.getHoursOfDay(System.currentTimeMillis()))
-                .setMinute(AppFunctions.getMinutes(System.currentTimeMillis()))
+                .setHour(hour)
+                .setMinute(minute)
                 .setTitleText("Select Event Time")
                 .build()
 
-            picker.show(requireActivity().supportFragmentManager, "tag")
+            picker.show(requireActivity().supportFragmentManager, "TAG_EDIT")
 
             picker.addOnPositiveButtonClickListener {
                 // call back code
-                val selectedTime =
-                    "${picker.hour}:${picker.minute} ${if (picker.hour >= 12) "PM" else "AM"}"
 
-                binding.textViewEventTime.text = selectedTime
-                eventTime = "${picker.hour}:${picker.minute}"
-            }
-            picker.addOnNegativeButtonClickListener {
-                // call back code
-                Log.i(TAG, "onViewCreated: addOnNegativeButtonClickListener")
-            }
-            picker.addOnCancelListener {
-                // call back code
-                Log.i(TAG, "onViewCreated: addOnCancelListener")
-            }
-            picker.addOnDismissListener {
-                // call back code
-                Log.i(TAG, "onViewCreated: addOnDismissListener")
-            }
+//                val selectedTime =
+//                    "${picker.hour}:${picker.minute} ${if (picker.hour >= 12) "PM" else "AM"}"
 
+                et.set(Calendar.HOUR_OF_DAY, picker.hour)
+                et.set(Calendar.MINUTE, picker.minute)
+                et.set(Calendar.SECOND, 0)
+                et.set(Calendar.MILLISECOND, 0)
+                eventDateTime = et.timeInMillis
+
+                binding.textViewEventTime.text = AppFunctions.convertTimeInMillsecToPattern(
+                    eventDateTime,
+                    AppConstant.TIME_PATTERN_EVENT_TIME
+                )
+            }
         }
 
         binding.linearLayoutEventDateSelector.setOnClickListener {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
 
-                val datePicker = DatePickerDialog(requireContext())
-                datePicker.datePicker.minDate = System.currentTimeMillis()
+            val calender = Calendar.getInstance()
+            calender.timeInMillis = currentTodoModel.eventDateTime
+            calender.add(Calendar.DAY_OF_MONTH, -1)
 
-                val calendar = Calendar.getInstance()
-                calendar.timeInMillis = eventDate
+            val constrain = CalendarConstraints.Builder()
+                .setValidator(DateValidatorPointForward.from(calender.timeInMillis))
+                .setStart(calender.timeInMillis)
 
-                datePicker.datePicker.updateDate(
-                    calendar.get(Calendar.YEAR),
-                    calendar.get(Calendar.MONTH),
-                    calendar.get(Calendar.DAY_OF_MONTH)
+            calender.add(Calendar.DAY_OF_MONTH, 1)
+            val datePicker = MaterialDatePicker.Builder.datePicker()
+                .setTitleText("Select Event Date")
+                .setSelection(calender.timeInMillis)
+                .setCalendarConstraints(constrain.build())
+                .build()
+
+            datePicker.show(requireActivity().supportFragmentManager, "TAG_DATE_PICKER")
+
+            datePicker.addOnPositiveButtonClickListener {
+
+                calender.timeInMillis = it
+                calender.set(Calendar.HOUR, 23)
+                calender.set(Calendar.MINUTE, 59)
+                calender.set(Calendar.SECOND, 59)
+                calender.set(Calendar.MILLISECOND, 0)
+
+                eventDateTime = calender.timeInMillis
+                binding.textViewEventDate.text = AppFunctions.convertTimeInMillsecToPattern(
+                    calender.timeInMillis,
+                    AppConstant.DATE_PATTERN_EVENT_DATE
                 )
-
-                datePicker.setOnDateSetListener { _, year, month, dayOfMonth ->
-                    val newDate = Calendar.getInstance()
-                    newDate.set(year, month, dayOfMonth)
-
-                    Log.i(
-                        com.example.simplydo.bottomSheetDialogs.basicAddTodoDialog.TAG,
-                        "timeInMillis: ${newDate.timeInMillis}/${System.currentTimeMillis()}"
-                    )
-
-                    eventDate = newDate.timeInMillis
-
-                    binding.textViewEventDate.text = AppFunctions.convertTimeInMillsecToPattern(
-                        newDate.timeInMillis,
-                        AppConstant.DATE_PATTERN_EVENT_DATE
-                    )
-
-                    datePicker.dismiss()
-                }
-                datePicker.show()
             }
+
         }
 
         binding.linearLayoutTitle.setOnClickListener {
@@ -439,45 +451,36 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
 
 
         binding.btnCreateTodoTask.setOnClickListener {
-
-            Log.i(TAG, "onViewCreated: $latLng")
-
             if (validateDetails()) {
 
-                val title = binding.etTitle.text.toString()
-                val task = binding.etTask.text.toString()
-                val isPriority = binding.cbPriority.isChecked
-
-                val newInsertId = viewModel.createTodo(
-                    title,
-                    task,
-                    eventDate,
-                    eventTime,
-                    isPriority,
+                Log.d(
+                    TAG_EDIT,
+                    "onViewCreated: ${
+                        AppFunctions.convertTimeInMillsecToPattern(
+                            eventDateTime,
+                            AppConstant.DATE_PATTERN_EVENT_DATE_TIME
+                        )
+                    }"
+                )
+                val updateTodo = viewModel.updateTodo(
+                    dtId = currentTodoModel.dtId,
+                    binding.etTitle.text.toString(),
+                    binding.etTask.text.toString(),
+                    eventDateTime,
+                    binding.cbPriority.isChecked,
                     galleryArray = galleryArrayList,
                     contactArray = contactArrayList,
                     audioArray = audioArrayList,
                     filesArray = filesArrayList,
-                    location = latLng
+                    location = latLng,
+                    createAt = currentTodoModel.createdAt,
                 )
 
-
-                newInsertId.let {
-                    val bundle = Bundle()
-                    bundle.putLong("dtId", it)
-                    bundle.putString("title", title)
-                    bundle.putString("task", task)
-                    bundle.putBoolean("priority", isPriority)
-                    AppFunctions.showSnackBar(binding.root, "New task added")
-
-                    AppFunctions.setupNotification(it, eventDate,eventTime, bundle, requireActivity())
-                }
-
-                AppFunctions.showSnackBar(binding.root, "New task added")
+                Log.d(TAG, "onViewCreated: update task $updateTodo")
+                AppFunctions.showMessage("New task added", requireContext())
                 findNavController().navigateUp()
             } else {
-                AppFunctions.showSnackBar(binding.root, "Fill the required fields")
-
+                AppFunctions.showMessage("Fill the required fields", requireContext())
             }
         }
 
@@ -521,18 +524,15 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
         }
 
         checkForAttachment()
-
     }
 
-
     private fun checkForAttachment() {
-        Log.i(TAG, "checkForAttachment: $")
         if (
             audioArrayList.isEmpty() &&
             galleryArrayList.isEmpty() &&
             contactArrayList.isEmpty() &&
             filesArrayList.isEmpty() &&
-            latLng.lat == 0.0 && latLng.lng == 0.0
+            latLng.lng == 0.0 && latLng.lat == 0.0
         ) {
             binding.noAttachmentFound.root.visibility = View.VISIBLE
         } else {
@@ -547,7 +547,7 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
             binding.etTask,
             binding.etTitle,
             binding.textViewEventTime,
-            binding.textViewEventTime,
+            binding.textViewEventTime
         )
         for (item in allFieldsAreAvailable) {
             if (item.text.isNullOrEmpty()) {
@@ -555,9 +555,6 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
                 flag = false
             }
         }
-
-
-
         return flag
     }
 

@@ -75,7 +75,7 @@ class QuickTodoListAdapter(
                 val item = getItem(position)
                 item?.run {
                     (holderTask as TaskViewHolder).apply {
-                        val holder = bind(this@run, todoItemInterface)
+                        bind(this@run)
                         itemView.tag = this@run
 
                         itemView.setOnLongClickListener {
@@ -138,8 +138,7 @@ class QuickTodoListAdapter(
     class TaskViewHolder(private val binding: RecyclerTodoListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(
-            todoModelData: TodoModel,
-            todoItemInterface: TodoItemInterface
+            todoModelData: TodoModel
         ): RecyclerTodoListItemBinding {
 
             binding.apply {

@@ -81,7 +81,7 @@ interface TodoDAO {
     @Query("SELECT COUNT(*) FROM todoList WHERE isCompleted = '1' LIMIT :pageSize OFFSET :nextPageNumber")
     fun getCompletedTaskCount(nextPageNumber: Int, pageSize: Int): Long
 
-    @Update
+    @Update(onConflict = OnConflictStrategy.REPLACE)
     fun updateTaskData(updateModel: TodoModel): Int
 
     //    get task on current date

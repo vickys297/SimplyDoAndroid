@@ -276,7 +276,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/textView23"
-                        tools:context=".ui.fragments.addNewTodo.EditTodo" />
+                        tools:context=".ui.fragments.addOrEditTodoTask.EditTodo" />
 
                 </androidx.cardview.widget.CardView>
 

@@ -1,4 +1,4 @@
-package com.example.simplydo.ui.fragments.addNewTodo
+package com.example.simplydo.ui.fragments.addOrEditTodoTask
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -47,10 +47,10 @@ class AddNewTodoViewModel(val appRepository: AppRepository) :
     }
 
     fun updateTodo(
+        dtId: Long,
         title: String,
         task: String,
         eventDate: Long,
-        eventTime: String,
         priority: Boolean,
         galleryArray: ArrayList<GalleryModel>,
         contactArray: ArrayList<ContactModel>,
@@ -60,18 +60,18 @@ class AddNewTodoViewModel(val appRepository: AppRepository) :
         createAt: String
     ): Int {
        val updateModel =  TodoModel(
-            title = title,
-            todo = task,
-            eventDateTime = eventDate,
-            isHighPriority = priority,
-            contactAttachments = contactArray,
-            locationData = location,
-            imageAttachments = galleryArray,
-            audioAttachments = audioArray,
-            fileAttachments = filesArray,
-            createdAt = createAt,
-            updatedAt = AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_ISO)
-                .format(Date().time)
+           dtId = dtId,
+           title = title,
+           todo = task,
+           eventDateTime = eventDate,
+           isHighPriority = priority,
+           contactAttachments = contactArray,
+           locationData = location,
+           imageAttachments = galleryArray,
+           audioAttachments = audioArray,
+           fileAttachments = filesArray,
+           createdAt = createAt,
+           updatedAt = System.currentTimeMillis().toString()
         )
 
         Log.i(TAG, "updateTodo: $updateModel")

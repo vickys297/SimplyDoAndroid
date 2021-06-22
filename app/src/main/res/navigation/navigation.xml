@@ -52,7 +52,7 @@
     </fragment>
     <fragment
         android:id="@+id/addNewTodo"
-        android:name="com.example.simplydo.ui.fragments.addNewTodo.AddNewTodo"
+        android:name="com.example.simplydo.ui.fragments.addOrEditTodoTask.AddNewTodo"
         android:label="AddNewTodo"
         app:startDestination="@id/action_addNewTodo_to_galleryListFragment">
         <action
@@ -78,7 +78,7 @@
 
     <fragment
         android:id="@+id/editFragment"
-        android:name="com.example.simplydo.ui.fragments.addNewTodo.EditTodo"
+        android:name="com.example.simplydo.ui.fragments.addOrEditTodoTask.EditTodo"
         android:label="EditTodo"/>
 
     <fragment

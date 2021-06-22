@@ -127,6 +127,7 @@ object AppConstant {
 
 
     const val DATE_PATTERN_EVENT_DATE = "dd-MM-yyyy"
+    const val DATE_PATTERN_EVENT_DATE_TIME = "dd-MM-yyyy HH:mm:ss a"
     const val TIME_PATTERN_EVENT_TIME = "hh:mm a"
     const val DATE_PATTERN_COMMON = "dd-MM-yyyy"
 
