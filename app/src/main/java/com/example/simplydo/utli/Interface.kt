@@ -100,3 +100,7 @@ interface FileAttachmentInterface {
 interface UndoInterface {
     fun onUndo(task: TodoModel, type: Int)
 }
+
+interface Page4Interface{
+    fun onStart()
+}

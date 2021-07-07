@@ -1,10 +1,9 @@
 package com.example.simplydo.dataSource
 
 import android.content.Context
-import android.database.Cursor
-import android.net.Uri
 import android.provider.ContactsContract
 import android.util.Log
+import android.util.LongSparseArray
 import androidx.annotation.WorkerThread
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
@@ -42,60 +41,84 @@ class DataSourceContactNew(val context: Context) : PagingSource<Int, ContactMode
 
     @WorkerThread
     private fun getContactList(): ContactPagingModel {
-        val arrayContactModel = ArrayList<ContactModel>()
+        val arrayList = ArrayList<ContactModel>()
+        val arrayLongSparse = LongSparseArray<ContactModel>()
+
+        val contentResolver = context.contentResolver
+        val start = System.currentTimeMillis()
 
         val projection = arrayOf(
+            ContactsContract.Data.MIMETYPE,
             ContactsContract.Data.CONTACT_ID,
             ContactsContract.Contacts.DISPLAY_NAME,
             ContactsContract.Contacts.PHOTO_THUMBNAIL_URI,
             ContactsContract.Contacts.PHOTO_URI,
-            ContactsContract.Contacts.HAS_PHONE_NUMBER,
             ContactsContract.CommonDataKinds.Contactables.DATA,
+            ContactsContract.CommonDataKinds.Contactables.TYPE
         )
-
-        val selection = ContactsContract.Data.MIMETYPE + " in (?)"
+        val selection = ContactsContract.Data.MIMETYPE + " in (?, ?)"
         val selectionArgs = arrayOf(
+            ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE,
             ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE
         )
         val sortOrder = ContactsContract.Contacts.SORT_KEY_PRIMARY
-        val uri: Uri = ContactsContract.CommonDataKinds.Contactables.CONTENT_URI
 
+        val uri = ContactsContract.CommonDataKinds.Contactables.CONTENT_URI
 
-        val cursor: Cursor? =
-            context.contentResolver.query(uri, projection, selection, selectionArgs, sortOrder)
+        val cursor = contentResolver.query(uri, projection, selection, selectionArgs, sortOrder)
 
-        cursor?.use {
+        cursor?.run {
+
+            val mimeTypeIdx = cursor.getColumnIndex(ContactsContract.Data.MIMETYPE)
             val idIdx = cursor.getColumnIndex(ContactsContract.Data.CONTACT_ID)
             val nameIdx = cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)
             val dataIdx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Contactables.DATA)
+            val typeIdx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Contactables.TYPE)
+
             val thumbnailIdx = cursor.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI)
             val photoIdx = cursor.getColumnIndex(ContactsContract.Contacts.PHOTO_URI)
 
             while (cursor.moveToNext()) {
-
                 val id = cursor.getLong(idIdx)
+                val type = cursor.getInt(typeIdx)
                 val name = cursor.getString(nameIdx)
                 val data = cursor.getString(dataIdx)
+                val mimeType = cursor.getString(mimeTypeIdx)
 
                 val thumbnailUri = cursor.getString(thumbnailIdx)
                 val photoUri = cursor.getString(photoIdx)
 
-                arrayContactModel.add(
-                    ContactModel(
-                        id = id,
-                        photoThumbnailUri = thumbnailUri,
-                        photoUri = photoUri,
-                        name = name,
-                        mobile = data
+                var contactModel: ContactModel? = arrayLongSparse.get(id)
+                if (contactModel == null) {
+                    contactModel = ContactModel(
+                        id = id, name = name,  photoUri = photoUri, photoThumbnailUri = thumbnailUri
                     )
-                )
+                    arrayLongSparse.put(id, contactModel)
+                    arrayList.add(contactModel)
+                }
 
-                Log.i(TAG_CONTACT_PAGING, "getContactList: $name/$data")
+
+                if (mimeType == ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE) {
+                    if (!contactModel.email.contains(data))
+                        contactModel.email.add(data)
+                } else {
+                    if (!contactModel.mobile.contains(data))
+                        contactModel.mobile.add(data)
+                }
             }
+
+
+            val ms = System.currentTimeMillis() - start
+
+
+            arrayList.forEach {
+                Log.i(TAG, "getContactList: ${it.name}/${it.mobile}/${it.email}")
+            }
+            Log.i(TAG, "getContactList: $ms")
             cursor.close()
         }
 
-        return ContactPagingModel(nextPage = -1, data = arrayContactModel)
+        return ContactPagingModel(nextPage = -1, data = arrayList)
     }
 
 }

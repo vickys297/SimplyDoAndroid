@@ -70,7 +70,7 @@ data class TodoModel(
     var deletedDateTimeStamp: String = "",
 
     @ColumnInfo(name = "taskType")
-    var taskType: Int = AppConstant.TASK_TYPE_DEFAULT,
+    var taskType: Int = AppConstant.Task.TASK_TYPE_DEFAULT,
 
     ) : Serializable {
 
@@ -108,11 +108,11 @@ data class TodoModel(
     }
 
     fun isEventTimeVisible(): Int {
-        return if (taskType == AppConstant.TASK_TYPE_BASIC) View.GONE else View.VISIBLE
+        return if (taskType == AppConstant.Task.TASK_TYPE_BASIC) View.GONE else View.VISIBLE
     }
 
     fun getEventTime(): String {
-        return if (taskType == AppConstant.TASK_TYPE_EVENT) {
+        return if (taskType == AppConstant.Task.TASK_TYPE_EVENT) {
             "@ ${
                 AppFunctions.convertTimeInMillsecToPattern(
                     eventDateTime,
@@ -174,7 +174,8 @@ data class ContactModel(
     val photoThumbnailUri: String?,
     val photoUri: String?,
     val name: String,
-    val mobile: String,
+    var mobile: ArrayList<String> = ArrayList(),
+    var email: ArrayList<String> = ArrayList(),
     var isSelected: Boolean = false
 )
 

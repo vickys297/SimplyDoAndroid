@@ -60,7 +60,7 @@ class QuickTodoFragment : Fragment(R.layout.todo_fragment) {
     private val undoInterface = object : UndoInterface {
         override fun onUndo(task: TodoModel, type: Int) {
             when (type) {
-                AppConstant.TASK_ACTION_RESTORE -> {
+                AppConstant.Task.TASK_ACTION_RESTORE -> {
                     viewModel.undoTaskRemove(task)
                 }
             }
@@ -89,13 +89,13 @@ class QuickTodoFragment : Fragment(R.layout.todo_fragment) {
         override fun onEdit(item: TodoModel) {
             recentSelectedItem = item
 
-            if (item.taskType == AppConstant.TASK_TYPE_BASIC) {
+            if (item.taskType == AppConstant.Task.TASK_TYPE_BASIC) {
                 // show basic edit
                 EditTodoBasic.newInstance(editBasicTodoInterface, item)
                     .show(requireActivity().supportFragmentManager, "dialog")
             }
 
-            if (item.taskType == AppConstant.TASK_TYPE_EVENT) {
+            if (item.taskType == AppConstant.Task.TASK_TYPE_EVENT) {
                 // show edit fragment
                 val bundle = Bundle()
                 bundle.putSerializable(AppConstant.NAVIGATION_TASK_DATA_KEY, item)
@@ -113,7 +113,7 @@ class QuickTodoFragment : Fragment(R.layout.todo_fragment) {
                 view = binding.root,
                 message = "Task Restored",
                 actionButtonName = "Undo",
-                type = AppConstant.TASK_ACTION_RESTORE,
+                type = AppConstant.Task.TASK_ACTION_RESTORE,
                 undoInterface = undoInterface
             )
         }
@@ -127,7 +127,7 @@ class QuickTodoFragment : Fragment(R.layout.todo_fragment) {
             view = binding.root,
             message = "Task Removed",
             actionButtonName = "Undo",
-            type = AppConstant.TASK_ACTION_RESTORE,
+            type = AppConstant.Task.TASK_ACTION_RESTORE,
             undoInterface = undoInterface
         )
     }

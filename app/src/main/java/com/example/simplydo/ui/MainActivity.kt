@@ -143,7 +143,7 @@ class MainActivity : AppCompatActivity() {
             priority = false,
             contactList = ArrayList(),
             imageList = ArrayList(),
-            taskType = AppConstant.TASK_TYPE_BASIC
+            taskType = AppConstant.Task.TASK_TYPE_BASIC
         )
         viewModel.insertDummyDataIntoLocalDatabase(
             title = "Task Completed",
@@ -155,7 +155,7 @@ class MainActivity : AppCompatActivity() {
             isCompleted = true,
             contactList = ArrayList(),
             imageList = ArrayList(),
-            taskType = AppConstant.TASK_TYPE_BASIC
+            taskType = AppConstant.Task.TASK_TYPE_BASIC
         )
 
         viewModel.insertDummyDataIntoLocalDatabase(
@@ -167,7 +167,7 @@ class MainActivity : AppCompatActivity() {
             priority = true,
             contactList = ArrayList(),
             imageList = ArrayList(),
-            taskType = AppConstant.TASK_TYPE_BASIC
+            taskType = AppConstant.Task.TASK_TYPE_BASIC
         )
 
         calender.add(Calendar.DAY_OF_MONTH, 1)
@@ -186,7 +186,7 @@ class MainActivity : AppCompatActivity() {
             priority = true,
             contactList = ArrayList(),
             imageList = ArrayList(),
-            taskType = AppConstant.TASK_TYPE_EVENT
+            taskType = AppConstant.Task.TASK_TYPE_EVENT
         )
 
         AppPreference.storePreferences(

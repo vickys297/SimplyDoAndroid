@@ -201,13 +201,13 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
 
         binding.buttonEdit.setOnClickListener {
 
-            if (todoData.taskType == AppConstant.TASK_TYPE_BASIC) {
+            if (todoData.taskType == AppConstant.Task.TASK_TYPE_BASIC) {
                 // show basic edit
                 EditTodoBasic.newInstance(editBasicTodoInterface, todoData)
                     .show(requireActivity().supportFragmentManager, "dialog")
             }
 
-            if (todoData.taskType == AppConstant.TASK_TYPE_EVENT) {
+            if (todoData.taskType == AppConstant.Task.TASK_TYPE_EVENT) {
                 // show edit fragment
                 val bundle = Bundle()
                 bundle.putSerializable(AppConstant.NAVIGATION_TASK_DATA_KEY, todoData)

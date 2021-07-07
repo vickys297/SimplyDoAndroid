@@ -13,11 +13,11 @@ import com.example.simplydo.model.ContactModel
 import com.example.simplydo.utli.ContactAdapterInterface
 
 
-class ContactAdapter(
+class ContactListAdapter(
     private val contactAdapterInterface: ContactAdapterInterface,
     private val context: Context,
 ) :
-    PagingDataAdapter<ContactModel, ContactAdapter.ContactViewHolder>(DIFF_CALLBACK) {
+    PagingDataAdapter<ContactModel, ContactListAdapter.ContactViewHolder>(DIFF_CALLBACK) {
 
     companion object {
         var DIFF_CALLBACK = object : DiffUtil.ItemCallback<ContactModel>() {

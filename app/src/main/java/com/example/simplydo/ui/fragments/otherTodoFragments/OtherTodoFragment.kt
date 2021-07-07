@@ -11,12 +11,12 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.simplydo.R
+import com.example.simplydo.adapters.TodoListPagingAdapter
+import com.example.simplydo.bottomSheetDialogs.todoOptions.TodoOptionsFragment
 import com.example.simplydo.databinding.OtherTodoFragmentBinding
 import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.model.TodoModel
 import com.example.simplydo.utli.*
-import com.example.simplydo.adapters.TodoListPagingAdapter
-import com.example.simplydo.bottomSheetDialogs.todoOptions.TodoOptionsFragment
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -38,7 +38,7 @@ class OtherTodoFragment : Fragment(R.layout.other_todo_fragment), LifecycleObser
     private val undoInterface = object : UndoInterface {
         override fun onUndo(task: TodoModel, type: Int) {
             when (type) {
-                AppConstant.TASK_ACTION_RESTORE -> {
+                AppConstant.Task.TASK_ACTION_RESTORE -> {
                     viewModel.undoTaskRemove(task)
                 }
             }
@@ -55,7 +55,7 @@ class OtherTodoFragment : Fragment(R.layout.other_todo_fragment), LifecycleObser
                 view = binding.root,
                 message = "Task Removed",
                 actionButtonName = "Undo",
-                type = AppConstant.TASK_ACTION_RESTORE,
+                type = AppConstant.Task.TASK_ACTION_RESTORE,
                 undoInterface = undoInterface
             )
         }
@@ -73,7 +73,7 @@ class OtherTodoFragment : Fragment(R.layout.other_todo_fragment), LifecycleObser
                 view = binding.root,
                 message = "Task Restored",
                 actionButtonName = "Undo",
-                type = AppConstant.TASK_ACTION_RESTORE,
+                type = AppConstant.Task.TASK_ACTION_RESTORE,
                 undoInterface = undoInterface
             )
         }
@@ -208,7 +208,7 @@ class OtherTodoFragment : Fragment(R.layout.other_todo_fragment), LifecycleObser
                             view = binding.root,
                             message = "Task Removed",
                             actionButtonName = "Undo",
-                            type = AppConstant.TASK_ACTION_DELETE,
+                            type = AppConstant.Task.TASK_ACTION_DELETE,
                             task = it,
                             undoInterface = undoInterface
                         )

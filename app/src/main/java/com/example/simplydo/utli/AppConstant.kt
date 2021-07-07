@@ -79,18 +79,25 @@ object MimeTypes {
 object AppConstant {
 
     // task
-    const val TASK_ACTION_RESTORE: Int = 10
-    const val TASK_ACTION_DELETE: Int = 11
-    const val TASK_ACTION_EDIT: Int = 12
+    object Task {
+        const val TASK_ACTION_RESTORE: Int = 10
+        const val TASK_ACTION_DELETE: Int = 11
+        const val TASK_ACTION_EDIT: Int = 12
+        const val TASK_ACTION_NEW: Int = 13
 
-    const val NOTIFICATION_TASK_NEW: Int = 13
-    const val NOTIFICATION_TASK_DAILY_REMAINDER: Int = 14
+        const val TASK_TYPE_DEFAULT: Int = 100
+        const val TASK_TYPE_BASIC: Int = 100
+        const val TASK_TYPE_EVENT: Int = 101
+        const val TASK_TYPE_ATTACHMENT: Int = 102
+    }
 
-    const val TASK_TYPE_DEFAULT: Int = 100
-    const val TASK_TYPE_BASIC: Int = 100
-    const val TASK_TYPE_EVENT: Int = 101
-    const val TASK_TYPE_ATTACHMENT: Int = 102
+    object StartUp {
+        const val ONBOARD_COMPLETED: String = "onBoardCompleted"
+    }
 
+
+    const val NOTIFICATION_TASK_NEW: Int = 1000
+    const val NOTIFICATION_TASK_DAILY_REMAINDER: Int = 1001
 
     // Silent alert user about the upcoming task
     const val ALERT_TYPE_SILENT: Int = 15

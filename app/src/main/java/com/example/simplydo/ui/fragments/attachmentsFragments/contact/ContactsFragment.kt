@@ -18,7 +18,7 @@ import com.example.simplydo.databinding.ContactsListViewBinding
 import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.model.ContactModel
 import com.example.simplydo.utli.*
-import com.example.simplydo.adapters.ContactAdapter
+import com.example.simplydo.adapters.ContactListAdapter
 import com.example.simplydo.adapters.SelectedContactAdapter
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -37,7 +37,7 @@ class ContactsFragment :
     }
 
     private lateinit var viewModel: ContactsViewModel
-    private lateinit var contactAdapter: ContactAdapter
+    private lateinit var contactListAdapter: ContactListAdapter
     private lateinit var selectedContactAdapter: SelectedContactAdapter
 
     private var selectedContact = ArrayList<ContactModel>()
@@ -105,11 +105,11 @@ class ContactsFragment :
             adapter = selectedContactAdapter
         }
 
-        contactAdapter = ContactAdapter(contactAdapterInterface, requireContext())
+        contactListAdapter = ContactListAdapter(contactAdapterInterface, requireContext())
 
         binding.recyclerViewContactList.apply {
             layoutManager = LinearLayoutManager(requireContext())
-            adapter = contactAdapter
+            adapter = contactListAdapter
         }
 
         binding.btnAddContact.setOnClickListener {
@@ -151,7 +151,7 @@ class ContactsFragment :
         lifecycleScope.launch {
             viewModel.getContactList(requireContext()).collectLatest { pagingData ->
                 Log.i(TAG, "getContactList: pagingData $pagingData")
-                contactAdapter.submitData(pagingData)
+                contactListAdapter.submitData(pagingData)
             }
         }
     }

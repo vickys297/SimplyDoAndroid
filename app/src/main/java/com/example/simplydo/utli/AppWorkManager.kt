@@ -53,8 +53,8 @@ class AppWorkManager(val context: Context) {
         val regularNotificationWorker = PeriodicWorkRequest
             .Builder(
                 RegularNotificationWorker::class.java,
-                1, TimeUnit.DAYS,
-                6,TimeUnit.HOURS
+                12, TimeUnit.HOURS,
+                15,TimeUnit.MINUTES
             )
             .build()
 

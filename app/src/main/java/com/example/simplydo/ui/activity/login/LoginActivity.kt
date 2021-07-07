@@ -68,6 +68,12 @@ class LoginActivity : AppCompatActivity() {
                             if (it.data.isVerified) {
 
                                 AppPreference.storePreferences(
+                                    AppConstant.IS_LOGGED_IN,
+                                    true,
+                                    this@LoginActivity
+                                )
+
+                                AppPreference.storePreferences(
                                     AppConstant.USER_KEY,
                                     it.data.uKey,
                                     this@LoginActivity

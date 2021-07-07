@@ -90,7 +90,7 @@
                 android:layout_marginTop="4dp"
                 android:ellipsize="end"
                 android:singleLine="true"
-                android:text="@{dataModel.mobile}"
+                android:text="@{dataModel.mobile[0]}"
                 android:textSize="14sp" />
         </LinearLayout>
 

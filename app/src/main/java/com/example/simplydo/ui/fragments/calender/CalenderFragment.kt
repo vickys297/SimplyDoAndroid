@@ -64,10 +64,10 @@ class CalenderFragment : Fragment() {
     private val undoInterface = object : UndoInterface {
         override fun onUndo(task: TodoModel, type: Int) {
             when (type) {
-                AppConstant.TASK_ACTION_RESTORE -> {
+                AppConstant.Task.TASK_ACTION_RESTORE -> {
                     viewModel.undoTaskRemove(task)
                 }
-                AppConstant.TASK_ACTION_DELETE -> {
+                AppConstant.Task.TASK_ACTION_DELETE -> {
                     viewModel.undoTaskRemove(task)
                 }
             }
@@ -106,7 +106,7 @@ class CalenderFragment : Fragment() {
                 view = binding.root,
                 message = "Task Removed",
                 actionButtonName = "Undo",
-                type = AppConstant.TASK_ACTION_DELETE,
+                type = AppConstant.Task.TASK_ACTION_DELETE,
                 undoInterface = undoInterface
             )
         }
@@ -122,7 +122,7 @@ class CalenderFragment : Fragment() {
                 view = binding.root,
                 message = "Task Restored",
                 actionButtonName = "Undo",
-                type = AppConstant.TASK_ACTION_RESTORE,
+                type = AppConstant.Task.TASK_ACTION_RESTORE,
                 undoInterface = undoInterface
             )
         }
@@ -188,9 +188,6 @@ class CalenderFragment : Fragment() {
 
 
         selectedEventDateTotalItemCount = Observer {
-
-            Log.i(TAG, "setObserver: selectedEventDateTotalCount $it")
-
 
             // task available in the selected or current event date
             if (it != 0) {
@@ -336,7 +333,7 @@ class CalenderFragment : Fragment() {
                             view = binding.root,
                             message = "Task Removed",
                             actionButtonName = "Undo",
-                            type = AppConstant.TASK_ACTION_DELETE,
+                            type = AppConstant.Task.TASK_ACTION_DELETE,
                             task = it,
                             undoInterface = undoInterface
                         )
@@ -499,7 +496,7 @@ class CalenderFragment : Fragment() {
     }
 
     private fun populateRecyclerView() {
-        for (i in -30..60) {
+        for (i in 0..60) {
             val calendar = Calendar.getInstance()
             calendar.timeInMillis = System.currentTimeMillis()
             calendar.add(Calendar.DAY_OF_MONTH, i)
@@ -532,9 +529,9 @@ class CalenderFragment : Fragment() {
                 )
             )
         }
-        arrayListSmallCalenderModels[30].isActive = true
+        arrayListSmallCalenderModels[0].isActive = true
         calenderViewAdapter.updateList(arrayListSmallCalenderModels)
 
-        calenderLinearLayoutManager.scrollToPositionWithOffset(29, 0)
+        calenderLinearLayoutManager.scrollToPositionWithOffset(0, 0)
     }
 }

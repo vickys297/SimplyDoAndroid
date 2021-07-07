@@ -1,30 +1,58 @@
 package com.example.simplydo.ui.fragments.attachmentsFragments.location
 
+import android.Manifest
+import android.app.AlertDialog
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.location.Location
+import android.location.LocationManager
 import android.os.Bundle
+import android.provider.Settings
+import android.util.Log
 import android.view.View
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
+import androidx.core.location.LocationManagerCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.simplydo.R
 import com.example.simplydo.databinding.FragmentMapsBinding
 import com.example.simplydo.utli.AppConstant
 import com.example.simplydo.utli.AppFunctions
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.tasks.Task
+
 
 internal val TAG = MapsFragment::class.java.canonicalName
 
 class MapsFragment : Fragment(R.layout.fragment_maps) {
 
-    private lateinit var location: LatLng
 
-    private lateinit var _binding : FragmentMapsBinding
-    val binding : FragmentMapsBinding get() = _binding
+    private lateinit var locationManager: LocationManager
+    private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
+    private lateinit var locationTask: Task<Location>
+    private lateinit var latLngLocation: LatLng
+
+    private lateinit var map: GoogleMap
+
+    private lateinit var _binding: FragmentMapsBinding
+    val binding: FragmentMapsBinding get() = _binding
+
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     private val callback = OnMapReadyCallback { googleMap ->
+
+        map = googleMap
         /**
          * Manipulates the map once available.
          * This callback is triggered when the map is ready to be used.
@@ -42,49 +70,159 @@ class MapsFragment : Fragment(R.layout.fragment_maps) {
             )
         )
 
-
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 12f))
-        googleMap.addMarker(
-            MarkerOptions()
-                .position(location)
-                .title("Marker in Sydney")
-                .icon(AppFunctions.getDrawableToBitmap(R.drawable.ic_map_marker, requireActivity()))
-        )
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(location))
-
-
+        newMarkerLocation()
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngLocation, 12f))
         googleMap.setOnMapClickListener {
-            location = it
-
-            googleMap.clear()
-
-            googleMap.addMarker(
-                MarkerOptions()
-                    .position(location)
-                    .icon(AppFunctions.getDrawableToBitmap(R.drawable.ic_map_marker,
-                        requireActivity())))
+            latLngLocation = it
+            newMarkerLocation()
         }
     }
 
+    private fun newMarkerLocation() {
+        map.clear()
+        map.apply {
+            addMarker(
+                MarkerOptions()
+                    .position(latLngLocation)
+                    .icon(
+                        AppFunctions.getDrawableToBitmap(
+                            R.drawable.ic_map_marker,
+                            requireActivity()
+                        )
+                    )
+            )
+        }
+    }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentMapsBinding.bind(view)
 
-        location = LatLng(11.082096, 77.032576)
+        latLngLocation = LatLng(11.082096, 77.032576)
 
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
 
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
 
         binding.buttonSelectLocation.setOnClickListener {
-            findNavController().previousBackStackEntry?.savedStateHandle?.set(AppConstant.NAVIGATION_LOCATION_DATA_KEY, location)
+            findNavController().previousBackStackEntry?.savedStateHandle?.set(
+                AppConstant.NAVIGATION_LOCATION_DATA_KEY,
+                latLngLocation
+            )
             findNavController().popBackStack()
         }
+
         binding.imageButtonClose.setOnClickListener {
             findNavController().navigateUp()
         }
+
+
+        binding.floatingActionButton.setOnClickListener {
+            if (isLocationEnabled(requireContext())) {
+                Log.i(TAG, "onViewCreated: ${isLocationEnabled(requireContext())}")
+                if (isLocationPermissionGranted()) {
+                    fusedLocationClient.lastLocation.addOnSuccessListener {
+                        Log.i(
+                            TAG, "setupLocationTaskListener: $it\n " +
+                                    "${it.latitude}\n" +
+                                    "${it.longitude}\n" +
+                                    "${it.accuracy}\n" +
+                                    "${it.bearing}\n"
+                        )
+                        latLngLocation = LatLng(it.latitude, it.longitude)
+                        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngLocation, 12f))
+                        newMarkerLocation()
+                    }
+
+                    fusedLocationClient.lastLocation.addOnFailureListener {
+                        Log.e(TAG, "setupLocationTaskListener: ", it)
+                    }
+                } else {
+                    requestPermissionLauncher.launch(
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    )
+                }
+            } else {
+                showEnableLocationServiceDialog()
+            }
+        }
+
+
+        requestPermissionLauncher =
+            registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+                if (isGranted) {
+                    fusedLocationClient.lastLocation.addOnSuccessListener {
+                        Log.i(
+                            TAG, "setupLocationTaskListener: $it\n " +
+                                    "${it.latitude}\n" +
+                                    "${it.longitude}\n" +
+                                    "${it.accuracy}\n" +
+                                    "${it.bearing}\n"
+                        )
+                        latLngLocation = LatLng(it.latitude, it.longitude)
+                        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngLocation, 12f))
+                        newMarkerLocation()
+                    }
+
+                    fusedLocationClient.lastLocation.addOnFailureListener {
+                        Log.e(TAG, "setupLocationTaskListener: ", it)
+                    }
+                }
+            }
+
+
+        checkForPermission()
+    }
+
+    private fun isLocationPermissionGranted(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun checkForPermission() {
+        when {
+            ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED -> {
+                // has access for location
+                locationTask = fusedLocationClient.lastLocation
+
+            }
+            shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION) -> {
+
+            }
+            else -> {
+                requestPermissionLauncher.launch(
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                )
+            }
+        }
+    }
+
+    private fun showEnableLocationServiceDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("GPS is disabled")
+            .setMessage("Enable GPS to get current location")
+            .setPositiveButton("Ok") { dialog, which ->
+                requireContext().startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+                dialog.dismiss()
+            }.show()
+    }
+
+    private fun isLocationEnabled(context: Context): Boolean {
+        locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return LocationManagerCompat.isLocationEnabled(locationManager)
     }
 
 }

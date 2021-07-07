@@ -11,13 +11,13 @@
     tools:context=".bottomSheetDialogs.basicAddTodoDialog.EditTodoBasic">
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/textViewTitle"
         style="@style/ToolbarStyledText"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
         android:fontFamily="@font/title_main"
         android:text="@string/add_todo"
         app:layout_constraintEnd_toEndOf="parent"
@@ -27,10 +27,13 @@
     <LinearLayout
         android:id="@+id/linearLayoutTitle"
         style="@style/EditTextLayout"
+        android:layout_width="0dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView5">
+        app:layout_constraintTop_toBottomOf="@+id/textViewTitle">
 
         <TextView
             android:layout_width="match_parent"
@@ -55,6 +58,9 @@
     <LinearLayout
         android:id="@+id/linearLayoutTask"
         style="@style/EditTextLayout"
+        android:layout_width="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayoutTitle">
@@ -81,6 +87,9 @@
     <LinearLayout
         android:id="@+id/linearLayoutEventDateSelector"
         style="@style/EditTextLayout"
+        android:layout_width="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayoutTask">
@@ -99,8 +108,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:hint="@string/event_date"
-            android:paddingTop="8dp"
             android:paddingStart="3dp"
+            android:paddingTop="8dp"
             android:paddingEnd="3dp"
             android:paddingBottom="8dp"
             android:textSize="16sp" />
@@ -110,10 +119,11 @@
         android:id="@+id/cbPriority"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:layout_marginStart="16dp"
         android:buttonTint="@color/purple_500"
         android:checked="true"
         android:text="@string/priority"
-        android:layout_margin="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayoutEventDateSelector" />
 
@@ -121,11 +131,11 @@
     <Button
         android:id="@+id/btnAddMoreDetails"
         style="@style/ButtonOptions"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="16dp"
         android:text="@string/add_more_details"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

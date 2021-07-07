@@ -25,6 +25,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 internal val TAG = SplashScreenActivity::class.java.canonicalName
+
 class SplashScreenActivity : AppCompatActivity() {
 
     lateinit var appRepository: AppRepository
@@ -33,17 +34,27 @@ class SplashScreenActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash_screen)
 
-        appRepository = AppRepository.getInstance(this@SplashScreenActivity,
-            AppDatabase.getInstance(context = this@SplashScreenActivity))
+        appRepository = AppRepository.getInstance(
+            this@SplashScreenActivity,
+            AppDatabase.getInstance(context = this@SplashScreenActivity)
+        )
     }
 
     override fun onResume() {
         super.onResume()
         Handler(Looper.getMainLooper()).postDelayed({
-
-            val uuid = AppPreference.getPreferences(AppConstant.UUID, "", this@SplashScreenActivity)
-
-            if (uuid.isEmpty() && uuid.isBlank()) {
+            if (AppPreference.getPreferences(
+                    AppConstant.IS_LOGGED_IN,
+                    false,
+                    this@SplashScreenActivity
+                )
+            ) {
+                startActivity(
+                    Intent(this@SplashScreenActivity, MainActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                    })
+                finish()
+            } else {
                 FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
                     if (!task.isSuccessful) {
                         Log.w(TAG, "Fetching FCM registration token failed", task.exception)
@@ -56,13 +67,8 @@ class SplashScreenActivity : AppCompatActivity() {
                         registerNewUser(it)
                     }
                 }
-            } else {
-                val intent = Intent(this@SplashScreenActivity, MainActivity::class.java)
-                startActivity(intent)
-                finish()
             }
         }, 1000)
-
     }
 
     private fun registerNewUser(token: String) {
@@ -78,7 +84,11 @@ class SplashScreenActivity : AppCompatActivity() {
 
                     when (it.result) {
                         AppConstant.API_RESULT_OK -> {
-                            AppPreference.storePreferences(AppConstant.UUID, it.uuid, this@SplashScreenActivity)
+                            AppPreference.storePreferences(
+                                AppConstant.UUID,
+                                it.uuid,
+                                this@SplashScreenActivity
+                            )
                             Toast.makeText(this@SplashScreenActivity, it.message, Toast.LENGTH_LONG)
                                 .show()
                             goToLoginActivity()
@@ -104,8 +114,12 @@ class SplashScreenActivity : AppCompatActivity() {
     }
 
     private fun goToLoginActivity() {
-        val intent = Intent(this@SplashScreenActivity, LoginActivity::class.java)
-        startActivity(intent)
+
+        startActivity(
+            Intent(this@SplashScreenActivity, LoginActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+            }
+        )
         finish()
     }
 

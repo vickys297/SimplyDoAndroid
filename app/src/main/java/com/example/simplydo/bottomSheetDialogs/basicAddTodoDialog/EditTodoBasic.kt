@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import com.example.simplydo.R
 import com.example.simplydo.databinding.FragmentAddTodoBasicListDialogBinding
 import com.example.simplydo.model.TodoModel
 import com.example.simplydo.utli.AppConstant
@@ -63,6 +64,8 @@ class EditTodoBasic(
         setupData()
 
         Log.i(TAG, "onViewCreated: ")
+
+        binding.textViewTitle.text = getString(R.string.edit_task)
 
         eventDateTime = currentTodoModel.eventDateTime
 
@@ -189,7 +192,7 @@ class EditTodoBasic(
     companion object {
         fun newInstance(
             editBasicTodoInterface: EditBasicTodoInterface,
-            todoModel: TodoModel,
+            todoModel: TodoModel
         ): EditTodoBasic =
             EditTodoBasic(todoModel, editBasicTodoInterface)
     }
