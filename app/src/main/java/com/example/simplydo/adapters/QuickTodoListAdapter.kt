@@ -51,17 +51,19 @@ class QuickTodoListAdapter(
                         layoutInflater,
                         parent,
                         false
-                    ))
+                    )
+                )
             }
-            VIEW_TYPE_TASK_COMPLETED -> {
+            else -> {
                 CompletedTaskViewHolder(
                     RecyclerTodoCompletedListItemBinding.inflate(
                         layoutInflater,
                         parent,
                         false
-                    ))
+                    )
+                )
             }
-            else -> throw IllegalArgumentException("View Type is is not included")
+
         }
 
 

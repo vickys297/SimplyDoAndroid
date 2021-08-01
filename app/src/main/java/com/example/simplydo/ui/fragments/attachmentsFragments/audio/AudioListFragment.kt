@@ -4,38 +4,36 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.simplydo.R
+import com.example.simplydo.adapters.AudioAdapter
+import com.example.simplydo.bottomSheetDialogs.playAudio.PlayAudioBottomSheetDialog
 import com.example.simplydo.databinding.AudioListFragmentBinding
 import com.example.simplydo.model.attachmentModel.AudioModel
 import com.example.simplydo.utli.AppConstant
 import com.example.simplydo.utli.AudioInterface
-import com.example.simplydo.adapters.AudioAdapter
-import com.example.simplydo.bottomSheetDialogs.playAudio.PlayAudioBottomSheetDialog
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.launch
 
 internal val TAG = AudioListFragment::class.java.canonicalName
 
-class AudioListFragment : Fragment() {
+class AudioListFragment : Fragment(R.layout.audio_list_fragment) {
 
-    companion object {
-        fun newInstance() = AudioListFragment()
-    }
+    private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
 
-    private lateinit var audioListObserver: Observer<ArrayList<AudioModel>>
     private lateinit var viewModel: AudioListViewModel
 
-    lateinit var binding: AudioListFragmentBinding
+    private lateinit var _binding: AudioListFragmentBinding
+    val binding: AudioListFragmentBinding get() = _binding
 
     private lateinit var audioAdapter: AudioAdapter
 
@@ -58,9 +56,9 @@ class AudioListFragment : Fragment() {
 
             Log.d(TAG, "onAudioSelect: ${audioModel.name}/${selectedAudioArrayList.size}")
 
-            if (selectedAudioArrayList.isEmpty()){
+            if (selectedAudioArrayList.isEmpty()) {
                 binding.buttonAddAudio.visibility = View.GONE
-            }else{
+            } else {
                 binding.buttonAddAudio.visibility = View.VISIBLE
             }
         }
@@ -74,25 +72,82 @@ class AudioListFragment : Fragment() {
         return true
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
-        binding = AudioListFragmentBinding.inflate(inflater, container, false)
-        setupObserver()
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        _binding = AudioListFragmentBinding.bind(view)
         setupViewModel()
-        return binding.root
-    }
 
-    private fun setupObserver() {
-
-        audioListObserver = Observer {
-            Log.i(TAG, "setupObserver: ${it.size}")
-
-
+        binding.buttonAddAudio.setOnClickListener {
+            findNavController().previousBackStackEntry?.savedStateHandle?.set(
+                AppConstant.NAVIGATION_AUDIO_DATA_KEY,
+                selectedAudioArrayList
+            )
+            findNavController().popBackStack()
         }
 
 
+        requestPermissionLauncher =
+            registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+                if (isGranted) {
+                    binding.permissionDenied.linearLayoutPermissionRequired.visibility = View.GONE
+                    setupRecyclerAdapter()
+                    getAudioList()
+                } else {
+                    showFilePermissionNotProvided()
+                }
+            }
+
+        if (hasPermission()) {
+            binding.permissionDenied.linearLayoutPermissionRequired.visibility = View.GONE
+            setupRecyclerAdapter()
+            getAudioList()
+        } else {
+            requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+        }
+
+    }
+
+    private fun showFilePermissionNotProvided() {
+        binding.permissionDenied.linearLayoutPermissionRequired.visibility = View.VISIBLE
+    }
+
+    private fun setupRecyclerAdapter() {
+        audioAdapter = AudioAdapter(requireContext(), audioInterface)
+        binding.recyclerViewListAudio.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = audioAdapter
+        }
+    }
+
+    private fun hasPermission(): Boolean {
+        return ActivityCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        ) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun getAudioList() {
+        lifecycleScope.launch {
+
+            viewModel.getAudioList(requireContext()).collectLatest {
+                audioAdapter.submitData(it)
+            }
+            viewModel.getAudioList(requireContext()).count {
+
+                Log.i(TAG, "getAudioList: $it")
+
+                return@count true
+            }
+//            if (viewModel.getAudioList(requireContext()).count() == 0) {
+//                binding.linearLayoutNoAudioFileAvailable.visibility = View.VISIBLE
+//            } else {
+//                binding.linearLayoutNoAudioFileAvailable.visibility = View.GONE
+//            }
+        }
     }
 
     private fun setupViewModel() {
@@ -102,101 +157,5 @@ class AudioListFragment : Fragment() {
             lifecycleOwner = this@AudioListFragment
             executePendingBindings()
         }
-
-        viewModel.audioList.observe(viewLifecycleOwner, audioListObserver)
-    }
-
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-
-        binding.buttonAddAudio.setOnClickListener {
-            findNavController().previousBackStackEntry?.savedStateHandle?.set(
-                AppConstant.NAVIGATION_AUDIO_DATA_KEY,
-                selectedAudioArrayList
-            )
-            findNavController().popBackStack()
-
-
-        }
-
-        audioAdapter = AudioAdapter(requireContext(), audioInterface)
-        binding.recyclerViewListAudio.apply {
-            layoutManager = LinearLayoutManager(requireContext())
-            adapter = audioAdapter
-        }
-
-
-    }
-    override fun onResume() {
-        super.onResume()
-        checkPermission()
-    }
-
-    private fun checkPermission() {
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                requireActivity(),
-                arrayOf(
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                ), 100
-            )
-        } else {
-            getAudioList()
-            Log.i(TAG, "checkPermission: Permission Granted")
-        }
-    }
-
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray,
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        if (requestCode == 100 && grantResults.isNotEmpty()) {
-
-            var flag = true
-            for (i in grantResults) {
-                if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
-                    flag = false
-                }
-            }
-
-            if (!flag) {
-                Toast.makeText(requireContext(), "Al permissions required", Toast.LENGTH_LONG)
-                    .show()
-                checkPermission()
-            } else
-                getAudioList()
-
-        } else {
-            Toast.makeText(
-                requireContext(),
-                "Permission required to view contact",
-                Toast.LENGTH_LONG
-            ).show()
-        }
-
-    }
-
-
-    private fun getAudioList() {
-        lifecycleScope.launch {
-            viewModel.getAudioList(requireContext()).collectLatest {
-                audioAdapter.submitData(it)
-            }
-        }
-
     }
 }

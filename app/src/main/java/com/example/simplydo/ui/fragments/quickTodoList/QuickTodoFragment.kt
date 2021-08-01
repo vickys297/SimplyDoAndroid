@@ -26,7 +26,8 @@ import com.example.simplydo.databinding.TodoFragmentBinding
 import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.model.CommonResponseModel
 import com.example.simplydo.model.TodoModel
-import com.example.simplydo.ui.activity.SettingsActivity
+import com.example.simplydo.ui.MainActivity
+import com.example.simplydo.ui.activity.settings.SettingsActivity
 import com.example.simplydo.utli.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -102,7 +103,6 @@ class QuickTodoFragment : Fragment(R.layout.todo_fragment) {
                 findNavController().navigate(R.id.action_toDoFragment_to_editFragment, bundle)
             }
 
-//            findNavController().navigate(R.id.action_toDoFragment_to_editFragment)
         }
 
         override fun onRestore(item: TodoModel) {
@@ -207,9 +207,9 @@ class QuickTodoFragment : Fragment(R.layout.todo_fragment) {
         super.onViewCreated(view, savedInstanceState)
         _binding = TodoFragmentBinding.bind(view)
 
-//        (activity as MainActivity).setSupportActionBar(binding.todoToolbar)
-//        (activity as MainActivity).supportActionBar!!.setDisplayShowTitleEnabled(false)
-//        setHasOptionsMenu(true)
+        (activity as MainActivity).setSupportActionBar(binding.todoToolbar)
+        (activity as MainActivity).supportActionBar!!.setDisplayShowTitleEnabled(false)
+        setHasOptionsMenu(true)
 
         setObserver()
         setupViewModel()

@@ -89,7 +89,13 @@ object AppConstant {
         const val TASK_TYPE_BASIC: Int = 100
         const val TASK_TYPE_EVENT: Int = 101
         const val TASK_TYPE_ATTACHMENT: Int = 102
+
+
+        const val VIEW_TASK_NOTE_LIST = 0
+        const val VIEW_TASK_NOTE_TEXT = 1
     }
+
+
 
     object StartUp {
         const val ONBOARD_COMPLETED: String = "onBoardCompleted"

@@ -17,7 +17,7 @@ interface CreateBasicTodoInterface {
     )
 }
 
-interface EditBasicTodoInterface{
+interface EditBasicTodoInterface {
     fun onUpdateDetails(todoModel: TodoModel)
     fun onAddMoreDetails(todoModel: TodoModel)
 }
@@ -101,6 +101,27 @@ interface UndoInterface {
     fun onUndo(task: TodoModel, type: Int)
 }
 
-interface Page4Interface{
+interface Page4Interface {
     fun onStart()
 }
+
+
+interface NewTodo {
+    interface AttachmentInterface {
+        fun onRemove()
+        fun onClick()
+    }
+
+    interface AddTask {
+        fun onAddText()
+        fun onAddList()
+    }
+}
+
+
+interface AppInterface {
+    interface AddContent {
+        fun onAdd(content: String)
+    }
+}
+

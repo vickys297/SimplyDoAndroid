@@ -12,9 +12,9 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.simplydo.model.attachmentModel.GalleryModel
 import com.example.simplydo.model.attachmentModel.GalleryPagingModel
-import com.example.simplydo.utli.AppConstant
 
 internal val TAG = GalleryDataSource::class.java.canonicalName
+
 class GalleryDataSource internal constructor(private val context: Context) :
     PagingSource<Int, GalleryModel>() {
 
@@ -46,6 +46,8 @@ class GalleryDataSource internal constructor(private val context: Context) :
     @WorkerThread
     private fun getGalleryData(nextPageNumber: Int): GalleryPagingModel {
 
+        val startTime = System.currentTimeMillis()
+
         val galleryModelArrayList = ArrayList<GalleryModel>()
 
         // Get relevant columns for use later.
@@ -70,12 +72,14 @@ class GalleryDataSource internal constructor(private val context: Context) :
 
         val queryUri: Uri = getContentUri(MediaStore.VOLUME_EXTERNAL)
 
+        val sorter = "${FileColumns.DATE_ADDED} DESC"
+
         val cursor = context.contentResolver.query(
             queryUri,
             projection,
             selection,
             null,
-            FileColumns.DATE_ADDED + " DESC LIMIT ${AppConstant.DEFAULT_PAGE_SIZE}"
+            sorter
         )
 
         cursor?.use {
@@ -87,8 +91,10 @@ class GalleryDataSource internal constructor(private val context: Context) :
             val fileType = cursor.getColumnIndexOrThrow(FileColumns.MEDIA_TYPE)
             val mimeType = cursor.getColumnIndexOrThrow(FileColumns.MIME_TYPE)
 
-            Log.d(TAG,
-                "getGalleryData: ${cursor.getColumnIndexOrThrow(FileColumns.VOLUME_NAME)}")
+            Log.d(
+                TAG,
+                "getGalleryData: ${cursor.getColumnIndexOrThrow(FileColumns.VOLUME_NAME)}"
+            )
 
             while (cursor.moveToNext()) {
 
@@ -126,6 +132,9 @@ class GalleryDataSource internal constructor(private val context: Context) :
 
             cursor.close()
         }
+
+        val endTime = System.currentTimeMillis() - startTime
+        Log.i(TAG, "getGalleryData: time in long $endTime Ms")
 
         return GalleryPagingModel(-1, galleryModelArrayList)
     }

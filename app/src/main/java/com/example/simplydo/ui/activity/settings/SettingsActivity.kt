@@ -1,4 +1,4 @@
-package com.example.simplydo.ui.activity
+package com.example.simplydo.ui.activity.settings
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

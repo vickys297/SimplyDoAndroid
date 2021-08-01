@@ -4,6 +4,7 @@
     <string name="MAP_API_KEY">AIzaSyCGc2VLW1Xg1Bj1KuOH_8e4VVN53Q85fBg</string>
 
     <string name="app_name">SimplyDo</string>
+    <string name="about_us">About</string>
     <string name="login">Login</string>
     <string name="mobile">Mobile</string>
     <string name="otp">OTP</string>
@@ -111,4 +112,22 @@
     <string name="page_2_note">Schedule your task in the app. You can even add attachments like files , audio, pictures, locations and contacts too.</string>
     <string name="page_1_note">Handle all your task with ease with simplydo</string>
     <string name="page_4_note">Complete your task on time with all the necessary files at a single place with hassle free mind every time.</string>
+    <string name="storage_permission_required_note"><![CDATA[To select audio Storage Permission required. To enable Settings > Apps > AppInfo > Permissions and allow Storage Permission]]></string>
+    <string name="permission_not_available">Permission Required</string>
+    <string name="no_audio_file_available">No audio file available</string>
+    <string name="no_audio_file_available_text">There is no audio file available in this device.</string>
+    <string name="account">Account</string>
+    <string name="notification">Notifications</string>
+    <string name="notification_summary">Remainder, Sounds, Schedules</string>
+    <string name="account_summary">Edit account details</string>
+    <string name="invite">Invite a friend</string>
+    <string name="appearance_summary">Dark mode, Wallpaper</string>
+    <string name="add_task_text">Add Text</string>
+    <string name="add_task_list">Add List</string>
+    <string name="item_draggable">item draggable</string>
+    <string name="content">Content</string>
+    <string name="enter_content_here">Enter content here</string>
+    <string name="add_item">Add Item</string>
+    <string name="add_and_repeat">Add and Repeat</string>
+
 </resources>

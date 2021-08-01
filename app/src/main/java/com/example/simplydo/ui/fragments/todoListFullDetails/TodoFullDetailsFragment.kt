@@ -81,7 +81,10 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
             // show edit fragment
             val bundle = Bundle()
             bundle.putSerializable(AppConstant.NAVIGATION_TASK_DATA_KEY, todoModel)
-            findNavController().navigate(R.id.action_todoFullDetailsFragment_to_editFragment, bundle)
+            findNavController().navigate(
+                R.id.action_todoFullDetailsFragment_to_editFragment,
+                bundle
+            )
         }
     }
 
@@ -211,7 +214,10 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
                 // show edit fragment
                 val bundle = Bundle()
                 bundle.putSerializable(AppConstant.NAVIGATION_TASK_DATA_KEY, todoData)
-                findNavController().navigate(R.id.action_todoFullDetailsFragment_to_editFragment, bundle)
+                findNavController().navigate(
+                    R.id.action_todoFullDetailsFragment_to_editFragment,
+                    bundle
+                )
             }
         }
     }
@@ -242,6 +248,8 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
         contactAttachmentAdapter =
             ContactAttachmentAdapter(requireContext(), contactAttachmentInterface)
 
+
+
         binding.recyclerViewAudioAttachments.apply {
             layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
@@ -259,6 +267,14 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             adapter = contactAttachmentAdapter
         }
+
+
+
+
+
+
+
+
     }
 
 }

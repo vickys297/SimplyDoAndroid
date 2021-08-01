@@ -11,8 +11,11 @@ import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.simplydo.R
+import com.example.simplydo.adapters.TodoTaskAdapter
 import com.example.simplydo.adapters.newTodotask.AudioAttachmentAdapter
 import com.example.simplydo.adapters.newTodotask.ContactAttachmentAdapter
 import com.example.simplydo.adapters.newTodotask.FileAttachmentAdapter
@@ -22,6 +25,7 @@ import com.example.simplydo.databinding.AddNewTodoFragmentBinding
 import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.model.ContactModel
 import com.example.simplydo.model.LatLngModel
+import com.example.simplydo.model.TodoTaskModel
 import com.example.simplydo.model.attachmentModel.AudioModel
 import com.example.simplydo.model.attachmentModel.FileModel
 import com.example.simplydo.model.attachmentModel.GalleryModel
@@ -35,6 +39,7 @@ import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import java.util.*
 import kotlin.collections.ArrayList
+
 
 internal val TAG = AddNewTodo::class.java.canonicalName
 
@@ -64,6 +69,8 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
     private lateinit var contactAttachmentAdapter: ContactAttachmentAdapter
     private lateinit var fileAttachmentAdapter: FileAttachmentAdapter
 
+    private lateinit var todoTaskAdapter: TodoTaskAdapter
+
 
     // all interfaces
 
@@ -87,7 +94,7 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
         }
     }
 
-    private val fileAttachmentInterface = object  : FileAttachmentInterface{
+    private val fileAttachmentInterface = object : FileAttachmentInterface {
         override fun onFileSelect(item: FileModel) {
 
         }
@@ -117,6 +124,18 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
 
         override fun onCancelTask() {
             findNavController().navigateUp()
+        }
+
+    }
+
+
+    private val addTodoInterface = object : NewTodo.AddTask {
+        override fun onAddText() {
+            AppFunctions.showMessage("Add Text", requireContext())
+        }
+
+        override fun onAddList() {
+            findNavController().navigate(R.id.action_addNewTodo_to_addNewTaskItemFragment)
         }
 
     }
@@ -256,10 +275,10 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
 
             Log.i(TAG, "NAVIGATION_FILES_DATA_KEY: $result")
 
-            if (filesArrayList.isNotEmpty()){
+            if (filesArrayList.isNotEmpty()) {
                 binding.linearFilesAttachment.visibility = View.VISIBLE
                 fileAttachmentAdapter.updateDataSet(filesArrayList)
-            }else{
+            } else {
                 binding.linearFilesAttachment.visibility = View.GONE
             }
 
@@ -334,6 +353,12 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
             eventDate,
             AppConstant.TIME_PATTERN_EVENT_TIME
         )
+
+
+//        binding.buttonAddItem.setOnClickListener {
+//            AddTaskItemFragment.newInstance(30)
+//                .show(requireActivity().supportFragmentManager, "dialog")
+//        }
 
         binding.linearLayoutEventTimeSelector.setOnClickListener {
 
@@ -470,7 +495,13 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
                     bundle.putBoolean("priority", isPriority)
                     AppFunctions.showSnackBar(binding.root, "New task added")
 
-                    AppFunctions.setupNotification(it, eventDate,eventTime, bundle, requireActivity())
+                    AppFunctions.setupNotification(
+                        it,
+                        eventDate,
+                        eventTime,
+                        bundle,
+                        requireActivity()
+                    )
                 }
 
                 AppFunctions.showSnackBar(binding.root, "New task added")
@@ -520,13 +551,83 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
             adapter = fileAttachmentAdapter
         }
 
-        checkForAttachment()
 
+        val dataSet = ArrayList<TodoTaskModel>()
+
+        for (i in 1..5) {
+            if (i % 2 == 0) {
+                dataSet.add(
+                    TodoTaskModel(
+                        type = AppConstant.Task.VIEW_TASK_NOTE_TEXT,
+                        taskText = "Sample Task Text"
+                    )
+                )
+            } else {
+                val sample = ArrayList<String>()
+                for (string in 0..5) {
+                    sample.add("Sample list item $string")
+                }
+                dataSet.add(
+                    TodoTaskModel(
+                        type = AppConstant.Task.VIEW_TASK_NOTE_LIST,
+                        taskList = sample
+                    )
+                )
+            }
+        }
+        todoTaskAdapter = TodoTaskAdapter(dataSet = dataSet, addTodoInterface)
+
+
+        val simpleItemTouchHelper = object : ItemTouchHelper.Callback() {
+            override fun getMovementFlags(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder
+            ): Int {
+                return makeFlag(
+                    ItemTouchHelper.ACTION_STATE_DRAG,
+                    ItemTouchHelper.DOWN or ItemTouchHelper.UP
+                )
+            }
+
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                val fromPosition = viewHolder.absoluteAdapterPosition
+                val targetPosition = target.absoluteAdapterPosition
+
+                Collections.swap(
+                    dataSet, fromPosition, targetPosition
+                )
+
+                todoTaskAdapter.notifyItemMoved(
+                    fromPosition,
+                    targetPosition
+                )
+
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+
+            }
+        }
+
+        val itemTouchHelper = ItemTouchHelper(simpleItemTouchHelper)
+        binding.recyclerViewTaskItems.apply {
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+            adapter = todoTaskAdapter
+        }
+
+        itemTouchHelper.attachToRecyclerView(binding.recyclerViewTaskItems)
+
+        checkForAttachment()
     }
 
 
     private fun checkForAttachment() {
-        Log.i(TAG, "checkForAttachment: $")
         if (
             audioArrayList.isEmpty() &&
             galleryArrayList.isEmpty() &&

@@ -13,7 +13,7 @@ import com.example.simplydo.utli.AppFunctions
 import java.io.Serializable
 
 
-@Entity(tableName = "todoList", indices = [Index(value = ["dtId"], unique = true)])
+@Entity(tableName = "todoList", indices = [Index(value = ["title"], unique = true)])
 data class TodoModel(
 
     @PrimaryKey(autoGenerate = true)
@@ -166,6 +166,12 @@ data class LatLngModel(
 data class TodoPagingModel(
     val data: ArrayList<TodoModel>,
     var nextPage: Int
+)
+
+data class TodoTaskModel(
+    val type: Int,
+    val taskText: String? = "",
+    val taskList: ArrayList<String>? = ArrayList()
 )
 
 

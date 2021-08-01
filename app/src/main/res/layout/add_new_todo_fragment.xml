@@ -34,7 +34,7 @@
                 tools:layout_editor_absoluteY="6dp" />
         </androidx.appcompat.widget.Toolbar>
 
-        <ScrollView
+        <androidx.core.widget.NestedScrollView
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toTopOf="@+id/btnCreateTodoTask"
@@ -77,7 +77,6 @@
                         android:textSize="16sp" />
                 </LinearLayout>
 
-
                 <LinearLayout
                     android:id="@+id/linearLayoutTask"
                     style="@style/EditTextLayout"
@@ -92,6 +91,7 @@
                         android:textColor="@color/purple_500"
                         android:textStyle="bold" />
 
+
                     <EditText
                         android:id="@+id/etTask"
                         android:layout_width="match_parent"
@@ -102,6 +102,31 @@
                         android:importantForAutofill="no"
                         android:inputType="text|textMultiLine|textImeMultiLine"
                         android:textSize="16sp" />
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    style="@style/EditTextLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textView17"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/todo"
+                        android:textColor="@color/purple_500"
+                        android:textStyle="bold" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recycler_view_task_items"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:nestedScrollingEnabled="false" />
+
                 </LinearLayout>
 
                 <LinearLayout
@@ -335,7 +360,7 @@
                 </LinearLayout>
 
             </LinearLayout>
-        </ScrollView>
+        </androidx.core.widget.NestedScrollView>
 
         <Button
             android:id="@+id/btnCreateTodoTask"

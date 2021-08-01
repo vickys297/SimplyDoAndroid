@@ -1,15 +1,35 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <Preference
-        app:fragment="com.example.simplydo.ui.activity.SettingsActivity$MessagesFragment"
-        app:icon="@drawable/messages"
+        app:fragment="com.example.simplydo.ui.activity.settings.SettingsActivity$MessagesFragment"
+        app:icon="@drawable/account"
         app:key="messages_header"
-        app:title="@string/messages_header" />
+        app:summary="@string/account_summary"
+        app:title="@string/account" />
 
     <Preference
-        app:fragment="com.example.simplydo.ui.activity.SettingsActivity$SyncFragment"
-        app:icon="@drawable/sync"
+        app:fragment="com.example.simplydo.ui.activity.settings.SettingsActivity$SyncFragment"
+        app:icon="@drawable/notifications"
         app:key="sync_header"
-        app:title="@string/sync_header" />
+        app:summary="@string/notification_summary"
+        app:title="@string/notification" />
+
+    <Preference
+        android:icon="@drawable/dark_mode"
+        android:key="Appearance"
+        android:title="Appearance"
+        app:summary="@string/appearance_summary" />
+
+    <Preference
+        android:icon="@drawable/help"
+        android:key="About"
+        android:title="@string/about_us" />
+
+    <Preference
+        android:icon="@drawable/group"
+        android:key="About"
+        android:title="@string/invite"
+        app:summary="Invite by email, link, message" />
 
 </PreferenceScreen>

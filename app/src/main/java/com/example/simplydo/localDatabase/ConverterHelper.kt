@@ -3,6 +3,7 @@ package com.example.simplydo.localDatabase
 import androidx.room.TypeConverter
 import com.example.simplydo.model.ContactModel
 import com.example.simplydo.model.LatLngModel
+import com.example.simplydo.model.TodoTaskModel
 import com.example.simplydo.model.attachmentModel.AudioModel
 import com.example.simplydo.model.attachmentModel.FileModel
 import com.example.simplydo.model.attachmentModel.GalleryModel
@@ -74,6 +75,17 @@ class ConverterHelper {
     @TypeConverter
     fun toLatLng(json: String): LatLngModel {
         return gson.fromJson(json, object : TypeToken<LatLngModel?>() {}.type)
+    }
+
+
+    @TypeConverter
+    fun fromTodoTaskList(list: ArrayList<TodoTaskModel>): String {
+        return gson.toJson(list)
+    }
+
+    @TypeConverter
+    fun toTodoTaskList(json: String): ArrayList<TodoTaskModel> {
+        return gson.fromJson(json, object : TypeToken<ArrayList<TodoTaskModel>>() {}.type)
     }
 
 

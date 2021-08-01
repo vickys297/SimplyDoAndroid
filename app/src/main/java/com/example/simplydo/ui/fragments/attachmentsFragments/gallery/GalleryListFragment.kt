@@ -1,7 +1,6 @@
 package com.example.simplydo.ui.fragments.attachmentsFragments.gallery
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,17 +9,18 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.simplydo.adapters.GalleryAdapter
 import com.example.simplydo.databinding.GalleryListFragmentBinding
 import com.example.simplydo.model.attachmentModel.GalleryModel
 import com.example.simplydo.utli.AppConstant
 import com.example.simplydo.utli.AppFunctions
 import com.example.simplydo.utli.GalleryInterface
 import com.example.simplydo.utli.SimpleViewModelFactory
-import com.example.simplydo.adapters.GalleryAdapter
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 internal val GALLERY_TAG = GalleryListFragment::class.java.canonicalName
+
 class GalleryListFragment : Fragment() {
 
     companion object {
@@ -44,8 +44,10 @@ class GalleryListFragment : Fragment() {
 
             if (selectedGalleryArrayList.isEmpty()) {
                 binding.buttonAddImages.visibility = View.GONE
+                binding.imageButtonClose.visibility = View.GONE
             } else {
                 binding.buttonAddImages.visibility = View.VISIBLE
+                binding.imageButtonClose.visibility = View.VISIBLE
             }
         }
 
@@ -82,11 +84,11 @@ class GalleryListFragment : Fragment() {
             adapter = galleryAdapter
 
             lifecycleScope.launch {
-                viewModel.flow.collectLatest { pagingData ->
-                    Log.d(GALLERY_TAG, "setupObserver: ")
+                viewModel.getGalleryDataSource().collectLatest { pagingData ->
                     galleryAdapter.submitData(pagingData)
                 }
             }
+
         }
 
         binding.buttonAddImages.setOnClickListener {
@@ -99,10 +101,10 @@ class GalleryListFragment : Fragment() {
     }
 
 
-
     private fun setupViewModel() {
         viewModel = ViewModelProvider(this, SimpleViewModelFactory(requireContext())).get(
-            GalleryListViewModel::class.java)
+            GalleryListViewModel::class.java
+        )
         binding.apply {
             lifecycleOwner = this@GalleryListFragment
             executePendingBindings()

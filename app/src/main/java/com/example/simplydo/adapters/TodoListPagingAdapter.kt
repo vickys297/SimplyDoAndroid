@@ -46,41 +46,6 @@ class TodoListPagingAdapter internal constructor(
                 executePendingBindings()
             }
 
-//            when (AppFunctions.getEventDateText(todoModelData.eventDateTime)) {
-//                AppConstant.EVENT_TODAY -> {
-//                    binding.tvEventDate.text = AppConstant.EVENT_TODAY
-//                }
-//                AppConstant.EVENT_TOMORROW -> {
-//                    binding.tvEventDate.text = AppConstant.EVENT_TOMORROW
-//                }
-//                AppConstant.EVENT_YESTERDAY -> {
-//                    binding.tvEventDate.text = AppConstant.EVENT_YESTERDAY
-//                    binding.chipDateExpired.visibility = View.VISIBLE
-//                }
-//                else -> {
-//                    binding.tvEventDate.text = AppFunctions.convertTimeInMillsecToPattern(
-//                        todoModelData.eventDateTime,
-//                        AppConstant.DATE_PATTERN_EVENT_DATE
-//                    )
-//                }
-//            }
-
-//            if (AppFunctions.checkForDateTimeExpire(todoModelData)) {
-//                binding.chipDateExpired.visibility = View.VISIBLE
-//            } else {
-//                binding.chipDateExpired.visibility = View.GONE
-//            }
-//
-//            if (todoModelData.eventTime.isNotEmpty()) {
-//                binding.tvEventTime.text = String.format(
-//                    "@ %s",
-//                    AppFunctions.convertTimeStringToDisplayFormat(
-//                        todoModelData.eventDateTime,
-//                        todoModelData.eventTime
-//                    )
-//                )
-//            }
-
             return binding
         }
 
@@ -98,37 +63,7 @@ class TodoListPagingAdapter internal constructor(
             binding.tvTitle.paintFlags = binding.tvTitle.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             binding.tvTodo.paintFlags = binding.tvTodo.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
 
-
-//            when (AppFunctions.getEventDateText(todoModelData.eventDateTime)) {
-//                AppConstant.EVENT_TODAY -> {
-//                    binding.tvEventDate.text = AppConstant.EVENT_TODAY
-//                }
-//                AppConstant.EVENT_TOMORROW -> {
-//                    binding.tvEventDate.text = AppConstant.EVENT_TOMORROW
-//                }
-//                AppConstant.EVENT_YESTERDAY -> {
-//                    binding.tvEventDate.text = AppConstant.EVENT_YESTERDAY
-//                }
-//                else -> {
-//                    binding.tvEventDate.text = AppFunctions.convertTimeInMillsecToPattern(
-//                        todoModelData.eventDateTime,
-//                        AppConstant.DATE_PATTERN_EVENT_DATE
-//                    )
-//                }
-//            }
-//
-//            if (todoModelData.eventTime.isNotEmpty()) {
-//                binding.tvEventTime.text = String.format(
-//                    "@ %s",
-//                    AppFunctions.convertTimeStringToDisplayFormat(
-//                        todoModelData.eventDateTime,
-//                        todoModelData.eventTime
-//                    )
-//                )
-//            }
-
             return binding
-
         }
 
 
@@ -142,7 +77,7 @@ class TodoListPagingAdapter internal constructor(
                 val item = getItem(position)
                 item?.run {
                     (holder as TodoViewHolder).apply {
-                        val todoHolder = bind(this@run)
+                        bind(this@run)
 
                         itemView.setOnLongClickListener {
                             todoItemInterface.onLongClick(item)
