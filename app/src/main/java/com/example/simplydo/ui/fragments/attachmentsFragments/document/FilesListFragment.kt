@@ -16,11 +16,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.simplydo.R
+import com.example.simplydo.adapters.FilesAdapter
 import com.example.simplydo.databinding.DocumentListFragmentBinding
 import com.example.simplydo.model.attachmentModel.FileModel
 import com.example.simplydo.utli.AppConstant
 import com.example.simplydo.utli.AppFunctions
-import com.example.simplydo.adapters.FilesAdapter
 
 internal val TAG = FileListFragment::class.java.canonicalName
 
@@ -44,7 +44,6 @@ class FileListFragment : Fragment(R.layout.document_list_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = DocumentListFragmentBinding.bind(view)
-
         listViewModel = ViewModelProvider(this).get(FilesListViewModel::class.java)
 
         filesAdapter = FilesAdapter()
@@ -95,7 +94,7 @@ class FileListFragment : Fragment(R.layout.document_list_fragment) {
         binding.buttonAddFile.setOnClickListener {
             if (arrayListFile.isNotEmpty()) {
                 findNavController().previousBackStackEntry?.savedStateHandle?.set(
-                    AppConstant.NAVIGATION_FILES_DATA_KEY,
+                    AppConstant.Key.NAVIGATION_FILES_DATA_KEY,
                     arrayListFile
                 )
                 findNavController().popBackStack()

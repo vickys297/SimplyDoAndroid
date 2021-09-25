@@ -58,6 +58,9 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
 
             }
 
+            override fun onRemoveItem(position: Int) {
+            }
+
         }
     private val galleryAttachmentInterface =
         object : GalleryAttachmentInterface {

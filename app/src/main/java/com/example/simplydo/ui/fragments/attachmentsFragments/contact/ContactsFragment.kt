@@ -1,25 +1,23 @@
 package com.example.simplydo.ui.fragments.attachmentsFragments.contact
 
 import android.Manifest
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.app.ActivityCompat
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.simplydo.R
+import com.example.simplydo.adapters.ContactListAdapter
+import com.example.simplydo.adapters.SelectedContactAdapter
 import com.example.simplydo.databinding.ContactsListViewBinding
 import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.model.ContactModel
 import com.example.simplydo.utli.*
-import com.example.simplydo.adapters.ContactListAdapter
-import com.example.simplydo.adapters.SelectedContactAdapter
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -27,9 +25,11 @@ import kotlinx.coroutines.launch
 internal val TAG = ContactsFragment::class.java.canonicalName
 
 class ContactsFragment :
-    Fragment() {
+    Fragment(R.layout.contacts_list_view), View.OnClickListener {
 
-    lateinit var binding: ContactsListViewBinding
+
+    private lateinit var _binding: ContactsListViewBinding
+    private val binding: ContactsListViewBinding get() = _binding
 
 
     companion object {
@@ -41,6 +41,8 @@ class ContactsFragment :
     private lateinit var selectedContactAdapter: SelectedContactAdapter
 
     private var selectedContact = ArrayList<ContactModel>()
+
+    private val requiredPermission = Manifest.permission.READ_CONTACTS
 
     private val contactAdapterInterface = object : ContactAdapterInterface {
         override fun onContactSelect(item: ContactModel) {
@@ -73,30 +75,10 @@ class ContactsFragment :
         }
     }
 
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
-        binding = ContactsListViewBinding.inflate(inflater, container, false)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        _binding = ContactsListViewBinding.bind(view)
         setUpViewModel()
-        return binding.root
-    }
-
-    private fun setUpViewModel() {
-        viewModel = ViewModelProvider(this,
-            ViewModelFactory(requireContext(),
-                appRepository = AppRepository.getInstance(requireContext(),
-                    AppDatabase.getInstance(requireContext())))).get(ContactsViewModel::class.java)
-        binding.apply {
-            lifecycleOwner = this@ContactsFragment
-            executePendingBindings()
-        }
-    }
-
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
 
         selectedContactAdapter = SelectedContactAdapter(selectedContactInterFace)
         binding.recyclerViewSelectedContact.apply {
@@ -106,46 +88,72 @@ class ContactsFragment :
         }
 
         contactListAdapter = ContactListAdapter(contactAdapterInterface, requireContext())
-
         binding.recyclerViewContactList.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = contactListAdapter
         }
 
-        binding.btnAddContact.setOnClickListener {
-            if (selectedContact.isNotEmpty()) {
-                findNavController().previousBackStackEntry?.savedStateHandle?.set(AppConstant.NAVIGATION_CONTACT_DATA_KEY,
-                    selectedContact)
-                findNavController().popBackStack()
-            } else {
-                AppFunctions.showMessage("No contacts selected", requireContext())
+        binding.btnAddContact.setOnClickListener(this)
+        binding.btnClose.setOnClickListener(this)
+
+
+        val requestPermissionLauncher =
+            registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+                if (isGranted) {
+                    getContactList()
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        "Permission required to view contact",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
             }
-        }
 
-        binding.btnClose.setOnClickListener {
-            findNavController().navigateUp()
-        }
-
-
-    }
-
-    override fun onResume() {
-        super.onResume()
-        checkPermission()
-    }
-
-
-    private fun checkPermission() {
-        if (ActivityCompat.checkSelfPermission(requireContext(),
-                Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(requireActivity(),
-                arrayOf(Manifest.permission.READ_CONTACTS),
-                100)
+        if (AppFunctions.Permission.checkPermission(requiredPermission, requireContext())) {
+            requestPermissionLauncher.launch(requiredPermission)
         } else {
             getContactList()
         }
     }
+
+    override fun onClick(v: View) {
+        when (v.id) {
+            R.id.btnAddContact -> {
+                if (selectedContact.isNotEmpty()) {
+                    findNavController().previousBackStackEntry?.savedStateHandle?.set(
+                        AppConstant.Key.NAVIGATION_CONTACT_DATA_KEY,
+                        selectedContact
+                    )
+                    findNavController().popBackStack()
+                } else {
+                    AppFunctions.showMessage("No contacts selected", requireContext())
+                }
+            }
+            R.id.btnClose -> {
+                findNavController().navigateUp()
+            }
+        }
+    }
+
+
+    private fun setUpViewModel() {
+        viewModel = ViewModelProvider(
+            this,
+            ViewModelFactory(
+                requireContext(),
+                appRepository = AppRepository.getInstance(
+                    requireContext(),
+                    AppDatabase.getInstance(requireContext())
+                )
+            )
+        ).get(ContactsViewModel::class.java)
+        binding.apply {
+            lifecycleOwner = this@ContactsFragment
+            executePendingBindings()
+        }
+    }
+
 
     private fun getContactList() {
         lifecycleScope.launch {
@@ -155,22 +163,4 @@ class ContactsFragment :
             }
         }
     }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray,
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        if (requestCode == 100 && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            getContactList()
-        } else {
-            Toast.makeText(requireContext(),
-                "Permission required to view contact",
-                Toast.LENGTH_LONG).show()
-        }
-
-    }
-
 }

@@ -8,4 +8,8 @@
     <style name="LottieStyle">
         <item name="android:background">@drawable/lottie_background_circle_dark</item>
     </style>
+
+    <style name="SearchLayout">
+
+    </style>
 </resources>

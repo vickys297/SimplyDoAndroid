@@ -36,18 +36,23 @@ class AudioAttachmentAdapter(private val audioAttachmentInterface: AudioAttachme
     override fun onBindViewHolder(holder: AudioViewHolder, position: Int) {
         val item = dataSet[position]
         item.run {
-            val viewHolder = holder.bind(this@run)
+          holder.bind(this@run).let {
+                it.textView8.isSelected = true
+                it.imageButtonPlay.setOnClickListener {
+                    audioAttachmentInterface.onAudioSelect(item)
+                }
 
-            viewHolder.textView8.isSelected = true
-            viewHolder.imageButtonPlay.setOnClickListener {
-                audioAttachmentInterface.onAudioSelect(item)
+                it.imageViewRemove.setOnClickListener {
+                    audioAttachmentInterface.onRemoveItem(position)
+                }
             }
+
+
+
         }
     }
 
-    override fun getItemCount(): Int {
-        return dataSet.size
-    }
+    override fun getItemCount(): Int = dataSet.size
 
     fun updateDataSet(contactArrayList: ArrayList<AudioModel>) {
         this.dataSet = contactArrayList

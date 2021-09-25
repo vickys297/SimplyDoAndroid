@@ -19,7 +19,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:fontFamily="@font/title_main"
-        android:text="@string/add_todo"
+        android:text="@string/add_remainder"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -90,6 +90,7 @@
         android:layout_width="0dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayoutTask">
@@ -98,7 +99,7 @@
             android:id="@+id/textView16"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/event_date"
+            android:text="@string/event_date_time"
             android:textColor="@color/purple_500"
             android:textStyle="bold" />
 
@@ -107,7 +108,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:hint="@string/event_date"
+            android:hint="@string/event_date_time"
             android:paddingStart="3dp"
             android:paddingTop="8dp"
             android:paddingEnd="3dp"
@@ -115,18 +116,30 @@
             android:textSize="16sp" />
     </LinearLayout>
 
+
     <CheckBox
         android:id="@+id/cbPriority"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
         android:buttonTint="@color/purple_500"
         android:checked="true"
         android:text="@string/priority"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayoutEventDateSelector" />
 
+    <CheckBox
+        android:id="@+id/checkBoxBox_all_day_task"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:buttonTint="@color/purple_500"
+        android:checked="true"
+        android:text="@string/all_day_remainder"
+        app:layout_constraintStart_toEndOf="@+id/cbPriority"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayoutEventDateSelector" />
 
     <Button
         android:id="@+id/btnAddMoreDetails"

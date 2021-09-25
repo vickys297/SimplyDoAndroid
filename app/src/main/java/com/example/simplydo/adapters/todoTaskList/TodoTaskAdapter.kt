@@ -1,4 +1,4 @@
-package com.example.simplydo.adapters
+package com.example.simplydo.adapters.todoTaskList
 
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,14 +15,13 @@ import com.example.simplydo.utli.NewTodo
 
 internal const val VIEW_TYPE_LIST = 0
 internal const val VIEW_TYPE_TEXT = 1
-internal const val VIEW_TYPE_FOOTER = 2
 
 
 internal val TAG_TASK = TodoTaskAdapter::class.java.canonicalName
 
 class TodoTaskAdapter(
-    val dataSet: ArrayList<TodoTaskModel>,
-    val addTodoInterface: NewTodo.AddTask
+    var dataSet: ArrayList<TodoTaskModel>,
+    private val addTodoInterface: NewTodo.AddTask
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -47,38 +46,13 @@ class TodoTaskAdapter(
                     )
                 )
             }
-            VIEW_TYPE_FOOTER -> {
-                TodoFooterViewHolder(
-                    RecyclerTaskFooterItemBinding.inflate(
-                        LayoutInflater.from(parent.context),
-                        parent,
-                        false
-                    )
-                )
-            }
             else -> {
                 throw Exception("No View Found")
             }
         }
     }
 
-    class TodoFooterViewHolder(val binding: RecyclerTaskFooterItemBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-        fun bind(addTodoInterface: NewTodo.AddTask): RecyclerTaskFooterItemBinding {
-            binding.apply {
-                executePendingBindings()
-            }
 
-            binding.buttonAddText.setOnClickListener {
-                addTodoInterface.onAddText()
-            }
-            binding.buttonAddList.setOnClickListener {
-                addTodoInterface.onAddList()
-            }
-            return binding
-        }
-
-    }
 
     class TodoTextViewHolder(val binding: RecyclerTaskTextItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -109,6 +83,10 @@ class TodoTaskAdapter(
                 (holder as TodoListViewHolder).apply {
                     val binding = bind()
                     addListViewToParent(binding, item.taskList!!)
+
+                    binding.imageButtonClose.setOnClickListener {
+                        addTodoInterface.onClose(item,  bindingAdapterPosition)
+                    }
                 }
             }
             VIEW_TYPE_TEXT -> {
@@ -116,11 +94,10 @@ class TodoTaskAdapter(
                 (holder as TodoTextViewHolder).apply {
                     val binding = bind()
                     binding.textViewNote.text = item.taskText
-                }
-            }
-            VIEW_TYPE_FOOTER -> {
-                (holder as TodoFooterViewHolder).apply {
-                    bind(addTodoInterface)
+
+                    binding.imageButtonClose.setOnClickListener {
+                        addTodoInterface.onClose(item, bindingAdapterPosition)
+                    }
                 }
             }
         }
@@ -157,10 +134,6 @@ class TodoTaskAdapter(
     override fun getItemViewType(position: Int): Int {
         super.getItemViewType(position)
 
-        if ((dataSet.size - 1) == position) {
-            return VIEW_TYPE_FOOTER
-        }
-
         return when (dataSet[position].type) {
             AppConstant.Task.VIEW_TASK_NOTE_LIST -> {
                 VIEW_TYPE_LIST
@@ -177,5 +150,9 @@ class TodoTaskAdapter(
 
 
     override fun getItemCount(): Int = dataSet.size
+    fun updateDataSet(dataSet: ArrayList<TodoTaskModel>) {
+        this.dataSet = dataSet
+        notifyDataSetChanged()
+    }
 
 }

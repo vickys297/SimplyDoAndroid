@@ -14,7 +14,7 @@
         android:gravity="center"
         android:orientation="vertical"
         android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@id/btnNewTodo"
+        app:layout_constraintBottom_toTopOf="@id/button_add_new_task"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/todoToolbar">

@@ -12,7 +12,6 @@ plugins {
 android {
     compileSdkVersion 30
 
-
     defaultConfig {
         applicationId 'com.v.simplydo'
         minSdkVersion 23

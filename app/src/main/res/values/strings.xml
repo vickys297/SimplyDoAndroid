@@ -129,5 +129,17 @@
     <string name="enter_content_here">Enter content here</string>
     <string name="add_item">Add Item</string>
     <string name="add_and_repeat">Add and Repeat</string>
+    <string name="event_date_time">Event Date / Time</string>
+    <string name="date">Date</string>
+    <string name="time">Time</string>
+    <string name="search">Search</string>
+    <string name="confirm">Confirm</string>
+    <string name="add_to_task">Add to task</string>
+    <string name="new_task_added">New task added</string>
+    <string name="fill_the_required_fields">Fill the required fields</string>
+    <string name="remainder">Remainder</string>
+    <string name="add_remainder">Add Remainder</string>
+    <string name="all_day_remainder">All Day Remainder</string>
+    <string name="required">Required</string>
 
 </resources>

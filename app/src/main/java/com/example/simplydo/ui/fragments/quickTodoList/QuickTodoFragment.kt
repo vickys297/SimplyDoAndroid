@@ -18,11 +18,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.simplydo.R
 import com.example.simplydo.adapters.QuickTodoListAdapter
-import com.example.simplydo.bottomSheetDialogs.basicAddTodoDialog.AddTodoBasic
+import com.example.simplydo.bottomSheetDialogs.NewTaskOptionsBottomSheetDialog
+import com.example.simplydo.bottomSheetDialogs.basicAddTodoDialog.AddNewRemainder
 import com.example.simplydo.bottomSheetDialogs.basicAddTodoDialog.EditTodoBasic
 import com.example.simplydo.bottomSheetDialogs.calenderOptions.TodoOptions
 import com.example.simplydo.bottomSheetDialogs.todoOptions.TodoOptionsFragment
-import com.example.simplydo.databinding.TodoFragmentBinding
+import com.example.simplydo.databinding.FragmentQuickTodoBinding
 import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.model.CommonResponseModel
 import com.example.simplydo.model.TodoModel
@@ -38,7 +39,7 @@ internal val TAG = QuickTodoFragment::class.java.canonicalName
 internal const val CHANNEL_ID = "task_channel_id"
 internal const val NOTIFICATION_ID = 8888
 
-class QuickTodoFragment : Fragment(R.layout.todo_fragment) {
+class QuickTodoFragment : Fragment(R.layout.fragment_quick_todo) {
 
     companion object {
         fun newInstance() = QuickTodoFragment()
@@ -51,7 +52,7 @@ class QuickTodoFragment : Fragment(R.layout.todo_fragment) {
 
     private lateinit var viewModel: QuickTodoViewModel
 
-    private lateinit var _binding: TodoFragmentBinding
+    private lateinit var _binding: FragmentQuickTodoBinding
     private val binding get() = _binding
 
     private lateinit var quickTodoListAdapter: QuickTodoListAdapter
@@ -170,7 +171,7 @@ class QuickTodoFragment : Fragment(R.layout.todo_fragment) {
         }
 
     }
-    private var appInterface = object : CreateBasicTodoInterface {
+    private var appInterface = object : NewRemainderInterface {
 
         override fun onAddMoreDetails(eventDate: Long) {
             val bundle = Bundle()
@@ -182,7 +183,8 @@ class QuickTodoFragment : Fragment(R.layout.todo_fragment) {
             title: String,
             task: String,
             eventDate: Long,
-            isPriority: Boolean
+            isPriority: Boolean,
+            allDayTask: Boolean
         ) {
             val newInert = viewModel.createNewTodo(
                 title,
@@ -205,7 +207,7 @@ class QuickTodoFragment : Fragment(R.layout.todo_fragment) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        _binding = TodoFragmentBinding.bind(view)
+        _binding = FragmentQuickTodoBinding.bind(view)
 
         (activity as MainActivity).setSupportActionBar(binding.todoToolbar)
         (activity as MainActivity).supportActionBar!!.setDisplayShowTitleEnabled(false)
@@ -222,16 +224,44 @@ class QuickTodoFragment : Fragment(R.layout.todo_fragment) {
         }
 
 
-        binding.btnNewTodo.setOnClickListener {
-            AddTodoBasic.newInstance(
-                appInterface,
-                System.currentTimeMillis()
-            ).show(requireActivity().supportFragmentManager, "dialog")
+        binding.buttonAddNewTask.setOnClickListener {
+
+
+            NewTaskOptionsBottomSheetDialog.getInstance(callback = object :
+                AppInterface.NewTaskDialogCallback {
+                override fun onOptionSelected(option: Int) {
+                    when (option) {
+                        1 -> {
+                            AddNewRemainder.newInstance(
+                                appInterface,
+                                System.currentTimeMillis()
+                            ).show(
+                                requireActivity().supportFragmentManager,
+                                AddNewRemainder::class.java.canonicalName
+                            )
+                        }
+                        2 -> {
+                            findNavController().navigate(R.id.action_toDoFragment_to_addNewTodo)
+                        }
+                    }
+                }
+
+                override fun onClose() {
+
+                }
+
+            }).show(
+                requireActivity().supportFragmentManager,
+                NewTaskOptionsBottomSheetDialog::class.java.canonicalName
+            )
         }
 
         binding.buttonTodoOption.setOnClickListener {
             TodoOptions.newInstance(todoTaskOptionsInterface)
-                .show(requireActivity().supportFragmentManager, "dialog")
+                .show(
+                    requireActivity().supportFragmentManager,
+                    TodoOptions::class.java.canonicalName
+                )
         }
 
 

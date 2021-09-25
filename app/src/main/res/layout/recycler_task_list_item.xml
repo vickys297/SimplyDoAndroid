@@ -35,5 +35,14 @@
             android:orientation="vertical"
             android:paddingTop="10dp" />
 
+        <ImageButton
+            android:id="@+id/image_button_close"
+            style="@style/SmallButtonOptions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:padding="10dp"
+            app:srcCompat="@drawable/ic_baseline_close_24_primary" />
+
     </LinearLayout>
 </layout>

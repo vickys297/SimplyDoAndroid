@@ -11,15 +11,18 @@ import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.simplydo.R
-import com.example.simplydo.adapters.TodoTaskAdapter
 import com.example.simplydo.adapters.newTodotask.AudioAttachmentAdapter
 import com.example.simplydo.adapters.newTodotask.ContactAttachmentAdapter
 import com.example.simplydo.adapters.newTodotask.FileAttachmentAdapter
 import com.example.simplydo.adapters.newTodotask.GalleryAttachmentAdapter
+import com.example.simplydo.adapters.todoTaskList.TodoTaskAdapter
+import com.example.simplydo.adapters.todoTaskList.TodoTaskFooterAdapter
+import com.example.simplydo.bottomSheetDialogs.AddItemBottomSheetModel
 import com.example.simplydo.bottomSheetDialogs.attachments.AddAttachmentsFragments
 import com.example.simplydo.databinding.AddNewTodoFragmentBinding
 import com.example.simplydo.localDatabase.AppDatabase
@@ -43,13 +46,13 @@ import kotlin.collections.ArrayList
 
 internal val TAG = AddNewTodo::class.java.canonicalName
 
-class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
+class AddNewTodo : Fragment(R.layout.add_new_todo_fragment), NewTodoOptionsFragmentsInterface {
 
     companion object {
         fun newInstance() = EditTodo()
     }
 
-
+    private var dataSet: ArrayList<TodoTaskModel> = ArrayList()
     private lateinit var viewModel: AddNewTodoViewModel
     private lateinit var binding: AddNewTodoFragmentBinding
 
@@ -62,7 +65,6 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
     private lateinit var eventTime: String
     private var latLng: LatLngModel = LatLngModel(0.0, 0.0)
 
-
     // all adapter
     private lateinit var audioAttachmentAdapter: AudioAttachmentAdapter
     private lateinit var galleryAttachmentAdapter: GalleryAttachmentAdapter
@@ -70,17 +72,34 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
     private lateinit var fileAttachmentAdapter: FileAttachmentAdapter
 
     private lateinit var todoTaskAdapter: TodoTaskAdapter
+    private lateinit var todoTaskFooterAdapter: TodoTaskFooterAdapter
 
+    private var addContent: AppInterface.AddContent = object : AppInterface.AddContent {
+        override fun onAdd(content: String) {
+            dataSet.add(
+                TodoTaskModel(
+                    type = AppConstant.Task.VIEW_TASK_NOTE_TEXT,
+                    taskText = content
+                )
+            )
+            todoTaskAdapter.updateDataSet(dataSet)
+        }
+    }
 
     // all interfaces
-
     private val audioAttachmentInterface =
         object : AudioAttachmentInterface {
             override fun onAudioSelect(item: AudioModel) {
 
             }
 
+            override fun onRemoveItem(position: Int) {
+                audioArrayList.removeAt(position)
+                audioAttachmentAdapter.notifyItemRemoved(position)
+                AppFunctions.showMessage("Removed", requireContext())
+            }
         }
+
     private val galleryAttachmentInterface =
         object : GalleryAttachmentInterface {
             override fun onItemSelect(item: GalleryModel) {
@@ -131,24 +150,28 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
 
     private val addTodoInterface = object : NewTodo.AddTask {
         override fun onAddText() {
-            AppFunctions.showMessage("Add Text", requireContext())
+            AddItemBottomSheetModel.newInstance(addItemInterface = addContent).show(
+                requireActivity().supportFragmentManager, "AddContent"
+            )
         }
 
         override fun onAddList() {
             findNavController().navigate(R.id.action_addNewTodo_to_addNewTaskItemFragment)
         }
 
+        override fun onClose(item: TodoTaskModel, position: Int) {
+            dataSet.removeAt(position)
+            todoTaskAdapter.notifyItemRemoved(position)
+        }
+
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding = AddNewTodoFragmentBinding.bind(view)
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
-        binding = AddNewTodoFragmentBinding.inflate(inflater, container, false)
         setupObserver()
         setViewModel()
-
 
         eventTime =
             "${AppFunctions.getHoursOfDay(System.currentTimeMillis())}:${
@@ -168,182 +191,6 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
         audioArrayList = ArrayList()
         filesArrayList = ArrayList()
 
-        return binding.root
-    }
-
-    private fun setupObserver() {
-    }
-
-    private fun setViewModel() {
-        viewModel = ViewModelProvider(
-            this,
-            ViewModelFactory(
-                requireContext(),
-                AppRepository.getInstance(
-                    requireContext(),
-                    AppDatabase.getInstance(context = requireContext())
-                )
-            )
-        ).get(
-            AddNewTodoViewModel::class.java
-        )
-        binding.apply {
-            this.viewModel = this@AddNewTodo.viewModel
-            lifecycleOwner = this@AddNewTodo
-            executePendingBindings()
-        }
-
-        attachmentDataObserver()
-    }
-
-    private fun attachmentDataObserver() {
-        // We use a String here, but any type that can be put in a Bundle is supported
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<ArrayList<ContactModel>>(
-            AppConstant.NAVIGATION_CONTACT_DATA_KEY
-        )?.observe(
-            viewLifecycleOwner
-        ) { result ->
-            // Do something with the result.
-            contactArrayList = result
-
-            checkForAttachment()
-
-            Log.d(TAG, "NAVIGATION_CONTACT_DATA_KEY: $result")
-
-            if (contactArrayList.isNotEmpty()) {
-                binding.linearLayoutContactAttachment.visibility = View.VISIBLE
-                contactAttachmentAdapter.updateDataSet(contactArrayList)
-            } else {
-                binding.linearLayoutContactAttachment.visibility = View.GONE
-            }
-
-        }
-
-        // We use a String here, but any type that can be put in a Bundle is supported
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<ArrayList<AudioModel>>(
-            AppConstant.NAVIGATION_AUDIO_DATA_KEY
-        )?.observe(
-            viewLifecycleOwner
-        ) { result ->
-            // Do something with the result.
-            audioArrayList = result
-
-            checkForAttachment()
-
-            Log.d(TAG, "NAVIGATION_AUDIO_DATA_KEY: $result")
-
-            if (audioArrayList.isNotEmpty()) {
-                binding.linearLayoutAudioAttachment.visibility = View.VISIBLE
-                audioAttachmentAdapter.updateDataSet(audioArrayList)
-            } else {
-                binding.linearLayoutAudioAttachment.visibility = View.GONE
-            }
-        }
-
-
-        // We use a String here, but any type that can be put in a Bundle is supported
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<ArrayList<GalleryModel>>(
-            AppConstant.NAVIGATION_GALLERY_DATA_KEY
-        )?.observe(
-            viewLifecycleOwner
-        ) { result ->
-            // Do something with the result.
-            galleryArrayList = result
-
-            checkForAttachment()
-
-            Log.d(TAG, "NAVIGATION_GALLERY_DATA_KEY: $result")
-
-            if (galleryArrayList.isNotEmpty()) {
-                binding.linearLayoutGalleryAttachment.visibility = View.VISIBLE
-                galleryAttachmentAdapter.updateDataset(galleryArrayList)
-            } else {
-                binding.linearLayoutGalleryAttachment.visibility = View.GONE
-            }
-        }
-
-        // We use a String here, but any type that can be put in a Bundle is supported
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<ArrayList<FileModel>>(
-            AppConstant.NAVIGATION_FILES_DATA_KEY
-        )?.observe(
-            viewLifecycleOwner
-        ) { result ->
-
-            filesArrayList = result
-
-            checkForAttachment()
-
-            Log.i(TAG, "NAVIGATION_FILES_DATA_KEY: $result")
-
-            if (filesArrayList.isNotEmpty()) {
-                binding.linearFilesAttachment.visibility = View.VISIBLE
-                fileAttachmentAdapter.updateDataSet(filesArrayList)
-            } else {
-                binding.linearFilesAttachment.visibility = View.GONE
-            }
-
-        }
-
-
-        // We use a String here, but any type that can be put in a Bundle is supported
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<LatLng>(
-            AppConstant.NAVIGATION_LOCATION_DATA_KEY
-        )?.observe(
-            viewLifecycleOwner
-        ) { result ->
-
-            latLng.apply {
-                lat = result.latitude
-                lng = result.longitude
-            }
-
-
-            checkForAttachment()
-
-
-            // Do something with the result.
-            Log.i(TAG, "attachmentDataObserver: latLng --> $result")
-
-            binding.linearLocationAttachment.visibility = View.GONE
-
-            result?.let { latlng ->
-
-                binding.linearLocationAttachment.visibility = View.VISIBLE
-
-                val mapFragment =
-                    childFragmentManager.findFragmentById(R.id.mapView) as SupportMapFragment?
-
-                mapFragment?.getMapAsync { googleMap ->
-                    googleMap.clear()
-
-                    Log.i(TAG, "attachmentDataObserver: $googleMap")
-
-                    googleMap.setMapStyle(
-                        MapStyleOptions.loadRawResourceStyle(
-                            requireContext(),
-                            R.raw.map_styled_json
-                        )
-                    )
-
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, 12f))
-                    googleMap.addMarker(
-                        MarkerOptions()
-                            .position(latlng)
-                            .icon(
-                                AppFunctions.getDrawableToBitmap(
-                                    R.drawable.ic_map_marker,
-                                    requireActivity()
-                                )
-                            )
-                    )
-                }
-            }
-        }
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
         binding.textViewEventDate.text = AppFunctions.convertTimeInMillsecToPattern(
             eventDate,
             AppConstant.DATE_PATTERN_EVENT_DATE
@@ -361,7 +208,6 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
 //        }
 
         binding.linearLayoutEventTimeSelector.setOnClickListener {
-
 
             val picker = MaterialTimePicker.Builder()
                 .setTimeFormat(TimeFormat.CLOCK_12H)
@@ -504,11 +350,13 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
                     )
                 }
 
-                AppFunctions.showSnackBar(binding.root, "New task added")
+                AppFunctions.showSnackBar(binding.root, getString(R.string.new_task_added))
                 findNavController().navigateUp()
             } else {
-                AppFunctions.showSnackBar(binding.root, "Fill the required fields")
-
+                AppFunctions.showSnackBar(
+                    binding.root,
+                    getString(R.string.fill_the_required_fields)
+                )
             }
         }
 
@@ -551,32 +399,8 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
             adapter = fileAttachmentAdapter
         }
 
-
-        val dataSet = ArrayList<TodoTaskModel>()
-
-        for (i in 1..5) {
-            if (i % 2 == 0) {
-                dataSet.add(
-                    TodoTaskModel(
-                        type = AppConstant.Task.VIEW_TASK_NOTE_TEXT,
-                        taskText = "Sample Task Text"
-                    )
-                )
-            } else {
-                val sample = ArrayList<String>()
-                for (string in 0..5) {
-                    sample.add("Sample list item $string")
-                }
-                dataSet.add(
-                    TodoTaskModel(
-                        type = AppConstant.Task.VIEW_TASK_NOTE_LIST,
-                        taskList = sample
-                    )
-                )
-            }
-        }
         todoTaskAdapter = TodoTaskAdapter(dataSet = dataSet, addTodoInterface)
-
+        todoTaskFooterAdapter = TodoTaskFooterAdapter(addTodoInterface = addTodoInterface)
 
         val simpleItemTouchHelper = object : ItemTouchHelper.Callback() {
             override fun getMovementFlags(
@@ -615,15 +439,205 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
         }
 
         val itemTouchHelper = ItemTouchHelper(simpleItemTouchHelper)
+
+
+        val contactAdapter = ConcatAdapter(todoTaskAdapter, todoTaskFooterAdapter)
         binding.recyclerViewTaskItems.apply {
             layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-            adapter = todoTaskAdapter
+            adapter = contactAdapter
         }
 
         itemTouchHelper.attachToRecyclerView(binding.recyclerViewTaskItems)
 
         checkForAttachment()
+    }
+
+
+    private fun setupObserver() {
+    }
+
+    private fun setViewModel() {
+        viewModel = ViewModelProvider(
+            this,
+            ViewModelFactory(
+                requireContext(),
+                AppRepository.getInstance(
+                    requireContext(),
+                    AppDatabase.getInstance(context = requireContext())
+                )
+            )
+        ).get(
+            AddNewTodoViewModel::class.java
+        )
+        binding.apply {
+            this.viewModel = this@AddNewTodo.viewModel
+            lifecycleOwner = this@AddNewTodo
+            executePendingBindings()
+        }
+
+        attachmentDataObserver()
+    }
+
+    private fun attachmentDataObserver() {
+
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<ArrayList<String>>(
+            AppConstant.Key.NAVIGATION_ADD_TASK_LIST
+        )?.observe(viewLifecycleOwner) { result ->
+            dataSet.clear()
+
+            dataSet.add(
+                TodoTaskModel(
+                    type = AppConstant.Task.VIEW_TASK_NOTE_LIST,
+                    taskList = result
+                )
+            )
+
+            todoTaskAdapter.updateDataSet(dataSet)
+        }
+
+        // We use a String here, but any type that can be put in a Bundle is supported
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<ArrayList<ContactModel>>(
+            AppConstant.Key.NAVIGATION_CONTACT_DATA_KEY
+        )?.observe(
+            viewLifecycleOwner
+        ) { result ->
+            // Do something with the result.
+            contactArrayList = result
+
+            checkForAttachment()
+
+            Log.d(TAG, "NAVIGATION_CONTACT_DATA_KEY: $result")
+
+            if (contactArrayList.isNotEmpty()) {
+                binding.linearLayoutContactAttachment.visibility = View.VISIBLE
+                contactAttachmentAdapter.updateDataSet(contactArrayList)
+            } else {
+                binding.linearLayoutContactAttachment.visibility = View.GONE
+            }
+
+        }
+
+        // We use a String here, but any type that can be put in a Bundle is supported
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<ArrayList<AudioModel>>(
+            AppConstant.Key.NAVIGATION_AUDIO_DATA_KEY
+        )?.observe(
+            viewLifecycleOwner
+        ) { result ->
+            // Do something with the result.
+            audioArrayList = result
+
+            checkForAttachment()
+
+            Log.d(TAG, "NAVIGATION_AUDIO_DATA_KEY: $result")
+
+            if (audioArrayList.isNotEmpty()) {
+                binding.linearLayoutAudioAttachment.visibility = View.VISIBLE
+                audioAttachmentAdapter.updateDataSet(audioArrayList)
+            } else {
+                binding.linearLayoutAudioAttachment.visibility = View.GONE
+            }
+        }
+
+
+        // We use a String here, but any type that can be put in a Bundle is supported
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<ArrayList<GalleryModel>>(
+            AppConstant.Key.NAVIGATION_GALLERY_DATA_KEY
+        )?.observe(
+            viewLifecycleOwner
+        ) { result ->
+            // Do something with the result.
+            galleryArrayList = result
+
+            checkForAttachment()
+
+            Log.d(TAG, "NAVIGATION_GALLERY_DATA_KEY: $result")
+
+            if (galleryArrayList.isNotEmpty()) {
+                binding.linearLayoutGalleryAttachment.visibility = View.VISIBLE
+                galleryAttachmentAdapter.updateDataset(galleryArrayList)
+            } else {
+                binding.linearLayoutGalleryAttachment.visibility = View.GONE
+            }
+        }
+
+        // We use a String here, but any type that can be put in a Bundle is supported
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<ArrayList<FileModel>>(
+            AppConstant.Key.NAVIGATION_FILES_DATA_KEY
+        )?.observe(
+            viewLifecycleOwner
+        ) { result ->
+
+            filesArrayList = result
+
+            checkForAttachment()
+
+            Log.i(TAG, "NAVIGATION_FILES_DATA_KEY: $result")
+
+            if (filesArrayList.isNotEmpty()) {
+                binding.linearFilesAttachment.visibility = View.VISIBLE
+                fileAttachmentAdapter.updateDataSet(filesArrayList)
+            } else {
+                binding.linearFilesAttachment.visibility = View.GONE
+            }
+
+        }
+
+
+        // We use a String here, but any type that can be put in a Bundle is supported
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<LatLng>(
+            AppConstant.Key.NAVIGATION_LOCATION_DATA_KEY
+        )?.observe(
+            viewLifecycleOwner
+        ) { result ->
+
+            latLng.apply {
+                lat = result.latitude
+                lng = result.longitude
+            }
+
+
+            checkForAttachment()
+
+
+            // Do something with the result.
+            Log.i(TAG, "attachmentDataObserver: latLng --> $result")
+
+            binding.linearLocationAttachment.visibility = View.GONE
+
+            result?.let { latlng ->
+
+                binding.linearLocationAttachment.visibility = View.VISIBLE
+
+                val mapFragment =
+                    childFragmentManager.findFragmentById(R.id.mapView) as SupportMapFragment?
+
+                mapFragment?.getMapAsync { googleMap ->
+                    googleMap.clear()
+
+                    Log.i(TAG, "attachmentDataObserver: $googleMap")
+
+                    googleMap.setMapStyle(
+                        MapStyleOptions.loadRawResourceStyle(
+                            requireContext(),
+                            R.raw.map_styled_json
+                        )
+                    )
+
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, 12f))
+                    googleMap.addMarker(
+                        MarkerOptions()
+                            .position(latlng)
+                            .icon(
+                                AppFunctions.getDrawableToBitmap(
+                                    R.drawable.ic_map_marker,
+                                    requireActivity()
+                                )
+                            )
+                    )
+                }
+            }
+        }
     }
 
 
@@ -656,9 +670,6 @@ class AddNewTodo : Fragment(), NewTodoOptionsFragmentsInterface {
                 flag = false
             }
         }
-
-
-
         return flag
     }
 

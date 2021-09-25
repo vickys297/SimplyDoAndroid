@@ -13,13 +13,13 @@ class FilesAdapter : RecyclerView.Adapter<FilesAdapter.DocumentViewHolder>() {
     private var dataSet: ArrayList<FileModel> = ArrayList()
 
     companion object {
-        val VIEW_TYPE_PDF = 1
+        const val VIEW_TYPE_PDF = 1
         val VIEW_TYPE_WORD = 2
         val VIEW_TYPE_EXCEL = 3
         val VIEW_TYPE_CSV = 4
-        val VIEW_TYPE_IMAGE = 5
+        const val VIEW_TYPE_IMAGE = 5
         val VIEW_TYPE_VIDEO = 6
-        val VIEW_TYPE_AUDIO = 7
+        const val VIEW_TYPE_AUDIO = 7
     }
 
     class DocumentViewHolder(val binding: RecyclerFilesListItemBinding) :
@@ -49,25 +49,11 @@ class FilesAdapter : RecyclerView.Adapter<FilesAdapter.DocumentViewHolder>() {
         val item = dataSet[position]
 
         item.run {
-
-            when (getItemViewType(position)) {
-                VIEW_TYPE_PDF -> {
-                    VIEW_TYPE_PDF
-                }
-                VIEW_TYPE_IMAGE -> {
-                    VIEW_TYPE_IMAGE
-                }
-                else -> {
-
-                }
-            }
-
             holder.apply {
                 bind(this@run).apply {
                     binding.textViewFileSize.text = AppFunctions.formatSize(item.size.toLong())
                     binding.textViewDocumentFileName.isSelected = true
                 }
-
             }
         }
     }

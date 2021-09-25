@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.simplydo.R
 import com.example.simplydo.adapters.CalenderViewAdapter
 import com.example.simplydo.adapters.QuickTodoListAdapter
-import com.example.simplydo.bottomSheetDialogs.basicAddTodoDialog.AddTodoBasic
+import com.example.simplydo.bottomSheetDialogs.basicAddTodoDialog.AddNewRemainder
 import com.example.simplydo.bottomSheetDialogs.todoOptions.TodoOptionsFragment
 import com.example.simplydo.databinding.CalenderFragmentBinding
 import com.example.simplydo.localDatabase.AppDatabase
@@ -149,7 +149,7 @@ class CalenderFragment : Fragment() {
 
     }
 
-    private val createBasicTodoInterface = object : CreateBasicTodoInterface {
+    private val createBasicTodoInterface = object : NewRemainderInterface {
         override fun onAddMoreDetails(eventDate: Long) {
             val bundle = Bundle()
             bundle.putString(getString(R.string.eventDateString), eventDate.toString())
@@ -160,7 +160,8 @@ class CalenderFragment : Fragment() {
             title: String,
             task: String,
             eventDate: Long,
-            isPriority: Boolean
+            isPriority: Boolean,
+            allDayTask: Boolean
         ) {
             viewModel.createNewTodo(
                 title,
@@ -438,8 +439,8 @@ class CalenderFragment : Fragment() {
 
 
     private fun clickListener(binding: CalenderFragmentBinding) {
-        binding.btnNewTodo.setOnClickListener {
-            AddTodoBasic.newInstance(
+        binding.buttonAddNewTask.setOnClickListener {
+            AddNewRemainder.newInstance(
                 createBasicTodoInterface = createBasicTodoInterface,
                 eventDate = 0L
             ).show(requireActivity().supportFragmentManager, "dialog")

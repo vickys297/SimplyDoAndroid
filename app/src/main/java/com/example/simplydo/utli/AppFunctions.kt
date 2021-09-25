@@ -5,6 +5,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.PorterDuff
@@ -381,6 +382,31 @@ object AppFunctions {
         calendar.set(Calendar.SECOND, 0)
         calendar.set(Calendar.MILLISECOND, 0)
         return calendar
+    }
+
+    object Permission {
+
+        fun checkPermission(permissionString: String, context: Context): Boolean {
+            val checkPermissionRequest =
+                ContextCompat.checkSelfPermission(context, permissionString)
+            return checkPermissionRequest == PackageManager.PERMISSION_GRANTED
+        }
+
+        fun checkPermission(permissionStrings: Array<String>, context: Context): Boolean {
+            var flag = true
+            for (permissionString in permissionStrings) {
+                val checkPermissionRequest =
+                    ContextCompat.checkSelfPermission(
+                        context,
+                        permissionString
+                    )
+                if (checkPermissionRequest != PackageManager.PERMISSION_DENIED) {
+                    flag = false
+                }
+            }
+            return flag
+        }
+
     }
 
 }

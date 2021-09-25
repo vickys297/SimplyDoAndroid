@@ -6,11 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import com.example.simplydo.R
 import com.example.simplydo.utli.AppInterface
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class AddItemBottomSheetModel(val addItemInterface: AppInterface.AddContent) :
+class AddItemBottomSheetModel(private val addItemInterface: AppInterface.AddContent) :
     BottomSheetDialogFragment() {
 
 
@@ -29,17 +30,20 @@ class AddItemBottomSheetModel(val addItemInterface: AppInterface.AddContent) :
         val content = view.findViewById<EditText>(R.id.edit_text_content)
         val addButton = view.findViewById<Button>(R.id.button_add)
 
+        val buttonClose = view.findViewById<ImageButton>(R.id.image_button_close)
 
+        buttonClose.setOnClickListener {
+            dismiss()
+        }
 
         addButton.setOnClickListener {
             if (content.text.isNotEmpty()) {
                 addItemInterface.onAdd(content = content.text.toString())
+                content.text.clear()
             } else {
                 content.error = "Field Required"
             }
         }
-
-
     }
 
     companion object {

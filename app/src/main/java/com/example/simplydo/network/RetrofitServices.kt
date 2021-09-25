@@ -25,12 +25,12 @@ class RetrofitServices(context: Context) {
             .addInterceptor(interceptor)
             .hostnameVerifier { _, session ->
                 val hv = HttpsURLConnection.getDefaultHostnameVerifier()
-                hv.verify(AppConstant.VERIFY_WEBSITE, session)
+                hv.verify(AppConstant.Network.VERIFY_WEBSITE, session)
             }
             .build()
 
         retrofit = Retrofit.Builder()
-            .baseUrl(AppConstant.BASE_URL)
+            .baseUrl(AppConstant.Network.BASE_URL)
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
 

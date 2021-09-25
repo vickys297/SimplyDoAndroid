@@ -43,14 +43,24 @@
             app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
         <Button
-            android:id="@+id/button_add_item"
+            android:id="@+id/button_add_to_task"
             style="@style/PrimaryButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/add"
+            android:text="@string/add_to_task"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/button_add_item"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageButton
+            android:id="@+id/button_add_item"
+            style="@style/PrimaryButtonOptional"
+            android:layout_width="100dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="@+id/button_add_to_task"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/button_add_to_task"
+            app:srcCompat="@drawable/ic_baseline_more_vert_24" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

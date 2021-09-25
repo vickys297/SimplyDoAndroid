@@ -108,7 +108,7 @@ class MapsFragment : Fragment(R.layout.fragment_maps) {
 
         binding.buttonSelectLocation.setOnClickListener {
             findNavController().previousBackStackEntry?.savedStateHandle?.set(
-                AppConstant.NAVIGATION_LOCATION_DATA_KEY,
+                AppConstant.Key.NAVIGATION_LOCATION_DATA_KEY,
                 latLngLocation
             )
             findNavController().popBackStack()

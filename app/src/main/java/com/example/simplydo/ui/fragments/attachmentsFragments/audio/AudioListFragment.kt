@@ -1,13 +1,10 @@
 package com.example.simplydo.ui.fragments.attachmentsFragments.audio
 
 import android.Manifest
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -19,6 +16,7 @@ import com.example.simplydo.bottomSheetDialogs.playAudio.PlayAudioBottomSheetDia
 import com.example.simplydo.databinding.AudioListFragmentBinding
 import com.example.simplydo.model.attachmentModel.AudioModel
 import com.example.simplydo.utli.AppConstant
+import com.example.simplydo.utli.AppFunctions
 import com.example.simplydo.utli.AudioInterface
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.count
@@ -28,7 +26,6 @@ internal val TAG = AudioListFragment::class.java.canonicalName
 
 class AudioListFragment : Fragment(R.layout.audio_list_fragment) {
 
-    private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
 
     private lateinit var viewModel: AudioListViewModel
 
@@ -38,6 +35,11 @@ class AudioListFragment : Fragment(R.layout.audio_list_fragment) {
     private lateinit var audioAdapter: AudioAdapter
 
     private val selectedAudioArrayList = ArrayList<AudioModel>()
+
+    private val requiredPermissions = arrayOf(
+        Manifest.permission.READ_EXTERNAL_STORAGE,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE
+    )
 
     private val audioInterface = object : AudioInterface {
         override fun onPlay(audioModel: AudioModel) {
@@ -80,16 +82,24 @@ class AudioListFragment : Fragment(R.layout.audio_list_fragment) {
 
         binding.buttonAddAudio.setOnClickListener {
             findNavController().previousBackStackEntry?.savedStateHandle?.set(
-                AppConstant.NAVIGATION_AUDIO_DATA_KEY,
+                AppConstant.Key.NAVIGATION_AUDIO_DATA_KEY,
                 selectedAudioArrayList
             )
             findNavController().popBackStack()
         }
 
 
-        requestPermissionLauncher =
-            registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-                if (isGranted) {
+        val requestPermissionLauncher =
+            registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+
+                var flag = true
+                for (permission in permissions) {
+                    if (!permission.value) {
+                        flag = false
+                    }
+                }
+
+                if (flag) {
                     binding.permissionDenied.linearLayoutPermissionRequired.visibility = View.GONE
                     setupRecyclerAdapter()
                     getAudioList()
@@ -98,12 +108,14 @@ class AudioListFragment : Fragment(R.layout.audio_list_fragment) {
                 }
             }
 
-        if (hasPermission()) {
+
+
+        if (AppFunctions.Permission.checkPermission(requiredPermissions, requireContext())) {
             binding.permissionDenied.linearLayoutPermissionRequired.visibility = View.GONE
             setupRecyclerAdapter()
             getAudioList()
         } else {
-            requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+            requestPermissionLauncher.launch(requiredPermissions)
         }
 
     }
@@ -120,15 +132,6 @@ class AudioListFragment : Fragment(R.layout.audio_list_fragment) {
         }
     }
 
-    private fun hasPermission(): Boolean {
-        return ActivityCompat.checkSelfPermission(
-            requireContext(),
-            Manifest.permission.READ_EXTERNAL_STORAGE
-        ) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-            requireContext(),
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-        ) == PackageManager.PERMISSION_GRANTED
-    }
 
     private fun getAudioList() {
         lifecycleScope.launch {

@@ -3,17 +3,19 @@ package com.example.simplydo.utli
 import com.example.simplydo.model.ContactModel
 import com.example.simplydo.model.SmallCalenderModel
 import com.example.simplydo.model.TodoModel
+import com.example.simplydo.model.TodoTaskModel
 import com.example.simplydo.model.attachmentModel.AudioModel
 import com.example.simplydo.model.attachmentModel.FileModel
 import com.example.simplydo.model.attachmentModel.GalleryModel
 
-interface CreateBasicTodoInterface {
+interface NewRemainderInterface {
     fun onAddMoreDetails(eventDate: Long)
     fun onCreateTodo(
         title: String,
         task: String,
         eventDate: Long,
-        isPriority: Boolean
+        isPriority: Boolean,
+        isAllDayTask: Boolean = true
     )
 }
 
@@ -87,6 +89,7 @@ interface GalleryAttachmentInterface {
 
 interface AudioAttachmentInterface {
     fun onAudioSelect(item: AudioModel)
+    fun onRemoveItem(position: Int)
 }
 
 interface ContactAttachmentInterface {
@@ -115,6 +118,7 @@ interface NewTodo {
     interface AddTask {
         fun onAddText()
         fun onAddList()
+        fun onClose(item: TodoTaskModel, position: Int)
     }
 }
 
@@ -122,6 +126,11 @@ interface NewTodo {
 interface AppInterface {
     interface AddContent {
         fun onAdd(content: String)
+    }
+
+    interface NewTaskDialogCallback{
+        fun onOptionSelected(option: Int)
+        fun onClose()
     }
 }
 

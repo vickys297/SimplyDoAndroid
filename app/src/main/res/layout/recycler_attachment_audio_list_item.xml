@@ -17,7 +17,7 @@
         android:layout_margin="4dp">
 
         <ImageView
-            android:id="@+id/imageViewRemove"
+            android:id="@+id/image_view_remove"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_marginTop="8dp"

@@ -11,11 +11,11 @@ import com.example.simplydo.databinding.RecyclerAudioListItemBinding
 import com.example.simplydo.model.attachmentModel.AudioModel
 import com.example.simplydo.utli.AudioInterface
 
-class AudioAdapter(val context: Context,val audioInterface: AudioInterface) :
+class AudioAdapter(val context: Context, private val audioInterface: AudioInterface) :
     PagingDataAdapter<AudioModel, AudioAdapter.AudioViewHolder>(DIFF_CALLBACK) {
 
-    companion object{
-        val DIFF_CALLBACK = object :DiffUtil.ItemCallback<AudioModel>() {
+    companion object {
+        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<AudioModel>() {
             override fun areItemsTheSame(oldItem: AudioModel, newItem: AudioModel): Boolean {
                 return oldItem.name == newItem.name
             }
@@ -26,7 +26,11 @@ class AudioAdapter(val context: Context,val audioInterface: AudioInterface) :
 
         }
     }
-    class AudioViewHolder(val binding: RecyclerAudioListItemBinding,val  audioInterface: AudioInterface) :
+
+    class AudioViewHolder(
+        val binding: RecyclerAudioListItemBinding,
+        private val audioInterface: AudioInterface
+    ) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(audioModel: AudioModel) {
@@ -66,10 +70,8 @@ class AudioAdapter(val context: Context,val audioInterface: AudioInterface) :
             holder.bind(this@run)
 
             holder.itemView.setOnClickListener {
-
                 this.isSelected = !this.isSelected
                 notifyItemChanged(position)
-
                 audioInterface.onAudioSelect(this@run)
             }
         }

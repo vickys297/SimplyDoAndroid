@@ -10,7 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.simplydo.adapters.GalleryAdapter
-import com.example.simplydo.databinding.GalleryListFragmentBinding
+import com.example.simplydo.databinding.FragmentGalleryViewBinding
 import com.example.simplydo.model.attachmentModel.GalleryModel
 import com.example.simplydo.utli.AppConstant
 import com.example.simplydo.utli.AppFunctions
@@ -28,7 +28,7 @@ class GalleryListFragment : Fragment() {
     }
 
     private lateinit var viewModel: GalleryListViewModel
-    lateinit var binding: GalleryListFragmentBinding
+    lateinit var binding: FragmentGalleryViewBinding
 
     private lateinit var galleryAdapter: GalleryAdapter
 
@@ -68,7 +68,7 @@ class GalleryListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        binding = GalleryListFragmentBinding.inflate(inflater, container, false)
+        binding = FragmentGalleryViewBinding.inflate(inflater, container, false)
         setupViewModel()
         return binding.root
     }
@@ -93,7 +93,7 @@ class GalleryListFragment : Fragment() {
 
         binding.buttonAddImages.setOnClickListener {
             findNavController().previousBackStackEntry?.savedStateHandle?.set(
-                AppConstant.NAVIGATION_GALLERY_DATA_KEY,
+                AppConstant.Key.NAVIGATION_GALLERY_DATA_KEY,
                 selectedGalleryArrayList
             )
             findNavController().popBackStack()

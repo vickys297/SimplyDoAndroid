@@ -49,6 +49,9 @@
             android:id="@+id/action_toDoFragment_to_editFragment"
             app:destination="@id/editFragment"
             app:popUpTo="@id/toDoFragment" />
+        <action
+            android:id="@+id/action_toDoFragment_to_searchTaskFragment"
+            app:destination="@id/searchTaskFragment" />
     </fragment>
     <fragment
         android:id="@+id/addNewTodo"
@@ -139,6 +142,9 @@
             android:id="@+id/action_otherTodoFragment_to_editFragment"
             app:destination="@id/editFragment"
             app:popUpTo="@id/otherTodoFragment" />
+        <action
+            android:id="@+id/action_otherTodoFragment_to_searchTaskFragment"
+            app:destination="@id/searchTaskFragment" />
     </fragment>
     <fragment
         android:id="@+id/todoFullDetailsFragment"
@@ -159,4 +165,16 @@
         android:name="com.example.simplydo.ui.fragments.addOrEditTodoTask.addItem.AddNewTaskItemFragment"
         android:label="add_new_task_item_fragment"
         tools:layout="@layout/add_new_task_item_fragment" />
+    <fragment
+        android:id="@+id/searchTaskFragment"
+        android:name="com.example.simplydo.ui.fragments.searchTask.SearchTaskFragment"
+        android:label="search_task_fragment"
+        tools:layout="@layout/search_task_fragment" >
+        <action
+            android:id="@+id/action_searchTaskFragment_to_todoFullDetailsFragment"
+            app:destination="@id/todoFullDetailsFragment" />
+        <action
+            android:id="@+id/action_searchTaskFragment_to_editFragment"
+            app:destination="@id/editFragment" />
+    </fragment>
 </navigation>

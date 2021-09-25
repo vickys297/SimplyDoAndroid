@@ -1,5 +1,7 @@
 package com.example.simplydo.bottomSheetDialogs.basicAddTodoDialog
 
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -17,26 +19,15 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.timepicker.MaterialTimePicker
 import java.util.*
 
-
-/**
- *
- * A fragment that shows a list of items as a modal bottom sheet.
- *
- * You can show this modal bottom sheet from your activity like this:
- * <pre>
- *    AddTodoBasic.newInstance(30).show(supportFragmentManager, "dialog")
- * </pre>
- */
-
 internal val TAG = EditTodoBasic::class.java.canonicalName
-
 class EditTodoBasic(
     private val currentTodoModel: TodoModel,
     private val editBasicTodoInterface: EditBasicTodoInterface
 ) :
-    BottomSheetDialogFragment() {
+    BottomSheetDialogFragment(), View.OnClickListener {
 
     private var _binding: FragmentAddTodoBasicListDialogBinding? = null
 
@@ -56,8 +47,6 @@ class EditTodoBasic(
     }
 
 
-
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -66,87 +55,16 @@ class EditTodoBasic(
         Log.i(TAG, "onViewCreated: ")
 
         binding.textViewTitle.text = getString(R.string.edit_task)
+        binding.textViewEventDate.text = AppFunctions.getCurrentEventDate()
 
         eventDateTime = currentTodoModel.eventDateTime
 
-        binding.btnAddMoreDetails.setOnClickListener {
-            editBasicTodoInterface.onAddMoreDetails(ediTodoModel)
-            dismiss()
-        }
-
-        binding.imageButtonBasicAddTodoClose.setOnClickListener {
-            dismiss()
-        }
-
-        binding.btnCreateTodo.setOnClickListener {
-            validateInput()
-        }
-
-        binding.linearLayoutTitle.setOnClickListener {
-            binding.etTitle.requestFocus()
-            requireActivity().runOnUiThread {
-                val inputMethodManager = requireActivity().getSystemService(
-                    Context.INPUT_METHOD_SERVICE
-                ) as InputMethodManager
-
-                inputMethodManager.toggleSoftInputFromWindow(
-                    binding.etTitle.applicationWindowToken,
-                    InputMethodManager.SHOW_FORCED,
-                    0
-                )
-            }
-        }
-
-        binding.linearLayoutTask.setOnClickListener {
-            binding.etTask.requestFocus()
-            requireActivity().runOnUiThread {
-                val inputMethodManager = requireActivity().getSystemService(
-                    Context.INPUT_METHOD_SERVICE
-                ) as InputMethodManager
-
-                inputMethodManager.toggleSoftInputFromWindow(
-                    binding.etTask.applicationWindowToken,
-                    InputMethodManager.SHOW_FORCED,
-                    0
-                )
-            }
-        }
-
-        binding.textViewEventDate.text = AppFunctions.getCurrentEventDate()
-
-        binding.linearLayoutEventDateSelector.setOnClickListener {
-            val calender = Calendar.getInstance()
-            calender.timeInMillis = eventDateTime
-            calender.add(Calendar.DAY_OF_MONTH, -1)
-
-            val constrain = CalendarConstraints.Builder()
-                .setValidator(DateValidatorPointForward.from(calender.timeInMillis))
-                .setStart(calender.timeInMillis)
-
-            calender.add(Calendar.DAY_OF_MONTH, 1)
-            val datePicker = MaterialDatePicker.Builder.datePicker()
-                .setTitleText("Select Event Date")
-                .setSelection(calender.timeInMillis)
-                .setCalendarConstraints(constrain.build())
-                .build()
-
-            datePicker.show(requireActivity().supportFragmentManager, "TAG_DATE_PICKER")
-
-            datePicker.addOnPositiveButtonClickListener {
-
-                calender.timeInMillis = it
-                calender.set(Calendar.HOUR, 23)
-                calender.set(Calendar.MINUTE, 59)
-                calender.set(Calendar.SECOND, 59)
-                calender.set(Calendar.MILLISECOND, 0)
-
-                eventDateTime = calender.timeInMillis
-                binding.textViewEventDate.text = AppFunctions.convertTimeInMillsecToPattern(
-                    eventDateTime,
-                    AppConstant.DATE_PATTERN_EVENT_DATE
-                )
-            }
-        }
+        binding.btnAddMoreDetails.setOnClickListener(this)
+        binding.imageButtonBasicAddTodoClose.setOnClickListener(this)
+        binding.btnCreateTodo.setOnClickListener(this)
+        binding.linearLayoutTitle.setOnClickListener(this)
+        binding.linearLayoutTask.setOnClickListener(this)
+        binding.linearLayoutEventDateSelector.setOnClickListener(this)
     }
 
     private fun setupData() {
@@ -164,7 +82,7 @@ class EditTodoBasic(
         var flag = true
         for (v in view) {
             if (v.text.toString().isEmpty()) {
-                v.error = "Required"
+                v.error = getString(R.string.required)
                 flag = false
             }
         }
@@ -188,7 +106,6 @@ class EditTodoBasic(
         }
     }
 
-
     companion object {
         fun newInstance(
             editBasicTodoInterface: EditBasicTodoInterface,
@@ -200,6 +117,87 @@ class EditTodoBasic(
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onClick(view: View) {
+        when (view.id) {
+            binding.btnAddMoreDetails.id -> {
+                editBasicTodoInterface.onAddMoreDetails(ediTodoModel)
+                dismiss()
+            }
+            binding.imageButtonBasicAddTodoClose.id -> {
+                dismiss()
+            }
+            binding.btnCreateTodo.id -> {
+                validateInput()
+            }
+            binding.linearLayoutTitle.id -> {
+                binding.etTitle.requestFocus()
+                requireActivity().runOnUiThread {
+                    val inputMethodManager = requireActivity().getSystemService(
+                        Context.INPUT_METHOD_SERVICE
+                    ) as InputMethodManager
+
+                    inputMethodManager.toggleSoftInputFromWindow(
+                        binding.etTitle.applicationWindowToken,
+                        InputMethodManager.SHOW_FORCED,
+                        0
+                    )
+                }
+            }
+            binding.linearLayoutTask.id -> {
+                binding.etTask.requestFocus()
+                requireActivity().runOnUiThread {
+                    val inputMethodManager = requireActivity().getSystemService(
+                        Context.INPUT_METHOD_SERVICE
+                    ) as InputMethodManager
+
+                    inputMethodManager.toggleSoftInputFromWindow(
+                        binding.etTask.applicationWindowToken,
+                        InputMethodManager.SHOW_FORCED,
+                        0
+                    )
+                }
+            }
+            binding.linearLayoutEventDateSelector.id -> {
+                pickDateTime()
+//                val calender = Calendar.getInstance()
+//                calender.timeInMillis = eventDateTime
+//                calender.add(Calendar.DAY_OF_MONTH, -1)
+//
+//                val constrain = CalendarConstraints.Builder()
+//                    .setValidator(DateValidatorPointForward.from(calender.timeInMillis))
+//                    .setStart(calender.timeInMillis)
+//
+//                calender.add(Calendar.DAY_OF_MONTH, 1)
+//                val datePicker = MaterialDatePicker.Builder.datePicker()
+//                    .setTitleText("Select Event Date")
+//                    .setSelection(calender.timeInMillis)
+//                    .setCalendarConstraints(constrain.build())
+//                    .build()
+//
+//                datePicker.show(requireActivity().supportFragmentManager, "TAG_DATE_PICKER")
+//
+//                datePicker.addOnPositiveButtonClickListener {
+//
+//                    calender.timeInMillis = it
+//                    calender.set(Calendar.HOUR, 23)
+//                    calender.set(Calendar.MINUTE, 59)
+//                    calender.set(Calendar.SECOND, 59)
+//                    calender.set(Calendar.MILLISECOND, 0)
+//
+//                    eventDateTime = calender.timeInMillis
+//                    binding.textViewEventDate.text = AppFunctions.convertTimeInMillsecToPattern(
+//                        eventDateTime,
+//                        AppConstant.DATE_PATTERN_EVENT_DATE
+//                    )
+//                }
+            }
+        }
+    }
+
+    private fun pickDateTime() {
+
     }
 
 

@@ -77,6 +77,11 @@ class EditTodo : Fragment(), NewTodoOptionsFragmentsInterface {
 
             }
 
+            override fun onRemoveItem(position: Int) {
+                audioArrayList.removeAt(position)
+                audioAttachmentAdapter.notifyItemRemoved(position)
+                AppFunctions.showMessage("Removed", requireContext())
+            }
         }
 
     private val galleryAttachmentInterface =
@@ -204,13 +209,12 @@ class EditTodo : Fragment(), NewTodoOptionsFragmentsInterface {
     }
 
     private fun attachmentDataObserver() {
-        // We use a String here, but any type that can be put in a Bundle is supported
+
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<ArrayList<ContactModel>>(
-            AppConstant.NAVIGATION_CONTACT_DATA_KEY
+            AppConstant.Key.NAVIGATION_CONTACT_DATA_KEY
         )?.observe(
             viewLifecycleOwner
         ) { result ->
-            // Do something with the result.
             contactArrayList = result
 
             checkForAttachment()
@@ -226,13 +230,13 @@ class EditTodo : Fragment(), NewTodoOptionsFragmentsInterface {
 
         }
 
-        // We use a String here, but any type that can be put in a Bundle is supported
+
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<ArrayList<AudioModel>>(
-            AppConstant.NAVIGATION_AUDIO_DATA_KEY
+            AppConstant.Key.NAVIGATION_AUDIO_DATA_KEY
         )?.observe(
             viewLifecycleOwner
         ) { result ->
-            // Do something with the result.
+
             audioArrayList = result
 
             checkForAttachment()
@@ -248,13 +252,13 @@ class EditTodo : Fragment(), NewTodoOptionsFragmentsInterface {
         }
 
 
-        // We use a String here, but any type that can be put in a Bundle is supported
+
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<ArrayList<GalleryModel>>(
-            AppConstant.NAVIGATION_GALLERY_DATA_KEY
+            AppConstant.Key.NAVIGATION_GALLERY_DATA_KEY
         )?.observe(
             viewLifecycleOwner
         ) { result ->
-            // Do something with the result.
+
             galleryArrayList = result
 
             checkForAttachment()
@@ -269,9 +273,9 @@ class EditTodo : Fragment(), NewTodoOptionsFragmentsInterface {
             }
         }
 
-        // We use a String here, but any type that can be put in a Bundle is supported
+
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<ArrayList<FileModel>>(
-            AppConstant.NAVIGATION_FILES_DATA_KEY
+            AppConstant.Key.NAVIGATION_FILES_DATA_KEY
         )?.observe(
             viewLifecycleOwner
         ) { result ->
@@ -291,13 +295,13 @@ class EditTodo : Fragment(), NewTodoOptionsFragmentsInterface {
 
         }
 
-
-        // We use a String here, but any type that can be put in a Bundle is supported
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<LatLng>(
-            AppConstant.NAVIGATION_LOCATION_DATA_KEY
+            AppConstant.Key.NAVIGATION_LOCATION_DATA_KEY
         )?.observe(
             viewLifecycleOwner
         ) { result ->
+
+            Log.d(TAG_EDIT, "NAVIGATION_LOCATION_DATA_KEY: $result")
 
             latLng.apply {
                 lat = result.latitude
@@ -306,13 +310,10 @@ class EditTodo : Fragment(), NewTodoOptionsFragmentsInterface {
 
             checkForAttachment()
 
-            // Do something with the result.
-            Log.d(TAG_EDIT, "attachmentDataObserver: latLng --> $result")
 
             binding.linearLocationAttachment.visibility = View.GONE
 
             result?.let { latlng ->
-
                 binding.linearLocationAttachment.visibility = View.VISIBLE
 
                 val mapFragment =

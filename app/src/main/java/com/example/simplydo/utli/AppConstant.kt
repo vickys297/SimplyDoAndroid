@@ -76,7 +76,13 @@ object MimeTypes {
         const val WEBM = "video/webm"
     }
 }
+
 object AppConstant {
+
+    object Network {
+        const val BASE_URL = "http://192.168.0.100:3000/api/v1beta/"
+        const val VERIFY_WEBSITE = "http://192.168.0.100"
+    }
 
     // task
     object Task {
@@ -85,20 +91,27 @@ object AppConstant {
         const val TASK_ACTION_EDIT: Int = 12
         const val TASK_ACTION_NEW: Int = 13
 
-        const val TASK_TYPE_DEFAULT: Int = 100
+        const val TASK_TYPE_DEFAULT: Int = 1001
         const val TASK_TYPE_BASIC: Int = 100
         const val TASK_TYPE_EVENT: Int = 101
         const val TASK_TYPE_ATTACHMENT: Int = 102
-
 
         const val VIEW_TASK_NOTE_LIST = 0
         const val VIEW_TASK_NOTE_TEXT = 1
     }
 
 
-
     object StartUp {
         const val ONBOARD_COMPLETED: String = "onBoardCompleted"
+    }
+
+    object Key {
+        const val NAVIGATION_ADD_TASK_LIST: String = "GetTaskList"
+        const val NAVIGATION_CONTACT_DATA_KEY: String = "SelectedContactList"
+        const val NAVIGATION_FILES_DATA_KEY: String = "SelectedFilesList"
+        const val NAVIGATION_AUDIO_DATA_KEY: String = "SelectedAudioList"
+        const val NAVIGATION_GALLERY_DATA_KEY: String = "SelectedGalleryList"
+        const val NAVIGATION_LOCATION_DATA_KEY: String = "SelectedLocation"
     }
 
 
@@ -122,11 +135,9 @@ object AppConstant {
     const val API_RESULT_OK = "OK"
     const val API_RESULT_ERROR = "ERROR"
 
-    const val BASE_URL = "http://192.168.0.100:3000/api/v1beta/"
+
     const val SESSION_KEY = "appKey"
     const val IS_LOGGED_IN = "isLoggedIn"
-
-    const val VERIFY_WEBSITE = "http://192.168.0.100"
 
     const val UUID = "UUID"
     const val USER_KEY: String = "uKey"
@@ -161,14 +172,10 @@ object AppConstant {
 
 
     // navigation data call back
-    const val NAVIGATION_CONTACT_DATA_KEY: String = "SelectedContactList"
-    const val NAVIGATION_FILES_DATA_KEY: String = "SelectedFilesList"
-    const val NAVIGATION_AUDIO_DATA_KEY: String = "SelectedAudioList"
-    const val NAVIGATION_GALLERY_DATA_KEY: String = "SelectedGalleryList"
-    const val NAVIGATION_LOCATION_DATA_KEY: String = "SelectedLocation"
 
-    const val NAVIGATION_TASK_ACTION_EDIT_KEY: String ="navigation_action_edit_key"
-    const val NAVIGATION_TASK_DATA_KEY: String ="task_data"
+
+    const val NAVIGATION_TASK_ACTION_EDIT_KEY: String = "navigation_action_edit_key"
+    const val NAVIGATION_TASK_DATA_KEY: String = "task_data"
     const val NAVIGATION_TASK_KEY: String = "todo_dtid"
 
 

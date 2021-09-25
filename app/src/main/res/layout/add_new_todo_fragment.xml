@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="viewModel"
             type="com.example.simplydo.ui.fragments.addOrEditTodoTask.AddNewTodoViewModel" />
@@ -87,7 +86,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/todo"
+                        android:text="@string/task"
                         android:textColor="@color/purple_500"
                         android:textStyle="bold" />
 
