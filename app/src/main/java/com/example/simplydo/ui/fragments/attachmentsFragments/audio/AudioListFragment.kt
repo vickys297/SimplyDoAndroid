@@ -12,12 +12,12 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simplydo.R
 import com.example.simplydo.adapters.AudioAdapter
-import com.example.simplydo.bottomSheetDialogs.playAudio.PlayAudioBottomSheetDialog
+import com.example.simplydo.dialog.bottomSheetDialogs.playAudio.PlayAudioBottomSheetDialog
 import com.example.simplydo.databinding.AudioListFragmentBinding
 import com.example.simplydo.model.attachmentModel.AudioModel
-import com.example.simplydo.utli.AppConstant
-import com.example.simplydo.utli.AppFunctions
-import com.example.simplydo.utli.AudioInterface
+import com.example.simplydo.utlis.AppConstant
+import com.example.simplydo.utlis.AppFunctions
+import com.example.simplydo.utlis.AudioInterface
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.launch
@@ -140,9 +140,7 @@ class AudioListFragment : Fragment(R.layout.audio_list_fragment) {
                 audioAdapter.submitData(it)
             }
             viewModel.getAudioList(requireContext()).count {
-
                 Log.i(TAG, "getAudioList: $it")
-
                 return@count true
             }
 //            if (viewModel.getAudioList(requireContext()).count() == 0) {

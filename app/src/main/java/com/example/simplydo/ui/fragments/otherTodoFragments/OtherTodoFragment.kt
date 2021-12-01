@@ -12,11 +12,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.simplydo.R
 import com.example.simplydo.adapters.TodoListPagingAdapter
-import com.example.simplydo.bottomSheetDialogs.todoOptions.TodoOptionsFragment
 import com.example.simplydo.databinding.OtherTodoFragmentBinding
+import com.example.simplydo.dialog.bottomSheetDialogs.todoOptions.TodoOptionsFragment
 import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.model.TodoModel
-import com.example.simplydo.utli.*
+import com.example.simplydo.utlis.*
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -81,7 +81,7 @@ class OtherTodoFragment : Fragment(R.layout.other_todo_fragment), LifecycleObser
     private val todoItemInterface = object : TodoItemInterface {
         override fun onLongClick(item: TodoModel) {
             recentSelectedItem = item
-            val options = TodoOptionsFragment.newInstance(todoOptionDialogFragments, item)
+            val options = TodoOptionsFragment.newInstance(requireContext(),todoOptionDialogFragments, item)
             options.show(requireActivity().supportFragmentManager, "dialog")
         }
 

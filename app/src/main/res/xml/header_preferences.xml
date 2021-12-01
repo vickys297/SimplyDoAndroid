@@ -2,24 +2,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <Preference
-        app:fragment="com.example.simplydo.ui.activity.settings.SettingsActivity$MessagesFragment"
-        app:icon="@drawable/account"
-        app:key="messages_header"
-        app:summary="@string/account_summary"
-        app:title="@string/account" />
-
-    <Preference
-        app:fragment="com.example.simplydo.ui.activity.settings.SettingsActivity$SyncFragment"
-        app:icon="@drawable/notifications"
-        app:key="sync_header"
-        app:summary="@string/notification_summary"
-        app:title="@string/notification" />
-
-    <Preference
         android:icon="@drawable/dark_mode"
         android:key="Appearance"
-        android:title="Appearance"
-        app:summary="@string/appearance_summary" />
+        android:title="@string/appearance" />
 
     <Preference
         android:icon="@drawable/help"
@@ -30,6 +15,5 @@
         android:icon="@drawable/group"
         android:key="About"
         android:title="@string/invite"
-        app:summary="Invite by email, link, message" />
-
+        android:summary="Invite by email, link, message" />
 </PreferenceScreen>

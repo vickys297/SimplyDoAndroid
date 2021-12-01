@@ -5,17 +5,19 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.example.simplydo.model.TagModel
 import com.example.simplydo.model.TodoModel
-import com.example.simplydo.utli.AppConstant
+import com.example.simplydo.utlis.AppConstant
 
 @Database(
-    entities = [TodoModel::class],
+    entities = [TodoModel::class, TagModel::class],
     version = 1,
     exportSchema = true
 )
 @TypeConverters(ConverterHelper::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun todoDao(): TodoDAO
+    abstract fun tagDao(): TagDAO
 
     companion object {
         @Volatile
@@ -30,7 +32,5 @@ abstract class AppDatabase : RoomDatabase() {
             return Room.databaseBuilder(context, AppDatabase::class.java, AppConstant.DATABASE_NAME)
                 .build()
         }
-
-
     }
 }

@@ -11,7 +11,7 @@ import com.example.simplydo.R
 import com.example.simplydo.databinding.MainActivityBinding
 import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.model.TodoModel
-import com.example.simplydo.utli.*
+import com.example.simplydo.utlis.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -34,6 +34,10 @@ class MainActivity : AppCompatActivity() {
 
         setUpObserver()
         setUpViewModel()
+        /*Default
+        * Load all default values
+        * */
+        loadDefaults()
 
 //        val userKey =
 //            AppPreference.getPreferences(AppConstant.USER_KEY, "", context = this@MainActivity)
@@ -70,6 +74,20 @@ class MainActivity : AppCompatActivity() {
 //                navController.navigate(R.id.todoFullDetailsFragment, bundle)
 //            }
 //        }
+    }
+
+    private fun loadDefaults() {
+        loadDefaultTags()
+    }
+
+    private fun loadDefaultTags() {
+        val array = arrayOf("Work", "Personal", "Meetings", "Private", "Events")
+        val arrayListTag = viewModel.getAvailableTagList()
+        if (arrayListTag.isEmpty()) {
+            for (tag in array) {
+                viewModel.insertTag(tag)
+            }
+        }
     }
 
 

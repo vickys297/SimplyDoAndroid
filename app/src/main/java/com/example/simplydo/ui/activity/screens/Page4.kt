@@ -5,7 +5,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import com.example.simplydo.R
 import com.example.simplydo.databinding.FragmentPage4Binding
-import com.example.simplydo.utli.Page4Interface
+import com.example.simplydo.utlis.Page4Interface
 
 
 class Page4(val page4Interface: Page4Interface) : Fragment(R.layout.fragment_page4) {

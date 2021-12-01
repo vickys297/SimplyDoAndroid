@@ -8,7 +8,7 @@
 
     <fragment
         android:id="@+id/toDoFragment"
-        android:name="com.example.simplydo.ui.fragments.quickTodoList.QuickTodoFragment"
+        android:name="com.example.simplydo.ui.fragments.todoList.QuickTodoFragment"
         android:label="ToDoFragment">
         <action
             android:id="@+id/action_toDoFragment_to_addNewTodo"
@@ -85,7 +85,7 @@
     <fragment
         android:id="@+id/editFragment"
         android:name="com.example.simplydo.ui.fragments.addOrEditTodoTask.EditTodo"
-        android:label="EditTodo"/>
+        android:label="EditTodo" />
 
     <fragment
         android:id="@+id/calenderFragment"
@@ -129,7 +129,7 @@
     <fragment
         android:id="@+id/otherTodoFragment"
         android:name="com.example.simplydo.ui.fragments.otherTodoFragments.OtherTodoFragment"
-        android:label="OtherTodoFragment" >
+        android:label="OtherTodoFragment">
         <action
             android:id="@+id/action_otherTodoFragment_to_todoFullDetailsFragment"
             app:destination="@id/todoFullDetailsFragment"
@@ -150,7 +150,7 @@
         android:id="@+id/todoFullDetailsFragment"
         android:name="com.example.simplydo.ui.fragments.todoListFullDetails.TodoFullDetailsFragment"
         android:label="todo_full_details_fragment"
-        tools:layout="@layout/todo_full_details_fragment" >
+        tools:layout="@layout/todo_full_details_fragment">
         <action
             android:id="@+id/action_todoFullDetailsFragment_to_editFragment"
             app:destination="@id/editFragment"
@@ -169,7 +169,7 @@
         android:id="@+id/searchTaskFragment"
         android:name="com.example.simplydo.ui.fragments.searchTask.SearchTaskFragment"
         android:label="search_task_fragment"
-        tools:layout="@layout/search_task_fragment" >
+        tools:layout="@layout/search_task_fragment">
         <action
             android:id="@+id/action_searchTaskFragment_to_todoFullDetailsFragment"
             app:destination="@id/todoFullDetailsFragment" />

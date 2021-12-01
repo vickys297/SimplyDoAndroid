@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.simplydo.databinding.RecyclerTodoCompletedListItemBinding
 import com.example.simplydo.databinding.RecyclerTodoListItemBinding
 import com.example.simplydo.model.TodoModel
-import com.example.simplydo.utli.TodoItemInterface
+import com.example.simplydo.utlis.TodoItemInterface
 import java.util.*
 
 internal val TAG_Other = TodoListPagingAdapter::class.java.canonicalName

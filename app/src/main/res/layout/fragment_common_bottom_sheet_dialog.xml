@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".bottomSheetDialogs.CommonBottomSheetDialogFragment">
+    tools:context=".dialog.bottomSheetDialogs.CommonBottomSheetDialogFragment">
 
     <TextView
         android:id="@+id/tvTitle"

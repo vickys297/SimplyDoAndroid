@@ -7,10 +7,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simplydo.R
-import com.example.simplydo.bottomSheetDialogs.AddItemBottomSheetModel
+import com.example.simplydo.dialog.bottomSheetDialogs.AddTaskItemBottomSheetModel
 import com.example.simplydo.databinding.AddNewTaskItemFragmentBinding
-import com.example.simplydo.utli.AppConstant
-import com.example.simplydo.utli.AppInterface
+import com.example.simplydo.utlis.AppConstant
+import com.example.simplydo.utlis.AppInterface
 
 class AddNewTaskItemFragment : Fragment(R.layout.add_new_task_item_fragment) {
 
@@ -22,9 +22,9 @@ class AddNewTaskItemFragment : Fragment(R.layout.add_new_task_item_fragment) {
 
     private lateinit var addListItemAdapter: AddListItemAdapter
 
-    private lateinit var addContentBottomSheetDialog: AddItemBottomSheetModel
+    private lateinit var addTaskContentBottomSheetDialog: AddTaskItemBottomSheetModel
 
-    private var addItemInterface = object : AppInterface.AddContent {
+    private var addItemInterface = object : AppInterface.TaskNoteTextItemListener {
         override fun onAdd(content: String) {
             array.add(content)
             addListItemAdapter.notifyDataSetChanged()
@@ -36,8 +36,11 @@ class AddNewTaskItemFragment : Fragment(R.layout.add_new_task_item_fragment) {
         _binding = AddNewTaskItemFragmentBinding.bind(view)
         viewModel = ViewModelProvider(this).get(AddNewTaskItemViewModel::class.java)
 
-        addContentBottomSheetDialog =
-            AddItemBottomSheetModel.newInstance(addItemInterface = addItemInterface)
+        addTaskContentBottomSheetDialog =
+            AddTaskItemBottomSheetModel.newInstance(
+                taskNoteTextItemListener = addItemInterface,
+                context = requireContext()
+            )
 
         addListItemAdapter = AddListItemAdapter(array)
 
@@ -47,14 +50,14 @@ class AddNewTaskItemFragment : Fragment(R.layout.add_new_task_item_fragment) {
         }
 
         binding.buttonAddItem.setOnClickListener {
-            addContentBottomSheetDialog.show(
+            addTaskContentBottomSheetDialog.show(
                 requireActivity().supportFragmentManager,
                 "add_content_dialog"
             )
         }
 
 //        default show
-        addContentBottomSheetDialog.show(
+        addTaskContentBottomSheetDialog.show(
             requireActivity().supportFragmentManager,
             "add_content_dialog"
         )

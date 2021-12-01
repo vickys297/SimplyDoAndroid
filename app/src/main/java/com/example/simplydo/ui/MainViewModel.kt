@@ -4,11 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.simplydo.model.ContactModel
 import com.example.simplydo.model.LatLngModel
+import com.example.simplydo.model.TagModel
 import com.example.simplydo.model.TodoModel
 import com.example.simplydo.model.attachmentModel.GalleryModel
-import com.example.simplydo.utli.AppConstant
-import com.example.simplydo.utli.AppFunctions
-import com.example.simplydo.utli.AppRepository
+import com.example.simplydo.utlis.AppConstant
+import com.example.simplydo.utlis.AppFunctions
+import com.example.simplydo.utlis.AppRepository
 import java.util.*
 
 class MainViewModel(val appRepository: AppRepository) : ViewModel() {
@@ -47,6 +48,20 @@ class MainViewModel(val appRepository: AppRepository) : ViewModel() {
                     .format(Date().time),
                 isHighPriority = priority,
                 taskType = taskType
-            ))
+            )
+        )
+    }
+
+
+    private fun loadTags() {
+
+    }
+
+    fun getAvailableTagList(): ArrayList<TagModel> {
+        return appRepository.getAvailableTags()
+    }
+
+    fun insertTag(tag: String) {
+        appRepository.insertTag(tag)
     }
 }

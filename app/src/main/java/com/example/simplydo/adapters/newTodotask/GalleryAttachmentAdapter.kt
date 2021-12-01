@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.simplydo.databinding.RecyclerAttachmentGalleryListItemBinding
 import com.example.simplydo.model.attachmentModel.GalleryModel
-import com.example.simplydo.utli.GalleryAttachmentInterface
+import com.example.simplydo.utlis.GalleryAttachmentInterface
 
 class GalleryAttachmentAdapter(
     val context: Context,

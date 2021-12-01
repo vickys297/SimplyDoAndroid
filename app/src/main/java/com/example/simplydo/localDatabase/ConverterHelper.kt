@@ -1,9 +1,7 @@
 package com.example.simplydo.localDatabase
 
 import androidx.room.TypeConverter
-import com.example.simplydo.model.ContactModel
-import com.example.simplydo.model.LatLngModel
-import com.example.simplydo.model.TodoTaskModel
+import com.example.simplydo.model.*
 import com.example.simplydo.model.attachmentModel.AudioModel
 import com.example.simplydo.model.attachmentModel.FileModel
 import com.example.simplydo.model.attachmentModel.GalleryModel
@@ -86,6 +84,26 @@ class ConverterHelper {
     @TypeConverter
     fun toTodoTaskList(json: String): ArrayList<TodoTaskModel> {
         return gson.fromJson(json, object : TypeToken<ArrayList<TodoTaskModel>>() {}.type)
+    }
+
+    @TypeConverter
+    fun fromSelectedDataModalList(list: ArrayList<SelectorDataModal>): String {
+        return gson.toJson(list)
+    }
+
+    @TypeConverter
+    fun toSelectedDataModalList(json: String): ArrayList<SelectorDataModal> {
+        return gson.fromJson(json, object : TypeToken<ArrayList<SelectorDataModal>>() {}.type)
+    }
+
+    @TypeConverter
+    fun fromTagModalList(list: ArrayList<TagModel>): String {
+        return gson.toJson(list)
+    }
+
+    @TypeConverter
+    fun toTagModalList(json: String): ArrayList<TagModel> {
+        return gson.fromJson(json, object : TypeToken<ArrayList<TagModel>>() {}.type)
     }
 
 

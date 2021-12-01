@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:paddingTop="@dimen/list_item_spacing_half"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
-    tools:context=".bottomSheetDialogs.basicAddTodoDialog.EditTodoBasic">
+    tools:context=".dialog.bottomSheetDialogs.basicAddTodoDialog.EditTodoBasic">
 
     <TextView
         android:id="@+id/textViewTitle"
@@ -43,7 +43,7 @@
             android:textStyle="bold" />
 
         <EditText
-            android:id="@+id/etTitle"
+            android:id="@+id/edit_text_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
@@ -73,7 +73,7 @@
             android:textStyle="bold" />
 
         <EditText
-            android:id="@+id/etTask"
+            android:id="@+id/editText_task"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"

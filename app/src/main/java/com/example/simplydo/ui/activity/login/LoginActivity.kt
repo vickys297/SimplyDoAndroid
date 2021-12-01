@@ -13,11 +13,11 @@ import com.example.simplydo.model.LoginModel
 import com.example.simplydo.model.LoginResponseModel
 import com.example.simplydo.model.OTPModel
 import com.example.simplydo.model.OTPResponse
-import com.example.simplydo.network.NoConnectivityException
-import com.example.simplydo.network.RetrofitServices
+import com.example.simplydo.api.network.NoConnectivityException
+import com.example.simplydo.api.network.RetrofitServices
 import com.example.simplydo.ui.MainActivity
-import com.example.simplydo.utli.AppConstant
-import com.example.simplydo.utli.AppPreference
+import com.example.simplydo.utlis.AppConstant
+import com.example.simplydo.utlis.AppPreference
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

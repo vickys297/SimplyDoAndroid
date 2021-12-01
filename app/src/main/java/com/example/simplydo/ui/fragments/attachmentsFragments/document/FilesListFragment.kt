@@ -19,8 +19,8 @@ import com.example.simplydo.R
 import com.example.simplydo.adapters.FilesAdapter
 import com.example.simplydo.databinding.DocumentListFragmentBinding
 import com.example.simplydo.model.attachmentModel.FileModel
-import com.example.simplydo.utli.AppConstant
-import com.example.simplydo.utli.AppFunctions
+import com.example.simplydo.utlis.AppConstant
+import com.example.simplydo.utlis.AppFunctions
 
 internal val TAG = FileListFragment::class.java.canonicalName
 

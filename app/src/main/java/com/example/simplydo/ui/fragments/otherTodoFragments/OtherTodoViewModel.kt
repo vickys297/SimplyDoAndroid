@@ -6,8 +6,8 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import com.example.simplydo.model.TodoModel
-import com.example.simplydo.utli.AppFunctions
-import com.example.simplydo.utli.AppRepository
+import com.example.simplydo.utlis.AppFunctions
+import com.example.simplydo.utlis.AppRepository
 
 
 class OtherTodoViewModel internal constructor(

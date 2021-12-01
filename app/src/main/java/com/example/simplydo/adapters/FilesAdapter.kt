@@ -5,8 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.simplydo.databinding.RecyclerFilesListItemBinding
 import com.example.simplydo.model.attachmentModel.FileModel
-import com.example.simplydo.utli.AppFunctions
-import com.example.simplydo.utli.MimeTypes
+import com.example.simplydo.utlis.AppFunctions
+import com.example.simplydo.utlis.MimeTypes
 
 class FilesAdapter : RecyclerView.Adapter<FilesAdapter.DocumentViewHolder>() {
 

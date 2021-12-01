@@ -40,7 +40,8 @@
         tools:ignore="UnusedAttribute">
         <activity
             android:name=".ui.activity.SplashScreenActivity"
-            android:theme="@style/Theme.SimplyDo">
+            android:theme="@style/Theme.SimplyDo"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -80,7 +81,8 @@
             android:windowSoftInputMode="adjustPan" />
 
         <!-- Broad caste receivers -->
-        <receiver android:name=".receiver.AppBroadCastReceiver">
+        <receiver android:name=".receiver.AppBroadCastReceiver"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>

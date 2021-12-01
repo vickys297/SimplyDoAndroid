@@ -12,10 +12,10 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.simplydo.adapters.GalleryAdapter
 import com.example.simplydo.databinding.FragmentGalleryViewBinding
 import com.example.simplydo.model.attachmentModel.GalleryModel
-import com.example.simplydo.utli.AppConstant
-import com.example.simplydo.utli.AppFunctions
-import com.example.simplydo.utli.GalleryInterface
-import com.example.simplydo.utli.SimpleViewModelFactory
+import com.example.simplydo.utlis.AppConstant
+import com.example.simplydo.utlis.AppFunctions
+import com.example.simplydo.utlis.GalleryInterface
+import com.example.simplydo.utlis.SimpleViewModelFactory
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 

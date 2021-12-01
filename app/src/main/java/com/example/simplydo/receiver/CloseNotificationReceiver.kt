@@ -9,8 +9,8 @@ import android.util.Log
 import androidx.core.content.ContextCompat
 import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.ui.MainActivity
-import com.example.simplydo.utli.AppConstant
-import com.example.simplydo.utli.AppRepository
+import com.example.simplydo.utlis.AppConstant
+import com.example.simplydo.utlis.AppRepository
 
 
 internal val closeNotificationReceiver = CloseNotificationReceiver::class.java.canonicalName

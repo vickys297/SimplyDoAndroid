@@ -4,13 +4,14 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.simplydo.model.ContactModel
 import com.example.simplydo.model.LatLngModel
+import com.example.simplydo.model.SelectorDataModal
 import com.example.simplydo.model.TodoModel
 import com.example.simplydo.model.attachmentModel.AudioModel
 import com.example.simplydo.model.attachmentModel.FileModel
 import com.example.simplydo.model.attachmentModel.GalleryModel
-import com.example.simplydo.utli.AppConstant
-import com.example.simplydo.utli.AppFunctions
-import com.example.simplydo.utli.AppRepository
+import com.example.simplydo.utlis.AppConstant
+import com.example.simplydo.utlis.AppFunctions
+import com.example.simplydo.utlis.AppRepository
 import java.util.*
 
 class AddNewTodoViewModel(val appRepository: AppRepository) :
@@ -25,7 +26,9 @@ class AddNewTodoViewModel(val appRepository: AppRepository) :
         galleryArray: ArrayList<GalleryModel>,
         audioArray: ArrayList<AudioModel>,
         location: LatLngModel,
-        filesArray: ArrayList<FileModel>
+        filesArray: ArrayList<FileModel>,
+        repeatFrequency: ArrayList<SelectorDataModal>,
+        repeatWeek: ArrayList<SelectorDataModal>
     ): Long {
         return appRepository.reinsertTodoTask(
             TodoModel(
@@ -42,6 +45,8 @@ class AddNewTodoViewModel(val appRepository: AppRepository) :
                     .format(Date().time),
                 updatedAt = AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_ISO)
                     .format(Date().time),
+                repeatFrequency = repeatFrequency,
+                repeatWeek = repeatWeek
             )
         )
     }

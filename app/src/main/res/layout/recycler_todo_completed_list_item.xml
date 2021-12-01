@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
@@ -51,7 +52,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:ellipsize="end"
-            android:maxLines="4"
+            android:maxLines="3"
             android:singleLine="false"
             android:textIsSelectable="false"
             android:text="@{todoModel.todo}"
@@ -67,10 +68,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="@{todoModel.getEventDate()}"
             android:drawablePadding="10dp"
+            android:text="@{todoModel.getEventDate()}"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvTodo" />
+            app:layout_constraintTop_toBottomOf="@+id/divider" />
 
 
         <TextView
@@ -117,6 +118,16 @@
                 app:chipIconSize="16dp" />
 
         </LinearLayout>
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="8dp"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvTodo" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

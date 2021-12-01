@@ -6,12 +6,11 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.simplydo.databinding.RecyclerTaskFooterItemBinding
 import com.example.simplydo.databinding.RecyclerTaskListItemBinding
 import com.example.simplydo.databinding.RecyclerTaskTextItemBinding
 import com.example.simplydo.model.TodoTaskModel
-import com.example.simplydo.utli.AppConstant
-import com.example.simplydo.utli.NewTodo
+import com.example.simplydo.utlis.AppConstant
+import com.example.simplydo.utlis.NewTodo
 
 internal const val VIEW_TYPE_LIST = 0
 internal const val VIEW_TYPE_TEXT = 1
@@ -21,12 +20,11 @@ internal val TAG_TASK = TodoTaskAdapter::class.java.canonicalName
 
 class TodoTaskAdapter(
     var dataSet: ArrayList<TodoTaskModel>,
-    private val addTodoInterface: NewTodo.AddTask
+    private val addTodoInterface: NewTodo.AddTask,
+    private val todoTaskInterface: NewTodo.TodoTask
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-
-        Log.i(TAG_TASK, "onCreateViewHolder: $viewType")
         return when (viewType) {
             VIEW_TYPE_LIST -> {
                 TodoListViewHolder(
@@ -51,7 +49,6 @@ class TodoTaskAdapter(
             }
         }
     }
-
 
 
     class TodoTextViewHolder(val binding: RecyclerTaskTextItemBinding) :
@@ -82,10 +79,14 @@ class TodoTaskAdapter(
                 val item = dataSet[position]
                 (holder as TodoListViewHolder).apply {
                     val binding = bind()
-                    addListViewToParent(binding, item.taskList!!)
+                    addListViewToParent(binding, item.contentList!!)
 
                     binding.imageButtonClose.setOnClickListener {
-                        addTodoInterface.onClose(item,  bindingAdapterPosition)
+                        addTodoInterface.onClose(item, bindingAdapterPosition)
+                    }
+
+                    holder.itemView.setOnClickListener {
+                        todoTaskInterface.onTaskSelect(item)
                     }
                 }
             }
@@ -93,10 +94,14 @@ class TodoTaskAdapter(
                 val item = dataSet[position]
                 (holder as TodoTextViewHolder).apply {
                     val binding = bind()
-                    binding.textViewNote.text = item.taskText
+                    binding.textViewNote.text = item.content
 
                     binding.imageButtonClose.setOnClickListener {
                         addTodoInterface.onClose(item, bindingAdapterPosition)
+                    }
+
+                    holder.itemView.setOnClickListener {
+                        todoTaskInterface.onTaskSelect(item)
                     }
                 }
             }
@@ -148,9 +153,10 @@ class TodoTaskAdapter(
 
     }
 
-
     override fun getItemCount(): Int = dataSet.size
+
     fun updateDataSet(dataSet: ArrayList<TodoTaskModel>) {
+//        val lastSize = this.dataSet.size
         this.dataSet = dataSet
         notifyDataSetChanged()
     }

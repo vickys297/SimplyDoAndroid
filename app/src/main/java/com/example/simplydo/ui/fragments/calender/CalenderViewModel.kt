@@ -11,10 +11,10 @@ import com.example.simplydo.model.ContactModel
 import com.example.simplydo.model.LatLngModel
 import com.example.simplydo.model.TodoModel
 import com.example.simplydo.model.attachmentModel.GalleryModel
-import com.example.simplydo.ui.fragments.quickTodoList.PAGE_SIZE
-import com.example.simplydo.utli.AppConstant
-import com.example.simplydo.utli.AppFunctions
-import com.example.simplydo.utli.AppRepository
+import com.example.simplydo.ui.fragments.todoList.PAGE_SIZE
+import com.example.simplydo.utlis.AppConstant
+import com.example.simplydo.utlis.AppFunctions
+import com.example.simplydo.utlis.AppRepository
 import kotlinx.coroutines.flow.Flow
 import java.util.*
 

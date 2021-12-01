@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.simplydo.databinding.RecyclerSelectedContactListItemBinding
 import com.example.simplydo.model.ContactModel
-import com.example.simplydo.utli.SelectedContactInterface
+import com.example.simplydo.utlis.SelectedContactInterface
 
 class SelectedContactAdapter(private val selectedContactInterFace: SelectedContactInterface) :
     RecyclerView.Adapter<SelectedContactAdapter.ViewHolder>() {

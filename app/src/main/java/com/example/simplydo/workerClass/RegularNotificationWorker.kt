@@ -7,9 +7,9 @@ import androidx.core.content.ContextCompat
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.example.simplydo.localDatabase.AppDatabase
-import com.example.simplydo.utli.AppConstant
-import com.example.simplydo.utli.AppFunctions
-import com.example.simplydo.utli.sendNotification
+import com.example.simplydo.utlis.AppConstant
+import com.example.simplydo.utlis.AppFunctions
+import com.example.simplydo.utlis.sendNotification
 
 internal val TAG = RegularNotificationWorker::class.java.canonicalName
 

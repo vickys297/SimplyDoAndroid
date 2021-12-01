@@ -5,7 +5,7 @@ import android.os.Build
 import android.util.Log
 import com.airbnb.lottie.Lottie
 import com.airbnb.lottie.LottieConfig
-import com.example.simplydo.utli.AppWorkManager
+import com.example.simplydo.utlis.AppWorkManager
 
 
 internal val TAG_MY = MyApplication::class.java.canonicalName

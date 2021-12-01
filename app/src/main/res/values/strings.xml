@@ -5,6 +5,7 @@
 
     <string name="app_name">SimplyDo</string>
     <string name="about_us">About</string>
+    <string name="appearance">Appearance</string>
     <string name="login">Login</string>
     <string name="mobile">Mobile</string>
     <string name="otp">OTP</string>
@@ -141,5 +142,32 @@
     <string name="add_remainder">Add Remainder</string>
     <string name="all_day_remainder">All Day Remainder</string>
     <string name="required">Required</string>
+    <string name="repeat_in_a_week">Repeat In a Week</string>
+    <string name="set_repeat">Set Repeat</string>
+    <string name="set">Set</string>
+    <string name="repeat_period">Repeat Period</string>
+    <string name="add_repeat">Add Repeat</string>
+    <string name="filter">Filter</string>
+    <string name="upcoming">Upcoming</string>
+    <string name="hello_there">Hello there</string>
+    <string name="discover_your_daily">Discover your daily</string>
+    <string name="routine_here">routine here</string>
+    <string name="tags">Tags</string>
+    <string name="set_tag">Set Tag</string>
+    <string name="selected_tags">Selected Tags</string>
+    <string name="available_tags">Available Tags</string>
+    <string name="add_tags">Add Tags</string>
+    <string name="add_new_tag">Add New tag</string>
+    <string name="you_have_not_selected_any_tags">You have not selected any tags</string>
+    <string name="no_tags_available">No tags available</string>
+    <string name="no_tags_selected">Tap to add tags to this task</string>
+    <string name="done">Done</string>
+    <string name="tap_to_set_repeat_period_to_this_task">Tap to set repeat period to this task</string>
+    <string name="set_priority">Set Priority</string>
+    <string name="high_priority">High Priority</string>
+    <string name="medium_priority">Medium Priority</string>
+    <string name="low_priority">Low Priority</string>
+    <string name="tap_to_set_priority_to_this_task">Tap to set priority to this task</string>
+    <string name="add_todo_list_here">Add todo list here</string>
 
 </resources>

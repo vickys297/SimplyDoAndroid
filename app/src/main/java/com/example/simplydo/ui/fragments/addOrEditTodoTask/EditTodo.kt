@@ -14,8 +14,8 @@ import com.example.simplydo.adapters.newTodotask.AudioAttachmentAdapter
 import com.example.simplydo.adapters.newTodotask.ContactAttachmentAdapter
 import com.example.simplydo.adapters.newTodotask.FileAttachmentAdapter
 import com.example.simplydo.adapters.newTodotask.GalleryAttachmentAdapter
-import com.example.simplydo.bottomSheetDialogs.attachments.AddAttachmentsFragments
 import com.example.simplydo.databinding.EditTodoFragmentBinding
+import com.example.simplydo.dialog.bottomSheetDialogs.attachments.AddAttachmentsFragments
 import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.model.ContactModel
 import com.example.simplydo.model.LatLngModel
@@ -23,7 +23,7 @@ import com.example.simplydo.model.TodoModel
 import com.example.simplydo.model.attachmentModel.AudioModel
 import com.example.simplydo.model.attachmentModel.FileModel
 import com.example.simplydo.model.attachmentModel.GalleryModel
-import com.example.simplydo.utli.*
+import com.example.simplydo.utlis.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
@@ -39,7 +39,7 @@ import java.util.*
 
 internal val TAG_EDIT = EditTodo::class.java.canonicalName
 
-class EditTodo : Fragment(), NewTodoOptionsFragmentsInterface {
+class EditTodo : Fragment(R.layout.edit_todo_fragment), NewTodoOptionsFragmentsInterface {
 
     companion object {
         fun newInstance() = EditTodo()
@@ -58,9 +58,7 @@ class EditTodo : Fragment(), NewTodoOptionsFragmentsInterface {
 
     private var latLng: LatLngModel = LatLngModel()
 
-
     private lateinit var currentTodoModel: TodoModel
-
 
     // all adapter
     private lateinit var audioAttachmentAdapter: AudioAttachmentAdapter
@@ -70,7 +68,6 @@ class EditTodo : Fragment(), NewTodoOptionsFragmentsInterface {
 
 
     // all interfaces
-
     private val audioAttachmentInterface =
         object : AudioAttachmentInterface {
             override fun onAudioSelect(item: AudioModel) {
@@ -132,63 +129,9 @@ class EditTodo : Fragment(), NewTodoOptionsFragmentsInterface {
     }
 
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
-        binding = EditTodoFragmentBinding.inflate(inflater, container, false)
-
-        setViewModel()
-        attachmentDataObserver()
-
-        val sampleText = "0:0".split(":".toRegex())
-        Log.d(TAG_EDIT, "onCreateView: ${sampleText[0].toInt()}")
-
-        // setup array list
-        contactArrayList = ArrayList()
-        galleryArrayList = ArrayList()
-        audioArrayList = ArrayList()
-        filesArrayList = ArrayList()
-
-
-        arguments?.let {
-
-            currentTodoModel = it.getSerializable(AppConstant.NAVIGATION_TASK_DATA_KEY) as TodoModel
-            val task = it.getSerializable(AppConstant.NAVIGATION_TASK_DATA_KEY) as TodoModel
-
-            binding.etTitle.setText(task.title)
-            binding.etTask.setText(task.todo)
-
-            eventDateTime = task.eventDateTime
-
-            binding.textViewEventDate.text =
-                AppFunctions.convertTimeInMillsecToPattern(
-                    eventDateTime,
-                    AppConstant.DATE_PATTERN_EVENT_DATE
-                )
-
-            binding.textViewEventTime.text =
-                AppFunctions.convertTimeInMillsecToPattern(
-                    eventDateTime,
-                    AppConstant.TIME_PATTERN_EVENT_TIME
-                )
-
-            binding.cbPriority.isChecked = task.isHighPriority
-
-            contactArrayList = task.contactAttachments
-            galleryArrayList = task.imageAttachments
-            audioArrayList = task.audioAttachments
-            filesArrayList = task.fileAttachments
-            latLng = task.locationData
-        }
-
-        return binding.root
-    }
-
-
     private fun setViewModel() {
         viewModel = ViewModelProvider(
-            this,
+            this@EditTodo,
             ViewModelFactory(
                 requireContext(),
                 AppRepository.getInstance(
@@ -196,9 +139,7 @@ class EditTodo : Fragment(), NewTodoOptionsFragmentsInterface {
                     AppDatabase.getInstance(context = requireContext())
                 )
             )
-        ).get(
-            AddNewTodoViewModel::class.java
-        )
+        )[AddNewTodoViewModel::class.java]
         binding.apply {
             this.viewModel = this@EditTodo.viewModel
             lifecycleOwner = this@EditTodo
@@ -349,6 +290,51 @@ class EditTodo : Fragment(), NewTodoOptionsFragmentsInterface {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding = EditTodoFragmentBinding.bind(view)
+
+        setViewModel()
+        attachmentDataObserver()
+
+        val sampleText = "0:0".split(":".toRegex())
+        Log.d(TAG_EDIT, "onCreateView: ${sampleText[0].toInt()}")
+
+        // setup array list
+        contactArrayList = ArrayList()
+        galleryArrayList = ArrayList()
+        audioArrayList = ArrayList()
+        filesArrayList = ArrayList()
+
+
+        arguments?.let {
+            currentTodoModel = it.getSerializable(AppConstant.NAVIGATION_TASK_DATA_KEY) as TodoModel
+            val task = it.getSerializable(AppConstant.NAVIGATION_TASK_DATA_KEY) as TodoModel
+
+            binding.editTextTitle.setText(task.title)
+            binding.editTextTask.setText(task.todo)
+
+            eventDateTime = task.eventDateTime
+
+            binding.textViewEventDate.text =
+                AppFunctions.convertTimeInMillsecToPattern(
+                    eventDateTime,
+                    AppConstant.DATE_PATTERN_EVENT_DATE
+                )
+
+            binding.textViewEventTime.text =
+                AppFunctions.convertTimeInMillsecToPattern(
+                    eventDateTime,
+                    AppConstant.TIME_PATTERN_EVENT_TIME
+                )
+
+            binding.cbPriority.isChecked = task.isHighPriority
+
+            contactArrayList = task.contactAttachments
+            galleryArrayList = task.imageAttachments
+            audioArrayList = task.audioAttachments
+            filesArrayList = task.fileAttachments
+            latLng = task.locationData
+        }
+
 
         binding.linearLayoutEventTimeSelector.setOnClickListener {
             val et = AppFunctions.getCurrentDateCalender()
@@ -421,14 +407,14 @@ class EditTodo : Fragment(), NewTodoOptionsFragmentsInterface {
         }
 
         binding.linearLayoutTitle.setOnClickListener {
-            binding.etTitle.requestFocus()
+            binding.editTextTitle.requestFocus()
             requireActivity().runOnUiThread {
                 val inputMethodManager = requireActivity().getSystemService(
                     Context.INPUT_METHOD_SERVICE
                 ) as InputMethodManager
 
                 inputMethodManager.toggleSoftInputFromWindow(
-                    binding.etTitle.applicationWindowToken,
+                    binding.editTextTitle.applicationWindowToken,
                     InputMethodManager.SHOW_FORCED,
                     0
                 )
@@ -436,14 +422,14 @@ class EditTodo : Fragment(), NewTodoOptionsFragmentsInterface {
         }
 
         binding.linearLayoutTask.setOnClickListener {
-            binding.etTask.requestFocus()
+            binding.editTextTask.requestFocus()
             requireActivity().runOnUiThread {
                 val inputMethodManager = requireActivity().getSystemService(
                     Context.INPUT_METHOD_SERVICE
                 ) as InputMethodManager
 
                 inputMethodManager.toggleSoftInputFromWindow(
-                    binding.etTask.applicationWindowToken,
+                    binding.editTextTask.applicationWindowToken,
                     InputMethodManager.SHOW_FORCED,
                     0
                 )
@@ -465,8 +451,8 @@ class EditTodo : Fragment(), NewTodoOptionsFragmentsInterface {
                 )
                 val updateTodo = viewModel.updateTodo(
                     dtId = currentTodoModel.dtId,
-                    binding.etTitle.text.toString(),
-                    binding.etTask.text.toString(),
+                    binding.editTextTitle.text.toString(),
+                    binding.editTextTask.text.toString(),
                     eventDateTime,
                     binding.cbPriority.isChecked,
                     galleryArray = galleryArrayList,
@@ -486,7 +472,7 @@ class EditTodo : Fragment(), NewTodoOptionsFragmentsInterface {
         }
 
         binding.imageButtonNewTodoOptions.setOnClickListener {
-            AddAttachmentsFragments.newInstance(addAttachmentInterface)
+            AddAttachmentsFragments.newInstance(requireContext(), addAttachmentInterface)
                 .show(requireActivity().supportFragmentManager, "dialog")
         }
 
@@ -545,8 +531,8 @@ class EditTodo : Fragment(), NewTodoOptionsFragmentsInterface {
     private fun validateDetails(): Boolean {
         var flag = true
         val allFieldsAreAvailable = arrayOf(
-            binding.etTask,
-            binding.etTitle,
+            binding.editTextTask,
+            binding.editTextTitle,
             binding.textViewEventTime,
             binding.textViewEventTime
         )
@@ -560,7 +546,7 @@ class EditTodo : Fragment(), NewTodoOptionsFragmentsInterface {
     }
 
     override fun onAddAttachments() {
-        AddAttachmentsFragments.newInstance(addAttachmentInterface)
+        AddAttachmentsFragments.newInstance(requireContext(), addAttachmentInterface)
             .show(requireActivity().supportFragmentManager, "dialog")
     }
 

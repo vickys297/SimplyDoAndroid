@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -11,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        tools:context=".bottomSheetDialogs.calenderOptions.TodoOptions">
+        tools:context=".dialog.bottomSheetDialogs.calenderOptions.TodoOptions">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -36,9 +35,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="8dp"
-            android:text="@string/view_todo_option" />
-
-
+            android:text="@string/filter" />
 
         <Button
             android:id="@+id/buttonPastTaskView"
@@ -49,11 +46,27 @@
             android:text="@string/past" />
 
         <Button
+            android:id="@+id/buttonPastTaskView2"
+            style="@style/ButtonOptions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/today" />
+
+        <Button
+            android:id="@+id/buttonPastTaskView3"
+            style="@style/ButtonOptions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/upcoming" />
+
+        <Button
             android:id="@+id/buttonCompletedView"
             style="@style/ButtonOptions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:text="@string/completed" />
 
         <Button

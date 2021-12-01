@@ -4,22 +4,19 @@ import android.content.Context
 import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.annotation.Nullable
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.simplydo.databinding.RecyclerTodoCompletedListItemBinding
 import com.example.simplydo.databinding.RecyclerTodoListItemBinding
 import com.example.simplydo.model.TodoModel
-import com.example.simplydo.utli.TodoItemInterface
+import com.example.simplydo.utlis.TodoItemInterface
 import java.util.*
 
 class QuickTodoListAdapter(
-    @Nullable
     private val todoItemInterface: TodoItemInterface,
     val requireContext: Context,
-) :
-    PagingDataAdapter<TodoModel, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
+) : PagingDataAdapter<TodoModel, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
 
     companion object {
@@ -72,7 +69,6 @@ class QuickTodoListAdapter(
     override fun onBindViewHolder(holderTask: RecyclerView.ViewHolder, position: Int) {
 
         when (getItemViewType(position)) {
-
             0 -> {
                 val item = getItem(position)
                 item?.run {
@@ -130,10 +126,6 @@ class QuickTodoListAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return if (getItem(position)?.isCompleted == true) VIEW_TYPE_TASK_COMPLETED else VIEW_TYPE_TASK
-    }
-
-    fun removeItemAtPosition(position: Int) {
-        notifyItemRemoved(position)
     }
 
 

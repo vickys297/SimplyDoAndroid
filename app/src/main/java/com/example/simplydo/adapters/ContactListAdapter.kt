@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.simplydo.databinding.RecyclerContactListItemBinding
 import com.example.simplydo.model.ContactModel
-import com.example.simplydo.utli.ContactAdapterInterface
+import com.example.simplydo.utlis.ContactAdapterInterface
 
 
 class ContactListAdapter(

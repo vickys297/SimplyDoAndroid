@@ -19,8 +19,8 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.simplydo.R
 import com.example.simplydo.databinding.FragmentMapsBinding
-import com.example.simplydo.utli.AppConstant
-import com.example.simplydo.utli.AppFunctions
+import com.example.simplydo.utlis.AppConstant
+import com.example.simplydo.utlis.AppFunctions
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory

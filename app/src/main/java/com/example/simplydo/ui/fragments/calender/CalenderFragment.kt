@@ -17,15 +17,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.simplydo.R
 import com.example.simplydo.adapters.CalenderViewAdapter
 import com.example.simplydo.adapters.QuickTodoListAdapter
-import com.example.simplydo.bottomSheetDialogs.basicAddTodoDialog.AddNewRemainder
-import com.example.simplydo.bottomSheetDialogs.todoOptions.TodoOptionsFragment
 import com.example.simplydo.databinding.CalenderFragmentBinding
+import com.example.simplydo.dialog.bottomSheetDialogs.basicAddTodoDialog.AddNewRemainder
+import com.example.simplydo.dialog.bottomSheetDialogs.todoOptions.TodoOptionsFragment
 import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.model.ContactModel
 import com.example.simplydo.model.SmallCalenderModel
 import com.example.simplydo.model.TodoModel
 import com.example.simplydo.model.attachmentModel.CalenderDateSelectorModel
-import com.example.simplydo.utli.*
+import com.example.simplydo.utlis.*
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -131,7 +131,7 @@ class CalenderFragment : Fragment() {
 
     private var todoAdapterInterface = object : TodoItemInterface {
         override fun onLongClick(item: TodoModel) {
-            TodoOptionsFragment.newInstance(todoOptionDialogFragments, item = item)
+            TodoOptionsFragment.newInstance(requireContext(),todoOptionDialogFragments, item = item)
                 .show(requireActivity().supportFragmentManager, "dialog")
         }
 

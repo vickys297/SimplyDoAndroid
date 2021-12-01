@@ -8,8 +8,8 @@ import androidx.room.PrimaryKey
 import com.example.simplydo.model.attachmentModel.AudioModel
 import com.example.simplydo.model.attachmentModel.FileModel
 import com.example.simplydo.model.attachmentModel.GalleryModel
-import com.example.simplydo.utli.AppConstant
-import com.example.simplydo.utli.AppFunctions
+import com.example.simplydo.utlis.AppConstant
+import com.example.simplydo.utlis.AppFunctions
 import java.io.Serializable
 
 
@@ -72,7 +72,14 @@ data class TodoModel(
     @ColumnInfo(name = "taskType")
     var taskType: Int = AppConstant.Task.TASK_TYPE_DEFAULT,
 
-    ) : Serializable {
+
+    @ColumnInfo(name = "repeatFrequency")
+    var repeatFrequency: ArrayList<SelectorDataModal> = arrayListOf(),
+
+    @ColumnInfo(name = "repeatWeek")
+    var repeatWeek: ArrayList<SelectorDataModal> = arrayListOf()
+
+) : Serializable {
 
 
     fun isCompletedVisible(): Int {
@@ -113,12 +120,10 @@ data class TodoModel(
 
     fun getEventTime(): String {
         return if (taskType == AppConstant.Task.TASK_TYPE_EVENT) {
-            "@ ${
-                AppFunctions.convertTimeInMillsecToPattern(
-                    eventDateTime,
-                    AppConstant.TIME_PATTERN_EVENT_TIME
-                )
-            }"
+            AppFunctions.convertTimeInMillsecToPattern(
+                eventDateTime,
+                AppConstant.TIME_PATTERN_EVENT_TIME
+            )
         } else {
             ""
         }
@@ -170,9 +175,9 @@ data class TodoPagingModel(
 
 data class TodoTaskModel(
     val type: Int,
-    val taskText: String? = "",
-    val taskList: ArrayList<String>? = ArrayList()
-)
+    val content: String? = "",
+    val contentList: ArrayList<String>? = ArrayList()
+) : Serializable
 
 
 data class ContactModel(

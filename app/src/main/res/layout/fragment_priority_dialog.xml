@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".dialog.bottomSheetDialogs.priorityDialog.PriorityDialog">
+
+    <TextView
+        android:id="@+id/textView27"
+        style="@style/ToolbarStyledText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text="@string/set_priority" />
+
+    <Button
+        android:id="@+id/button_high_priority"
+        style="@style/ButtonOptions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/high_priority" />
+
+    <Button
+        android:id="@+id/button_medium_priority"
+        style="@style/ButtonOptions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/medium_priority" />
+
+    <Button
+        android:id="@+id/button_low_priority"
+        style="@style/ButtonOptions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/low_priority" />
+</LinearLayout>

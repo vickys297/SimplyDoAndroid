@@ -7,7 +7,7 @@
 
         <variable
             name="todoViewModel"
-            type="com.example.simplydo.ui.fragments.quickTodoList.QuickTodoViewModel" />
+            type="com.example.simplydo.ui.fragments.todoList.QuickTodoViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -16,26 +16,48 @@
         android:layout_height="match_parent"
         tools:context=".ui.main.MainFragment">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/todoToolbar"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:id="@+id/top_section"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:elevation="10dp"
-            android:minHeight="?attr/actionBarSize"
-            android:theme="?attr/actionBarTheme"
-            android:transitionName="tn_toolbar"
+            android:padding="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/hello_there"/>
 
             <TextView
-                style="@style/ToolbarStyledText"
-                android:layout_width="wrap_content"
+                android:id="@+id/text_1"
+                android:textSize="24sp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/task"
-                tools:layout_editor_absoluteX="16dp"
-                tools:layout_editor_absoluteY="6dp" />
-        </androidx.appcompat.widget.Toolbar>
+                android:text="@string/discover_your_daily"/>
+        </LinearLayout>
+
+        <!--        <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/todoToolbar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:elevation="10dp"
+                    android:minHeight="?attr/actionBarSize"
+                    android:theme="?attr/actionBarTheme"
+                    android:transitionName="tn_toolbar"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        style="@style/ToolbarStyledText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/today"
+                        tools:layout_editor_absoluteX="16dp"
+                        tools:layout_editor_absoluteY="6dp" />
+                </androidx.appcompat.widget.Toolbar>-->
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewTodoList"
@@ -45,16 +67,19 @@
             app:layout_constraintBottom_toTopOf="@+id/button_add_new_task"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/todoToolbar"
+            app:layout_constraintTop_toBottomOf="@+id/top_section"
             tools:listitem="@layout/recycler_todo_list_item" />
 
         <include
             android:id="@+id/noTaskAvailable"
             layout="@layout/no_task_available"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             app:layout_constraintBottom_toTopOf="@+id/button_add_new_task"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/todoToolbar" />
+            app:layout_constraintTop_toBottomOf="@+id/top_section"
+            app:layout_constraintVertical_bias="0.5" />
 
         <Button
             android:id="@+id/button_add_new_task"
