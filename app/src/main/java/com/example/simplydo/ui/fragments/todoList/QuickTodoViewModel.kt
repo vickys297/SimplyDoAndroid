@@ -46,11 +46,11 @@ class QuickTodoViewModel(private val appRepository: AppRepository) :
                 title = title,
                 todo = task,
                 eventDateTime = eventDate,
-                isHighPriority = priority,
+                taskPriority = 3,
                 createdAt = AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_ISO)
                     .format(Date().time),
                 updatedAt = AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_ISO)
-                    .format(Date().time),
+                    .format(Date().time)
             )
         )
     }

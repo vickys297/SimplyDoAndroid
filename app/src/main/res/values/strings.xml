@@ -169,5 +169,6 @@
     <string name="low_priority">Low Priority</string>
     <string name="tap_to_set_priority_to_this_task">Tap to set priority to this task</string>
     <string name="add_todo_list_here">Add todo list here</string>
+    <string name="update">Update</string>
 
 </resources>

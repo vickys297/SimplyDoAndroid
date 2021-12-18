@@ -259,6 +259,10 @@ object AppFunctions {
         return calendar
     }
 
+    fun getCalender(): Calendar {
+        return Calendar.getInstance()
+    }
+
     @WorkerThread
     fun getEventDateText(eventDate: Long): Any {
         val calender = Calendar.getInstance()
@@ -311,7 +315,7 @@ object AppFunctions {
     }
 
 
-    @WorkerThread
+    /*@WorkerThread
     fun setupNotification(tasKId: Long, eventDate: Long, bundle: Bundle, activity: Activity) {
 
         // alert when this is the future task
@@ -343,48 +347,71 @@ object AppFunctions {
         } else {
             Log.i(TAG, "setupNotification: unable to set notification 2")
         }
-    }
+    }*/
 
     @WorkerThread
     fun setupNotification(
         tasKId: Long,
-        eventDate: Long,
-        eventTime: String,
+        eventDateTime: Long,
         bundle: Bundle,
         activity: Activity
     ) {
 
-        val timeArray = eventTime.trim().split(":".toRegex())
+
         val calendar = getCurrentDateCalender()
-        calendar.timeInMillis = eventDate
-        calendar.set(Calendar.HOUR_OF_DAY, timeArray[0].toInt())
-        calendar.set(Calendar.MINUTE, timeArray[1].toInt())
-        calendar.set(Calendar.SECOND, 0)
-        calendar.set(Calendar.MILLISECOND, 0)
+        calendar.timeInMillis = eventDateTime
+
 
         // alert when this is the future task
-        if (System.currentTimeMillis() < calendar.timeInMillis) {
+        when {
+            System.currentTimeMillis() < calendar.timeInMillis -> {
+                calendar.set(Calendar.HOUR_OF_DAY, 7)
+                calendar.set(Calendar.MINUTE, 0)
+                calendar.set(Calendar.SECOND, 0)
+                calendar.set(Calendar.MILLISECOND, 0)
 
-            setNotificationTrigger(
-                activity,
-                tasKId.toString(),
-                calendar.timeInMillis,
-                bundle,
-                AppConstant.ALERT_TYPE_SILENT
-            )
+                setNotificationTrigger(
+                    activity,
+                    tasKId.toString(),
+                    calendar.timeInMillis,
+                    bundle,
+                    AppConstant.ALERT_TYPE_SILENT
+                )
 
-            val isEnabled = checkHasNotificationEnabled(
-                activity,
-                dtId = tasKId.toString()
-            )
+                val isEnabled = checkHasNotificationEnabled(
+                    activity,
+                    dtId = tasKId.toString()
+                )
 
-            Log.i(
-                com.example.simplydo.ui.fragments.todoList.TAG,
-                "setupNotification: $isEnabled"
-            )
+                Log.i(
+                    com.example.simplydo.ui.fragments.todoList.TAG,
+                    "setupNotification: $isEnabled"
+                )
+            }
 
-        } else {
-            Log.i(TAG, "setupNotification: unable to set notification 2")
+            // alert when this is the future task
+            System.currentTimeMillis() > calendar.timeInMillis -> {
+                setNotificationTrigger(
+                    activity,
+                    tasKId.toString(),
+                    calendar.timeInMillis,
+                    bundle,
+                    AppConstant.ALERT_TYPE_SILENT
+                )
+                val isEnabled = checkHasNotificationEnabled(
+                    activity,
+                    dtId = tasKId.toString()
+                )
+
+                Log.i(
+                    com.example.simplydo.ui.fragments.todoList.TAG,
+                    "setupNotification: $isEnabled"
+                )
+
+            }
+            else -> {
+                Log.i(TAG, "setupNotification: unable to set notification 2")
+            }
         }
     }
 
@@ -406,6 +433,10 @@ object AppFunctions {
 
     fun loadDefault() {
 
+    }
+
+    fun getPatternByTimeInMilliSec(selectedDueTime: Long, pattern: String): String {
+        return SimpleDateFormat(pattern, Locale.getDefault()).format(Date(selectedDueTime).time)
     }
 
     object Permission {

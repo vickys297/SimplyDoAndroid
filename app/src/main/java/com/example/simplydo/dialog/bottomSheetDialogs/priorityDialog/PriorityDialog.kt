@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import com.example.simplydo.R
+import com.example.simplydo.utlis.AppConstant
 import com.example.simplydo.utlis.AppInterface
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
@@ -25,17 +26,17 @@ class PriorityDialog(private val callback: AppInterface.PriorityDialog.Callback)
         super.onViewCreated(view, savedInstanceState)
 
         view.findViewById<Button>(R.id.button_high_priority).setOnClickListener {
-            callback.onSelect(1)
+            callback.onSelect(AppConstant.TaskPriority.HIGH_PRIORITY)
             dismiss()
         }
 
         view.findViewById<Button>(R.id.button_medium_priority).setOnClickListener {
-            callback.onSelect(2)
+            callback.onSelect(AppConstant.TaskPriority.MEDIUM_PRIORITY)
             dismiss()
         }
 
         view.findViewById<Button>(R.id.button_low_priority).setOnClickListener {
-            callback.onSelect(3)
+            callback.onSelect(AppConstant.TaskPriority.LOW_PRIORITY)
             dismiss()
         }
     }

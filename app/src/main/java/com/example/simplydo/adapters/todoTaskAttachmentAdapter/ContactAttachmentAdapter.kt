@@ -1,4 +1,4 @@
-package com.example.simplydo.adapters.newTodotask
+package com.example.simplydo.adapters.todoTaskAttachmentAdapter
 
 import android.content.Context
 import android.view.LayoutInflater

@@ -12,13 +12,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simplydo.R
-import com.example.simplydo.adapters.newTodotask.AudioAttachmentAdapter
-import com.example.simplydo.adapters.newTodotask.ContactAttachmentAdapter
-import com.example.simplydo.adapters.newTodotask.GalleryAttachmentAdapter
-import com.example.simplydo.dialog.bottomSheetDialogs.basicAddTodoDialog.EditTodoBasic
+import com.example.simplydo.adapters.todoTaskAttachmentAdapter.AudioAttachmentAdapter
+import com.example.simplydo.adapters.todoTaskAttachmentAdapter.ContactAttachmentAdapter
+import com.example.simplydo.adapters.todoTaskAttachmentAdapter.GalleryAttachmentAdapter
 import com.example.simplydo.databinding.TodoFullDetailsFragmentBinding
+import com.example.simplydo.dialog.bottomSheetDialogs.basicAddTodoDialog.EditTodoBasic
 import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.model.ContactModel
+import com.example.simplydo.model.TagModel
 import com.example.simplydo.model.TodoModel
 import com.example.simplydo.model.attachmentModel.AudioModel
 import com.example.simplydo.model.attachmentModel.GalleryModel
@@ -28,6 +29,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.chip.Chip
 
 internal val TAG = TodoFullDetailsFragment::class.java.canonicalName
 
@@ -132,6 +134,7 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
             binding.chipPriority.visibility = data.isCompletedVisible()
             binding.chipDateExpired.visibility = data.isDateExpiredVisible()
 
+            loadTaskTag(data.taskTags)
             checkAttachment(data)
 
             if (data.audioAttachments.isEmpty()) {
@@ -207,11 +210,13 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
 
         binding.buttonEdit.setOnClickListener {
 
+            Log.e(TAG, "taskType: ${todoData.taskType}")
             if (todoData.taskType == AppConstant.Task.TASK_TYPE_BASIC) {
                 // show basic edit
-                EditTodoBasic.newInstance(editBasicTodoInterface, todoData)
+                EditTodoBasic.newInstance(requireContext(), editBasicTodoInterface, todoData)
                     .show(requireActivity().supportFragmentManager, "dialog")
             }
+
 
             if (todoData.taskType == AppConstant.Task.TASK_TYPE_EVENT) {
                 // show edit fragment
@@ -222,6 +227,17 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
                     bundle
                 )
             }
+        }
+    }
+
+    private fun loadTaskTag(taskTags: ArrayList<TagModel>) {
+        binding.chipGroupTaskTags.removeAllViews()
+
+        for (item in taskTags) {
+            val chip = Chip(requireContext())
+            chip.text = item.tagName
+            chip.setChipBackgroundColorResource(R.color.colorPrimary)
+            binding.chipGroupTaskTags.addView(chip)
         }
     }
 

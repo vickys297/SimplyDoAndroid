@@ -30,27 +30,31 @@ data class TodoModel(
     val eventDateTime: Long,
 
     // priority
-    @ColumnInfo(name = "isHighPriority", defaultValue = "1")
-    val isHighPriority: Boolean = true,
+    @ColumnInfo(name = "taskPriority", defaultValue = "3")
+    val taskPriority: Int = 3,
 
     // attachments
     @ColumnInfo(name = "locationData", defaultValue = "")
     val locationData: LatLngModel = LatLngModel(),
+
     @ColumnInfo(name = "contactAddress", defaultValue = "")
     val contactAttachments: ArrayList<ContactModel> = ArrayList(),
+
     @ColumnInfo(name = "galleryFiles", defaultValue = "")
     val imageAttachments: ArrayList<GalleryModel> = ArrayList(),
+
     @ColumnInfo(name = "audioFiles", defaultValue = "")
     val audioAttachments: ArrayList<AudioModel> = ArrayList(),
+
     @ColumnInfo(name = "documentFiles", defaultValue = "")
     val fileAttachments: ArrayList<FileModel> = ArrayList(),
 
     // entries time stamp
     @ColumnInfo(name = "createdAt", defaultValue = "")
-    val createdAt: String,
+    val createdAt: String = "",
 
     @ColumnInfo(name = "updatedAt", defaultValue = "")
-    val updatedAt: String,
+    val updatedAt: String = "",
 
     // is database synced with cloud database
     @ColumnInfo(name = "synchronize", defaultValue = "0")
@@ -69,29 +73,31 @@ data class TodoModel(
     @ColumnInfo(name = "deletedDateTimeStamp", defaultValue = "")
     var deletedDateTimeStamp: String = "",
 
-    @ColumnInfo(name = "taskType")
+    @ColumnInfo(name = "taskType", defaultValue = AppConstant.Task.TASK_TYPE_DEFAULT.toString())
     var taskType: Int = AppConstant.Task.TASK_TYPE_DEFAULT,
-
 
     @ColumnInfo(name = "repeatFrequency")
     var repeatFrequency: ArrayList<SelectorDataModal> = arrayListOf(),
 
     @ColumnInfo(name = "repeatWeek")
-    var repeatWeek: ArrayList<SelectorDataModal> = arrayListOf()
+    var repeatDays: ArrayList<SelectorDataModal> = arrayListOf(),
+
+    @ColumnInfo(name = "links")
+    var links: ArrayList<LinksModel> = arrayListOf(),
+
+    @ColumnInfo(name = "tags")
+    var taskTags: ArrayList<TagModel> = arrayListOf(),
+
+    @ColumnInfo(name = "todoTaskList", defaultValue = "")
+    val arrayListTodoTask: ArrayList<TodoTaskModel> = arrayListOf()
 
 ) : Serializable {
-
-
     fun isCompletedVisible(): Int {
         return if (isCompleted) View.VISIBLE else View.GONE
     }
 
     fun isPriorityVisible(): Int {
-        return if (isHighPriority) {
-            View.VISIBLE
-        } else {
-            View.GONE
-        }
+        return View.VISIBLE
     }
 
     fun getEventDate(): String {
@@ -166,7 +172,7 @@ data class TodoModel(
 data class LatLngModel(
     var lat: Double = 0.0,
     var lng: Double = 0.0
-)
+) : Serializable
 
 data class TodoPagingModel(
     val data: ArrayList<TodoModel>,

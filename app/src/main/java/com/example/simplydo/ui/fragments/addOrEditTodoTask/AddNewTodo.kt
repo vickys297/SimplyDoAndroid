@@ -11,6 +11,7 @@ import android.view.*
 import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ConcatAdapter
@@ -18,14 +19,14 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.simplydo.R
-import com.example.simplydo.adapters.newTodotask.AudioAttachmentAdapter
-import com.example.simplydo.adapters.newTodotask.ContactAttachmentAdapter
-import com.example.simplydo.adapters.newTodotask.FileAttachmentAdapter
-import com.example.simplydo.adapters.newTodotask.GalleryAttachmentAdapter
+import com.example.simplydo.adapters.todoTaskAttachmentAdapter.AudioAttachmentAdapter
+import com.example.simplydo.adapters.todoTaskAttachmentAdapter.ContactAttachmentAdapter
+import com.example.simplydo.adapters.todoTaskAttachmentAdapter.FileAttachmentAdapter
+import com.example.simplydo.adapters.todoTaskAttachmentAdapter.GalleryAttachmentAdapter
 import com.example.simplydo.adapters.todoTaskList.TodoTaskAdapter
 import com.example.simplydo.adapters.todoTaskList.TodoTaskFooterAdapter
 import com.example.simplydo.databinding.AddNewTodoFragmentBinding
-import com.example.simplydo.dialog.bottomSheetDialogs.AddTaskItemBottomSheetModel
+import com.example.simplydo.dialog.bottomSheetDialogs.addTodoItem.AddTodoItemDialog
 import com.example.simplydo.dialog.bottomSheetDialogs.attachments.AddAttachmentsFragments
 import com.example.simplydo.dialog.bottomSheetDialogs.priorityDialog.PriorityDialog
 import com.example.simplydo.dialog.bottomSheetDialogs.repeatDialog.RepeatDialog
@@ -52,10 +53,12 @@ internal val TAG = AddNewTodo::class.java.canonicalName
 
 class AddNewTodo : Fragment(R.layout.add_new_todo_fragment), NewTodoOptionsFragmentsInterface {
 
-
-    private var dataSet: ArrayList<TodoTaskModel> = ArrayList()
+    private var taskPriority: Int = 3
+    private var todoTaskDataSet: ArrayList<TodoTaskModel> = ArrayList()
     private lateinit var viewModel: AddNewTodoViewModel
     private lateinit var binding: AddNewTodoFragmentBinding
+
+    private lateinit var addTodoItemDialog: AddTodoItemDialog
 
     private lateinit var repeatDialog: RepeatDialog
     private lateinit var priorityDialog: PriorityDialog
@@ -65,9 +68,11 @@ class AddNewTodo : Fragment(R.layout.add_new_todo_fragment), NewTodoOptionsFragm
     private lateinit var audioArrayList: ArrayList<AudioModel>
     private lateinit var filesArrayList: ArrayList<FileModel>
 
-    private var eventDate: Long = System.currentTimeMillis()
     private lateinit var eventTime: String
     private var latLng: LatLngModel = LatLngModel(0.0, 0.0)
+
+    private var eventDate: Long = System.currentTimeMillis()
+    private var currentEventStartDueDateTime = System.currentTimeMillis()
 
     // all adapter
     private lateinit var audioAttachmentAdapter: AudioAttachmentAdapter
@@ -78,71 +83,43 @@ class AddNewTodo : Fragment(R.layout.add_new_todo_fragment), NewTodoOptionsFragm
     private lateinit var todoTaskAdapter: TodoTaskAdapter
     private lateinit var todoTaskFooterAdapter: TodoTaskFooterAdapter
 
-    private var arrayListRepeatFrequency: ArrayList<SelectorDataModal> = ArrayList()
-    private var arrayListRepeatWeek: ArrayList<SelectorDataModal> = ArrayList()
+    /*
+    * All Observers Initials
+    * */
+    private lateinit var observerPriority: Observer<in Int>
+    private lateinit var observerFrequency: Observer<in ArrayList<SelectorDataModal>>
+    private lateinit var observerRepeat: Observer<in ArrayList<SelectorDataModal>>
+    private lateinit var observerTags: Observer<in ArrayList<TagModel>>
+    private lateinit var observerTodoTaskModel: Observer<in ArrayList<TodoTaskModel>>
+
+    // all interfaces
+
 
     private var taskNoteTextItemListener: AppInterface.TaskNoteTextItemListener =
         object : AppInterface.TaskNoteTextItemListener {
             override fun onAdd(content: String) {
-                dataSet.add(
+                todoTaskDataSet.add(
                     TodoTaskModel(
                         type = AppConstant.Task.VIEW_TASK_NOTE_TEXT,
                         content = content
                     )
                 )
-                todoTaskAdapter.updateDataSet(dataSet)
+                viewModel.arrayListTodoTask.postValue(todoTaskDataSet)
                 binding.textViewTodoListText.isVisible = todoTaskAdapter.dataSet.isEmpty()
             }
         }
 
-    // all interfaces
-
     private val onPriorityCallback = object : AppInterface.PriorityDialog.Callback {
-        override fun onSelect(i: Int) {
-
-            val parsedText = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                Html.fromHtml(
-                    "This task has <font color='#6200EE'>${
-                        AppFunctions.Priority.getPriorityById(i)
-                    }</font> priority", Html.FROM_HTML_MODE_LEGACY
-                )
-            } else {
-                Html.fromHtml(
-                    "This task has <font color='#6200EE'>${
-                        AppFunctions.Priority.getPriorityById(i)
-                    }</font> priority"
-                )
-            }
-            binding.textViewPriorityText.text = parsedText
+        override fun onSelect(priority: Int) {
+            viewModel.selectedPriority.postValue(priority)
         }
     }
 
     private val tagCallback: AppInterface.TagDialog.Callback =
         object : AppInterface.TagDialog.Callback {
             override fun onDone(selectedTag: ArrayList<TagModel>) {
-                binding.textViewNoTagAdded.isVisible = selectedTag.isEmpty()
-                for (tag in selectedTag) {
-                    val chipTag = Chip(requireContext())
-                    chipTag.text = tag.tagName
-                    chipTag.setChipBackgroundColorResource(R.color.colorPrimary)
-                    chipTag.isCloseIconVisible = true
-                    chipTag.setTextColor(
-                        requireContext().resources.getColor(
-                            R.color.white,
-                            requireContext().theme
-                        )
-                    )
-                    chipTag.setOnClickListener {
-                        selectedTag.remove(tag)
-                        binding.chipGroupTaskTags.removeView(it)
-                        binding.chipGroupTaskTags.isVisible = selectedTag.isNotEmpty()
-                        binding.textViewNoTagAdded.isVisible = selectedTag.isEmpty()
-                    }
-                    binding.chipGroupTaskTags.addView(chipTag)
-                }
-                binding.chipGroupTaskTags.isVisible = selectedTag.isNotEmpty()
+                viewModel.selectedTags.postValue(selectedTag)
             }
-
         }
 
     private val onRepeatCallback: RepeatDialogInterface = object : RepeatDialogInterface {
@@ -150,16 +127,13 @@ class AddNewTodo : Fragment(R.layout.add_new_todo_fragment), NewTodoOptionsFragm
             arrayFrequency: ArrayList<SelectorDataModal>,
             arrayWeek: ArrayList<SelectorDataModal>
         ) {
-            arrayListRepeatFrequency = arrayFrequency
-            arrayListRepeatWeek = arrayWeek
-            binding.chipGroupWeeks.isVisible = arrayListRepeatWeek.isNotEmpty()
-            setRepeatDate()
+            viewModel.selectedRepeatFrequency.postValue(arrayFrequency)
+            viewModel.selectedRepeatDays.postValue(arrayWeek)
         }
 
         override fun onCancel() {
 
         }
-
     }
 
     private val audioAttachmentInterface =
@@ -167,10 +141,8 @@ class AddNewTodo : Fragment(R.layout.add_new_todo_fragment), NewTodoOptionsFragm
             override fun onAudioSelect(item: AudioModel) {
 
             }
-
             override fun onRemoveItem(position: Int) {
                 audioArrayList.removeAt(position)
-                audioAttachmentAdapter.notifyItemRemoved(position)
                 AppFunctions.showMessage("Removed", requireContext())
             }
         }
@@ -192,7 +164,6 @@ class AddNewTodo : Fragment(R.layout.add_new_todo_fragment), NewTodoOptionsFragm
         override fun onFileSelect(item: FileModel) {
 
         }
-
     }
 
     private var addAttachmentInterface: AddAttachmentInterface = object : AddAttachmentInterface {
@@ -219,31 +190,28 @@ class AddNewTodo : Fragment(R.layout.add_new_todo_fragment), NewTodoOptionsFragm
         override fun onCancelTask() {
             findNavController().navigateUp()
         }
-
     }
 
     private val addTodoInterface = object : NewTodo.AddTask {
         override fun onAddText() {
-            AddTaskItemBottomSheetModel
-                .newInstance(
-                    taskNoteTextItemListener = taskNoteTextItemListener,
-                    context = requireContext()
-                )
-                .show(
-                    requireActivity().supportFragmentManager, "TaskNoteTextItemListener"
-                )
+            AddTodoItemDialog.newInstance(
+                taskNoteTextItemListener = taskNoteTextItemListener,
+                context = requireContext()
+            ).show(
+                requireActivity().supportFragmentManager, "TaskNoteTextItemListener"
+            )
         }
 
         override fun onAddList() {
             findNavController().navigate(R.id.action_addNewTodo_to_addNewTaskItemFragment)
         }
 
-        override fun onClose(item: TodoTaskModel, position: Int) {
-            dataSet.removeAt(position)
+        override fun onTaskRemove(item: TodoTaskModel, position: Int) {
+            todoTaskDataSet.removeAt(position)
             todoTaskAdapter.notifyItemRemoved(position)
+            viewModel.arrayListTodoTask.postValue(todoTaskDataSet)
             binding.textViewTodoListText.isVisible = todoTaskAdapter.dataSet.isEmpty()
         }
-
     }
 
     private val todoTaskInterface = object : NewTodo.TodoTask {
@@ -253,11 +221,11 @@ class AddNewTodo : Fragment(R.layout.add_new_todo_fragment), NewTodoOptionsFragm
                 AppConstant.Task.VIEW_TASK_NOTE_TEXT -> {
                     val bundle = Bundle()
                     bundle.putString(AppConstant.Bundle.Key.TODO_TASK_TEXT, item.content)
-                    AddTaskItemBottomSheetModel.newInstance(
+/*                    addTodoItemDialog = AddTodoItemDialog.newInstance(
                         context = requireContext(),
                         taskNoteTextItemListener = taskNoteTextItemListener,
                         bundle = bundle
-                    )
+                    )*/
                 }
                 AppConstant.Task.VIEW_TASK_NOTE_LIST -> {
                     val bundle = Bundle()
@@ -274,7 +242,6 @@ class AddNewTodo : Fragment(R.layout.add_new_todo_fragment), NewTodoOptionsFragm
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = AddNewTodoFragmentBinding.bind(view)
-
         setupObserver()
         setViewModel()
 
@@ -299,6 +266,7 @@ class AddNewTodo : Fragment(R.layout.add_new_todo_fragment), NewTodoOptionsFragm
         repeatDialog =
             RepeatDialog.getInstance(requireContext(), callback = onRepeatCallback)
         priorityDialog = PriorityDialog.newInstance(callback = onPriorityCallback)
+
 
         binding.textViewEventDate.text = AppFunctions.convertTimeInMillsecToPattern(
             eventDate,
@@ -326,37 +294,7 @@ class AddNewTodo : Fragment(R.layout.add_new_todo_fragment), NewTodoOptionsFragm
         }
 
         binding.linearLayoutEventTimeSelector.setOnClickListener {
-
-            val picker = MaterialTimePicker.Builder()
-                .setTimeFormat(TimeFormat.CLOCK_12H)
-                .setHour(AppFunctions.getHoursOfDay(System.currentTimeMillis()))
-                .setMinute(AppFunctions.getMinutes(System.currentTimeMillis()))
-                .setTitleText("Select Event Time")
-                .build()
-
-            picker.show(requireActivity().supportFragmentManager, "tag")
-
-            picker.addOnPositiveButtonClickListener {
-                // call back code
-                val selectedTime =
-                    "${picker.hour}:${picker.minute} ${if (picker.hour >= 12) "PM" else "AM"}"
-
-                binding.textViewEventTime.text = selectedTime
-                eventTime = "${picker.hour}:${picker.minute}"
-            }
-            picker.addOnNegativeButtonClickListener {
-                // call back code
-                Log.i(TAG, "onViewCreated: addOnNegativeButtonClickListener")
-            }
-            picker.addOnCancelListener {
-                // call back code
-                Log.i(TAG, "onViewCreated: addOnCancelListener")
-            }
-            picker.addOnDismissListener {
-                // call back code
-                Log.i(TAG, "onViewCreated: addOnDismissListener")
-            }
-
+            showTimePickerDialog()
         }
 
         binding.linearLayoutEventDateSelector.setOnClickListener {
@@ -431,36 +369,32 @@ class AddNewTodo : Fragment(R.layout.add_new_todo_fragment), NewTodoOptionsFragm
             if (validateDetails()) {
                 val title = binding.editTextTitle.text.toString()
                 val task = binding.editTextTask.text.toString()
-                val isPriority = binding.cbPriority.isChecked
 
+//                Insert new task in db
                 val newInsertId = viewModel.createTodo(
                     title,
                     task,
-                    eventDate,
-                    eventTime,
-                    isPriority,
+                    currentEventStartDueDateTime,
+                    taskPriority,
                     galleryArray = galleryArrayList,
                     contactArray = contactArrayList,
                     audioArray = audioArrayList,
                     filesArray = filesArrayList,
                     location = latLng,
-                    repeatFrequency = arrayListRepeatFrequency,
-                    repeatWeek = arrayListRepeatWeek,
+                    repeatFrequency = viewModel.selectedRepeatFrequency.value ?: ArrayList(),
+                    repeatWeek = viewModel.selectedRepeatDays.value ?: ArrayList(),
                 )
-
-
+//                Create new setup notification for the task
                 newInsertId.let {
                     val bundle = Bundle()
                     bundle.putLong("dtId", it)
                     bundle.putString("title", title)
                     bundle.putString("task", task)
-                    bundle.putBoolean("priority", isPriority)
-                    AppFunctions.showSnackBar(binding.root, "New task added")
+                    bundle.putBoolean("priority", true)
 
                     AppFunctions.setupNotification(
                         it,
-                        eventDate,
-                        eventTime,
+                        currentEventStartDueDateTime,
                         bundle,
                         requireActivity()
                     )
@@ -523,7 +457,7 @@ class AddNewTodo : Fragment(R.layout.add_new_todo_fragment), NewTodoOptionsFragm
         }
 
         todoTaskAdapter = TodoTaskAdapter(
-            dataSet = dataSet,
+            dataSet = todoTaskDataSet,
             addTodoInterface,
             todoTaskInterface = todoTaskInterface
         )
@@ -550,15 +484,13 @@ class AddNewTodo : Fragment(R.layout.add_new_todo_fragment), NewTodoOptionsFragm
                 val targetPosition = target.absoluteAdapterPosition
 
                 Collections.swap(
-                    dataSet, fromPosition, targetPosition
+                    todoTaskDataSet, fromPosition, targetPosition
                 )
-
 
                 todoTaskAdapter.notifyItemMoved(
                     fromPosition,
                     targetPosition
                 )
-
                 return false
             }
 
@@ -574,13 +506,120 @@ class AddNewTodo : Fragment(R.layout.add_new_todo_fragment), NewTodoOptionsFragm
                 LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
             adapter = contactAdapter
         }
-
         itemTouchHelper.attachToRecyclerView(binding.recyclerViewTaskItems)
 
         checkForAttachment()
+        setupTaskPriority(taskPriority)
+    }
+
+    private fun showTimePickerDialog() {
+        val picker = MaterialTimePicker.Builder()
+            .setTimeFormat(TimeFormat.CLOCK_12H)
+            .setHour(AppFunctions.getHoursOfDay(currentEventStartDueDateTime))
+            .setMinute(AppFunctions.getMinutes(currentEventStartDueDateTime))
+            .build()
+
+        picker.show(requireActivity().supportFragmentManager, "tag")
+        picker.addOnPositiveButtonClickListener {
+            val selectedDueTime = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                Calendar.getInstance().apply {
+                    timeInMillis = currentEventStartDueDateTime
+                    set(Calendar.HOUR_OF_DAY, picker.hour)
+                    set(Calendar.MINUTE, picker.minute)
+                }.timeInMillis
+
+            } else {
+                java.util.Calendar.getInstance().apply {
+                    timeInMillis = currentEventStartDueDateTime
+                    set(java.util.Calendar.HOUR_OF_DAY, picker.hour)
+                    set(java.util.Calendar.MINUTE, picker.minute)
+                }.timeInMillis
+            }
+
+
+            binding.textViewEventTime.text =
+                AppFunctions.getPatternByTimeInMilliSec(selectedDueTime, "hh:mm a")
+            eventTime = AppFunctions.getPatternByTimeInMilliSec(selectedDueTime, "hh:mm a")
+            currentEventStartDueDateTime = selectedDueTime
+        }
+        picker.addOnNegativeButtonClickListener {
+            // call back code
+            Log.i(TAG, "onViewCreated: addOnNegativeButtonClickListener")
+        }
+        picker.addOnCancelListener {
+            // call back code
+            Log.i(TAG, "onViewCreated: addOnCancelListener")
+        }
+        picker.addOnDismissListener {
+            // call back code
+            Log.i(TAG, "onViewCreated: addOnDismissListener")
+        }
     }
 
     private fun setupObserver() {
+        observerPriority = Observer { priority ->
+            taskPriority = priority
+            setupTaskPriority(priority)
+        }
+        observerFrequency = Observer { data ->
+            val stringBuilder = StringBuilder()
+            for (frequency in data) {
+                if (frequency.selected) {
+                    stringBuilder.append("Repeat every ${frequency.value}")
+                }
+            }
+            binding.textViewRepeatText.apply {
+                text = stringBuilder
+            }
+        }
+        observerRepeat = Observer { data ->
+            binding.chipGroupWeeks.isVisible = data.isNotEmpty()
+            setRepeatDate(data)
+        }
+        observerTags = Observer { data ->
+            binding.textViewNoTagAdded.isVisible = data.isEmpty()
+            for (tag in data) {
+                val chipTag = Chip(requireContext())
+                chipTag.text = tag.tagName
+                chipTag.setChipBackgroundColorResource(R.color.colorPrimary)
+                chipTag.isCloseIconVisible = true
+                chipTag.setTextColor(
+                    requireContext().resources.getColor(
+                        R.color.white,
+                        requireContext().theme
+                    )
+                )
+                chipTag.setOnClickListener {
+                    viewModel.selectedTags.value?.remove(tag)
+                    binding.chipGroupTaskTags.removeView(it)
+                    binding.chipGroupTaskTags.isVisible =
+                        viewModel.selectedTags.value!!.isNotEmpty()
+                    binding.textViewNoTagAdded.isVisible = viewModel.selectedTags.value!!.isEmpty()
+                }
+                binding.chipGroupTaskTags.addView(chipTag)
+            }
+            binding.chipGroupTaskTags.isVisible = viewModel.selectedTags.value!!.isNotEmpty()
+        }
+        observerTodoTaskModel = Observer {
+            todoTaskAdapter.updateDataSet(it)
+        }
+    }
+
+    private fun setupTaskPriority(priority: Int) {
+        val parsedText = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Html.fromHtml(
+                "This task has <font color='#6200EE'>${
+                    AppFunctions.Priority.getPriorityById(priority)
+                }</font> priority", Html.FROM_HTML_MODE_LEGACY
+            )
+        } else {
+            Html.fromHtml(
+                "This task has <font color='#6200EE'>${
+                    AppFunctions.Priority.getPriorityById(priority)
+                }</font> priority"
+            )
+        }
+        binding.textViewPriorityText.text = parsedText
     }
 
     private fun setViewModel() {
@@ -604,18 +643,23 @@ class AddNewTodo : Fragment(R.layout.add_new_todo_fragment), NewTodoOptionsFragm
     }
 
     private fun attachmentDataObserver() {
+//        State Observer
+        viewModel.selectedPriority.observe(viewLifecycleOwner, observerPriority)
+        viewModel.selectedRepeatFrequency.observe(viewLifecycleOwner, observerFrequency)
+        viewModel.selectedRepeatDays.observe(viewLifecycleOwner, observerRepeat)
+        viewModel.selectedTags.observe(viewLifecycleOwner, observerTags)
+        viewModel.arrayListTodoTask.observe(viewLifecycleOwner, observerTodoTaskModel)
 
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<ArrayList<String>>(
             AppConstant.Key.NAVIGATION_ADD_TASK_LIST
         )?.observe(viewLifecycleOwner) { result ->
-            dataSet.add(
+            todoTaskDataSet.add(
                 TodoTaskModel(
                     type = AppConstant.Task.VIEW_TASK_NOTE_LIST,
                     contentList = result
                 )
             )
-
-            todoTaskAdapter.updateDataSet(dataSet)
+            viewModel.arrayListTodoTask.postValue(todoTaskDataSet)
             binding.textViewTodoListText.isVisible = todoTaskAdapter.dataSet.isEmpty()
         }
 
@@ -719,9 +763,7 @@ class AddNewTodo : Fragment(R.layout.add_new_todo_fragment), NewTodoOptionsFragm
                 lng = result.longitude
             }
 
-
             checkForAttachment()
-
 
             // Do something with the result.
             Log.i(TAG, "attachmentDataObserver: latLng --> $result")
@@ -803,46 +845,36 @@ class AddNewTodo : Fragment(R.layout.add_new_todo_fragment), NewTodoOptionsFragm
         findNavController().navigateUp()
     }
 
-    private fun setRepeatDate() {
+    private fun setRepeatDate(dateArrayList: ArrayList<SelectorDataModal>) {
 
-        val stringBuilder = StringBuilder()
-        for (frequency in arrayListRepeatFrequency) {
-            if (frequency.selected) {
-                stringBuilder.append("Repeat every ${frequency.value}")
-            }
-        }
-
-        for (week in arrayListRepeatWeek) {
+        for (week in dateArrayList) {
             if (week.selected) {
                 val chipWeek = Chip(requireContext())
                 chipWeek.text = week.visibleValue
                 chipWeek.setChipBackgroundColorResource(R.color.colorPrimary)
                 chipWeek.isCloseIconVisible = true
+
                 chipWeek.setTextColor(
                     requireContext().resources.getColor(
                         R.color.white,
                         requireContext().theme
                     )
                 )
+
                 chipWeek.setOnCloseIconClickListener {
                     binding.chipGroupWeeks.removeView(it)
-                    arrayListRepeatWeek.remove(week)
+                    viewModel.selectedRepeatDays.value!!.remove(week)
 
-                    if (arrayListRepeatWeek.isEmpty()) {
-                        binding.chipGroupWeeks.isVisible = arrayListRepeatWeek.isNotEmpty()
+                    if (viewModel.selectedRepeatDays.value!!.isEmpty()) {
+                        binding.chipGroupWeeks.isVisible =
+                            viewModel.selectedRepeatDays.value!!.isNotEmpty()
                         binding.textViewRepeatText.text =
                             requireContext().getText(R.string.tap_to_set_repeat_period_to_this_task)
                     }
                 }
-
                 binding.chipGroupWeeks.addView(chipWeek)
             }
         }
-        binding.textViewRepeatText.apply {
-            text = stringBuilder
-        }
     }
-
-
 }
 

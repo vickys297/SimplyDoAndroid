@@ -47,14 +47,14 @@ class CalenderViewModel(val appRepository: AppRepository) : ViewModel() {
             title = title,
             todo = task,
             eventDateTime = eventDate,
+            taskPriority = 3,
+            locationData = LatLngModel(),
             contactAttachments = contactInfo,
             imageAttachments = imagesList,
-            locationData = LatLngModel(),
             createdAt = AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_ISO)
                 .format(Date().time),
             updatedAt = AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_ISO)
-                .format(Date().time),
-            isHighPriority = priority
+                .format(Date().time)
         )
         )
 

@@ -1,4 +1,4 @@
-package com.example.simplydo.adapters.newTodotask
+package com.example.simplydo.adapters.todoTaskAttachmentAdapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -18,7 +18,6 @@ class AudioAttachmentAdapter(private val audioAttachmentInterface: AudioAttachme
             }
             return binding
         }
-
     }
 
     private var dataSet = ArrayList<AudioModel>()
@@ -41,14 +40,11 @@ class AudioAttachmentAdapter(private val audioAttachmentInterface: AudioAttachme
                 it.imageButtonPlay.setOnClickListener {
                     audioAttachmentInterface.onAudioSelect(item)
                 }
-
                 it.imageViewRemove.setOnClickListener {
+                    notifyItemRemoved(position)
                     audioAttachmentInterface.onRemoveItem(position)
                 }
             }
-
-
-
         }
     }
 

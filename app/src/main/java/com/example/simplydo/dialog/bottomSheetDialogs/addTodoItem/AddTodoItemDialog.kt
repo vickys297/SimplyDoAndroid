@@ -1,4 +1,4 @@
-package com.example.simplydo.dialog.bottomSheetDialogs
+package com.example.simplydo.dialog.bottomSheetDialogs.addTodoItem
 
 import android.content.Context
 import android.os.Bundle
@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
@@ -14,21 +15,21 @@ import com.example.simplydo.utlis.AppConstant
 import com.example.simplydo.utlis.AppInterface
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-internal val TAG = AddTaskItemBottomSheetModel::class.java.canonicalName
+internal val TAG = AddTodoItemDialog::class.java.canonicalName
 
-class AddTaskItemBottomSheetModel(
+class AddTodoItemDialog(
     private val addItemInterface: AppInterface.TaskNoteTextItemListener,
     private val requireContent: Context,
     private val bundle: Bundle?
-) :
-    BottomSheetDialogFragment() {
+) : BottomSheetDialogFragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return LayoutInflater.from(requireContent).inflate(R.layout.fragment_add_item_bottom_sheet_model, container, false)
+        return LayoutInflater.from(requireContent)
+            .inflate(R.layout.fragment_add_item_bottom_sheet_model, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -47,14 +48,26 @@ class AddTaskItemBottomSheetModel(
             dismiss()
         }
 
-        addAndRepeatButton.setOnClickListener {
-            Log.i(TAG, "onViewCreated: Content -> ${editTextContent.text.toString()}")
-            if (editTextContent.text.isNotEmpty()) {
-                addItemInterface.onAdd(content = editTextContent.text.toString())
-                editTextContent.text.clear()
-            } else {
-                editTextContent.error = "Field Required"
+        editTextContent.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                validateContent(editTextContent)
+                return@setOnEditorActionListener true
             }
+            false
+        }
+
+        addAndRepeatButton.setOnClickListener {
+            validateContent(editTextContent)
+        }
+    }
+
+    private fun validateContent(editTextContent: EditText) {
+        Log.i(TAG, "validateContent: $editTextContent")
+        if (editTextContent.text.isNotEmpty()) {
+            addItemInterface.onAdd(content = editTextContent.text.toString())
+            editTextContent.text.clear()
+        } else {
+            editTextContent.error = "Field Required"
         }
     }
 
@@ -63,8 +76,8 @@ class AddTaskItemBottomSheetModel(
             taskNoteTextItemListener: AppInterface.TaskNoteTextItemListener,
             bundle: Bundle? = null,
             context: Context
-        ): AddTaskItemBottomSheetModel {
-            return AddTaskItemBottomSheetModel(taskNoteTextItemListener, context, bundle)
+        ): AddTodoItemDialog {
+            return AddTodoItemDialog(taskNoteTextItemListener, context, bundle)
         }
 
     }

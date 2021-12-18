@@ -85,7 +85,26 @@
     <fragment
         android:id="@+id/editFragment"
         android:name="com.example.simplydo.ui.fragments.addOrEditTodoTask.EditTodo"
-        android:label="EditTodo" />
+        android:label="EditTodo" >
+        <action
+            android:id="@+id/action_editFragment_to_contactsFragment"
+            app:destination="@id/contactsFragment" />
+        <action
+            android:id="@+id/action_editFragment_to_mapsFragment"
+            app:destination="@id/mapsFragment" />
+        <action
+            android:id="@+id/action_editFragment_to_galleryListFragment"
+            app:destination="@id/galleryListFragment" />
+        <action
+            android:id="@+id/action_editFragment_to_documentListFragment"
+            app:destination="@id/documentListFragment" />
+        <action
+            android:id="@+id/action_editFragment_to_audioListFragment"
+            app:destination="@id/audioListFragment" />
+        <action
+            android:id="@+id/action_editFragment_to_addNewTaskItemFragment"
+            app:destination="@id/addNewTaskItemFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/calenderFragment"

@@ -122,7 +122,7 @@ class QuickTodoFragment : Fragment(R.layout.fragment_quick_todo), View.OnClickLi
 
             if (item.taskType == AppConstant.Task.TASK_TYPE_BASIC) {
                 // show basic edit
-                EditTodoBasic.newInstance(editBasicTodoInterface, item)
+                EditTodoBasic.newInstance(requireContext(), editBasicTodoInterface, item)
                     .show(requireActivity().supportFragmentManager, "dialog")
             }
 

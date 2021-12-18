@@ -79,6 +79,12 @@ object MimeTypes {
 
 object AppConstant {
 
+    object TaskPriority {
+        const val HIGH_PRIORITY = 1
+        const val MEDIUM_PRIORITY = 2
+        const val LOW_PRIORITY = 3
+    }
+
     object Bundle {
         object Key {
             const val TODO_TASK_TEXT = "todoTaskText"
@@ -98,7 +104,7 @@ object AppConstant {
         const val TASK_ACTION_EDIT: Int = 12
         const val TASK_ACTION_NEW: Int = 13
 
-        const val TASK_TYPE_DEFAULT: Int = 1001
+        const val TASK_TYPE_DEFAULT: Int = 101
         const val TASK_TYPE_BASIC: Int = 100
         const val TASK_TYPE_EVENT: Int = 101
         const val TASK_TYPE_ATTACHMENT: Int = 102

@@ -1,11 +1,9 @@
 package com.example.simplydo.ui.fragments.addOrEditTodoTask
 
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.simplydo.model.ContactModel
-import com.example.simplydo.model.LatLngModel
-import com.example.simplydo.model.SelectorDataModal
-import com.example.simplydo.model.TodoModel
+import com.example.simplydo.model.*
 import com.example.simplydo.model.attachmentModel.AudioModel
 import com.example.simplydo.model.attachmentModel.FileModel
 import com.example.simplydo.model.attachmentModel.GalleryModel
@@ -16,12 +14,21 @@ import java.util.*
 
 class AddNewTodoViewModel(val appRepository: AppRepository) :
     ViewModel() {
+
+
+    val selectedPriority = MutableLiveData<Int>()
+    val selectedRepeatFrequency = MutableLiveData<ArrayList<SelectorDataModal>>()
+    val selectedRepeatDays = MutableLiveData<ArrayList<SelectorDataModal>>()
+    val selectedTags = MutableLiveData<ArrayList<TagModel>>()
+
+    val arrayListTodoTask = MutableLiveData<ArrayList<TodoTaskModel>>()
+
+
     fun createTodo(
         title: String,
         task: String,
         eventDate: Long,
-        eventTime: String,
-        priority: Boolean,
+        taskPriority: Int,
         contactArray: ArrayList<ContactModel>,
         galleryArray: ArrayList<GalleryModel>,
         audioArray: ArrayList<AudioModel>,
@@ -35,9 +42,9 @@ class AddNewTodoViewModel(val appRepository: AppRepository) :
                 title = title,
                 todo = task,
                 eventDateTime = eventDate,
-                isHighPriority = priority,
-                contactAttachments = contactArray,
+                taskPriority = taskPriority,
                 locationData = location,
+                contactAttachments = contactArray,
                 imageAttachments = galleryArray,
                 audioAttachments = audioArray,
                 fileAttachments = filesArray,
@@ -46,7 +53,7 @@ class AddNewTodoViewModel(val appRepository: AppRepository) :
                 updatedAt = AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_ISO)
                     .format(Date().time),
                 repeatFrequency = repeatFrequency,
-                repeatWeek = repeatWeek
+                repeatDays = repeatWeek
             )
         )
     }
@@ -56,28 +63,38 @@ class AddNewTodoViewModel(val appRepository: AppRepository) :
         title: String,
         task: String,
         eventDate: Long,
-        priority: Boolean,
+        taskPriority: Int,
         galleryArray: ArrayList<GalleryModel>,
         contactArray: ArrayList<ContactModel>,
         audioArray: ArrayList<AudioModel>,
         filesArray: ArrayList<FileModel>,
         location: LatLngModel,
-        createAt: String
+        createAt: String,
+        repeatFrequency: ArrayList<SelectorDataModal>,
+        repeatWeek: ArrayList<SelectorDataModal>,
+        taskType: Int,
+        taskTags: ArrayList<TagModel>,
+        arrayListTodoTask: ArrayList<TodoTaskModel>
     ): Int {
        val updateModel =  TodoModel(
            dtId = dtId,
            title = title,
            todo = task,
            eventDateTime = eventDate,
-           isHighPriority = priority,
+           taskPriority = taskPriority,
            contactAttachments = contactArray,
            locationData = location,
            imageAttachments = galleryArray,
            audioAttachments = audioArray,
            fileAttachments = filesArray,
            createdAt = createAt,
-           updatedAt = System.currentTimeMillis().toString()
-        )
+           updatedAt = System.currentTimeMillis().toString(),
+           repeatFrequency = repeatFrequency,
+           repeatDays = repeatWeek,
+           taskType = taskType,
+           taskTags = taskTags,
+           arrayListTodoTask = arrayListTodoTask
+       )
 
         Log.i(TAG, "updateTodo: $updateModel")
 

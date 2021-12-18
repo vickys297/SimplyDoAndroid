@@ -106,5 +106,17 @@ class ConverterHelper {
         return gson.fromJson(json, object : TypeToken<ArrayList<TagModel>>() {}.type)
     }
 
+    @TypeConverter
+    fun fromLinkModalList(list: ArrayList<LinksModel>): String {
+        return gson.toJson(list)
+    }
+
+    @TypeConverter
+    fun toLinkModalList(json: String): ArrayList<LinksModel> {
+        return gson.fromJson(json, object : TypeToken<ArrayList<LinksModel>>() {}.type)
+    }
+
+
+
 
 }

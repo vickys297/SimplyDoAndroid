@@ -39,6 +39,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
+            android:imeOptions="actionDone"
             android:backgroundTint="@android:color/transparent"
             android:hint="@string/enter_content_here"
             android:importantForAutofill="no"

@@ -82,7 +82,7 @@ class TodoTaskAdapter(
                     addListViewToParent(binding, item.contentList!!)
 
                     binding.imageButtonClose.setOnClickListener {
-                        addTodoInterface.onClose(item, bindingAdapterPosition)
+                        addTodoInterface.onTaskRemove(item, bindingAdapterPosition)
                     }
 
                     holder.itemView.setOnClickListener {
@@ -97,7 +97,7 @@ class TodoTaskAdapter(
                     binding.textViewNote.text = item.content
 
                     binding.imageButtonClose.setOnClickListener {
-                        addTodoInterface.onClose(item, bindingAdapterPosition)
+                        addTodoInterface.onTaskRemove(item, bindingAdapterPosition)
                     }
 
                     holder.itemView.setOnClickListener {
@@ -156,7 +156,7 @@ class TodoTaskAdapter(
     override fun getItemCount(): Int = dataSet.size
 
     fun updateDataSet(dataSet: ArrayList<TodoTaskModel>) {
-//        val lastSize = this.dataSet.size
+        val lastSize = this.dataSet.size
         this.dataSet = dataSet
         notifyDataSetChanged()
     }

@@ -17,10 +17,10 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 internal val TAG = EditTodoBasic::class.java.canonicalName
 class EditTodoBasic(
+    private val parentContext: Context,
     private val currentTodoModel: TodoModel,
     private val editBasicTodoInterface: EditBasicTodoInterface
-) :
-    BottomSheetDialogFragment(), View.OnClickListener {
+) : BottomSheetDialogFragment(), View.OnClickListener {
 
     private var _binding: FragmentAddTodoBasicListDialogBinding? = null
 
@@ -35,7 +35,8 @@ class EditTodoBasic(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        _binding = FragmentAddTodoBasicListDialogBinding.inflate(inflater, container, false)
+        val layoutInflater = LayoutInflater.from(parentContext)
+        _binding = FragmentAddTodoBasicListDialogBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
 
@@ -88,9 +89,9 @@ class EditTodoBasic(
                     title = binding.editTextTitle.text.toString(),
                     todo = binding.editTextTask.text.toString(),
                     eventDateTime = eventDateTime,
-                    imageAttachments = currentTodoModel.imageAttachments,
-                    contactAttachments = currentTodoModel.contactAttachments,
                     locationData = currentTodoModel.locationData,
+                    contactAttachments = currentTodoModel.contactAttachments,
+                    imageAttachments = currentTodoModel.imageAttachments,
                     fileAttachments = currentTodoModel.fileAttachments,
                     createdAt = currentTodoModel.createdAt,
                     updatedAt = System.currentTimeMillis().toString()
@@ -102,10 +103,10 @@ class EditTodoBasic(
 
     companion object {
         fun newInstance(
+            context: Context,
             editBasicTodoInterface: EditBasicTodoInterface,
             todoModel: TodoModel
-        ): EditTodoBasic =
-            EditTodoBasic(todoModel, editBasicTodoInterface)
+        ): EditTodoBasic = EditTodoBasic(context, todoModel, editBasicTodoInterface)
     }
 
     override fun onDestroyView() {

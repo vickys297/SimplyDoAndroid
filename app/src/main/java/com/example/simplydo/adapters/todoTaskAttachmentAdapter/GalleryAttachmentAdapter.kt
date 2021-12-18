@@ -1,4 +1,4 @@
-package com.example.simplydo.adapters.newTodotask
+package com.example.simplydo.adapters.todoTaskAttachmentAdapter
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -11,7 +11,7 @@ import com.example.simplydo.utlis.GalleryAttachmentInterface
 
 class GalleryAttachmentAdapter(
     val context: Context,
-    val galleryAttachmentInterface: GalleryAttachmentInterface
+    private val galleryAttachmentInterface: GalleryAttachmentInterface
 ) :
     RecyclerView.Adapter<GalleryAttachmentAdapter.GalleryViewHolder>() {
 

@@ -27,7 +27,7 @@ class MainViewModel(val appRepository: AppRepository) : ViewModel() {
         task: String,
         title: String,
         eventDate: Long,
-        priority: Boolean,
+        taskPriority: Int,
         isCompleted: Boolean = false,
         contactList: ArrayList<ContactModel>,
         imageList: ArrayList<GalleryModel>,
@@ -38,15 +38,15 @@ class MainViewModel(val appRepository: AppRepository) : ViewModel() {
                 title = title,
                 todo = task,
                 eventDateTime = eventDate,
+                taskPriority = taskPriority,
+                locationData = LatLngModel(),
                 contactAttachments = contactList,
                 imageAttachments = imageList,
-                locationData = LatLngModel(),
-                isCompleted = isCompleted,
                 createdAt = AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_ISO)
                     .format(Date().time),
                 updatedAt = AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_ISO)
                     .format(Date().time),
-                isHighPriority = priority,
+                isCompleted = isCompleted,
                 taskType = taskType
             )
         )

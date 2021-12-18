@@ -154,7 +154,7 @@ class MainActivity : AppCompatActivity() {
             task = "Your task description here.\n" +
                     "Just swipe left or right to complete the task.",
             eventDate = calender.timeInMillis,
-            priority = false,
+            taskPriority = 3,
             contactList = ArrayList(),
             imageList = ArrayList(),
             taskType = AppConstant.Task.TASK_TYPE_BASIC
@@ -165,7 +165,7 @@ class MainActivity : AppCompatActivity() {
                     "Completed task will be hidden if the date expires.\n" +
                     "You can access completed task by clicking options button.",
             eventDate = calender.timeInMillis,
-            priority = false,
+            taskPriority = 3,
             isCompleted = true,
             contactList = ArrayList(),
             imageList = ArrayList(),
@@ -178,7 +178,7 @@ class MainActivity : AppCompatActivity() {
                     "You can change the notification time of the basic task.\n" +
                     "Goto Settings -> Notifications -> Basic Notification Time.",
             eventDate = calender.timeInMillis,
-            priority = true,
+            taskPriority = 3,
             contactList = ArrayList(),
             imageList = ArrayList(),
             taskType = AppConstant.Task.TASK_TYPE_BASIC
@@ -197,7 +197,7 @@ class MainActivity : AppCompatActivity() {
                     "You can change the notification time of the basic task.\n" +
                     "Goto Settings -> Notifications -> Basic Notification Time.",
             eventDate = calender.timeInMillis,
-            priority = true,
+            taskPriority = 3,
             contactList = ArrayList(),
             imageList = ArrayList(),
             taskType = AppConstant.Task.TASK_TYPE_EVENT

@@ -129,7 +129,7 @@ interface NewTodo {
     interface AddTask {
         fun onAddText()
         fun onAddList()
-        fun onClose(item: TodoTaskModel, position: Int)
+        fun onTaskRemove(item: TodoTaskModel, position: Int)
     }
 
     interface TodoTask {
@@ -156,7 +156,7 @@ interface AppInterface {
 
     interface PriorityDialog{
         interface Callback{
-            fun onSelect(i: Int) // 1 - high, 2 - Medium, 3 - low
+            fun onSelect(priority: Int) // 1 - high, 2 - Medium, 3 - low
         }
     }
 }

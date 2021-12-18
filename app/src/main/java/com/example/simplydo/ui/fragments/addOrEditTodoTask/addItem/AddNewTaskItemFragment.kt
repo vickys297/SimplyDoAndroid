@@ -7,11 +7,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simplydo.R
-import com.example.simplydo.dialog.bottomSheetDialogs.AddTaskItemBottomSheetModel
 import com.example.simplydo.databinding.AddNewTaskItemFragmentBinding
+import com.example.simplydo.dialog.bottomSheetDialogs.addTodoItem.AddTodoItemDialog
 import com.example.simplydo.utlis.AppConstant
 import com.example.simplydo.utlis.AppInterface
 
+internal val TAG = AddNewTaskItemFragment::class.java.canonicalName
 class AddNewTaskItemFragment : Fragment(R.layout.add_new_task_item_fragment) {
 
     private val array: ArrayList<String> = ArrayList()
@@ -22,7 +23,7 @@ class AddNewTaskItemFragment : Fragment(R.layout.add_new_task_item_fragment) {
 
     private lateinit var addListItemAdapter: AddListItemAdapter
 
-    private lateinit var addTaskContentBottomSheetDialog: AddTaskItemBottomSheetModel
+    private lateinit var addTaskContentBottomSheetDialog: AddTodoItemDialog
 
     private var addItemInterface = object : AppInterface.TaskNoteTextItemListener {
         override fun onAdd(content: String) {
@@ -36,11 +37,15 @@ class AddNewTaskItemFragment : Fragment(R.layout.add_new_task_item_fragment) {
         _binding = AddNewTaskItemFragmentBinding.bind(view)
         viewModel = ViewModelProvider(this).get(AddNewTaskItemViewModel::class.java)
 
-        addTaskContentBottomSheetDialog =
-            AddTaskItemBottomSheetModel.newInstance(
-                taskNoteTextItemListener = addItemInterface,
-                context = requireContext()
-            )
+        findNavController().previousBackStackEntry?.savedStateHandle?.set(
+            AppConstant.Key.NAVIGATION_ADD_TASK_LIST,
+            array
+        )
+
+        addTaskContentBottomSheetDialog = AddTodoItemDialog.newInstance(
+            taskNoteTextItemListener = addItemInterface,
+            context = requireContext()
+        )
 
         addListItemAdapter = AddListItemAdapter(array)
 
@@ -67,8 +72,12 @@ class AddNewTaskItemFragment : Fragment(R.layout.add_new_task_item_fragment) {
                 AppConstant.Key.NAVIGATION_ADD_TASK_LIST,
                 array
             )
-            findNavController().navigateUp()
+            findNavController().popBackStack()
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
     }
 
     override fun onDestroy() {

@@ -1,5 +1,7 @@
 package com.example.simplydo.model
 
+import java.io.Serializable
+
 data class SmallCalenderModel(
     val id: Int = 0,
     val dateOfMonth: String,
@@ -8,4 +10,4 @@ data class SmallCalenderModel(
     var isActive: Boolean = false,
     val startEventDate: Long,
     val endEventDate: Long,
-)
+) : Serializable
