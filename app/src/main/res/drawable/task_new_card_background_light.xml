@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/task_background_card_new_light" />
+    <item
+        android:width="5dp"
+        android:height="50dp"
+        android:drawable="@drawable/task_background_card_accent_new"
+        android:top="8dp" />
+</layer-list>

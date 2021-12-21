@@ -9,6 +9,7 @@ import android.text.Html
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -67,9 +68,16 @@ class EditTodo : Fragment(R.layout.edit_todo_fragment), NewTodoOptionsFragmentsI
     private lateinit var filesArrayList: ArrayList<FileModel>
 
     private var latLng: LatLngModel = LatLngModel(0.0, 0.0)
-
+    private var taskPriority = AppConstant.TaskPriority.LOW_PRIORITY
+    private var taskID = 0L
+    private lateinit var taskCreatedAt: String
+    private var taskType: Int = 0
     private var eventDate: Long = System.currentTimeMillis()
     private var currentEventStartDueDateTime = System.currentTimeMillis()
+    private var taskRepeatFrequency: ArrayList<SelectorDataModal> = arrayListOf()
+    private var taskRepeatDays: ArrayList<SelectorDataModal> = arrayListOf()
+
+    private var toast: Toast? = null
 
     // all adapter
     private lateinit var audioAttachmentAdapter: AudioAttachmentAdapter
@@ -80,10 +88,7 @@ class EditTodo : Fragment(R.layout.edit_todo_fragment), NewTodoOptionsFragmentsI
     private lateinit var todoTaskAdapter: TodoTaskAdapter
     private lateinit var todoTaskFooterAdapter: TodoTaskFooterAdapter
 
-    private var taskPriority = AppConstant.TaskPriority.LOW_PRIORITY
-    private var taskID = 0L
-    private lateinit var taskCreatedAt: String
-    private var taskType: Int = 0
+
 
     /*
     * All Observers Initials
@@ -150,8 +155,21 @@ class EditTodo : Fragment(R.layout.edit_todo_fragment), NewTodoOptionsFragmentsI
 
     private val galleryAttachmentInterface =
         object : GalleryAttachmentInterface {
-            override fun onItemSelect(item: GalleryModel) {
+            override fun onItemSelect(item: GalleryModel, indexOf: Int) {
 
+            }
+
+            override fun onItemRemoved(removedItem: GalleryModel, indexOf: Int) {
+                Log.i(TAG, "galleryAttachmentInterface >> onItemSelect: $removedItem")
+                if (galleryArrayList.contains(removedItem))
+                    galleryArrayList.removeAt(indexOf)
+
+                if (toast != null) {
+                    toast?.cancel()
+                }
+                toast = Toast.makeText(requireContext(), "Item Removed", Toast.LENGTH_SHORT)
+                toast?.show()
+                checkForAttachment()
             }
         }
 
@@ -288,11 +306,11 @@ class EditTodo : Fragment(R.layout.edit_todo_fragment), NewTodoOptionsFragmentsI
                 viewModel.selectedRepeatFrequency.postValue(taskData.repeatFrequency)
             }
 
+            galleryArrayList.addAll(taskData.galleryAttachments)
 
+            checkForAttachment()
         }
 
-        repeatDialog =
-            RepeatDialog.getInstance(requireContext(), callback = onRepeatCallback)
         priorityDialog = PriorityDialog.newInstance(callback = onPriorityCallback)
 
 
@@ -364,6 +382,7 @@ class EditTodo : Fragment(R.layout.edit_todo_fragment), NewTodoOptionsFragmentsI
                 )
             }
         }
+
         binding.btnCreateTodoTask.setOnClickListener {
             Log.i(TAG, "onViewCreated: $latLng")
             if (validateDetails()) {
@@ -413,10 +432,12 @@ class EditTodo : Fragment(R.layout.edit_todo_fragment), NewTodoOptionsFragmentsI
                 )
             }
         }
+
         binding.imageButtonNewTodoOptions.setOnClickListener {
             AddAttachmentsFragments.newInstance(requireContext(), addAttachmentInterface)
                 .show(requireActivity().supportFragmentManager, "dialog")
         }
+
         binding.linearLayoutTags.setOnClickListener {
             TagsBottomSheetDialog.newInstance(requireContext(), tagCallback).show(
                 requireActivity().supportFragmentManager,
@@ -472,6 +493,7 @@ class EditTodo : Fragment(R.layout.edit_todo_fragment), NewTodoOptionsFragmentsI
 
             }
         }
+
         val itemTouchHelper = ItemTouchHelper(simpleItemTouchHelper)
         val contactAdapter = ConcatAdapter(todoTaskAdapter, todoTaskFooterAdapter)
         binding.recyclerViewTaskItems.apply {
@@ -504,8 +526,6 @@ class EditTodo : Fragment(R.layout.edit_todo_fragment), NewTodoOptionsFragmentsI
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             adapter = fileAttachmentAdapter
         }
-
-
 
         checkForAttachment()
     }
@@ -573,20 +593,27 @@ class EditTodo : Fragment(R.layout.edit_todo_fragment), NewTodoOptionsFragmentsI
             binding.textViewPriorityText.text = parsedText
         }
         observerFrequency = Observer { data ->
-            val stringBuilder = StringBuilder()
-            for (frequency in data) {
-                if (frequency.selected) {
-                    stringBuilder.append("Repeat every ${frequency.value}")
+            taskRepeatFrequency = data
+            if (data.isNotEmpty()) {
+                val stringBuilder = StringBuilder()
+                for (frequency in data) {
+                    if (frequency.selected) {
+                        stringBuilder.append("Repeat every ${frequency.value}")
+                    }
+                }
+                binding.textViewRepeatText.apply {
+                    text = stringBuilder
                 }
             }
-            binding.textViewRepeatText.apply {
-                text = stringBuilder
-            }
+
         }
         observerRepeat = Observer { data ->
-            binding.chipGroupWeeks.removeAllViews()
-            binding.chipGroupWeeks.isVisible = data.isNotEmpty()
-            setRepeatDate(data)
+            taskRepeatDays = data
+            data.isNotEmpty().let {
+                binding.chipGroupWeeks.isVisible = it
+                setRepeatDate(data)
+            }
+
         }
         observerTags = Observer { data ->
             binding.chipGroupTaskTags.removeAllViews()
@@ -731,13 +758,9 @@ class EditTodo : Fragment(R.layout.edit_todo_fragment), NewTodoOptionsFragmentsI
         )?.observe(
             viewLifecycleOwner
         ) { result ->
-
             filesArrayList = result
-
             checkForAttachment()
-
             Log.i(TAG, "NAVIGATION_FILES_DATA_KEY: $result")
-
             if (filesArrayList.isNotEmpty()) {
                 binding.linearFilesAttachment.visibility = View.VISIBLE
                 fileAttachmentAdapter.updateDataSet(filesArrayList)
@@ -753,19 +776,14 @@ class EditTodo : Fragment(R.layout.edit_todo_fragment), NewTodoOptionsFragmentsI
         )?.observe(
             viewLifecycleOwner
         ) { result ->
-
             latLng.apply {
                 lat = result.latitude
                 lng = result.longitude
             }
-
             checkForAttachment()
-
             // Do something with the result.
             Log.i(TAG, "attachmentDataObserver: latLng --> $result")
-
             binding.linearLocationAttachment.visibility = View.GONE
-
             result?.let { latlng ->
 
                 binding.linearLocationAttachment.visibility = View.VISIBLE
@@ -809,6 +827,11 @@ class EditTodo : Fragment(R.layout.edit_todo_fragment), NewTodoOptionsFragmentsI
             filesArrayList.isEmpty() &&
             latLng.lat == 0.0 && latLng.lng == 0.0
         ) {
+            binding.linearLayoutGalleryAttachment.isVisible = false
+            binding.linearLayoutAudioAttachment.isVisible = false
+            binding.linearLayoutContactAttachment.isVisible = false
+            binding.linearFilesAttachment.isVisible = false
+            binding.linearLocationAttachment.isVisible = false
             binding.noAttachmentFound.root.visibility = View.VISIBLE
         } else {
             binding.noAttachmentFound.root.visibility = View.GONE
@@ -842,7 +865,7 @@ class EditTodo : Fragment(R.layout.edit_todo_fragment), NewTodoOptionsFragmentsI
     }
 
     private fun setRepeatDate(dateArrayList: ArrayList<SelectorDataModal>) {
-
+        binding.chipGroupWeeks.removeAllViews()
         for (week in dateArrayList) {
             if (week.selected) {
                 val chipWeek = Chip(requireContext())
@@ -877,6 +900,13 @@ class EditTodo : Fragment(R.layout.edit_todo_fragment), NewTodoOptionsFragmentsI
     override fun onClick(v: View?) {
         when (v!!.id) {
             binding.linearLayoutRepeatPeriod.id -> {
+                repeatDialog =
+                    RepeatDialog.getInstance(
+                        requireContext(),
+                        callback = onRepeatCallback,
+                        taskRepeatDays,
+                        taskRepeatFrequency
+                    )
                 repeatDialog.show(
                     requireActivity().supportFragmentManager,
                     repeatDialog.tag

@@ -1,4 +1,4 @@
-package com.example.simplydo.adapters
+package com.example.simplydo.adapters.attachment
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -14,10 +14,8 @@ import com.example.simplydo.model.attachmentModel.GalleryModel
 import com.example.simplydo.utlis.GalleryInterface
 
 
-class GalleryAdapter(val requireContext: Context, private val galleryInterface: GalleryInterface) :
-    PagingDataAdapter<GalleryModel, GalleryAdapter.GalleryViewHolder>(DIFF_CALLBACK) {
-
-
+class SelectionListGalleryAdapter(val requireContext: Context, private val galleryInterface: GalleryInterface) :
+    PagingDataAdapter<GalleryModel, SelectionListGalleryAdapter.GalleryViewHolder>(DIFF_CALLBACK) {
     companion object {
         val DIFF_CALLBACK = object : DiffUtil.ItemCallback<GalleryModel>() {
             override fun areItemsTheSame(oldItem: GalleryModel, newItem: GalleryModel): Boolean {

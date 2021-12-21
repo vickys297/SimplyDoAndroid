@@ -1,4 +1,4 @@
-package com.example.simplydo.ui.fragments.attachmentsFragments.document
+package com.example.simplydo.ui.fragments.attachmentsFragments.documents
 
 import android.app.Activity
 import android.content.ClipData
@@ -16,7 +16,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.simplydo.R
-import com.example.simplydo.adapters.FilesAdapter
+import com.example.simplydo.adapters.attachment.SelectionListFilesAdapter
 import com.example.simplydo.databinding.DocumentListFragmentBinding
 import com.example.simplydo.model.attachmentModel.FileModel
 import com.example.simplydo.utlis.AppConstant
@@ -32,7 +32,7 @@ class FileListFragment : Fragment(R.layout.document_list_fragment) {
 
     private lateinit var _binding: DocumentListFragmentBinding
 
-    private lateinit var filesAdapter: FilesAdapter
+    private lateinit var selectionListFilesAdapter: SelectionListFilesAdapter
     private var arrayListFile: ArrayList<FileModel> = ArrayList()
 
     // This property is only valid between onCreateView and
@@ -46,11 +46,11 @@ class FileListFragment : Fragment(R.layout.document_list_fragment) {
         _binding = DocumentListFragmentBinding.bind(view)
         listViewModel = ViewModelProvider(this).get(FilesListViewModel::class.java)
 
-        filesAdapter = FilesAdapter()
+        selectionListFilesAdapter = SelectionListFilesAdapter()
         binding.recyclerViewDocumentList.apply {
             layoutManager =
                 GridLayoutManager(requireContext(), 2)
-            adapter = filesAdapter
+            adapter = selectionListFilesAdapter
         }
 
 
@@ -190,7 +190,7 @@ class FileListFragment : Fragment(R.layout.document_list_fragment) {
             binding.recyclerViewDocumentList.visibility = View.GONE
             binding.linearLayoutNoFIleSelected.visibility = View.VISIBLE
         } else {
-            filesAdapter.updateDataSet(arrayListFile)
+            selectionListFilesAdapter.updateDataSet(arrayListFile)
             binding.recyclerViewDocumentList.visibility = View.VISIBLE
             binding.linearLayoutNoFIleSelected.visibility = View.GONE
         }

@@ -83,6 +83,12 @@ object AppConstant {
         const val HIGH_PRIORITY = 1
         const val MEDIUM_PRIORITY = 2
         const val LOW_PRIORITY = 3
+
+        object TextValue {
+            const val HIGH_PRIORITY = "High Priority"
+            const val MEDIUM_PRIORITY = "Medium Priority"
+            const val LOW_PRIORITY = "Low Priority"
+        }
     }
 
     object Bundle {

@@ -1,4 +1,4 @@
-package com.example.simplydo.adapters
+package com.example.simplydo.adapters.attachment
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -7,8 +7,8 @@ import com.example.simplydo.databinding.RecyclerSelectedContactListItemBinding
 import com.example.simplydo.model.ContactModel
 import com.example.simplydo.utlis.SelectedContactInterface
 
-class SelectedContactAdapter(private val selectedContactInterFace: SelectedContactInterface) :
-    RecyclerView.Adapter<SelectedContactAdapter.ViewHolder>() {
+class SelectedListContactAdapter(private val selectedContactInterFace: SelectedContactInterface) :
+    RecyclerView.Adapter<SelectedListContactAdapter.ViewHolder>() {
 
     private var dataSet = ArrayList<ContactModel>()
 

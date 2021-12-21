@@ -1,6 +1,7 @@
-package com.example.simplydo.ui.fragments.attachmentsFragments.contact
+package com.example.simplydo.ui.fragments.attachmentsFragments.contacts
 
 import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -12,8 +13,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simplydo.R
-import com.example.simplydo.adapters.ContactListAdapter
-import com.example.simplydo.adapters.SelectedContactAdapter
+import com.example.simplydo.adapters.attachment.SelectionListContactAdapter
+import com.example.simplydo.adapters.attachment.SelectedListContactAdapter
 import com.example.simplydo.databinding.ContactsListViewBinding
 import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.model.ContactModel
@@ -37,8 +38,8 @@ class ContactsFragment :
     }
 
     private lateinit var viewModel: ContactsViewModel
-    private lateinit var contactListAdapter: ContactListAdapter
-    private lateinit var selectedContactAdapter: SelectedContactAdapter
+    private lateinit var selectionListContactAdapter: SelectionListContactAdapter
+    private lateinit var selectedListContactAdapter: SelectedListContactAdapter
 
     private var selectedContact = ArrayList<ContactModel>()
 
@@ -48,10 +49,10 @@ class ContactsFragment :
         override fun onContactSelect(item: ContactModel) {
             if (isContactNotAvailable(item)) {
                 selectedContact.add(item)
-                selectedContactAdapter.updateDatSet(selectedContact)
+                selectedListContactAdapter.updateDatSet(selectedContact)
             } else {
                 selectedContact.remove(item)
-                selectedContactAdapter.updateDatSet(selectedContact)
+                selectedListContactAdapter.updateDatSet(selectedContact)
             }
         }
     }
@@ -70,7 +71,7 @@ class ContactsFragment :
         override fun onContactRemove(item: ContactModel) {
             if (selectedContact.contains(item)) {
                 selectedContact.remove(item)
-                selectedContactAdapter.updateDatSet(selectedContact)
+                selectedListContactAdapter.updateDatSet(selectedContact)
             }
         }
     }
@@ -80,27 +81,10 @@ class ContactsFragment :
         _binding = ContactsListViewBinding.bind(view)
         setUpViewModel()
 
-        selectedContactAdapter = SelectedContactAdapter(selectedContactInterFace)
-        binding.recyclerViewSelectedContact.apply {
-            layoutManager =
-                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            adapter = selectedContactAdapter
-        }
-
-        contactListAdapter = ContactListAdapter(contactAdapterInterface, requireContext())
-        binding.recyclerViewContactList.apply {
-            layoutManager = LinearLayoutManager(requireContext())
-            adapter = contactListAdapter
-        }
-
-        binding.btnAddContact.setOnClickListener(this)
-        binding.btnClose.setOnClickListener(this)
-
-
         val requestPermissionLauncher =
             registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
                 if (isGranted) {
-                    getContactList()
+                    onPermissionGranted()
                 } else {
                     Toast.makeText(
                         requireContext(),
@@ -110,11 +94,34 @@ class ContactsFragment :
                 }
             }
 
-        if (AppFunctions.Permission.checkPermission(requiredPermission, requireContext())) {
-            requestPermissionLauncher.launch(requiredPermission)
+        if (requireContext().checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissionLauncher.launch(Manifest.permission.READ_CONTACTS)
         } else {
-            getContactList()
+            onPermissionGranted()
         }
+
+
+    }
+
+    private fun onPermissionGranted() {
+
+        selectedListContactAdapter = SelectedListContactAdapter(selectedContactInterFace)
+        binding.recyclerViewSelectedContact.apply {
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            adapter = selectedListContactAdapter
+        }
+
+        selectionListContactAdapter = SelectionListContactAdapter(contactAdapterInterface, requireContext())
+        binding.recyclerViewContactList.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = selectionListContactAdapter
+        }
+
+        binding.btnAddContact.setOnClickListener(this)
+        binding.btnClose.setOnClickListener(this)
+
+        getContactList()
     }
 
     override fun onClick(v: View) {
@@ -147,7 +154,7 @@ class ContactsFragment :
                     AppDatabase.getInstance(requireContext())
                 )
             )
-        ).get(ContactsViewModel::class.java)
+        )[ContactsViewModel::class.java]
         binding.apply {
             lifecycleOwner = this@ContactsFragment
             executePendingBindings()
@@ -159,7 +166,7 @@ class ContactsFragment :
         lifecycleScope.launch {
             viewModel.getContactList(requireContext()).collectLatest { pagingData ->
                 Log.i(TAG, "getContactList: pagingData $pagingData")
-                contactListAdapter.submitData(pagingData)
+                selectionListContactAdapter.submitData(pagingData)
             }
         }
     }

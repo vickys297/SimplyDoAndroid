@@ -15,13 +15,12 @@ import com.example.simplydo.utlis.NewTodo
 internal const val VIEW_TYPE_LIST = 0
 internal const val VIEW_TYPE_TEXT = 1
 
-
 internal val TAG_TASK = TodoTaskAdapter::class.java.canonicalName
 
 class TodoTaskAdapter(
     var dataSet: ArrayList<TodoTaskModel>,
-    private val addTodoInterface: NewTodo.AddTask,
-    private val todoTaskInterface: NewTodo.TodoTask
+    private val addTodoInterface: NewTodo.AddTask?,
+    private val todoTaskInterface: NewTodo.TodoTask?
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -82,11 +81,11 @@ class TodoTaskAdapter(
                     addListViewToParent(binding, item.contentList!!)
 
                     binding.imageButtonClose.setOnClickListener {
-                        addTodoInterface.onTaskRemove(item, bindingAdapterPosition)
+                        addTodoInterface?.onTaskRemove(item, bindingAdapterPosition)
                     }
 
                     holder.itemView.setOnClickListener {
-                        todoTaskInterface.onTaskSelect(item)
+                        todoTaskInterface?.onTaskSelect(item)
                     }
                 }
             }
@@ -97,11 +96,11 @@ class TodoTaskAdapter(
                     binding.textViewNote.text = item.content
 
                     binding.imageButtonClose.setOnClickListener {
-                        addTodoInterface.onTaskRemove(item, bindingAdapterPosition)
+                        addTodoInterface?.onTaskRemove(item, bindingAdapterPosition)
                     }
 
                     holder.itemView.setOnClickListener {
-                        todoTaskInterface.onTaskSelect(item)
+                        todoTaskInterface?.onTaskSelect(item)
                     }
                 }
             }

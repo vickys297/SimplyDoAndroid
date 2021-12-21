@@ -2,14 +2,19 @@ package com.example.simplydo.adapters
 
 import android.content.Context
 import android.graphics.Paint
+import android.graphics.drawable.Drawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.res.ResourcesCompat
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.example.simplydo.R
 import com.example.simplydo.databinding.RecyclerTodoCompletedListItemBinding
 import com.example.simplydo.databinding.RecyclerTodoListItemBinding
 import com.example.simplydo.model.TodoModel
+import com.example.simplydo.utlis.AppConstant
 import com.example.simplydo.utlis.TodoItemInterface
 import java.util.*
 
@@ -139,22 +144,92 @@ class QuickTodoListAdapter(
                 todoModel = todoModelData
                 executePendingBindings()
             }
-
+            binding.textViewPriority.background =
+                getTaskPriorityBackground(todoModelData.taskPriority, binding.root.context)
             return binding
+        }
+
+        private fun getTaskPriorityBackground(taskPriority: Int, context: Context): Drawable? {
+            Log.i(TAG, "getTaskPriorityBackground: $taskPriority")
+            return when (taskPriority) {
+                AppConstant.TaskPriority.HIGH_PRIORITY -> {
+                    ResourcesCompat.getDrawable(
+                        context.resources,
+                        R.drawable.card_high_priority,
+                        context.theme
+                    )
+                }
+                AppConstant.TaskPriority.MEDIUM_PRIORITY -> {
+                    ResourcesCompat.getDrawable(
+                        context.resources,
+                        R.drawable.card_medium_priority,
+                        context.theme
+                    )
+                }
+                AppConstant.TaskPriority.LOW_PRIORITY -> {
+                    ResourcesCompat.getDrawable(
+                        context.resources,
+                        R.drawable.card_low_priority,
+                        context.theme
+                    )
+                }
+                else -> {
+                    ResourcesCompat.getDrawable(
+                        context.resources,
+                        R.drawable.card_low_priority,
+                        context.theme
+                    )
+                }
+            }
         }
     }
 
     class CompletedTaskViewHolder(private val binding: RecyclerTodoCompletedListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: TodoModel) {
+        fun bind(todoModelData: TodoModel) {
             binding.apply {
-                todoModel = item
+                todoModel = todoModelData
                 executePendingBindings()
             }
-
+            binding.textViewPriority.background =
+                getTaskPriorityBackground(todoModelData.taskPriority, binding.root.context)
             binding.tvTitle.paintFlags = binding.tvTitle.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             binding.tvTodo.paintFlags = binding.tvTodo.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
 
+        }
+
+        private fun getTaskPriorityBackground(taskPriority: Int, context: Context): Drawable? {
+            Log.i(TAG, "getTaskPriorityBackground: $taskPriority")
+            return when (taskPriority) {
+                AppConstant.TaskPriority.HIGH_PRIORITY -> {
+                    ResourcesCompat.getDrawable(
+                        context.resources,
+                        R.drawable.card_high_priority,
+                        context.theme
+                    )
+                }
+                AppConstant.TaskPriority.MEDIUM_PRIORITY -> {
+                    ResourcesCompat.getDrawable(
+                        context.resources,
+                        R.drawable.card_medium_priority,
+                        context.theme
+                    )
+                }
+                AppConstant.TaskPriority.LOW_PRIORITY -> {
+                    ResourcesCompat.getDrawable(
+                        context.resources,
+                        R.drawable.card_low_priority,
+                        context.theme
+                    )
+                }
+                else -> {
+                    ResourcesCompat.getDrawable(
+                        context.resources,
+                        R.drawable.card_low_priority,
+                        context.theme
+                    )
+                }
+            }
         }
     }
 

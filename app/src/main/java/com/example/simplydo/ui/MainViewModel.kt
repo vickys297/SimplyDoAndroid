@@ -41,7 +41,7 @@ class MainViewModel(val appRepository: AppRepository) : ViewModel() {
                 taskPriority = taskPriority,
                 locationData = LatLngModel(),
                 contactAttachments = contactList,
-                imageAttachments = imageList,
+                galleryAttachments = imageList,
                 createdAt = AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_ISO)
                     .format(Date().time),
                 updatedAt = AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_ISO)

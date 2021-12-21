@@ -28,29 +28,32 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
-        <ImageButton
-            android:id="@+id/imCompleted"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_margin="10dp"
-            android:background="@drawable/primary_color_circle"
-            android:cropToPadding="false"
-            android:src="@drawable/ic_baseline_check_12_white"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
         <TextView
             android:id="@+id/textView14"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="2dp"
-            android:layout_marginBottom="2dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="4dp"
             android:text="@{data.name}"
             android:textColor="@color/white"
             android:textSize="10sp"
             app:layout_constraintBottom_toBottomOf="@+id/imageViewPreview"
+            app:layout_constraintEnd_toStartOf="@+id/imCompleted"
             app:layout_constraintStart_toStartOf="@+id/imageViewPreview" />
+
+        <ImageButton
+            android:id="@+id/imCompleted"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="4dp"
+            android:background="@drawable/primary_color_circle"
+            android:cropToPadding="false"
+            android:src="@drawable/ic_baseline_check_12_white"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -91,7 +91,7 @@ class EditTodoBasic(
                     eventDateTime = eventDateTime,
                     locationData = currentTodoModel.locationData,
                     contactAttachments = currentTodoModel.contactAttachments,
-                    imageAttachments = currentTodoModel.imageAttachments,
+                    galleryAttachments = currentTodoModel.galleryAttachments,
                     fileAttachments = currentTodoModel.fileAttachments,
                     createdAt = currentTodoModel.createdAt,
                     updatedAt = System.currentTimeMillis().toString()

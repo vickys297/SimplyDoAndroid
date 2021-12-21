@@ -36,7 +36,6 @@
                     android:layout_height="match_parent"
                     android:cropToPadding="true"
                     android:scaleType="centerCrop"
-
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1.0"
@@ -44,20 +43,6 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.0"
                     tools:srcCompat="@tools:sample/backgrounds/scenic" />
-
-                <ImageView
-                    android:id="@+id/imCompleted"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:background="@drawable/primary_color_circle"
-                    android:contentDescription="@string/contact_close_button"
-                    android:padding="5dp"
-                    android:visibility="visible"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_baseline_close_24" />
 
                 <TextView
                     android:id="@+id/textViewFileName"
@@ -73,6 +58,19 @@
                     android:textSize="10sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
+
+                <ImageView
+                    android:id="@+id/imageView_close"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:padding="7dp"
+                    android:contentDescription="@string/contact_close_button"
+                    android:visibility="visible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_remove" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

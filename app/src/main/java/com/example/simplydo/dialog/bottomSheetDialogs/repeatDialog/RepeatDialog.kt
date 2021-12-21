@@ -2,6 +2,7 @@ package com.example.simplydo.dialog.bottomSheetDialogs.repeatDialog
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,12 +16,24 @@ import com.example.simplydo.utlis.CommonSelector
 import com.example.simplydo.utlis.RepeatDialogInterface
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class RepeatDialog(val requireContext: Context, val callback: RepeatDialogInterface) :
+internal val TAG = RepeatDialog::class.java.canonicalName
+
+class RepeatDialog(
+    val requireContext: Context,
+    val callback: RepeatDialogInterface,
+    private val taskRepeatDays: ArrayList<SelectorDataModal>,
+    private val taskRepeatFrequency: ArrayList<SelectorDataModal>
+) :
     BottomSheetDialogFragment() {
 
     companion object {
-        fun getInstance(requireContext: Context, callback: RepeatDialogInterface) =
-            RepeatDialog(requireContext, callback)
+        fun getInstance(
+            requireContext: Context,
+            callback: RepeatDialogInterface,
+            taskRepeatDays: ArrayList<SelectorDataModal>,
+            taskRepeatFrequency: ArrayList<SelectorDataModal>
+        ) =
+            RepeatDialog(requireContext, callback, taskRepeatDays, taskRepeatFrequency)
     }
 
     private lateinit var binding: RepeatDialogFragmentBinding
@@ -34,6 +47,7 @@ class RepeatDialog(val requireContext: Context, val callback: RepeatDialogInterf
 
     private var currentSelectedPeriod = 0
 
+
     private var commonSelectorCallback: CommonSelector = object : CommonSelector {
         override fun onWeekSelected(arrayList: ArrayList<SelectorDataModal>) {
             arrayWeek = arrayList
@@ -43,6 +57,15 @@ class RepeatDialog(val requireContext: Context, val callback: RepeatDialogInterf
             binding.textView29.isVisible = arrayList[1].selected
             binding.recyclerViewRepeatWeek.isVisible = arrayList[1].selected
             arrayFrequency = arrayList
+        }
+    }
+
+    private fun clearAllWeekSelected() {
+        for (item in arrayWeek) {
+            item.selected = false
+        }
+        for (item in repeatWeaklyAdapter.arrayList) {
+            item.selected = false
         }
     }
 
@@ -60,13 +83,17 @@ class RepeatDialog(val requireContext: Context, val callback: RepeatDialogInterf
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this)[RepeatDialogViewModel::class.java]
+        arrayWeek = ArrayList()
+        arrayFrequency = ArrayList()
         initFrequency()
         loadRepeatView()
-
-
+        initPreSelected()
         binding.buttonSet.setOnClickListener {
             val selectedWeek = arrayWeek.filter { filter -> filter.selected } as ArrayList
             val selectedFrequency = arrayFrequency.filter { filter -> filter.selected } as ArrayList
+            if (!arrayFrequency[1].selected) {
+                clearAllWeekSelected()
+            }
             callback.onSetRepeat(selectedFrequency, selectedWeek)
             dismiss()
         }
@@ -77,17 +104,51 @@ class RepeatDialog(val requireContext: Context, val callback: RepeatDialogInterf
         }
     }
 
+    private fun initPreSelected() {
+        Log.i(TAG, "initPreSelected: $taskRepeatDays")
+        Log.i(TAG, "initPreSelected: $taskRepeatFrequency")
+        Log.i(TAG, "currentSelectedPeriod: $currentSelectedPeriod")
+    }
+
     private fun initFrequency() {
-        arrayFrequency.add(SelectorDataModal(value = "Day", selected = true, type = 1))
-        arrayFrequency.add(SelectorDataModal(value = "Week", selected = false, type = 1))
-        arrayFrequency.add(SelectorDataModal(value = "Month", selected = false, type = 1))
-        arrayFrequency.add(SelectorDataModal(value = "Year", selected = false, type = 1))
+        arrayFrequency.add(
+            SelectorDataModal(
+                value = "Day",
+                visibleValue = "Day",
+                selected = getPreSelectedStatus("Day", taskRepeatFrequency),
+                type = 1
+            )
+        )
+        arrayFrequency.add(
+            SelectorDataModal(
+                value = "Week",
+                visibleValue = "Week",
+                selected = getPreSelectedStatus("Week", taskRepeatFrequency),
+                type = 1
+            )
+        )
+        arrayFrequency.add(
+            SelectorDataModal(
+                value = "Month",
+                visibleValue = "Month",
+                selected = getPreSelectedStatus("Month", taskRepeatFrequency),
+                type = 1
+            )
+        )
+        arrayFrequency.add(
+            SelectorDataModal(
+                value = "Year",
+                visibleValue = "Year",
+                selected = getPreSelectedStatus("Year", taskRepeatFrequency),
+                type = 1
+            )
+        )
 
         arrayWeek.add(
             SelectorDataModal(
                 value = "S",
                 visibleValue = "Sunday",
-                selected = false,
+                selected = getPreSelectedStatus("Sunday", taskRepeatDays),
                 type = 2
             )
         )
@@ -95,7 +156,7 @@ class RepeatDialog(val requireContext: Context, val callback: RepeatDialogInterf
             SelectorDataModal(
                 value = "M",
                 visibleValue = "Monday",
-                selected = false,
+                selected = getPreSelectedStatus("Monday", taskRepeatDays),
                 type = 2
             )
         )
@@ -103,7 +164,7 @@ class RepeatDialog(val requireContext: Context, val callback: RepeatDialogInterf
             SelectorDataModal(
                 value = "T",
                 visibleValue = "Tuesday",
-                selected = false,
+                selected = getPreSelectedStatus("Tuesday", taskRepeatDays),
                 type = 2
             )
         )
@@ -111,7 +172,7 @@ class RepeatDialog(val requireContext: Context, val callback: RepeatDialogInterf
             SelectorDataModal(
                 value = "W",
                 visibleValue = "Wednesday",
-                selected = false,
+                selected = getPreSelectedStatus("Wednesday", taskRepeatDays),
                 type = 2
             )
         )
@@ -119,7 +180,7 @@ class RepeatDialog(val requireContext: Context, val callback: RepeatDialogInterf
             SelectorDataModal(
                 value = "T",
                 visibleValue = "Thursday",
-                selected = false,
+                selected = getPreSelectedStatus("Thursday", taskRepeatDays),
                 type = 2
             )
         )
@@ -127,7 +188,7 @@ class RepeatDialog(val requireContext: Context, val callback: RepeatDialogInterf
             SelectorDataModal(
                 value = "F",
                 visibleValue = "Friday",
-                selected = false,
+                selected = getPreSelectedStatus("Friday", taskRepeatDays),
                 type = 2
             )
         )
@@ -135,13 +196,38 @@ class RepeatDialog(val requireContext: Context, val callback: RepeatDialogInterf
             SelectorDataModal(
                 value = "S",
                 visibleValue = "Saturday",
-                selected = false,
+                selected = getPreSelectedStatus("Saturday", taskRepeatDays),
                 type = 2
             )
         )
 
+        currentSelectedPeriod = getSelectedPeriod(arrayFrequency)
     }
 
+    private fun getPreSelectedStatus(
+        visibleValue: String,
+        arrayDataSet: ArrayList<SelectorDataModal>
+    ): Boolean {
+        if (arrayDataSet.isNotEmpty()) {
+            for (item in arrayDataSet) {
+                if (item.visibleValue == visibleValue) {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
+    private fun getSelectedPeriod(taskRepeatFrequency: ArrayList<SelectorDataModal>): Int {
+        for ((index, item) in taskRepeatFrequency.withIndex()) {
+            Log.i(TAG, "getSelectedPeriod: $item")
+            if (item.selected) {
+                return index
+            }
+        }
+//        if nothing selected return 0
+        return 0
+    }
 
     private fun loadRepeatView() {
         repeatFrequencyAdapter =
@@ -157,12 +243,13 @@ class RepeatDialog(val requireContext: Context, val callback: RepeatDialogInterf
             commonSelectorCallback,
             currentSelectedPeriod
         )
+
         binding.recyclerViewRepeatWeek.apply {
             layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             adapter = repeatWeaklyAdapter
-            isVisible = false
-            binding.textView29.isVisible = false
+            isVisible = getPreSelectedStatus("Week", taskRepeatFrequency)
+            binding.textView29.isVisible = getPreSelectedStatus("Week", taskRepeatFrequency)
         }
 
     }

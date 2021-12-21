@@ -41,7 +41,7 @@ data class TodoModel(
     val contactAttachments: ArrayList<ContactModel> = ArrayList(),
 
     @ColumnInfo(name = "galleryFiles", defaultValue = "")
-    val imageAttachments: ArrayList<GalleryModel> = ArrayList(),
+    val galleryAttachments: ArrayList<GalleryModel> = ArrayList(),
 
     @ColumnInfo(name = "audioFiles", defaultValue = "")
     val audioAttachments: ArrayList<AudioModel> = ArrayList(),
@@ -142,7 +142,7 @@ data class TodoModel(
 
     fun isAttachmentVisible(): Int {
         return if (audioAttachments.isEmpty() &&
-            imageAttachments.isEmpty() &&
+            galleryAttachments.isEmpty() &&
             audioAttachments.isEmpty() &&
             contactAttachments.isEmpty() &&
             locationData.lat == 0.0 &&
@@ -154,9 +154,27 @@ data class TodoModel(
         }
     }
 
+    fun getTaskPriorityText(): String {
+        return when (taskPriority) {
+            AppConstant.TaskPriority.HIGH_PRIORITY -> {
+                AppConstant.TaskPriority.TextValue.HIGH_PRIORITY
+            }
+            AppConstant.TaskPriority.MEDIUM_PRIORITY -> {
+                AppConstant.TaskPriority.TextValue.MEDIUM_PRIORITY
+            }
+            AppConstant.TaskPriority.LOW_PRIORITY -> {
+                AppConstant.TaskPriority.TextValue.LOW_PRIORITY
+            }
+            else -> {
+                AppConstant.TaskPriority.TextValue.LOW_PRIORITY
+            }
+        }
+    }
+
+
     fun isEmptyStateVisible(): Int {
         return if (audioAttachments.isEmpty() &&
-            imageAttachments.isEmpty() &&
+            galleryAttachments.isEmpty() &&
             audioAttachments.isEmpty() &&
             contactAttachments.isEmpty() &&
             locationData.lat == 0.0 &&

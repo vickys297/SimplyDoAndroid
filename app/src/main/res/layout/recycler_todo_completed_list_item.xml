@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
@@ -10,6 +9,7 @@
             type="com.example.simplydo.model.TodoModel" />
     </data>
 
+
     <androidx.constraintlayout.widget.ConstraintLayout
         style="@style/CardBackground"
         android:layout_width="match_parent"
@@ -17,33 +17,21 @@
         android:layout_margin="8dp"
         android:padding="16dp">
 
+
         <TextView
             android:id="@+id/tvTitle"
             style="@style/TodoCardTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
             android:fontFamily="@font/montserrat_regular"
             android:text="@{todoModel.title}"
             android:textSize="20sp"
             android:textStyle="bold"
             android:transitionName="transition_title_small"
-            app:layout_constraintEnd_toStartOf="@+id/imCompleted"
+            app:layout_constraintEnd_toStartOf="@+id/textView_priority"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageButton
-            android:id="@+id/imCompleted"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginStart="8dp"
-            android:background="@drawable/primary_color_circle"
-            android:cropToPadding="false"
-            android:src="@drawable/ic_baseline_check_12_white"
-            app:layout_constraintBottom_toBottomOf="@+id/tvTitle"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tvTitle"
-            app:layout_constraintTop_toTopOf="@+id/tvTitle" />
-
 
         <TextView
             android:id="@+id/tvTodo"
@@ -54,12 +42,12 @@
             android:ellipsize="end"
             android:maxLines="3"
             android:singleLine="false"
-            android:textIsSelectable="false"
             android:text="@{todoModel.todo}"
+            android:textIsSelectable="false"
             android:transitionName="transition_todo_small"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+            app:layout_constraintTop_toBottomOf="@+id/chipGroup_tags" />
 
 
         <TextView
@@ -67,11 +55,11 @@
             style="@style/TodoCardEventDate"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:drawablePadding="10dp"
             android:text="@{todoModel.getEventDate()}"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider" />
+            app:layout_constraintTop_toBottomOf="@+id/tvTodo" />
 
 
         <TextView
@@ -85,51 +73,45 @@
             app:layout_constraintStart_toEndOf="@+id/tvEventDate"
             app:layout_constraintTop_toTopOf="@+id/tvEventDate" />
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/textView_priority"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/card_high_priority"
+            android:paddingStart="8dp"
+            android:paddingTop="4dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="4dp"
+            android:text="@{todoModel.getTaskPriorityText()}"
+            android:textAllCaps="true"
+            android:textColor="@color/white"
+            android:textSize="10sp"
+            app:layout_constraintBottom_toBottomOf="@+id/tvTitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tvTitle" />
+
+        <TextView
+            android:id="@+id/textView_attachments"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="10dp"
+            android:text="@string/_3_attachments"
+            android:textColor="@color/emerald"
+            android:textSize="10sp"
+            app:drawableStartCompat="@drawable/ic_attach"
+            app:layout_constraintBottom_toBottomOf="@+id/tvEventDate"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tvEventDate" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipGroup_tags"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvEventDate">
-
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chipPriority"
-                style="@style/ChipTaskPriority"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:text="@string/priority"
-                android:textStyle="bold"
-                android:visibility="@{todoModel.isPriorityVisible()}" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chipAttachmentsAdded"
-                style="@style/ChipTaskAttachment"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/attachments"
-                android:textStyle="bold"
-                android:visibility="@{todoModel.isAttachmentVisible()}"
-                app:chipIconEnabled="false"
-                app:chipIconSize="16dp" />
-
-        </LinearLayout>
-
-        <View
-            android:id="@+id/divider"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
             android:layout_marginTop="8dp"
-            android:background="?android:attr/listDivider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvTodo" />
+            app:layout_constraintTop_toBottomOf="@+id/tvTitle">
 
-
+        </com.google.android.material.chip.ChipGroup>
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </layout>

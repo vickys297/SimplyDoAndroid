@@ -130,7 +130,7 @@
     </fragment>
     <fragment
         android:id="@+id/contactsFragment"
-        android:name="com.example.simplydo.ui.fragments.attachmentsFragments.contact.ContactsFragment"
+        android:name="com.example.simplydo.ui.fragments.attachmentsFragments.contacts.ContactsFragment"
         android:label="ContactsFragment" />
     <fragment
         android:id="@+id/galleryListFragment"
@@ -138,7 +138,7 @@
         android:label="GalleryListFragment" />
     <fragment
         android:id="@+id/mapsFragment"
-        android:name="com.example.simplydo.ui.fragments.attachmentsFragments.location.MapsFragment"
+        android:name="com.example.simplydo.ui.fragments.attachmentsFragments.map.MapsFragment"
         android:label="fragment_maps"
         tools:layout="@layout/fragment_maps" />
     <fragment
@@ -177,7 +177,7 @@
     </fragment>
     <fragment
         android:id="@+id/documentListFragment"
-        android:name="com.example.simplydo.ui.fragments.attachmentsFragments.document.FileListFragment"
+        android:name="com.example.simplydo.ui.fragments.attachmentsFragments.documents.FileListFragment"
         android:label="DocumentListFragment" />
     <fragment
         android:id="@+id/addNewTaskItemFragment"

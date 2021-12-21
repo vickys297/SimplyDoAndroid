@@ -36,7 +36,6 @@ class RetrofitServices(context: Context) {
 
     }
 
-
     companion object {
         @Volatile
         var instance: RetrofitServices? = null

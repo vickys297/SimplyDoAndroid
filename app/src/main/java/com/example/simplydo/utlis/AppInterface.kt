@@ -81,7 +81,8 @@ interface TodoTaskOptionsInterface {
 
 
 interface GalleryAttachmentInterface {
-    fun onItemSelect(item: GalleryModel)
+    fun onItemSelect(item: GalleryModel, indexOf: Int)
+    fun onItemRemoved(removedItem: GalleryModel, indexOf: Int)
 }
 
 interface AudioAttachmentInterface {

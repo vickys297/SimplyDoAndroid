@@ -1,15 +1,18 @@
 package com.example.simplydo.ui.fragments.attachmentsFragments.gallery
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.simplydo.adapters.GalleryAdapter
+import com.example.simplydo.R
+import com.example.simplydo.adapters.attachment.SelectionListGalleryAdapter
 import com.example.simplydo.databinding.FragmentGalleryViewBinding
 import com.example.simplydo.model.attachmentModel.GalleryModel
 import com.example.simplydo.utlis.AppConstant
@@ -21,16 +24,21 @@ import kotlinx.coroutines.launch
 
 internal val GALLERY_TAG = GalleryListFragment::class.java.canonicalName
 
-class GalleryListFragment : Fragment() {
+class GalleryListFragment() : Fragment(R.layout.fragment_gallery_view) {
 
     companion object {
         fun newInstance() = GalleryListFragment()
     }
 
+    private val requiredPermissions = arrayOf(
+        Manifest.permission.READ_EXTERNAL_STORAGE,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE
+    )
+
     private lateinit var viewModel: GalleryListViewModel
     lateinit var binding: FragmentGalleryViewBinding
 
-    private lateinit var galleryAdapter: GalleryAdapter
+    private lateinit var selectionListGalleryAdapter: SelectionListGalleryAdapter
 
     private val selectedGalleryArrayList = ArrayList<GalleryModel>()
 
@@ -64,31 +72,45 @@ class GalleryListFragment : Fragment() {
         return true
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
-        binding = FragmentGalleryViewBinding.inflate(inflater, container, false)
-        setupViewModel()
-        return binding.root
-    }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding = FragmentGalleryViewBinding.bind(view)
+        setupViewModel()
 
-        galleryAdapter = GalleryAdapter(requireContext(), galleryInterface)
+        val requestFileStoragePermissionLauncher =
+            registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+                if (it) {
+                    onPermissionGranted()
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        "Required Permission to View Images",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        if (requireContext().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
+            requireContext().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // request Permission
+            requestFileStoragePermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+        } else {
+            onPermissionGranted()
+        }
+    }
 
+    private fun onPermissionGranted() {
+        selectionListGalleryAdapter = SelectionListGalleryAdapter(requireContext(), galleryInterface)
         binding.recyclerViewGalleryView.apply {
             layoutManager = GridLayoutManager(requireContext(), 2)
-            adapter = galleryAdapter
+            adapter = selectionListGalleryAdapter
 
             lifecycleScope.launch {
                 viewModel.getGalleryDataSource().collectLatest { pagingData ->
-                    galleryAdapter.submitData(pagingData)
+                    selectionListGalleryAdapter.submitData(pagingData)
                 }
             }
-
         }
 
         binding.buttonAddImages.setOnClickListener {
@@ -102,9 +124,10 @@ class GalleryListFragment : Fragment() {
 
 
     private fun setupViewModel() {
-        viewModel = ViewModelProvider(this, SimpleViewModelFactory(requireContext())).get(
-            GalleryListViewModel::class.java
-        )
+        viewModel = ViewModelProvider(
+            this,
+            SimpleViewModelFactory(requireContext())
+        )[GalleryListViewModel::class.java]
         binding.apply {
             lifecycleOwner = this@GalleryListFragment
             executePendingBindings()

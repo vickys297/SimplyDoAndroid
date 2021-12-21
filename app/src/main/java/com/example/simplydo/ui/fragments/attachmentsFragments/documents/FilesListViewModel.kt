@@ -1,4 +1,4 @@
-package com.example.simplydo.ui.fragments.attachmentsFragments.document
+package com.example.simplydo.ui.fragments.attachmentsFragments.documents
 
 import androidx.lifecycle.ViewModel
 

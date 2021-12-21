@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.simplydo.dialog.bottomSheetDialogs.tags.TagsBottomSheetDialogViewModel
 import com.example.simplydo.ui.MainViewModel
 import com.example.simplydo.ui.fragments.addOrEditTodoTask.AddNewTodoViewModel
-import com.example.simplydo.ui.fragments.attachmentsFragments.contact.ContactsViewModel
+import com.example.simplydo.ui.fragments.attachmentsFragments.contacts.ContactsViewModel
 import com.example.simplydo.ui.fragments.attachmentsFragments.gallery.GalleryListViewModel
 import com.example.simplydo.ui.fragments.calender.CalenderViewModel
 import com.example.simplydo.ui.fragments.otherTodoFragments.OtherTodoViewModel

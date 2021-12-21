@@ -1,4 +1,4 @@
-package com.example.simplydo.adapters
+package com.example.simplydo.adapters.attachment
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -11,8 +11,8 @@ import com.example.simplydo.databinding.RecyclerAudioListItemBinding
 import com.example.simplydo.model.attachmentModel.AudioModel
 import com.example.simplydo.utlis.AudioInterface
 
-class AudioAdapter(val context: Context, private val audioInterface: AudioInterface) :
-    PagingDataAdapter<AudioModel, AudioAdapter.AudioViewHolder>(DIFF_CALLBACK) {
+class SelectionListAudioAdapter(val context: Context, private val audioInterface: AudioInterface) :
+    PagingDataAdapter<AudioModel, SelectionListAudioAdapter.AudioViewHolder>(DIFF_CALLBACK) {
 
     companion object {
         val DIFF_CALLBACK = object : DiffUtil.ItemCallback<AudioModel>() {

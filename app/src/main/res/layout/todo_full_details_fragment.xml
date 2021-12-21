@@ -17,8 +17,10 @@
         android:nestedScrollingEnabled="false"
         app:layout_constraintBottom_toTopOf="@+id/buttonEdit"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
         tools:context=".ui.fragments.todoListFullDetails.TodoFullDetailsFragment">
 
 
@@ -44,35 +46,66 @@
 
             <LinearLayout
                 android:id="@+id/linearLayout3"
-                style="@style/TextInputTextLayout"
+                style="@style/EditTextLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textViewEventDateAndTime">
+                app:layout_constraintTop_toBottomOf="@id/textViewEventDateAndTime">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/task"
+                    android:textColor="@color/purple_500"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tvTodo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:text="@string/your_task_here"
-                    android:textIsSelectable="true"
-                    android:textSize="16sp"
-                    android:transitionName="transition_todo" />
+                    android:layout_marginTop="4dp"
+                    android:backgroundTint="@android:color/transparent"
+                    android:hint="@string/set_a_title_to_task" />
             </LinearLayout>
 
+
+            <LinearLayout
+                android:id="@+id/linearLayout_todo_task"
+                style="@style/EditTextLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/todo"
+                    android:textColor="@color/purple_500"
+                    android:textStyle="bold" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerView_todo_task_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    tools:listitem="@layout/recycler_task_text_item" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/textViewAttachment"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:text="@string/attachments"
                 android:textColor="@color/purple_500"
@@ -81,33 +114,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout3" />
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout_todo_task" />
 
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chipPriority"
-                style="@style/ChipTaskPriority"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:text="@string/priority"
-                android:transitionName="transition_priority"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@+id/textViewEventTime"
-                app:layout_constraintStart_toEndOf="@+id/textViewEventTime"
-                app:layout_constraintTop_toTopOf="@+id/textViewEventTime" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chipDateExpired"
-                style="@style/ChipTaskDateExpired"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:text="@string/date_expired"
-                android:transitionName="transition_date_expired"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@+id/chipPriority"
-                app:layout_constraintStart_toEndOf="@+id/chipPriority"
-                app:layout_constraintTop_toTopOf="@+id/chipPriority" />
 
             <LinearLayout
                 android:id="@+id/linearLayoutAudioAttachment"
@@ -118,7 +126,7 @@
                 android:layout_marginEnd="16dp"
                 android:orientation="vertical"
                 android:padding="8dp"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textViewAttachment">
@@ -330,13 +338,15 @@
                 app:layout_constraintStart_toEndOf="@+id/textViewEventDateAndTime"
                 app:layout_constraintTop_toTopOf="@+id/textViewEventDateAndTime" />
 
-            <ImageView
+            <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/imCompleted"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_marginEnd="16dp"
-                android:background="@drawable/primary_color_circle"
-                android:padding="6dp"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/lottie_task_completed_3"
+                app:lottie_repeatMode="restart"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@+id/tvTitle"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -356,6 +366,20 @@
                 app:layout_constraintTop_toBottomOf="@+id/tvTitle">
 
             </com.google.android.material.chip.ChipGroup>
+
+            <TextView
+                android:id="@+id/textView_priority"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:paddingLeft="10dp"
+                android:paddingTop="4dp"
+                android:paddingRight="10dp"
+                android:paddingBottom="4dp"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="@+id/textViewEventDateAndTime"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/textViewEventDateAndTime" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

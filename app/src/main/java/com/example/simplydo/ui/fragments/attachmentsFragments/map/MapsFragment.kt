@@ -1,4 +1,4 @@
-package com.example.simplydo.ui.fragments.attachmentsFragments.location
+package com.example.simplydo.ui.fragments.attachmentsFragments.map
 
 import android.Manifest
 import android.app.AlertDialog
@@ -124,16 +124,18 @@ class MapsFragment : Fragment(R.layout.fragment_maps) {
                 Log.i(TAG, "onViewCreated: ${isLocationEnabled(requireContext())}")
                 if (isLocationPermissionGranted()) {
                     fusedLocationClient.lastLocation.addOnSuccessListener {
-                        Log.i(
-                            TAG, "setupLocationTaskListener: $it\n " +
-                                    "${it.latitude}\n" +
-                                    "${it.longitude}\n" +
-                                    "${it.accuracy}\n" +
-                                    "${it.bearing}\n"
-                        )
-                        latLngLocation = LatLng(it.latitude, it.longitude)
-                        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngLocation, 12f))
-                        newMarkerLocation()
+                        it?.let {
+                            Log.i(
+                                TAG, "setupLocationTaskListener: $it\n " +
+                                        "${it.latitude}\n" +
+                                        "${it.longitude}\n" +
+                                        "${it.accuracy}\n" +
+                                        "${it.bearing}\n"
+                            )
+                            latLngLocation = LatLng(it.latitude, it.longitude)
+                            map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngLocation, 12f))
+                            newMarkerLocation()
+                        }
                     }
 
                     fusedLocationClient.lastLocation.addOnFailureListener {
@@ -154,16 +156,18 @@ class MapsFragment : Fragment(R.layout.fragment_maps) {
             registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
                 if (isGranted) {
                     fusedLocationClient.lastLocation.addOnSuccessListener {
-                        Log.i(
-                            TAG, "setupLocationTaskListener: $it\n " +
-                                    "${it.latitude}\n" +
-                                    "${it.longitude}\n" +
-                                    "${it.accuracy}\n" +
-                                    "${it.bearing}\n"
-                        )
-                        latLngLocation = LatLng(it.latitude, it.longitude)
-                        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngLocation, 12f))
-                        newMarkerLocation()
+                        it?.let {
+                            Log.i(
+                                TAG, "setupLocationTaskListener: $it\n " +
+                                        "${it.latitude}\n" +
+                                        "${it.longitude}\n" +
+                                        "${it.accuracy}\n" +
+                                        "${it.bearing}\n"
+                            )
+                            latLngLocation = LatLng(it.latitude, it.longitude)
+                            map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngLocation, 12f))
+                            newMarkerLocation()
+                        }
                     }
 
                     fusedLocationClient.lastLocation.addOnFailureListener {

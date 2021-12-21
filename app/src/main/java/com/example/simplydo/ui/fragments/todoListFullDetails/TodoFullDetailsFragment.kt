@@ -1,12 +1,15 @@
 package com.example.simplydo.ui.fragments.todoListFullDetails
 
+import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -15,12 +18,14 @@ import com.example.simplydo.R
 import com.example.simplydo.adapters.todoTaskAttachmentAdapter.AudioAttachmentAdapter
 import com.example.simplydo.adapters.todoTaskAttachmentAdapter.ContactAttachmentAdapter
 import com.example.simplydo.adapters.todoTaskAttachmentAdapter.GalleryAttachmentAdapter
+import com.example.simplydo.adapters.todoTaskList.TodoTaskViewAdapter
 import com.example.simplydo.databinding.TodoFullDetailsFragmentBinding
 import com.example.simplydo.dialog.bottomSheetDialogs.basicAddTodoDialog.EditTodoBasic
 import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.model.ContactModel
 import com.example.simplydo.model.TagModel
 import com.example.simplydo.model.TodoModel
+import com.example.simplydo.model.TodoTaskModel
 import com.example.simplydo.model.attachmentModel.AudioModel
 import com.example.simplydo.model.attachmentModel.GalleryModel
 import com.example.simplydo.utlis.*
@@ -51,7 +56,7 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
     private lateinit var galleryAttachmentAdapter: GalleryAttachmentAdapter
     private lateinit var contactAttachmentAdapter: ContactAttachmentAdapter
 
-
+    private lateinit var todoTaskAdapter: TodoTaskViewAdapter
     // all interfaces
 
     private val audioAttachmentInterface =
@@ -66,8 +71,11 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
         }
     private val galleryAttachmentInterface =
         object : GalleryAttachmentInterface {
-            override fun onItemSelect(item: GalleryModel) {
+            override fun onItemSelect(item: GalleryModel, indexOf: Int) {
 
+            }
+
+            override fun onItemRemoved(removedItem: GalleryModel, indexOf: Int) {
             }
         }
 
@@ -117,22 +125,28 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
                 requireContext(),
                 appRepository,
             )
-        ).get(TodoFullDetailsViewModel::class.java)
+        )[TodoFullDetailsViewModel::class.java]
 
         arguments?.let {
             todoData = getTodoData(dtId = it.getLong(AppConstant.NAVIGATION_TASK_KEY))
         }
 
+
+
         todoData.let { data ->
             binding.tvTitle.text = data.title
             binding.tvTodo.text = data.todo
+            binding.textViewPriority.text = data.getTaskPriorityText()
+            binding.textViewPriority.background =
+                getTaskPriorityBackground(data.taskPriority, requireContext())
 
+            loadTodoTaskRecyclerView(data.arrayListTodoTask)
             binding.textViewEventDateAndTime.text = data.getEventDate()
             binding.textViewEventTime.visibility = data.isEventTimeVisible()
             binding.textViewEventTime.text = data.getEventTime()
             binding.imCompleted.visibility = data.isCompletedVisible()
-            binding.chipPriority.visibility = data.isCompletedVisible()
-            binding.chipDateExpired.visibility = data.isDateExpiredVisible()
+//            binding.chipPriority.visibility = data.isCompletedVisible()
+//            binding.chipDateExpired.visibility = data.isDateExpiredVisible()
 
             loadTaskTag(data.taskTags)
             checkAttachment(data)
@@ -144,10 +158,10 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
                 binding.linearLayoutAudioAttachment.visibility = View.VISIBLE
             }
 
-            if (data.imageAttachments.isEmpty()) {
+            if (data.galleryAttachments.isEmpty()) {
                 binding.linearLayoutGalleryAttachment.visibility = View.GONE
             } else {
-                galleryAttachmentAdapter.updateDataset(data.imageAttachments)
+                galleryAttachmentAdapter.updateDataset(data.galleryAttachments)
                 binding.linearLayoutGalleryAttachment.visibility = View.VISIBLE
             }
 
@@ -230,6 +244,50 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
         }
     }
 
+    private fun loadTodoTaskRecyclerView(arrayListTodoTask: ArrayList<TodoTaskModel>) {
+        todoTaskAdapter = TodoTaskViewAdapter(arrayListTodoTask, null, null)
+        binding.recyclerViewTodoTaskList.apply {
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+            adapter = todoTaskAdapter
+        }
+    }
+
+    private fun getTaskPriorityBackground(taskPriority: Int, context: Context): Drawable? {
+        Log.i(com.example.simplydo.adapters.TAG, "getTaskPriorityBackground: $taskPriority")
+        return when (taskPriority) {
+            AppConstant.TaskPriority.HIGH_PRIORITY -> {
+                ResourcesCompat.getDrawable(
+                    context.resources,
+                    R.drawable.card_high_priority,
+                    context.theme
+                )
+            }
+            AppConstant.TaskPriority.MEDIUM_PRIORITY -> {
+                ResourcesCompat.getDrawable(
+                    context.resources,
+                    R.drawable.card_medium_priority,
+                    context.theme
+                )
+            }
+            AppConstant.TaskPriority.LOW_PRIORITY -> {
+                ResourcesCompat.getDrawable(
+                    context.resources,
+                    R.drawable.card_low_priority,
+                    context.theme
+                )
+            }
+            else -> {
+                ResourcesCompat.getDrawable(
+                    context.resources,
+                    R.drawable.card_low_priority,
+                    context.theme
+                )
+            }
+        }
+    }
+
+
     private fun loadTaskTag(taskTags: ArrayList<TagModel>) {
         binding.chipGroupTaskTags.removeAllViews()
 
@@ -244,7 +302,7 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
     private fun checkAttachment(data: TodoModel) {
         if (
             data.audioAttachments.isEmpty() &&
-            data.imageAttachments.isEmpty() &&
+            data.galleryAttachments.isEmpty() &&
             data.contactAttachments.isEmpty() &&
             data.locationData.lat == 0.0 && data.locationData.lng == 0.0
         ) {

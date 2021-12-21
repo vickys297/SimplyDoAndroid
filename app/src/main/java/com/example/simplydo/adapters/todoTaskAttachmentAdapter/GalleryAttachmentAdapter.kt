@@ -12,8 +12,7 @@ import com.example.simplydo.utlis.GalleryAttachmentInterface
 class GalleryAttachmentAdapter(
     val context: Context,
     private val galleryAttachmentInterface: GalleryAttachmentInterface
-) :
-    RecyclerView.Adapter<GalleryAttachmentAdapter.GalleryViewHolder>() {
+) : RecyclerView.Adapter<GalleryAttachmentAdapter.GalleryViewHolder>() {
 
     private var dataSet: ArrayList<GalleryModel> = ArrayList()
 
@@ -52,8 +51,12 @@ class GalleryAttachmentAdapter(
                 .thumbnail(0.1f)
                 .into(viewHolder.imageViewPreview)
 
-            viewHolder.root.setOnClickListener {
-                galleryAttachmentInterface.onItemSelect(this@run)
+            holder.binding.imageViewClose.setOnClickListener {
+                val removedItem = this@run
+                val indexOf = dataSet.indexOf(removedItem)
+                dataSet.remove(removedItem)
+                notifyItemRemoved(indexOf)
+                galleryAttachmentInterface.onItemRemoved(removedItem, indexOf)
             }
         }
     }

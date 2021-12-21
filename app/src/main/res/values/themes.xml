@@ -189,7 +189,7 @@
 
     <style name="CardBackground" parent="Theme.MaterialComponents.DayNight">
         <item name="android:radius">8dp</item>
-        <item name="android:background">@drawable/card_background</item>
+        <item name="android:background">@drawable/task_new_card_background_light</item>
         <item name="android:foreground">?attr/selectableItemBackground</item>
         <item name="android:clickable">true</item>
     </style>
@@ -270,4 +270,7 @@
         <item name="android:clickable">true</item>
     </style>
 
+    <style name="TaskBackground" parent="Theme.MaterialComponents.DayNight">
+        <item name="background">@drawable/task_new_card_background_light</item>
+    </style>
 </resources>

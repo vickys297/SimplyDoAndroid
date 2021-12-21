@@ -1,4 +1,4 @@
-package com.example.simplydo.adapters
+package com.example.simplydo.adapters.attachment
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -8,7 +8,7 @@ import com.example.simplydo.model.attachmentModel.FileModel
 import com.example.simplydo.utlis.AppFunctions
 import com.example.simplydo.utlis.MimeTypes
 
-class FilesAdapter : RecyclerView.Adapter<FilesAdapter.DocumentViewHolder>() {
+class SelectionListFilesAdapter : RecyclerView.Adapter<SelectionListFilesAdapter.DocumentViewHolder>() {
 
     private var dataSet: ArrayList<FileModel> = ArrayList()
 

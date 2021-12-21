@@ -45,7 +45,7 @@ class AddNewTodoViewModel(val appRepository: AppRepository) :
                 taskPriority = taskPriority,
                 locationData = location,
                 contactAttachments = contactArray,
-                imageAttachments = galleryArray,
+                galleryAttachments = galleryArray,
                 audioAttachments = audioArray,
                 fileAttachments = filesArray,
                 createdAt = AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_ISO)
@@ -84,7 +84,7 @@ class AddNewTodoViewModel(val appRepository: AppRepository) :
            taskPriority = taskPriority,
            contactAttachments = contactArray,
            locationData = location,
-           imageAttachments = galleryArray,
+           galleryAttachments = galleryArray,
            audioAttachments = audioArray,
            fileAttachments = filesArray,
            createdAt = createAt,

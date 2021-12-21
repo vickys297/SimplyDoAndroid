@@ -9,6 +9,7 @@ import android.text.Html
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -53,6 +54,7 @@ internal val TAG = AddNewTodo::class.java.canonicalName
 
 class AddNewTodo : Fragment(R.layout.add_new_todo_fragment), NewTodoOptionsFragmentsInterface {
 
+    private var toast: Toast? = null
     private var taskPriority: Int = 3
     private var todoTaskDataSet: ArrayList<TodoTaskModel> = ArrayList()
     private lateinit var viewModel: AddNewTodoViewModel
@@ -73,6 +75,8 @@ class AddNewTodo : Fragment(R.layout.add_new_todo_fragment), NewTodoOptionsFragm
 
     private var eventDate: Long = System.currentTimeMillis()
     private var currentEventStartDueDateTime = System.currentTimeMillis()
+    private var taskRepeatFrequency: ArrayList<SelectorDataModal> = arrayListOf()
+    private var taskRepeatDays: ArrayList<SelectorDataModal> = arrayListOf()
 
     // all adapter
     private lateinit var audioAttachmentAdapter: AudioAttachmentAdapter
@@ -149,8 +153,20 @@ class AddNewTodo : Fragment(R.layout.add_new_todo_fragment), NewTodoOptionsFragm
 
     private val galleryAttachmentInterface =
         object : GalleryAttachmentInterface {
-            override fun onItemSelect(item: GalleryModel) {
+            override fun onItemSelect(item: GalleryModel, indexOf: Int) {
+            }
 
+            override fun onItemRemoved(removedItem: GalleryModel, indexOf: Int) {
+                Log.i(TAG, "galleryAttachmentInterface >> onItemSelect: $removedItem")
+                if (galleryArrayList.contains(removedItem))
+                    galleryArrayList.removeAt(indexOf)
+
+                if (toast != null) {
+                    toast?.cancel()
+                }
+                toast = Toast.makeText(requireContext(), "Item Removed", Toast.LENGTH_SHORT)
+                toast?.show()
+                checkForAttachment()
             }
         }
 
@@ -264,7 +280,12 @@ class AddNewTodo : Fragment(R.layout.add_new_todo_fragment), NewTodoOptionsFragm
         filesArrayList = ArrayList()
 
         repeatDialog =
-            RepeatDialog.getInstance(requireContext(), callback = onRepeatCallback)
+            RepeatDialog.getInstance(
+                requireContext(),
+                callback = onRepeatCallback,
+                taskRepeatDays = taskRepeatDays,
+                taskRepeatFrequency = taskRepeatFrequency
+            )
         priorityDialog = PriorityDialog.newInstance(callback = onPriorityCallback)
 
 
@@ -562,6 +583,7 @@ class AddNewTodo : Fragment(R.layout.add_new_todo_fragment), NewTodoOptionsFragm
             setupTaskPriority(priority)
         }
         observerFrequency = Observer { data ->
+            taskRepeatFrequency = data
             val stringBuilder = StringBuilder()
             for (frequency in data) {
                 if (frequency.selected) {
@@ -573,6 +595,7 @@ class AddNewTodo : Fragment(R.layout.add_new_todo_fragment), NewTodoOptionsFragm
             }
         }
         observerRepeat = Observer { data ->
+            taskRepeatDays = data
             binding.chipGroupWeeks.isVisible = data.isNotEmpty()
             setRepeatDate(data)
         }

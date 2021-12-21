@@ -11,7 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simplydo.R
-import com.example.simplydo.adapters.AudioAdapter
+import com.example.simplydo.adapters.attachment.SelectionListAudioAdapter
 import com.example.simplydo.databinding.AudioListFragmentBinding
 import com.example.simplydo.dialog.bottomSheetDialogs.playAudio.PlayAudioBottomSheetDialog
 import com.example.simplydo.model.attachmentModel.AudioModel
@@ -32,7 +32,7 @@ class AudioListFragment : Fragment(R.layout.audio_list_fragment) {
     private lateinit var _binding: AudioListFragmentBinding
     val binding: AudioListFragmentBinding get() = _binding
 
-    private lateinit var audioAdapter: AudioAdapter
+    private lateinit var selectionListAudioAdapter: SelectionListAudioAdapter
 
     private val selectedAudioArrayList = ArrayList<AudioModel>()
 
@@ -125,10 +125,10 @@ class AudioListFragment : Fragment(R.layout.audio_list_fragment) {
     }
 
     private fun setupRecyclerAdapter() {
-        audioAdapter = AudioAdapter(requireContext(), audioInterface)
+        selectionListAudioAdapter = SelectionListAudioAdapter(requireContext(), audioInterface)
         binding.recyclerViewListAudio.apply {
             layoutManager = LinearLayoutManager(requireContext())
-            adapter = audioAdapter
+            adapter = selectionListAudioAdapter
         }
     }
 
@@ -137,7 +137,7 @@ class AudioListFragment : Fragment(R.layout.audio_list_fragment) {
         lifecycleScope.launch {
 
             viewModel.getAudioList(requireContext()).collectLatest {
-                audioAdapter.submitData(it)
+                selectionListAudioAdapter.submitData(it)
             }
             viewModel.getAudioList(requireContext()).count {
                 Log.i(TAG, "getAudioList: $it")
@@ -152,7 +152,7 @@ class AudioListFragment : Fragment(R.layout.audio_list_fragment) {
     }
 
     private fun setupViewModel() {
-        viewModel = ViewModelProvider(this).get(AudioListViewModel::class.java)
+        viewModel = ViewModelProvider(this@AudioListFragment)[AudioListViewModel::class.java]
         binding.apply {
             viewModel = this@AudioListFragment.viewModel
             lifecycleOwner = this@AudioListFragment

@@ -31,7 +31,6 @@
     <string name="todo_options">TODO Options</string>
     <string name="options">Options</string>
     <string name="add_more_details">add more details</string>
-    <string name="priority">Priority</string>
     <string name="view_now">View Now</string>
     <string name="task_completed_label">Task Completed</string>
     <string name="todo_completed">Todo Completed</string>
@@ -170,5 +169,7 @@
     <string name="tap_to_set_priority_to_this_task">Tap to set priority to this task</string>
     <string name="add_todo_list_here">Add todo list here</string>
     <string name="update">Update</string>
+    <string name="priority">Priority</string>
+    <string name="_3_attachments">3 attachments</string>
 
 </resources>

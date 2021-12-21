@@ -1,4 +1,4 @@
-package com.example.simplydo.adapters
+package com.example.simplydo.adapters.attachment
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -13,11 +13,11 @@ import com.example.simplydo.model.ContactModel
 import com.example.simplydo.utlis.ContactAdapterInterface
 
 
-class ContactListAdapter(
+class SelectionListContactAdapter(
     private val contactAdapterInterface: ContactAdapterInterface,
     private val context: Context,
 ) :
-    PagingDataAdapter<ContactModel, ContactListAdapter.ContactViewHolder>(DIFF_CALLBACK) {
+    PagingDataAdapter<ContactModel, SelectionListContactAdapter.ContactViewHolder>(DIFF_CALLBACK) {
 
     companion object {
         var DIFF_CALLBACK = object : DiffUtil.ItemCallback<ContactModel>() {

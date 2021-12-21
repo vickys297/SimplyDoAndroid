@@ -50,7 +50,7 @@ class CalenderViewModel(val appRepository: AppRepository) : ViewModel() {
             taskPriority = 3,
             locationData = LatLngModel(),
             contactAttachments = contactInfo,
-            imageAttachments = imagesList,
+            galleryAttachments = imagesList,
             createdAt = AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_ISO)
                 .format(Date().time),
             updatedAt = AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_ISO)
