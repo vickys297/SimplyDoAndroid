@@ -18,25 +18,39 @@
 
         <LinearLayout
             android:id="@+id/top_section"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:padding="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toStartOf="@+id/profileView"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:orientation="vertical">
+            app:layout_constraintTop_toTopOf="parent">
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/hello_there"/>
+                android:text="@string/hello_there" />
 
             <TextView
                 android:id="@+id/text_1"
-                android:textSize="24sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/discover_your_daily"/>
+                android:text="@string/discover_your_daily"
+                android:textSize="24sp" />
         </LinearLayout>
+
+        <com.example.simplydo.utlis.ProfileImageView
+            android:id="@+id/profileView"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginEnd="16dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/sample_profile_picture"
+            app:layout_constraintBottom_toBottomOf="@+id/top_section"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/top_section" />
 
         <!--        <androidx.appcompat.widget.Toolbar
                     android:id="@+id/todoToolbar"

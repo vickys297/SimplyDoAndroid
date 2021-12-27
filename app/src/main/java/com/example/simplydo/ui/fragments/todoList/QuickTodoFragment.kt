@@ -243,7 +243,7 @@ class QuickTodoFragment : Fragment(R.layout.fragment_quick_todo), View.OnClickLi
 //        (activity as MainActivity).supportActionBar!!.setDisplayShowTitleEnabled(false)
 //        setHasOptionsMenu(true)
 
-        val accentText = "<font color='#6200EE'>daily routine</font>"
+        val accentText = "<font color='#6200EE'>Daily<br>Routine</font>"
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             binding.text1.text = Html.fromHtml("Discover your $accentText here", HtmlCompat.FROM_HTML_MODE_LEGACY)
         } else {
@@ -267,6 +267,10 @@ class QuickTodoFragment : Fragment(R.layout.fragment_quick_todo), View.OnClickLi
         binding.buttonAddNewTask.setOnClickListener(this@QuickTodoFragment)
 
         binding.buttonTodoOption.setOnClickListener(this@QuickTodoFragment)
+
+        binding.profileView.setOnClickListener {
+            findNavController().navigate(R.id.action_toDoFragment_to_accounts)
+        }
 
 
         val simpleItemTouchCallback: ItemTouchHelper.SimpleCallback = object :
@@ -359,7 +363,6 @@ class QuickTodoFragment : Fragment(R.layout.fragment_quick_todo), View.OnClickLi
         return super.onOptionsItemSelected(item)
     }
 
-
     private fun setObserver() {
 
 
@@ -415,7 +418,6 @@ class QuickTodoFragment : Fragment(R.layout.fragment_quick_todo), View.OnClickLi
 
 
     }
-
 
     override fun onResume() {
         super.onResume()

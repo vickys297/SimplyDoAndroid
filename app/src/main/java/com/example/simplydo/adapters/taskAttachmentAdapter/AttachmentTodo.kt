@@ -1,4 +1,4 @@
-package com.example.simplydo.adapters.todoTaskList
+package com.example.simplydo.adapters.taskAttachmentAdapter
 
 import android.util.Log
 import android.view.LayoutInflater
@@ -6,16 +6,19 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.example.simplydo.R
 import com.example.simplydo.databinding.RecyclerTaskListViewItemBinding
 import com.example.simplydo.databinding.RecyclerTaskTextViewItemBinding
 import com.example.simplydo.model.TodoTaskModel
 import com.example.simplydo.utlis.AppConstant
 import com.example.simplydo.utlis.NewTodo
 
+internal const val VIEW_TYPE_LIST = 0
+internal const val VIEW_TYPE_TEXT = 1
+internal val TAG_TASK = AttachmentTodoTaskAdapter::class.java.canonicalName
 
-internal val TAG_TASK_VIEW = TodoTaskViewAdapter::class.java.canonicalName
-
-class TodoTaskViewAdapter(
+class AttachmentTodoTaskAdapter(
     var dataSet: ArrayList<TodoTaskModel>,
     private val addTodoInterface: NewTodo.AddTask?,
     private val todoTaskInterface: NewTodo.TodoTask?
@@ -51,7 +54,17 @@ class TodoTaskViewAdapter(
     class TodoTextViewHolder(val binding: RecyclerTaskTextViewItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(): RecyclerTaskTextViewItemBinding {
+        fun bind(item: TodoTaskModel): RecyclerTaskTextViewItemBinding {
+            Glide.with(binding.root)
+                .load(
+                    if (item.isCompleted) {
+                        R.drawable.ic_checked
+                    } else {
+                        R.drawable.ic_unchecked
+                    }
+                )
+                .into(binding.imageViewCompleted)
+
             return binding.apply {
                 executePendingBindings()
             }
@@ -62,7 +75,19 @@ class TodoTaskViewAdapter(
     class TodoListViewHolder(val binding: RecyclerTaskListViewItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(): RecyclerTaskListViewItemBinding {
+        fun bind(item: TodoTaskModel): RecyclerTaskListViewItemBinding {
+
+            Glide.with(binding.root)
+                .load(
+                    if (item.isCompleted) {
+                        R.drawable.ic_checked
+                    } else {
+                        R.drawable.ic_unchecked
+                    }
+                )
+                .into(binding.imageViewCompleted)
+
+
             return binding.apply {
                 executePendingBindings()
             }
@@ -75,12 +100,13 @@ class TodoTaskViewAdapter(
             VIEW_TYPE_LIST -> {
                 val item = dataSet[position]
                 (holder as TodoListViewHolder).apply {
-                    val binding = bind()
+                    val binding = bind(item)
                     addListViewToParent(binding, item.contentList!!)
 
-
-
                     holder.itemView.setOnClickListener {
+                        item.isCompleted = !item.isCompleted
+                        val indexOf = dataSet.indexOf(item)
+                        notifyItemChanged(indexOf)
                         todoTaskInterface?.onTaskSelect(item)
                     }
                 }
@@ -88,11 +114,13 @@ class TodoTaskViewAdapter(
             VIEW_TYPE_TEXT -> {
                 val item = dataSet[position]
                 (holder as TodoTextViewHolder).apply {
-                    val binding = bind()
+                    val binding = bind(item)
                     binding.textViewNote.text = item.content
 
-
                     holder.itemView.setOnClickListener {
+                        item.isCompleted = !item.isCompleted
+                        val indexOf = dataSet.indexOf(item)
+                        notifyItemChanged(indexOf)
                         todoTaskInterface?.onTaskSelect(item)
                     }
                 }

@@ -79,6 +79,10 @@ class AudioListFragment : Fragment(R.layout.audio_list_fragment) {
         super.onViewCreated(view, savedInstanceState)
         _binding = AudioListFragmentBinding.bind(view)
         setupViewModel()
+        findNavController().previousBackStackEntry?.savedStateHandle?.set(
+            AppConstant.Key.NAVIGATION_AUDIO_DATA_KEY,
+            arrayListOf(ArrayList<AudioModel>())
+        )
 
         binding.buttonAddAudio.setOnClickListener {
             findNavController().previousBackStackEntry?.savedStateHandle?.set(

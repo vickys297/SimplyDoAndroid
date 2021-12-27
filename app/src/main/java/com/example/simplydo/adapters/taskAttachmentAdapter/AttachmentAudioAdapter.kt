@@ -1,4 +1,4 @@
-package com.example.simplydo.adapters.todoTaskAttachmentAdapter
+package com.example.simplydo.adapters.taskAttachmentAdapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -7,7 +7,7 @@ import com.example.simplydo.databinding.RecyclerAttachmentAudioListItemBinding
 import com.example.simplydo.model.attachmentModel.AudioModel
 import com.example.simplydo.utlis.AudioAttachmentInterface
 
-class AudioAttachmentAdapter(private val audioAttachmentInterface: AudioAttachmentInterface) : RecyclerView.Adapter<AudioAttachmentAdapter.AudioViewHolder>() {
+class AttachmentAudioAdapter(private val audioAttachmentInterface: AudioAttachmentInterface) : RecyclerView.Adapter<AttachmentAudioAdapter.AudioViewHolder>() {
 
     class AudioViewHolder(val binding: RecyclerAttachmentAudioListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {

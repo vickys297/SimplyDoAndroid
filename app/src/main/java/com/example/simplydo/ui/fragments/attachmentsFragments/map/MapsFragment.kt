@@ -98,8 +98,12 @@ class MapsFragment : Fragment(R.layout.fragment_maps) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentMapsBinding.bind(view)
-
         latLngLocation = LatLng(11.082096, 77.032576)
+        findNavController().previousBackStackEntry?.savedStateHandle?.set(
+            AppConstant.Key.NAVIGATION_LOCATION_DATA_KEY,
+            latLngLocation
+        )
+
 
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)

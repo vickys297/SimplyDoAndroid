@@ -78,6 +78,11 @@ class GalleryListFragment() : Fragment(R.layout.fragment_gallery_view) {
         binding = FragmentGalleryViewBinding.bind(view)
         setupViewModel()
 
+        findNavController().previousBackStackEntry?.savedStateHandle?.set(
+            AppConstant.Key.NAVIGATION_GALLERY_DATA_KEY,
+            selectedGalleryArrayList
+        )
+
         val requestFileStoragePermissionLauncher =
             registerForActivityResult(ActivityResultContracts.RequestPermission()) {
                 if (it) {

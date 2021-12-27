@@ -1,4 +1,4 @@
-package com.example.simplydo.adapters.todoTaskAttachmentAdapter
+package com.example.simplydo.adapters.taskAttachmentAdapter
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -10,10 +10,10 @@ import com.example.simplydo.databinding.RecyclerAttachmentContactListItemBinding
 import com.example.simplydo.model.ContactModel
 import com.example.simplydo.utlis.ContactAttachmentInterface
 
-class ContactAttachmentAdapter(
+class AttachmentContactAdapter(
     val context: Context,
     private val contactAttachmentInterface: ContactAttachmentInterface
-) : RecyclerView.Adapter<ContactAttachmentAdapter.ContactViewHolder>() {
+) : RecyclerView.Adapter<AttachmentContactAdapter.ContactViewHolder>() {
 
     class ContactViewHolder(
         val binding: RecyclerAttachmentContactListItemBinding,

@@ -13,8 +13,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simplydo.R
-import com.example.simplydo.adapters.attachment.SelectionListContactAdapter
 import com.example.simplydo.adapters.attachment.SelectedListContactAdapter
+import com.example.simplydo.adapters.attachment.SelectionListContactAdapter
 import com.example.simplydo.databinding.ContactsListViewBinding
 import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.model.ContactModel
@@ -80,6 +80,10 @@ class ContactsFragment :
         super.onViewCreated(view, savedInstanceState)
         _binding = ContactsListViewBinding.bind(view)
         setUpViewModel()
+        findNavController().previousBackStackEntry?.savedStateHandle?.set(
+            AppConstant.Key.NAVIGATION_CONTACT_DATA_KEY,
+            selectedContact
+        )
 
         val requestPermissionLauncher =
             registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->

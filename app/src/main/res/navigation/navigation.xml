@@ -52,6 +52,9 @@
         <action
             android:id="@+id/action_toDoFragment_to_searchTaskFragment"
             app:destination="@id/searchTaskFragment" />
+        <action
+            android:id="@+id/action_toDoFragment_to_accounts"
+            app:destination="@id/accounts" />
     </fragment>
     <fragment
         android:id="@+id/addNewTodo"
@@ -174,6 +177,9 @@
             android:id="@+id/action_todoFullDetailsFragment_to_editFragment"
             app:destination="@id/editFragment"
             app:popUpTo="@id/todoFullDetailsFragment" />
+        <action
+            android:id="@+id/action_todoFullDetailsFragment_to_imageSliderFullScreenFragment"
+            app:destination="@id/imageSliderFullScreenFragment" />
     </fragment>
     <fragment
         android:id="@+id/documentListFragment"
@@ -196,4 +202,13 @@
             android:id="@+id/action_searchTaskFragment_to_editFragment"
             app:destination="@id/editFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/accounts"
+        android:name="com.example.simplydo.ui.fragments.accounts.Accounts"
+        android:label="accounts_fragment"
+        tools:layout="@layout/accounts_fragment" />
+    <fragment
+        android:id="@+id/imageSliderFullScreenFragment"
+        android:name="com.example.simplydo.ui.fragments.fullScreenContent.ImageSliderFullScreenFragment"
+        android:label="ImageSliderFullScreenFragment" />
 </navigation>

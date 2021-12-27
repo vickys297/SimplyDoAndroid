@@ -200,6 +200,7 @@ data class TodoPagingModel(
 data class TodoTaskModel(
     val type: Int,
     val content: String? = "",
+    var isCompleted :Boolean = false,
     val contentList: ArrayList<String>? = ArrayList()
 ) : Serializable
 

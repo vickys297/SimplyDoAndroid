@@ -14,7 +14,7 @@
         style="@style/CardBackground"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:layout_margin="16dp"
         android:padding="16dp">
 
 
@@ -97,11 +97,10 @@
             android:drawablePadding="10dp"
             android:text="@string/_3_attachments"
             android:textColor="@color/emerald"
-            android:textSize="10sp"
+            app:drawableStartCompat="@drawable/ic_attach"
             app:layout_constraintBottom_toBottomOf="@+id/tvEventDate"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tvEventDate"
-            app:drawableStartCompat="@drawable/ic_attach" />
+            app:layout_constraintTop_toTopOf="@+id/tvEventDate" />
 
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/chipGroup_tags"

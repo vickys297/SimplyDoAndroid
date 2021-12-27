@@ -1,4 +1,4 @@
-package com.example.simplydo.adapters.todoTaskAttachmentAdapter
+package com.example.simplydo.adapters.taskAttachmentAdapter
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -9,10 +9,10 @@ import com.example.simplydo.databinding.RecyclerAttachmentGalleryListItemBinding
 import com.example.simplydo.model.attachmentModel.GalleryModel
 import com.example.simplydo.utlis.GalleryAttachmentInterface
 
-class GalleryAttachmentAdapter(
+class AttachmentGalleryAdapter(
     val context: Context,
     private val galleryAttachmentInterface: GalleryAttachmentInterface
-) : RecyclerView.Adapter<GalleryAttachmentAdapter.GalleryViewHolder>() {
+) : RecyclerView.Adapter<AttachmentGalleryAdapter.GalleryViewHolder>() {
 
     private var dataSet: ArrayList<GalleryModel> = ArrayList()
 
@@ -50,6 +50,12 @@ class GalleryAttachmentAdapter(
                 .load(item.contentUri)
                 .thumbnail(0.1f)
                 .into(viewHolder.imageViewPreview)
+
+            holder.binding.imageViewPreview.setOnClickListener {
+                val selectedImage = this@run
+                val indexOf = dataSet.indexOf(selectedImage)
+                galleryAttachmentInterface.onItemSelect(selectedImage, indexOf)
+            }
 
             holder.binding.imageViewClose.setOnClickListener {
                 val removedItem = this@run

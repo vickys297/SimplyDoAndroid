@@ -135,6 +135,7 @@ interface NewTodo {
 
     interface TodoTask {
         fun onTaskSelect(item: TodoTaskModel)
+        fun onCompleted(item: TodoTaskModel)
     }
 }
 

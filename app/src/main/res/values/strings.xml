@@ -171,5 +171,9 @@
     <string name="update">Update</string>
     <string name="priority">Priority</string>
     <string name="_3_attachments">3 attachments</string>
+    <string name="profile_name">Profile Name</string>
+    <string name="profile">Profile</string>
+    <string name="switch_account">Switch Account</string>
+    <string name="edit_profile">Edit Profile</string>
 
 </resources>

@@ -20,10 +20,10 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.simplydo.R
-import com.example.simplydo.adapters.todoTaskAttachmentAdapter.AudioAttachmentAdapter
-import com.example.simplydo.adapters.todoTaskAttachmentAdapter.ContactAttachmentAdapter
-import com.example.simplydo.adapters.todoTaskAttachmentAdapter.FileAttachmentAdapter
-import com.example.simplydo.adapters.todoTaskAttachmentAdapter.GalleryAttachmentAdapter
+import com.example.simplydo.adapters.taskAttachmentAdapter.AttachmentAudioAdapter
+import com.example.simplydo.adapters.taskAttachmentAdapter.AttachmentContactAdapter
+import com.example.simplydo.adapters.taskAttachmentAdapter.AttachmentFileAdapter
+import com.example.simplydo.adapters.taskAttachmentAdapter.AttachmentGalleryAdapter
 import com.example.simplydo.adapters.todoTaskList.TodoTaskAdapter
 import com.example.simplydo.adapters.todoTaskList.TodoTaskFooterAdapter
 import com.example.simplydo.databinding.EditTodoFragmentBinding
@@ -80,10 +80,10 @@ class EditTodo : Fragment(R.layout.edit_todo_fragment), NewTodoOptionsFragmentsI
     private var toast: Toast? = null
 
     // all adapter
-    private lateinit var audioAttachmentAdapter: AudioAttachmentAdapter
-    private lateinit var galleryAttachmentAdapter: GalleryAttachmentAdapter
-    private lateinit var contactAttachmentAdapter: ContactAttachmentAdapter
-    private lateinit var fileAttachmentAdapter: FileAttachmentAdapter
+    private lateinit var attachmentAudioAdapter: AttachmentAudioAdapter
+    private lateinit var attachmentGalleryAdapter: AttachmentGalleryAdapter
+    private lateinit var attachmentContactAdapter: AttachmentContactAdapter
+    private lateinit var attachmentFileAdapter: AttachmentFileAdapter
 
     private lateinit var todoTaskAdapter: TodoTaskAdapter
     private lateinit var todoTaskFooterAdapter: TodoTaskFooterAdapter
@@ -255,6 +255,10 @@ class EditTodo : Fragment(R.layout.edit_todo_fragment), NewTodoOptionsFragmentsI
                     )
                 }
             }
+        }
+
+        override fun onCompleted(item: TodoTaskModel) {
+
         }
     }
 
@@ -445,14 +449,14 @@ class EditTodo : Fragment(R.layout.edit_todo_fragment), NewTodoOptionsFragmentsI
             )
         }
 
-        audioAttachmentAdapter =
-            AudioAttachmentAdapter(audioAttachmentInterface = audioAttachmentInterface)
-        galleryAttachmentAdapter =
-            GalleryAttachmentAdapter(requireContext(), galleryAttachmentInterface)
-        contactAttachmentAdapter =
-            ContactAttachmentAdapter(requireContext(), contactAttachmentInterface)
-        fileAttachmentAdapter =
-            FileAttachmentAdapter(fileAttachmentInterface)
+        attachmentAudioAdapter =
+            AttachmentAudioAdapter(audioAttachmentInterface = audioAttachmentInterface)
+        attachmentGalleryAdapter =
+            AttachmentGalleryAdapter(requireContext(), galleryAttachmentInterface)
+        attachmentContactAdapter =
+            AttachmentContactAdapter(requireContext(), contactAttachmentInterface)
+        attachmentFileAdapter =
+            AttachmentFileAdapter(fileAttachmentInterface)
         todoTaskAdapter = TodoTaskAdapter(
             dataSet = arrayListTodoTask,
             addTodoInterface,
@@ -506,25 +510,25 @@ class EditTodo : Fragment(R.layout.edit_todo_fragment), NewTodoOptionsFragmentsI
         binding.recyclerViewAudioAttachments.apply {
             layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            adapter = audioAttachmentAdapter
+            adapter = attachmentAudioAdapter
         }
 
         binding.recyclerViewGalleryAttachments.apply {
             layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            adapter = galleryAttachmentAdapter
+            adapter = attachmentGalleryAdapter
         }
 
         binding.recyclerViewContactAttachments.apply {
             layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            adapter = contactAttachmentAdapter
+            adapter = attachmentContactAdapter
         }
 
         binding.recyclerViewDocumentAttachments.apply {
             layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            adapter = fileAttachmentAdapter
+            adapter = attachmentFileAdapter
         }
 
         checkForAttachment()
@@ -697,17 +701,13 @@ class EditTodo : Fragment(R.layout.edit_todo_fragment), NewTodoOptionsFragmentsI
             viewLifecycleOwner
         ) { result ->
             // Do something with the result.
-            contactArrayList = result
-
-            checkForAttachment()
 
             Log.d(TAG, "NAVIGATION_CONTACT_DATA_KEY: $result")
-
+            contactArrayList = result
+            checkForAttachment()
+            binding.linearLayoutContactAttachment.isVisible = contactArrayList.isNotEmpty()
             if (contactArrayList.isNotEmpty()) {
-                binding.linearLayoutContactAttachment.visibility = View.VISIBLE
-                contactAttachmentAdapter.updateDataSet(contactArrayList)
-            } else {
-                binding.linearLayoutContactAttachment.visibility = View.GONE
+                attachmentContactAdapter.updateDataSet(contactArrayList)
             }
         }
 
@@ -718,16 +718,14 @@ class EditTodo : Fragment(R.layout.edit_todo_fragment), NewTodoOptionsFragmentsI
             viewLifecycleOwner
         ) { result ->
             // Do something with the result.
-            audioArrayList = result
-
-            checkForAttachment()
             Log.d(TAG, "NAVIGATION_AUDIO_DATA_KEY: $result")
-
-            if (audioArrayList.isNotEmpty()) {
-                binding.linearLayoutAudioAttachment.visibility = View.VISIBLE
-                audioAttachmentAdapter.updateDataSet(audioArrayList)
-            } else {
-                binding.linearLayoutAudioAttachment.visibility = View.GONE
+            audioArrayList = result
+            checkForAttachment()
+            audioArrayList.isNotEmpty().let {
+                binding.linearLayoutAudioAttachment.isVisible = it
+                if (it) {
+                    attachmentAudioAdapter.updateDataSet(audioArrayList)
+                }
             }
         }
 
@@ -743,12 +741,9 @@ class EditTodo : Fragment(R.layout.edit_todo_fragment), NewTodoOptionsFragmentsI
             checkForAttachment()
 
             Log.d(TAG, "NAVIGATION_GALLERY_DATA_KEY: $result")
-
+            binding.linearLayoutGalleryAttachment.isVisible = galleryArrayList.isNotEmpty()
             if (galleryArrayList.isNotEmpty()) {
-                binding.linearLayoutGalleryAttachment.visibility = View.VISIBLE
-                galleryAttachmentAdapter.updateDataset(galleryArrayList)
-            } else {
-                binding.linearLayoutGalleryAttachment.visibility = View.GONE
+                attachmentGalleryAdapter.updateDataset(galleryArrayList)
             }
         }
 
@@ -761,11 +756,10 @@ class EditTodo : Fragment(R.layout.edit_todo_fragment), NewTodoOptionsFragmentsI
             filesArrayList = result
             checkForAttachment()
             Log.i(TAG, "NAVIGATION_FILES_DATA_KEY: $result")
+
+            binding.linearFilesAttachment.isVisible = filesArrayList.isNotEmpty()
             if (filesArrayList.isNotEmpty()) {
-                binding.linearFilesAttachment.visibility = View.VISIBLE
-                fileAttachmentAdapter.updateDataSet(filesArrayList)
-            } else {
-                binding.linearFilesAttachment.visibility = View.GONE
+                attachmentFileAdapter.updateDataSet(filesArrayList)
             }
 
         }

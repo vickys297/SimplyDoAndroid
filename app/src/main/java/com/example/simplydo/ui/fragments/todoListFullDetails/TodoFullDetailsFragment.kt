@@ -11,14 +11,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simplydo.R
-import com.example.simplydo.adapters.todoTaskAttachmentAdapter.AudioAttachmentAdapter
-import com.example.simplydo.adapters.todoTaskAttachmentAdapter.ContactAttachmentAdapter
-import com.example.simplydo.adapters.todoTaskAttachmentAdapter.GalleryAttachmentAdapter
-import com.example.simplydo.adapters.todoTaskList.TodoTaskViewAdapter
+import com.example.simplydo.adapters.taskAttachmentAdapter.AttachmentAudioAdapter
+import com.example.simplydo.adapters.taskAttachmentAdapter.AttachmentContactAdapter
+import com.example.simplydo.adapters.taskAttachmentAdapter.AttachmentGalleryAdapter
+import com.example.simplydo.adapters.taskAttachmentAdapter.AttachmentTodoTaskAdapter
 import com.example.simplydo.databinding.TodoFullDetailsFragmentBinding
 import com.example.simplydo.dialog.bottomSheetDialogs.basicAddTodoDialog.EditTodoBasic
 import com.example.simplydo.localDatabase.AppDatabase
@@ -44,7 +45,6 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
         fun newInstance() = TodoFullDetailsFragment()
     }
 
-
     private lateinit var todoData: TodoModel
     private lateinit var _binding: TodoFullDetailsFragmentBinding
     private val binding: TodoFullDetailsFragmentBinding get() = _binding
@@ -52,13 +52,27 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
     private lateinit var viewModel: TodoFullDetailsViewModel
 
     // all adapter
-    private lateinit var audioAttachmentAdapter: AudioAttachmentAdapter
-    private lateinit var galleryAttachmentAdapter: GalleryAttachmentAdapter
-    private lateinit var contactAttachmentAdapter: ContactAttachmentAdapter
+    private lateinit var attachmentAudioAdapter: AttachmentAudioAdapter
+    private lateinit var attachmentGalleryAdapter: AttachmentGalleryAdapter
+    private lateinit var attachmentContactAdapter: AttachmentContactAdapter
+    private lateinit var attachmentTodoTaskAdapter: AttachmentTodoTaskAdapter
 
-    private lateinit var todoTaskAdapter: TodoTaskViewAdapter
+    private lateinit var observerTodoTask: Observer<TodoModel>
+
+    private val attachmentTodoTaskAdapterCallback: NewTodo.TodoTask = object : NewTodo.TodoTask {
+        override fun onTaskSelect(item: TodoTaskModel) {
+            val todoTaskData = todoData.arrayListTodoTask
+            val indexOf = todoTaskData.indexOf(item)
+            todoData.arrayListTodoTask[indexOf] = item
+            viewModel.mutableTodoDataSet.postValue(todoData)
+        }
+
+        override fun onCompleted(item: TodoTaskModel) {
+
+        }
+    }
+
     // all interfaces
-
     private val audioAttachmentInterface =
         object : AudioAttachmentInterface {
             override fun onAudioSelect(item: AudioModel) {
@@ -69,10 +83,17 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
             }
 
         }
+
     private val galleryAttachmentInterface =
         object : GalleryAttachmentInterface {
             override fun onItemSelect(item: GalleryModel, indexOf: Int) {
-
+                val bundle = Bundle()
+                bundle.putSerializable("ImageKey", todoData.galleryAttachments)
+                bundle.putInt("currentPosition", indexOf)
+                findNavController().navigate(
+                    R.id.action_todoFullDetailsFragment_to_imageSliderFullScreenFragment,
+                    bundle
+                )
             }
 
             override fun onItemRemoved(removedItem: GalleryModel, indexOf: Int) {
@@ -111,27 +132,16 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = TodoFullDetailsFragmentBinding.bind(view)
 
         setupBinding()
-
-        val appDatabase = AppDatabase.getInstance(requireContext())
-        val appRepository = AppRepository.getInstance(requireContext(), appDatabase)
-        viewModel = ViewModelProvider(
-            this, ViewModelFactory(
-                requireContext(),
-                appRepository,
-            )
-        )[TodoFullDetailsViewModel::class.java]
+        loadObservers()
 
         arguments?.let {
             todoData = getTodoData(dtId = it.getLong(AppConstant.NAVIGATION_TASK_KEY))
         }
-
-
 
         todoData.let { data ->
             binding.tvTitle.text = data.title
@@ -147,28 +157,27 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
             binding.imCompleted.visibility = data.isCompletedVisible()
 //            binding.chipPriority.visibility = data.isCompletedVisible()
 //            binding.chipDateExpired.visibility = data.isDateExpiredVisible()
-
             loadTaskTag(data.taskTags)
             checkAttachment(data)
 
             if (data.audioAttachments.isEmpty()) {
                 binding.linearLayoutAudioAttachment.visibility = View.GONE
             } else {
-                audioAttachmentAdapter.updateDataSet(data.audioAttachments)
+                attachmentAudioAdapter.updateDataSet(data.audioAttachments)
                 binding.linearLayoutAudioAttachment.visibility = View.VISIBLE
             }
 
             if (data.galleryAttachments.isEmpty()) {
                 binding.linearLayoutGalleryAttachment.visibility = View.GONE
             } else {
-                galleryAttachmentAdapter.updateDataset(data.galleryAttachments)
+                attachmentGalleryAdapter.updateDataset(data.galleryAttachments)
                 binding.linearLayoutGalleryAttachment.visibility = View.VISIBLE
             }
 
             if (data.contactAttachments.isEmpty()) {
                 binding.linearLayoutContactAttachment.visibility = View.GONE
             } else {
-                contactAttachmentAdapter.updateDataSet(data.contactAttachments)
+                attachmentContactAdapter.updateDataSet(data.contactAttachments)
                 binding.linearLayoutContactAttachment.visibility = View.VISIBLE
             }
 
@@ -177,7 +186,6 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
             } else {
                 binding.linearFilesAttachment.visibility = View.VISIBLE
             }
-
 
             if (data.locationData.lat == 0.toDouble() && data.locationData.lng == 0.toDouble()) {
                 binding.linearLocationAttachment.visibility = View.GONE
@@ -220,8 +228,8 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
                     startActivity(mapIntent)
                 }
             }
-        }
 
+        }
         binding.buttonEdit.setOnClickListener {
 
             Log.e(TAG, "taskType: ${todoData.taskType}")
@@ -244,12 +252,18 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.mutableTodoDataSet.postValue(null)
+    }
+
     private fun loadTodoTaskRecyclerView(arrayListTodoTask: ArrayList<TodoTaskModel>) {
-        todoTaskAdapter = TodoTaskViewAdapter(arrayListTodoTask, null, null)
+        attachmentTodoTaskAdapter =
+            AttachmentTodoTaskAdapter(arrayListTodoTask, null, attachmentTodoTaskAdapterCallback)
         binding.recyclerViewTodoTaskList.apply {
             layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-            adapter = todoTaskAdapter
+            adapter = attachmentTodoTaskAdapter
         }
     }
 
@@ -287,7 +301,6 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
         }
     }
 
-
     private fun loadTaskTag(taskTags: ArrayList<TagModel>) {
         binding.chipGroupTaskTags.removeAllViews()
 
@@ -316,42 +329,50 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
         return viewModel.getTodoDataById(dtId = dtId)
     }
 
-
     private fun setupBinding() {
-        audioAttachmentAdapter =
-            AudioAttachmentAdapter(audioAttachmentInterface = audioAttachmentInterface)
-        galleryAttachmentAdapter =
-            GalleryAttachmentAdapter(requireContext(), galleryAttachmentInterface)
-        contactAttachmentAdapter =
-            ContactAttachmentAdapter(requireContext(), contactAttachmentInterface)
+        val appDatabase = AppDatabase.getInstance(requireContext())
+        val appRepository = AppRepository.getInstance(requireContext(), appDatabase)
+        viewModel = ViewModelProvider(
+            this, ViewModelFactory(
+                requireContext(),
+                appRepository,
+            )
+        )[TodoFullDetailsViewModel::class.java]
 
+        attachmentAudioAdapter =
+            AttachmentAudioAdapter(audioAttachmentInterface = audioAttachmentInterface)
+        attachmentGalleryAdapter =
+            AttachmentGalleryAdapter(requireContext(), galleryAttachmentInterface)
+        attachmentContactAdapter =
+            AttachmentContactAdapter(requireContext(), contactAttachmentInterface)
 
 
         binding.recyclerViewAudioAttachments.apply {
             layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            adapter = audioAttachmentAdapter
+            adapter = attachmentAudioAdapter
         }
 
         binding.recyclerViewGalleryAttachments.apply {
             layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            adapter = galleryAttachmentAdapter
+            adapter = attachmentGalleryAdapter
         }
 
         binding.recyclerViewContactAttachments.apply {
             layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            adapter = contactAttachmentAdapter
+            adapter = attachmentContactAdapter
         }
+    }
 
-
-
-
-
-
-
-
+    private fun loadObservers() {
+        observerTodoTask = Observer { result ->
+            result?.let {
+                viewModel.updateTodoData(it)
+            }
+        }
+        viewModel.mutableTodoDataSet.observe(viewLifecycleOwner, observerTodoTask)
     }
 
 }

@@ -44,7 +44,12 @@ class FileListFragment : Fragment(R.layout.document_list_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = DocumentListFragmentBinding.bind(view)
-        listViewModel = ViewModelProvider(this).get(FilesListViewModel::class.java)
+        listViewModel = ViewModelProvider(this)[FilesListViewModel::class.java]
+
+        findNavController().previousBackStackEntry?.savedStateHandle?.set(
+            AppConstant.Key.NAVIGATION_FILES_DATA_KEY,
+            arrayListFile
+        )
 
         selectionListFilesAdapter = SelectionListFilesAdapter()
         binding.recyclerViewDocumentList.apply {
