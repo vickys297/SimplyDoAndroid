@@ -17,7 +17,6 @@ import retrofit2.Response
 import java.util.*
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
-import kotlin.collections.HashMap
 
 
 internal val TAG = AppRepository::class.java.canonicalName
@@ -28,6 +27,7 @@ class AppRepository private constructor(
 ) {
     private var db: TodoDAO = appDatabase.todoDao()
     private var tagDb = appDatabase.tagDao()
+    private var workspaceDb = appDatabase.workspaceDao()
 
     companion object {
         fun getInstance(context: Context, appDatabase: AppDatabase): AppRepository {
@@ -403,6 +403,20 @@ class AppRepository private constructor(
         }.start()
     }
 
+    fun createNewWorkspace(data: WorkspaceAccountModel) {
 
+    }
+
+    fun writeNewWorkspace(workspace: WorkspaceAccountModel) {
+        workspaceDb.createNewWorkspace(workspace)
+    }
+
+    fun getWorkspaceList(): ArrayList<WorkspaceAccountModel> {
+        return workspaceDb.getMyWorkspace() as ArrayList
+    }
+
+    fun getDummyTask(): ArrayList<TodoModel> {
+        return db.getAllTodoList() as ArrayList
+    }
 }
 

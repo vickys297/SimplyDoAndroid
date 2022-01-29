@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/toDoFragment">
+    app:startDestination="@id/groupViewFragment">
 
 
     <fragment
@@ -204,11 +204,76 @@
     </fragment>
     <fragment
         android:id="@+id/accounts"
-        android:name="com.example.simplydo.ui.fragments.accounts.Accounts"
+        android:name="com.example.simplydo.ui.fragments.accounts.AccountsFragments"
         android:label="accounts_fragment"
-        tools:layout="@layout/accounts_fragment" />
+        tools:layout="@layout/accounts_fragment">
+        <action
+            android:id="@+id/action_accounts_to_editProfileFragment"
+            app:destination="@id/editProfileFragment" />
+        <action
+            android:id="@+id/action_accounts_to_myWorkspaceFragment"
+            app:destination="@id/myWorkspaceFragment" />
+        <action
+            android:id="@+id/action_accounts_to_notificationSettingsFragment"
+            app:destination="@id/notificationSettingsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/imageSliderFullScreenFragment"
         android:name="com.example.simplydo.ui.fragments.fullScreenContent.ImageSliderFullScreenFragment"
         android:label="ImageSliderFullScreenFragment" />
+    <fragment
+        android:id="@+id/editProfileFragment"
+        android:name="com.example.simplydo.ui.fragments.accounts.editProfile.EditProfileFragment"
+        android:label="EditProfileFragment" />
+    <fragment
+        android:id="@+id/myWorkspaceFragment"
+        android:name="com.example.simplydo.ui.fragments.accounts.linkAccount.MyWorkspaceFragment"
+        android:label="link_account_fragment"
+        tools:layout="@layout/available_workspace_fragment">
+        <action
+            android:id="@+id/action_myWorkspaceFragment_to_createWorkspaceFragment"
+            app:destination="@id/createWorkspaceFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/notificationSettingsFragment"
+        android:name="com.example.simplydo.ui.fragments.accounts.notifications.NotificationSettingsFragment"
+        android:label="notification_settings_fragment"
+        tools:layout="@layout/notification_settings_fragment" />
+    <fragment
+        android:id="@+id/createWorkspaceFragment"
+        android:name="com.example.simplydo.ui.fragments.accounts.workspace.CreateWorkspaceFragment"
+        android:label="CreateWorkspaceFragment">
+        <action
+            android:id="@+id/action_createWorkspaceFragment_to_plansFragment"
+            app:destination="@id/plansFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/plansFragment"
+        android:name="com.example.simplydo.ui.fragments.accounts.plans.PlansFragment"
+        android:label="PlansFragment">
+        <action
+            android:id="@+id/action_plansFragment_to_postPaymentStateFragment"
+            app:destination="@id/postPaymentStateFragment"
+            app:popUpTo="@id/accounts" />
+    </fragment>
+    <fragment
+        android:id="@+id/postPaymentStateFragment"
+        android:name="com.example.simplydo.ui.fragments.postPayment.PostPaymentStateFragment"
+        android:label="PostPaymentStateFragment">
+        <action
+            android:id="@+id/action_postPaymentStateFragment_to_accounts"
+            app:destination="@id/accounts" />
+    </fragment>
+    <fragment
+        android:id="@+id/groupViewFragment"
+        android:name="com.example.simplydo.ui.fragments.organizationView.GroupViewFragment"
+        android:label="GroupViewFragment" >
+        <action
+            android:id="@+id/action_groupViewFragment_to_organizationTaskFragment"
+            app:destination="@id/organizationTaskFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/organizationTaskFragment"
+        android:name="com.example.simplydo.ui.fragments.organizationView.organizationTask.OrganizationTaskViewFragment"
+        android:label="OrganizationTaskFragment" />
 </navigation>

@@ -34,7 +34,6 @@ import com.example.simplydo.ui.activity.settings.SettingsActivity
 import com.example.simplydo.utlis.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import java.util.*
 
 
 internal val TAG = QuickTodoFragment::class.java.canonicalName
@@ -427,7 +426,6 @@ class QuickTodoFragment : Fragment(R.layout.fragment_quick_todo), View.OnClickLi
                     quickTodoListAdapter.submitData(it)
                 }
         }
-
     }
 
     override fun onClick(v: View?) {

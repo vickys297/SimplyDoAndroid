@@ -15,11 +15,14 @@ import android.view.View
 import android.widget.Toast
 import androidx.annotation.WorkerThread
 import androidx.core.content.ContextCompat
+import com.example.simplydo.model.LinkedWorkspaceDataModel
+import com.example.simplydo.model.TaskStatusDataModel
 import com.example.simplydo.model.TodoModel
 import com.example.simplydo.receiver.AppBroadCastReceiver
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -438,6 +441,36 @@ object AppFunctions {
     fun getPatternByTimeInMilliSec(selectedDueTime: Long, pattern: String): String {
         return SimpleDateFormat(pattern, Locale.getDefault()).format(Date(selectedDueTime).time)
     }
+
+    fun changeWorkspace(item: LinkedWorkspaceDataModel, context: Context) {
+        AppPreference.storePreferences(
+            AppConstant.Preferences.WORKSPACE_DATA,
+            Gson().toJson(item),
+            context
+        )
+    }
+
+    fun getTaskStatus(): ArrayList<TaskStatusDataModel> {
+        return arrayListOf(
+            TaskStatusDataModel(
+                statusName = "Open",
+                statusId = AppConstant.Task.TASK_STATUS_OPEN
+            ),
+            TaskStatusDataModel(
+                statusName = "In Progress",
+                statusId = AppConstant.Task.TASK_STATUS_IN_PROGRESS
+            ),
+            TaskStatusDataModel(
+                statusName = "On Hold",
+                statusId = AppConstant.Task.TASK_STATUS_ON_HOLD
+            ),
+            TaskStatusDataModel(
+                statusName = "Completed",
+                statusId = AppConstant.Task.TASK_STATUS_COMPLETED
+            )
+        )
+    }
+
 
     object Permission {
 

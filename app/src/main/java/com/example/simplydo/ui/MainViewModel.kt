@@ -2,14 +2,14 @@ package com.example.simplydo.ui
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import com.example.simplydo.model.ContactModel
-import com.example.simplydo.model.LatLngModel
-import com.example.simplydo.model.TagModel
-import com.example.simplydo.model.TodoModel
+import androidx.lifecycle.viewModelScope
+import com.example.simplydo.model.*
 import com.example.simplydo.model.attachmentModel.GalleryModel
 import com.example.simplydo.utlis.AppConstant
 import com.example.simplydo.utlis.AppFunctions
 import com.example.simplydo.utlis.AppRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.*
 
 class MainViewModel(val appRepository: AppRepository) : ViewModel() {
@@ -63,5 +63,11 @@ class MainViewModel(val appRepository: AppRepository) : ViewModel() {
 
     fun insertTag(tag: String) {
         appRepository.insertTag(tag)
+    }
+
+    fun storePrivateSpace(workspace: WorkspaceAccountModel) {
+        viewModelScope.launch(Dispatchers.IO) {
+            appRepository.writeNewWorkspace(workspace)
+        }
     }
 }

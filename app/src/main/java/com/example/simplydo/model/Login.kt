@@ -10,7 +10,6 @@ data class LoginResponseModel(
     val data: LoginResponseDataModel
 )
 
-
 data class OTPModel(
     val mobile: String,
     val otp: String
@@ -27,5 +26,3 @@ data class LoginResponseDataModel(
     val uKey: String,
     val mobile: String
 )
-
-

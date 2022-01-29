@@ -64,6 +64,9 @@ data class TodoModel(
     @ColumnInfo(name = "isCompleted", defaultValue = "0")
     var isCompleted: Boolean = false,
 
+    @ColumnInfo(name = "taskStatus", defaultValue = "0")
+    var taskStatus: Int = AppConstant.Task.TASK_STATUS_OPEN,
+
     @ColumnInfo(name = "completedDateTime", defaultValue = "")
     var completedDateTime: String = "",
 

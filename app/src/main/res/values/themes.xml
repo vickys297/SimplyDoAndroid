@@ -175,7 +175,6 @@
     </style>
     <!--Contact-->
 
-
     <style name="CommonMessageTitle" parent="Theme.MaterialComponents.DayNight">
         <item name="android:textSize">30sp</item>
         <item name="android:fontFamily">@font/montserrat_regular</item>

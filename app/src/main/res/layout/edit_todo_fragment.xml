@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="viewModel"
             type="com.example.simplydo.ui.fragments.addOrEditTodoTask.AddNewTodoViewModel" />
@@ -62,7 +61,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/title"
-                        android:textColor="@color/purple_500"
+                        style="@style/Title"
                         android:textStyle="bold" />
 
                     <EditText
@@ -88,7 +87,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/task"
-                        android:textColor="@color/purple_500"
+                        style="@style/Title"
                         android:textStyle="bold" />
 
 
@@ -117,7 +116,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/todo"
-                        android:textColor="@color/purple_500"
+                        style="@style/Title"
                         android:textStyle="bold" />
                     <TextView
                         android:id="@+id/textView_todo_list_text"
@@ -151,7 +150,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/event_date"
-                        android:textColor="@color/purple_500"
+                        style="@style/Title"
                         android:textStyle="bold" />
 
                     <TextView
@@ -181,7 +180,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/event_time"
-                        android:textColor="@color/purple_500"
+                        style="@style/Title"
                         android:textStyle="bold" />
 
                     <TextView
@@ -211,7 +210,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/tags"
-                        android:textColor="@color/purple_500"
+                        style="@style/Title"
                         android:textStyle="bold" />
 
                     <com.google.android.material.chip.ChipGroup
@@ -255,7 +254,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/priority"
-                        android:textColor="@color/purple_500"
+                        style="@style/Title"
                         android:textStyle="bold" />
 
                     <TextView
@@ -296,7 +295,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/repeat_period"
-                        android:textColor="@color/purple_500"
+                        style="@style/Title"
                         android:textStyle="bold" />
 
                     <TextView
@@ -331,7 +330,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
                     android:text="@string/attachments"
-                    android:textColor="@color/purple_500"
+                    style="@style/Title"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -357,7 +356,7 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="8dp"
                         android:text="@string/audio"
-                        android:textColor="@color/purple_500"
+                        style="@style/Title"
                         android:textStyle="bold" />
 
                     <androidx.recyclerview.widget.RecyclerView
@@ -384,7 +383,7 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="8dp"
                         android:text="@string/gallery"
-                        android:textColor="@color/purple_500"
+                        style="@style/Title"
                         android:textStyle="bold" />
 
                     <androidx.recyclerview.widget.RecyclerView
@@ -410,7 +409,7 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="8dp"
                         android:text="@string/contacts"
-                        android:textColor="@color/purple_500"
+                        style="@style/Title"
                         android:textStyle="bold" />
 
                     <androidx.recyclerview.widget.RecyclerView
@@ -436,7 +435,7 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="8dp"
                         android:text="@string/file"
-                        android:textColor="@color/purple_500"
+                        style="@style/Title"
                         android:textStyle="bold" />
 
                     <androidx.recyclerview.widget.RecyclerView
@@ -462,7 +461,7 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="8dp"
                         android:text="@string/location"
-                        android:textColor="@color/purple_500"
+                        style="@style/Title"
                         android:textStyle="bold" />
 
                     <androidx.cardview.widget.CardView

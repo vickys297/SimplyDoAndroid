@@ -10,10 +10,10 @@ import androidx.navigation.fragment.NavHostFragment
 import com.example.simplydo.R
 import com.example.simplydo.databinding.MainActivityBinding
 import com.example.simplydo.localDatabase.AppDatabase
-import com.example.simplydo.model.TodoModel
+import com.example.simplydo.model.*
 import com.example.simplydo.utlis.*
+import com.google.gson.Gson
 import java.util.*
-import kotlin.collections.ArrayList
 
 internal val TAG = MainActivity::class.java.canonicalName
 
@@ -100,7 +100,7 @@ class MainActivity : AppCompatActivity() {
                     AppDatabase.getInstance(this@MainActivity)
                 )
             )
-        ).get(MainViewModel::class.java)
+        )[MainViewModel::class.java]
         binding.apply {
             viewModel = this@MainActivity.viewModel
             lifecycleOwner = this@MainActivity
@@ -116,7 +116,154 @@ class MainActivity : AppCompatActivity() {
             )
         ) {
             preLoadDummyData()
+            setAsPaidUser()
+            createPersonalWorkspace()
+            createPrivateWorkspace()
+            loadPaidPlan()
         }
+    }
+
+    private fun loadPaidPlan() {
+        val plans = ArrayList<PaidPlanModel>()
+        plans.add(
+            PaidPlanModel(
+                id = "1234",
+                period = "Yearly",
+                price = "169.00",
+                textDescription = "Recommended by most of users",
+                trailPeriodText = "30 days Free Trail",
+                trialPeriod = 30,
+                priority = true,
+                currency = Currency.getInstance(Locale.getDefault()),
+                selected = true
+            )
+        )
+        plans.add(
+            PaidPlanModel(
+                id = "2345",
+                period = "Monthly",
+                price = "24.00",
+                textDescription = "Recommended by most of small and medium",
+                trailPeriodText = "7 days Free Trail",
+                trialPeriod = 7,
+                priority = true,
+                currency = Currency.getInstance(Locale.getDefault()),
+                selected = false
+            )
+        )
+
+        AppPreference.storePreferences(
+            AppConstant.Preferences.PAID_PLANS,
+            Gson().toJson(plans),
+            this@MainActivity
+        )
+    }
+
+
+    private fun createPrivateWorkspace() {
+        AppPreference.storePreferences(
+            AppConstant.Preferences.ORGANIZATION_ID,
+            "8927576298374326464357",
+            this@MainActivity
+        )
+        val userModel = UserModel(
+            firstName = "Vignesh",
+            middleName = "",
+            lastName = "Selvam",
+            email = "vignesh297@gmail.com",
+            phone = AppPreference.getPreferences(AppConstant.USER_MOBILE, this@MainActivity),
+            uKey = AppPreference.getPreferences(AppConstant.USER_KEY, this@MainActivity)
+        )
+
+        AppPreference.storePreferences(
+            AppConstant.Preferences.USER_DATA,
+            Gson().toJson(userModel),
+            this@MainActivity
+        )
+        val workspace = WorkspaceAccountModel(
+            orgId = "927813698371976",
+            accountType = "",
+            title = "Simply Do",
+            moreDetails = "",
+            createdBy = UserIdModel(userModel),
+            users = arrayListOf(
+                UserModel(
+                    firstName = "Vignesh",
+                    lastName = "Selvam",
+                    email = "vignesh297@gmail.com",
+                    phone = "8012215105",
+                    uKey = "1276875"
+                )
+            ),
+            groups = arrayListOf(
+                WorkspaceGroupsCollectionModel(
+                    id = "98742891473",
+                    name = "Sample Group",
+                    createdBy = UserIdModel(
+                        admin = Gson().fromJson(
+                            AppPreference.getPreferences(
+                                AppConstant.Preferences.USER_DATA,
+                                this@MainActivity
+                            ), UserModel::class.java
+                        )
+                    ),
+                    people = arrayListOf()
+                ),
+                WorkspaceGroupsCollectionModel(
+                    id = "328749872319847",
+                    name = "Sample Group",
+                    createdBy = UserIdModel(
+                        admin = Gson().fromJson(
+                            AppPreference.getPreferences(
+                                AppConstant.Preferences.USER_DATA,
+                                this@MainActivity
+                            ), UserModel::class.java
+                        )
+                    ),
+                    people = arrayListOf()
+                ),
+                WorkspaceGroupsCollectionModel(
+                    id = "0237148971289347",
+                    name = "Sample Group",
+                    createdBy = UserIdModel(
+                        admin = Gson().fromJson(
+                            AppPreference.getPreferences(
+                                AppConstant.Preferences.USER_DATA,
+                                this@MainActivity
+                            ), UserModel::class.java
+                        )
+                    ),
+                    people = arrayListOf()
+                )
+            )
+        )
+
+        viewModel.storePrivateSpace(workspace)
+    }
+
+    private fun setAsPaidUser() {
+        AppPreference.storePreferences(
+            AppConstant.Preferences.IS_PAID_USER,
+            true,
+            this@MainActivity
+        )
+    }
+
+    private fun createPersonalWorkspace() {
+        val defaultPersonalWorkspace = PersonalWorkspaceModel(
+            admin = UserModel(
+                firstName = "Vignesh",
+                middleName = "",
+                lastName = "Selvam",
+                email = "vignesh297@gmail.com",
+                phone = AppPreference.getPreferences(AppConstant.USER_MOBILE, this@MainActivity),
+                uKey = AppPreference.getPreferences(AppConstant.USER_KEY, this@MainActivity)
+            )
+        )
+        val datSet = Gson().toJson(defaultPersonalWorkspace)
+        AppPreference.storePreferences(
+            AppConstant.Preferences.PERSONAL_WORKSPACE, datSet, this@MainActivity
+        )
     }
 
     private fun setUpObserver() {

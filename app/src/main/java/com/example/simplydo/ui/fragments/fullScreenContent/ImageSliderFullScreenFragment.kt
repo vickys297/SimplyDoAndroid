@@ -27,10 +27,11 @@ class ImageSliderFullScreenFragment : Fragment(R.layout.view_content_full_screen
         _binding = ViewContentFullScreenFragmentBinding.bind(view)
         setupViewModel()
         arguments?.let {
-            imageStartPosition = it.getInt("currentPosition")
+            imageStartPosition = it.getInt("currentPosition",0)
             val dataSet = it.getSerializable("ImageKey")
             arrayListGalleryDataSet = dataSet as ArrayList<GalleryModel>
         }
+
         val dataSet = loadViewPagerAdapter(arrayListGalleryDataSet)
         imageSlideAdapter = ImageSlideAdapter(requireActivity(), dataSet, imageStartPosition)
         binding.viewPager.apply {

@@ -24,7 +24,7 @@ object AppPreference {
         sharedPreferences.apply()
     }
 
-    fun getPreferences(key: String, default: String, context: Context): String {
+    fun getPreferences(key: String, context: Context, default: String = ""): String {
         val sharedPreferences =
             context.getSharedPreferences(AppConstant.SESSION_KEY, Context.MODE_PRIVATE)
         return sharedPreferences.getString(key, default) ?: ""

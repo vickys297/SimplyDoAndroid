@@ -139,6 +139,11 @@ interface NewTodo {
     }
 }
 
+interface PaidPlain {
+    interface Callback {
+        fun onSelectPlan(id: Int)
+    }
+}
 
 interface AppInterface {
     interface TaskNoteTextItemListener {
@@ -156,9 +161,19 @@ interface AppInterface {
         }
     }
 
-    interface PriorityDialog{
-        interface Callback{
+    interface PriorityDialog {
+        interface Callback {
             fun onSelect(priority: Int) // 1 - high, 2 - Medium, 3 - low
+        }
+    }
+
+    interface GroupViewCallback {
+        fun onSelect(item: WorkspaceGroupsCollectionModel)
+    }
+
+    interface WorkspaceAdapter {
+        interface Callback {
+            fun onWorkSpaceSelected(item: LinkedWorkspaceDataModel)
         }
     }
 }

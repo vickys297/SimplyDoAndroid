@@ -7,10 +7,11 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.simplydo.model.TagModel
 import com.example.simplydo.model.TodoModel
+import com.example.simplydo.model.WorkspaceAccountModel
 import com.example.simplydo.utlis.AppConstant
 
 @Database(
-    entities = [TodoModel::class, TagModel::class],
+    entities = [TodoModel::class, TagModel::class, WorkspaceAccountModel::class],
     version = 1,
     exportSchema = true
 )
@@ -18,6 +19,7 @@ import com.example.simplydo.utlis.AppConstant
 abstract class AppDatabase : RoomDatabase() {
     abstract fun todoDao(): TodoDAO
     abstract fun tagDao(): TagDAO
+    abstract fun workspaceDao(): WorkspaceDAO
 
     companion object {
         @Volatile

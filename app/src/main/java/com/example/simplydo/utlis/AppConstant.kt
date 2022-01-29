@@ -103,8 +103,23 @@ object AppConstant {
         const val VERIFY_WEBSITE = "http://192.168.0.100"
     }
 
+    object Preferences {
+        const val IS_PAID_USER = "isPaidUser"
+        const val PERSONAL_WORKSPACE = "personalWorkSpace"
+        const val WORKSPACE_DATA = "workspaceData"
+        const val USER_DATA = "userData"
+        const val ORGANIZATION_ID = "organizationId"
+        const val PAID_PLANS = "paidPlanAvailableData"
+    }
+
     // task
     object Task {
+        const val TASK_STATUS_OPEN: Int = 100001
+        const val TASK_STATUS_IN_PROGRESS: Int = 100002
+        const val TASK_STATUS_ON_HOLD: Int = 100003
+        const val TASK_STATUS_COMPLETED: Int = 100004
+
+
         const val TASK_ACTION_RESTORE: Int = 10
         const val TASK_ACTION_DELETE: Int = 11
         const val TASK_ACTION_EDIT: Int = 12
@@ -125,6 +140,7 @@ object AppConstant {
     }
 
     object Key {
+        const val NAVIGATION_WORKSPACE_GROUP_ITEM: String = "WorkspaceGroupItem"
         const val NAVIGATION_ADD_TASK_LIST: String = "GetTaskList"
         const val NAVIGATION_CONTACT_DATA_KEY: String = "SelectedContactList"
         const val NAVIGATION_FILES_DATA_KEY: String = "SelectedFilesList"

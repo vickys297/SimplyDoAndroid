@@ -117,6 +117,66 @@ class ConverterHelper {
     }
 
 
+//    UserAccountModel
+//    WorkspaceGroupsCollectionModel
+//    UserIdModel
+
+    @TypeConverter
+    fun fromUserAccountModel(list: ArrayList<UserAccountModel>): String {
+        return gson.toJson(list)
+    }
+
+    @TypeConverter
+    fun toUserAccountModel(json: String): ArrayList<UserAccountModel> {
+        return gson.fromJson(json, object : TypeToken<ArrayList<UserAccountModel>>() {}.type)
+    }
+
+
+    @TypeConverter
+    fun fromUserModel(list: ArrayList<UserModel>): String {
+        return gson.toJson(list)
+    }
+
+    @TypeConverter
+    fun toUserModel(json: String): ArrayList<UserModel> {
+        return gson.fromJson(json, object : TypeToken<ArrayList<UserModel>>() {}.type)
+    }
+
+    @TypeConverter
+    fun fromWorkspaceGroupsCollectionModel(list: ArrayList<WorkspaceGroupsCollectionModel>): String {
+        return gson.toJson(list)
+    }
+
+    @TypeConverter
+    fun toWorkspaceGroupsCollectionModel(json: String): ArrayList<WorkspaceGroupsCollectionModel> {
+        return gson.fromJson(
+            json,
+            object : TypeToken<ArrayList<WorkspaceGroupsCollectionModel>>() {}.type
+        )
+    }
+
+    @TypeConverter
+    fun fromUserIdModel(data: UserIdModel): String {
+        return gson.toJson(data)
+    }
+
+    @TypeConverter
+    fun toUserIdModel(json: String): UserIdModel {
+        return gson.fromJson(
+            json,
+            object : TypeToken<UserIdModel>() {}.type
+        )
+    }
+
+    @TypeConverter
+    fun fromTimeStamp(long: Long): String {
+        return long.toString()
+    }
+
+    @TypeConverter
+    fun toLong(content: String): Long {
+        return content.toLong()
+    }
 
 
 }

@@ -126,5 +126,8 @@ interface TodoDAO {
     @Query("SELECT * FROM todoList WHERE dtId = :dtId")
     fun getTaskLiveDataById(dtId: Long): Flow<TodoModel>
 
+    @Query("SELECT * FROM todoList")
+    fun getAllTodoList() : List<TodoModel>
+
 
 }

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="dataMode"
+            type="com.example.simplydo.model.GroupTaskByProgressModel.TaskHeaderContent" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
+            android:maxLines="1"
+            android:padding="8dp"
+            android:text="@{dataMode.title}"
+            android:textStyle="bold" />
+
+        <TextView
+            style="@style/SmallTextBadge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="@{dataMode.subtitle}" />
+    </LinearLayout>
+
+
+</layout>
