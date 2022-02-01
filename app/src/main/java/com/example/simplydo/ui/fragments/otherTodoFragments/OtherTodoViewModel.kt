@@ -31,7 +31,7 @@ class OtherTodoViewModel internal constructor(
     }
 
     fun undoTaskRemove(task: TodoModel) {
-        appRepository.reinsertTodoTask(task)
+        appRepository.insertTodoTask(task)
     }
 
     fun completeTaskByID(dtId: Long): Int {

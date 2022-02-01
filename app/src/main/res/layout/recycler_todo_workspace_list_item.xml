@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="dataModel"
+            type="com.example.simplydo.model.WorkspaceGroupTaskModel" />
+    </data>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        style="@style/CardBackground"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:padding="16dp">
+
+
+        <TextView
+            android:id="@+id/tvTitle"
+            style="@style/TodoCardTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:fontFamily="@font/montserrat_regular"
+            android:text="@{dataModel.title}"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:transitionName="transition_title_small"
+            app:layout_constraintEnd_toStartOf="@+id/textView_priority"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvTodo"
+            style="@style/TodoCardTask"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:ellipsize="end"
+            android:maxLines="3"
+            android:singleLine="false"
+            android:text="@{dataModel.todo}"
+            android:textIsSelectable="false"
+            android:transitionName="transition_todo_small"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/chipGroup_tags" />
+
+
+        <TextView
+            android:id="@+id/tvEventDate"
+            style="@style/TodoCardEventDate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:drawablePadding="10dp"
+            android:text="@{dataModel.getEventDate()}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvTodo" />
+
+
+        <TextView
+            android:id="@+id/tvEventTime"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@{dataModel.getEventTime()}"
+            android:visibility="@{dataModel.isEventTimeVisible()}"
+            app:layout_constraintBottom_toBottomOf="@+id/tvEventDate"
+            app:layout_constraintStart_toEndOf="@+id/tvEventDate"
+            app:layout_constraintTop_toTopOf="@+id/tvEventDate" />
+
+        <TextView
+            android:id="@+id/textView_priority"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/card_high_priority"
+            android:paddingStart="8dp"
+            android:paddingTop="4dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="4dp"
+            android:text="@{dataModel.getTaskPriorityText()}"
+            android:textAllCaps="true"
+            android:textColor="@color/white"
+            android:textSize="10sp"
+            app:layout_constraintBottom_toBottomOf="@+id/tvTitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tvTitle" />
+
+        <TextView
+            android:id="@+id/textView_attachments"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="10dp"
+            android:text="@string/_3_attachments"
+            android:textColor="@color/emerald"
+            app:drawableStartCompat="@drawable/ic_attach"
+            app:layout_constraintBottom_toBottomOf="@+id/tvEventDate"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tvEventDate" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipGroup_tags"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvTitle">
+
+        </com.google.android.material.chip.ChipGroup>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

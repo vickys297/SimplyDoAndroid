@@ -188,4 +188,14 @@
     <string name="plan_description">Get access to hundred of exclusive guides and features</string>
     <string name="continue_to_payment">Continue To Payment</string>
     <string name="group_insights">Group Insights</string>
+    <string name="create_new_group">Create New Group</string>
+    <string name="name">Name</string>
+    <string name="participants">Participants</string>
+    <string name="group_name_required_note">Group name is required!</string>
+    <string name="select_participants">Select Participants</string>
+    <string name="create_new_task">Create New Task</string>
+    <string name="caption">caption</string>
+    <string name="average_time_consumed">Average Time Consumed</string>
+    <string name="finished_tasks">Finished Tasks</string>
+    <string name="team_tasks">Team Tasks</string>
 </resources>

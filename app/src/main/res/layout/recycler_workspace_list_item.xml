@@ -6,7 +6,7 @@
 
         <variable
             name="dataModel"
-            type="com.example.simplydo.model.WorkspaceAccountModel" />
+            type="com.example.simplydo.model.WorkspaceModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

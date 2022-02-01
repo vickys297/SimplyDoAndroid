@@ -4,14 +4,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.simplydo.databinding.RecyclerWorkspaceListItemBinding
-import com.example.simplydo.model.WorkspaceAccountModel
+import com.example.simplydo.model.WorkspaceModel
 
 class MyWorkspaceAdapter() : RecyclerView.Adapter<MyWorkspaceAdapter.MyWorkspaceViewHolder>() {
-    var dataset = ArrayList<WorkspaceAccountModel>()
+    var dataset = ArrayList<WorkspaceModel>()
 
     class MyWorkspaceViewHolder(val binding: RecyclerWorkspaceListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: WorkspaceAccountModel): RecyclerWorkspaceListItemBinding {
+        fun bind(item: WorkspaceModel): RecyclerWorkspaceListItemBinding {
             return binding.apply {
                 dataModel = item
                 executePendingBindings()
@@ -34,7 +34,7 @@ class MyWorkspaceAdapter() : RecyclerView.Adapter<MyWorkspaceAdapter.MyWorkspace
 
     override fun getItemCount(): Int = dataset.size
 
-    fun loadData(newDataset: ArrayList<WorkspaceAccountModel>) {
+    fun loadData(newDataset: ArrayList<WorkspaceModel>) {
         val startPosition = this.dataset.size
         val range = newDataset.size
         this.dataset = newDataset

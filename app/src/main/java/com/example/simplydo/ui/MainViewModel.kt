@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.simplydo.model.*
 import com.example.simplydo.model.attachmentModel.GalleryModel
+import com.example.simplydo.model.entity.WorkspaceGroupModel
 import com.example.simplydo.utlis.AppConstant
 import com.example.simplydo.utlis.AppFunctions
 import com.example.simplydo.utlis.AppRepository
@@ -33,7 +34,7 @@ class MainViewModel(val appRepository: AppRepository) : ViewModel() {
         imageList: ArrayList<GalleryModel>,
         taskType: Int
     ) {
-        appRepository.reinsertTodoTask(
+        appRepository.insertTodoTask(
             TodoModel(
                 title = title,
                 todo = task,
@@ -50,11 +51,26 @@ class MainViewModel(val appRepository: AppRepository) : ViewModel() {
                 taskType = taskType
             )
         )
-    }
 
-
-    private fun loadTags() {
-
+        appRepository.insertWorkspaceTodoTask(
+            WorkspaceGroupTaskModel(
+                title = title,
+                todo = task,
+                eventDateTime = eventDate,
+                taskPriority = taskPriority,
+                locationData = LatLngModel(),
+                contactAttachments = contactList,
+                galleryAttachments = imageList,
+                createdAt = AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_ISO)
+                    .format(Date().time),
+                updatedAt = AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_ISO)
+                    .format(Date().time),
+                isCompleted = isCompleted,
+                taskType = taskType,
+                groupId = "0987654321",
+                workspaceId = "1987654321"
+            )
+        )
     }
 
     fun getAvailableTagList(): ArrayList<TagModel> {
@@ -65,9 +81,15 @@ class MainViewModel(val appRepository: AppRepository) : ViewModel() {
         appRepository.insertTag(tag)
     }
 
-    fun storePrivateSpace(workspace: WorkspaceAccountModel) {
+    fun storePrivateSpace(workspace: WorkspaceModel) {
         viewModelScope.launch(Dispatchers.IO) {
             appRepository.writeNewWorkspace(workspace)
+        }
+    }
+
+    fun createWorkspaceGroup(dataset: ArrayList<WorkspaceGroupModel>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            appRepository.createWorkspaceGroup(dataset)
         }
     }
 }

@@ -114,6 +114,11 @@ object AppConstant {
 
     // task
     object Task {
+
+        const val WORKSPACE_TASK: Int = 1000
+        const val PERSONAL_TASK: Int = 1001
+
+
         const val TASK_STATUS_OPEN: Int = 100001
         const val TASK_STATUS_IN_PROGRESS: Int = 100002
         const val TASK_STATUS_ON_HOLD: Int = 100003
@@ -140,6 +145,9 @@ object AppConstant {
     }
 
     object Key {
+        const val NAVIGATION_WORKSPACE_ID: String = "workspaceId"
+        const val NAVIGATION_TASK_FLAG_KEY: String = "taskFlagKey"
+        const val NAVIGATION_PARTICIPANT_KEY: String = "participantsKey"
         const val NAVIGATION_WORKSPACE_GROUP_ITEM: String = "WorkspaceGroupItem"
         const val NAVIGATION_ADD_TASK_LIST: String = "GetTaskList"
         const val NAVIGATION_CONTACT_DATA_KEY: String = "SelectedContactList"

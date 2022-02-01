@@ -5,20 +5,20 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.simplydo.databinding.RecyclerGroupListItemBinding
-import com.example.simplydo.model.WorkspaceGroupsCollectionModel
+import com.example.simplydo.model.entity.WorkspaceGroupModel
 import com.example.simplydo.utlis.AppInterface
 
 class WorkspaceGroupViewAdapter(
-    val dataset: ArrayList<WorkspaceGroupsCollectionModel>,
+    val dataset: ArrayList<WorkspaceGroupModel>,
     val callback: AppInterface.GroupViewCallback,
 ) : RecyclerView.Adapter<WorkspaceGroupViewAdapter.ViewHolder>() {
-    private lateinit var userProfileStackAdapter: UserProfileStackAdapter
 
+    private lateinit var userProfileStackAdapter: UserProfileStackAdapter
 
     class ViewHolder(val binding: RecyclerGroupListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(
-            item: WorkspaceGroupsCollectionModel,
+            item: WorkspaceGroupModel,
             callback: AppInterface.GroupViewCallback
         ): RecyclerGroupListItemBinding {
             return binding.apply {

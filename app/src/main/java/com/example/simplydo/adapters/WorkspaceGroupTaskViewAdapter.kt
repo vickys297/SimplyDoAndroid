@@ -4,16 +4,16 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.simplydo.databinding.RecyclerTaskStatusHeaderBinding
-import com.example.simplydo.databinding.RecyclerTodoListItemBinding
+import com.example.simplydo.databinding.RecyclerTodoWorkspaceListItemBinding
 import com.example.simplydo.model.GroupTaskByProgressModel
-import com.example.simplydo.model.TodoModel
+import com.example.simplydo.model.WorkspaceGroupTaskModel
 
-internal val ITEM_VIEW_HEADER = 0
-internal val ITEM_VIEW_CONTENT = 1
+internal const val ITEM_VIEW_HEADER = 0
+internal const val ITEM_VIEW_CONTENT = 1
 
-class GroupTaskViewAdapter(val dataSet: ArrayList<GroupTaskByProgressModel>) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class WorkspaceGroupTaskViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    private var dataSet: ArrayList<GroupTaskByProgressModel> = arrayListOf()
 
     override fun getItemViewType(position: Int): Int {
         val item = dataSet[position]
@@ -51,7 +51,7 @@ class GroupTaskViewAdapter(val dataSet: ArrayList<GroupTaskByProgressModel>) :
         return when (viewType) {
             ITEM_VIEW_CONTENT -> {
                 TodoViewHolder(
-                    RecyclerTodoListItemBinding.inflate(
+                    RecyclerTodoWorkspaceListItemBinding.inflate(
                         LayoutInflater.from(parent.context),
                         parent,
                         false
@@ -84,14 +84,19 @@ class GroupTaskViewAdapter(val dataSet: ArrayList<GroupTaskByProgressModel>) :
         }
     }
 
-    class TodoViewHolder(val binding: RecyclerTodoListItemBinding) :
+    class TodoViewHolder(val binding: RecyclerTodoWorkspaceListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: TodoModel) {
+        fun bind(item: WorkspaceGroupTaskModel) {
             binding.apply {
-                todoModel = item
+                dataModel = item
                 executePendingBindings()
             }
         }
+    }
 
+    fun updateDataset(groupTaskByProgressModel: ArrayList<GroupTaskByProgressModel>) {
+        val lastPosition = dataSet.size
+        this.dataSet = groupTaskByProgressModel
+        notifyItemChanged(lastPosition, dataSet.size)
     }
 }

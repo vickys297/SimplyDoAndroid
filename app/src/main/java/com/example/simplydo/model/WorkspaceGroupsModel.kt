@@ -8,17 +8,24 @@ import java.util.*
 
 
 @Entity(tableName = "workspace")
-data class WorkspaceAccountModel(
+data class WorkspaceModel(
 
     @PrimaryKey
     val orgId: String,
+
     val accountType: String,
+
     val title: String,
+
     val moreDetails: String,
+
     val createdAt: Long = System.currentTimeMillis(),
+
     val createdBy: UserIdModel,
+
     val users: ArrayList<UserModel>,
-    val groups: ArrayList<WorkspaceGroupsCollectionModel>
+
+
 )
 
 
@@ -47,13 +54,4 @@ data class UserIdModel(
     val admin: UserModel
 )
 
-
-data class WorkspaceGroupsModel(
-    val id: String,
-    val name: String,
-    val createdAt: Long = System.currentTimeMillis(),
-    val createdBy: UserIdModel
-) {
-
-}
 

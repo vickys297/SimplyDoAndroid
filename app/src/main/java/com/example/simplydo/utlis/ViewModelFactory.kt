@@ -11,10 +11,13 @@ import com.example.simplydo.ui.fragments.addOrEditTodoTask.AddNewTodoViewModel
 import com.example.simplydo.ui.fragments.attachmentsFragments.contacts.ContactsViewModel
 import com.example.simplydo.ui.fragments.attachmentsFragments.gallery.GalleryListViewModel
 import com.example.simplydo.ui.fragments.calender.CalenderViewModel
-import com.example.simplydo.ui.fragments.organizationView.OrganizationGroupViewViewModel
+import com.example.simplydo.ui.fragments.organizationView.WorkspaceGroupViewViewModel
+import com.example.simplydo.ui.fragments.organizationView.organizationTask.WorkspaceGroupTaskViewModel
 import com.example.simplydo.ui.fragments.otherTodoFragments.OtherTodoViewModel
+import com.example.simplydo.ui.fragments.selectParticipants.SelectParticipantsViewModel
 import com.example.simplydo.ui.fragments.todoList.QuickTodoViewModel
 import com.example.simplydo.ui.fragments.todoListFullDetails.TodoFullDetailsViewModel
+import com.example.simplydo.ui.fragments.workspace.CreateNewWorkspaceGroupViewModel
 
 open class ViewModelFactory internal constructor(
     private val context: Context,
@@ -62,8 +65,18 @@ open class ViewModelFactory internal constructor(
             MyWorkspaceViewModel::class.java.canonicalName -> {
                 MyWorkspaceViewModel(appRepository) as T
             }
-            OrganizationGroupViewViewModel::class.java.canonicalName -> {
-                OrganizationGroupViewViewModel(appRepository) as T
+            WorkspaceGroupViewViewModel::class.java.canonicalName -> {
+                WorkspaceGroupViewViewModel(appRepository) as T
+            }
+
+            SelectParticipantsViewModel::class.java.canonicalName -> {
+                SelectParticipantsViewModel(appRepository) as T
+            }
+            CreateNewWorkspaceGroupViewModel::class.java.canonicalName -> {
+                CreateNewWorkspaceGroupViewModel(appRepository) as T
+            }
+            WorkspaceGroupTaskViewModel::class.java.canonicalName->{
+                WorkspaceGroupTaskViewModel(appRepository) as T
             }
             else -> {
                 throw IllegalArgumentException("ViewModel not found")

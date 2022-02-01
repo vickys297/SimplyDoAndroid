@@ -11,6 +11,7 @@ import com.example.simplydo.R
 import com.example.simplydo.databinding.MainActivityBinding
 import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.model.*
+import com.example.simplydo.model.entity.WorkspaceGroupModel
 import com.example.simplydo.utlis.*
 import com.google.gson.Gson
 import java.util.*
@@ -120,7 +121,80 @@ class MainActivity : AppCompatActivity() {
             createPersonalWorkspace()
             createPrivateWorkspace()
             loadPaidPlan()
+            createWorkspaceGroup()
         }
+    }
+
+    private fun createWorkspaceGroup() {
+        val dataset = ArrayList<WorkspaceGroupModel>()
+
+        for (item in 1..4) {
+            dataset.add(
+                WorkspaceGroupModel(
+                    name = "Sample Group Name",
+                    description = "Test Description",
+                    workspaceID = item.toLong(),
+                    createdBy = UserIdModel(
+                        admin = Gson().fromJson(
+                            AppPreference.getPreferences(
+                                AppConstant.Preferences.USER_DATA,
+                                this@MainActivity
+                            ), UserModel::class.java
+                        )
+                    ),
+                    people = arrayListOf(
+                        UserAccountModel(
+                            user = UserModel(
+                                firstName = "Vignesh",
+                                middleName = "",
+                                lastName = "Selvam",
+                                profilePicture = "https://picsum.photos/200",
+                                email = "vignesh297@gmail.com",
+                                phone = "8012215105",
+                                uKey = "78325648771762178364"
+                            ),
+                            role = arrayListOf()
+                        ),
+                        UserAccountModel(
+                            user = UserModel(
+                                firstName = "Sandeep",
+                                middleName = "",
+                                lastName = "Selvam",
+                                profilePicture = "https://picsum.photos/200",
+                                email = "sandeep0312@gmail.com",
+                                phone = "8012215105",
+                                uKey = "783256487717621798664"
+                            ),
+                            role = arrayListOf()
+                        ), UserAccountModel(
+                            user = UserModel(
+                                firstName = "Vignesh",
+                                middleName = "",
+                                lastName = "Selvam",
+                                profilePicture = "https://picsum.photos/200",
+                                email = "vignesh297@gmail.com",
+                                phone = "8012215105",
+                                uKey = "78325648771762178364"
+                            ),
+                            role = arrayListOf()
+                        ),
+                        UserAccountModel(
+                            user = UserModel(
+                                firstName = "Sandeep",
+                                middleName = "",
+                                lastName = "Selvam",
+                                profilePicture = "https://picsum.photos/200",
+                                email = "sandeep0312@gmail.com",
+                                phone = "8012215105",
+                                uKey = "783256487717621798664"
+                            ),
+                            role = arrayListOf()
+                        )
+                    )
+                )
+            )
+        }
+        viewModel.createWorkspaceGroup(dataset)
     }
 
     private fun loadPaidPlan() {
@@ -180,7 +254,7 @@ class MainActivity : AppCompatActivity() {
             Gson().toJson(userModel),
             this@MainActivity
         )
-        val workspace = WorkspaceAccountModel(
+        val workspace = WorkspaceModel(
             orgId = "927813698371976",
             accountType = "",
             title = "Simply Do",
@@ -192,48 +266,28 @@ class MainActivity : AppCompatActivity() {
                     lastName = "Selvam",
                     email = "vignesh297@gmail.com",
                     phone = "8012215105",
-                    uKey = "1276875"
-                )
-            ),
-            groups = arrayListOf(
-                WorkspaceGroupsCollectionModel(
-                    id = "98742891473",
-                    name = "Sample Group",
-                    createdBy = UserIdModel(
-                        admin = Gson().fromJson(
-                            AppPreference.getPreferences(
-                                AppConstant.Preferences.USER_DATA,
-                                this@MainActivity
-                            ), UserModel::class.java
-                        )
-                    ),
-                    people = arrayListOf()
+                    uKey = "1000001"
                 ),
-                WorkspaceGroupsCollectionModel(
-                    id = "328749872319847",
-                    name = "Sample Group",
-                    createdBy = UserIdModel(
-                        admin = Gson().fromJson(
-                            AppPreference.getPreferences(
-                                AppConstant.Preferences.USER_DATA,
-                                this@MainActivity
-                            ), UserModel::class.java
-                        )
-                    ),
-                    people = arrayListOf()
+                UserModel(
+                    firstName = "Sandeep",
+                    lastName = "Selvam",
+                    email = "sandeep@test.com",
+                    phone = "9876543210",
+                    uKey = "1000002"
                 ),
-                WorkspaceGroupsCollectionModel(
-                    id = "0237148971289347",
-                    name = "Sample Group",
-                    createdBy = UserIdModel(
-                        admin = Gson().fromJson(
-                            AppPreference.getPreferences(
-                                AppConstant.Preferences.USER_DATA,
-                                this@MainActivity
-                            ), UserModel::class.java
-                        )
-                    ),
-                    people = arrayListOf()
+                UserModel(
+                    firstName = "Ram",
+                    lastName = "",
+                    email = "ram@gmail.com",
+                    phone = "9876543211",
+                    uKey = "1000003"
+                ),
+                UserModel(
+                    firstName = "Joe",
+                    lastName = "",
+                    email = "joe@gmail.com",
+                    phone = "9876543212",
+                    uKey = "1000004"
                 )
             )
         )
@@ -306,6 +360,7 @@ class MainActivity : AppCompatActivity() {
             imageList = ArrayList(),
             taskType = AppConstant.Task.TASK_TYPE_BASIC
         )
+
         viewModel.insertDummyDataIntoLocalDatabase(
             title = "Task Completed",
             task = "Your completed task looks like this.\n" +

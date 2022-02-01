@@ -271,9 +271,29 @@
         <action
             android:id="@+id/action_groupViewFragment_to_organizationTaskFragment"
             app:destination="@id/organizationTaskFragment" />
+        <action
+            android:id="@+id/action_groupViewFragment_to_createNewWorkspaceGroupFragment"
+            app:destination="@id/createNewWorkspaceGroupFragment" />
     </fragment>
     <fragment
         android:id="@+id/organizationTaskFragment"
-        android:name="com.example.simplydo.ui.fragments.organizationView.organizationTask.OrganizationTaskViewFragment"
-        android:label="OrganizationTaskFragment" />
+        android:name="com.example.simplydo.ui.fragments.organizationView.organizationTask.WorkspaceGroupTaskViewFragment"
+        android:label="OrganizationTaskFragment" >
+        <action
+            android:id="@+id/action_organizationTaskFragment_to_addNewTodo"
+            app:destination="@id/addNewTodo" />
+    </fragment>
+    <fragment
+        android:id="@+id/createNewWorkspaceGroupFragment"
+        android:name="com.example.simplydo.ui.fragments.workspace.CreateNewWorkspaceGroupFragment"
+        android:label="CreateNewWorkspaceGroupFragment" >
+        <action
+            android:id="@+id/action_createNewWorkspaceGroupFragment_to_selectParticipantsFragment"
+            app:destination="@id/selectParticipantsFragment" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/selectParticipantsFragment"
+        android:name="com.example.simplydo.ui.fragments.selectParticipants.SelectParticipantsFragment"
+        android:label="SelectParticipantsFragment" />
 </navigation>

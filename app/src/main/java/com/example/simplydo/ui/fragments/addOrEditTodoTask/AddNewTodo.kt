@@ -56,6 +56,9 @@ class AddNewTodo : Fragment(R.layout.add_new_todo_fragment), NewTodoOptionsFragm
 
     private var toast: Toast? = null
     private var taskPriority: Int = 3
+    private var taskFlagId: Int = -1
+    private var workspaceID: Int = -1
+
     private var todoTaskDataSet: ArrayList<TodoTaskModel> = ArrayList()
     private lateinit var viewModel: AddNewTodoViewModel
     private lateinit var binding: AddNewTodoFragmentBinding
@@ -275,6 +278,25 @@ class AddNewTodo : Fragment(R.layout.add_new_todo_fragment), NewTodoOptionsFragm
 
         arguments?.let {
             eventDate = it.getLong(getString(R.string.eventDateString))
+
+            when (it.getInt(
+                AppConstant.Key.NAVIGATION_TASK_FLAG_KEY,
+                AppConstant.Task.PERSONAL_TASK
+            )) {
+                AppConstant.Task.PERSONAL_TASK -> {
+                    taskFlagId = AppConstant.Task.PERSONAL_TASK
+                }
+                AppConstant.Task.WORKSPACE_TASK -> {
+                    taskFlagId = AppConstant.Task.WORKSPACE_TASK
+                    workspaceID = it.getInt(
+                        AppConstant.Key.NAVIGATION_WORKSPACE_ID,
+                        -1
+                    )
+                }
+                else -> {
+                    workspaceID = -1
+                }
+            }
         }
 
         // setup array list
@@ -396,19 +418,38 @@ class AddNewTodo : Fragment(R.layout.add_new_todo_fragment), NewTodoOptionsFragm
                 val task = binding.editTextTask.text.toString()
 
 //                Insert new task in db
-                val newInsertId = viewModel.createTodo(
-                    title,
-                    task,
-                    currentEventStartDueDateTime,
-                    taskPriority,
-                    galleryArray = galleryArrayList,
-                    contactArray = contactArrayList,
-                    audioArray = audioArrayList,
-                    filesArray = filesArrayList,
-                    location = latLng,
-                    repeatFrequency = viewModel.selectedRepeatFrequency.value ?: ArrayList(),
-                    repeatWeek = viewModel.selectedRepeatDays.value ?: ArrayList(),
-                )
+                val newInsertId =
+                    if (taskFlagId == AppConstant.Task.WORKSPACE_TASK) {
+                        viewModel.createWorkspaceTask(
+                            title,
+                            task,
+                            currentEventStartDueDateTime,
+                            taskPriority,
+                            galleryArray = galleryArrayList,
+                            contactArray = contactArrayList,
+                            audioArray = audioArrayList,
+                            filesArray = filesArrayList,
+                            location = latLng,
+                            repeatFrequency = viewModel.selectedRepeatFrequency.value
+                                ?: ArrayList(),
+                            repeatWeek = viewModel.selectedRepeatDays.value ?: ArrayList(),
+                        )
+                    } else {
+                        viewModel.createTodo(
+                            title,
+                            task,
+                            currentEventStartDueDateTime,
+                            taskPriority,
+                            galleryArray = galleryArrayList,
+                            contactArray = contactArrayList,
+                            audioArray = audioArrayList,
+                            filesArray = filesArrayList,
+                            location = latLng,
+                            repeatFrequency = viewModel.selectedRepeatFrequency.value
+                                ?: ArrayList(),
+                            repeatWeek = viewModel.selectedRepeatDays.value ?: ArrayList(),
+                        )
+                    }
 //                Create new setup notification for the task
                 newInsertId.let {
                     val bundle = Bundle()

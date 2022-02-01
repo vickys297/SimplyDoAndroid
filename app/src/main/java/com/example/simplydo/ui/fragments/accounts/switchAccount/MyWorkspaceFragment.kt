@@ -12,14 +12,14 @@ import com.example.simplydo.R
 import com.example.simplydo.adapters.MyWorkspaceAdapter
 import com.example.simplydo.databinding.AvailableWorkspaceFragmentBinding
 import com.example.simplydo.localDatabase.AppDatabase
-import com.example.simplydo.model.WorkspaceAccountModel
+import com.example.simplydo.model.WorkspaceModel
 import com.example.simplydo.ui.fragments.accounts.switchAccount.MyWorkspaceViewModel
 import com.example.simplydo.utlis.*
 
 class MyWorkspaceFragment : Fragment(R.layout.available_workspace_fragment) {
 
 
-    private lateinit var observerWorkspace: Observer<ArrayList<WorkspaceAccountModel>>
+    private lateinit var observerWorkspace: Observer<ArrayList<WorkspaceModel>>
 
     private lateinit var viewModel: MyWorkspaceViewModel
     private lateinit var binding: AvailableWorkspaceFragmentBinding
@@ -79,7 +79,7 @@ class MyWorkspaceFragment : Fragment(R.layout.available_workspace_fragment) {
         viewModel.mutableWorkspace.postValue(null)
     }
 
-    private fun loadWorkspace(it: ArrayList<WorkspaceAccountModel>) {
+    private fun loadWorkspace(it: ArrayList<WorkspaceModel>) {
         myWorkspaceAdapter.loadData(it)
     }
 }

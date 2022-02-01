@@ -37,7 +37,42 @@ class AddNewTodoViewModel(val appRepository: AppRepository) :
         repeatFrequency: ArrayList<SelectorDataModal>,
         repeatWeek: ArrayList<SelectorDataModal>
     ): Long {
-        return appRepository.reinsertTodoTask(
+        return appRepository.insertTodoTask(
+            TodoModel(
+                title = title,
+                todo = task,
+                eventDateTime = eventDate,
+                taskPriority = taskPriority,
+                locationData = location,
+                contactAttachments = contactArray,
+                galleryAttachments = galleryArray,
+                audioAttachments = audioArray,
+                fileAttachments = filesArray,
+                createdAt = AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_ISO)
+                    .format(Date().time),
+                updatedAt = AppFunctions.dateFormatter(AppConstant.DATE_PATTERN_ISO)
+                    .format(Date().time),
+                repeatFrequency = repeatFrequency,
+                repeatDays = repeatWeek
+            )
+        )
+    }
+
+
+    fun createWorkspaceTask(
+        title: String,
+        task: String,
+        eventDate: Long,
+        taskPriority: Int,
+        galleryArray: ArrayList<GalleryModel>,
+        contactArray: ArrayList<ContactModel>,
+        audioArray: ArrayList<AudioModel>,
+        filesArray: ArrayList<FileModel>,
+        location: LatLngModel,
+        repeatFrequency: ArrayList<SelectorDataModal>,
+        repeatWeek: ArrayList<SelectorDataModal>
+    ): Long {
+        return appRepository.insertTodoTask(
             TodoModel(
                 title = title,
                 todo = task,
@@ -100,4 +135,5 @@ class AddNewTodoViewModel(val appRepository: AppRepository) :
 
         return appRepository.updateTodoData(updateModel)
     }
+
 }

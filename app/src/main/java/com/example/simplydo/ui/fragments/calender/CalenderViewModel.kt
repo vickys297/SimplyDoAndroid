@@ -43,7 +43,7 @@ class CalenderViewModel(val appRepository: AppRepository) : ViewModel() {
         contactInfo: ArrayList<ContactModel>,
         imagesList: ArrayList<GalleryModel>,
     ) {
-        appRepository.reinsertTodoTask(TodoModel(
+        appRepository.insertTodoTask(TodoModel(
             title = title,
             todo = task,
             eventDateTime = eventDate,
@@ -82,7 +82,7 @@ class CalenderViewModel(val appRepository: AppRepository) : ViewModel() {
 
 
     fun undoTaskRemove(task: TodoModel) {
-        appRepository.reinsertTodoTask(task)
+        appRepository.insertTodoTask(task)
     }
     fun restoreTask(dtId: Long) {
         appRepository.restoreTask(dtId)

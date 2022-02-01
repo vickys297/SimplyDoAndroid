@@ -9,8 +9,9 @@ import com.example.simplydo.api.API
 import com.example.simplydo.api.network.NoConnectivityException
 import com.example.simplydo.api.network.RetrofitServices
 import com.example.simplydo.localDatabase.AppDatabase
-import com.example.simplydo.localDatabase.TodoDAO
+import com.example.simplydo.localDatabase.dao.TodoDAO
 import com.example.simplydo.model.*
+import com.example.simplydo.model.entity.WorkspaceGroupModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -28,6 +29,8 @@ class AppRepository private constructor(
     private var db: TodoDAO = appDatabase.todoDao()
     private var tagDb = appDatabase.tagDao()
     private var workspaceDb = appDatabase.workspaceDao()
+    private var workspaceGroupDb = appDatabase.workspaceGroupDao()
+    private var workspaceGroupTaskDb = appDatabase.workspaceGroupTaskDao()
 
     companion object {
         fun getInstance(context: Context, appDatabase: AppDatabase): AppRepository {
@@ -45,10 +48,17 @@ class AppRepository private constructor(
     * */
 
 
-    fun reinsertTodoTask(todoModel: TodoModel): Long {
+    fun insertTodoTask(todoModel: TodoModel): Long {
         val callable = Callable { db.insert(todoModel = todoModel) }
-        val future = Executors.newSingleThreadExecutor().submit(callable)
-        return future!!.get()
+        val executor = Executors.newSingleThreadExecutor().submit(callable)
+        return executor!!.get()
+    }
+
+    fun insertWorkspaceTodoTask(todoModel: WorkspaceGroupTaskModel): Long {
+        val callable =
+            Callable { workspaceGroupTaskDb.insertWorkspaceDatabase(todoModel = todoModel) }
+        val executor = Executors.newSingleThreadExecutor().submit(callable)
+        return executor!!.get()
     }
 
 
@@ -403,20 +413,48 @@ class AppRepository private constructor(
         }.start()
     }
 
-    fun createNewWorkspace(data: WorkspaceAccountModel) {
+    fun createNewWorkspace(data: WorkspaceModel) {
 
     }
 
-    fun writeNewWorkspace(workspace: WorkspaceAccountModel) {
+    fun writeNewWorkspace(workspace: WorkspaceModel) {
         workspaceDb.createNewWorkspace(workspace)
     }
 
-    fun getWorkspaceList(): ArrayList<WorkspaceAccountModel> {
+    fun getWorkspaceList(): ArrayList<WorkspaceModel> {
         return workspaceDb.getMyWorkspace() as ArrayList
     }
 
     fun getDummyTask(): ArrayList<TodoModel> {
         return db.getAllTodoList() as ArrayList
     }
+
+    fun getParticipantList() {
+        return
+    }
+
+    fun getParticipatesFromWorkspace(): ArrayList<UserModel> {
+        return workspaceDb.getUserFromWorkspace().users
+    }
+
+    fun insertNewWorkspaceGroup(newGroup: WorkspaceGroupModel) {
+        workspaceGroupDb.insertNewWorkspaceGroup(newGroup)
+    }
+
+    fun getWorkspaceGroup(): ArrayList<WorkspaceGroupModel> {
+        return workspaceGroupDb.getAllWorkSpaceGroups() as ArrayList
+    }
+
+    fun createWorkspaceGroup(dataset: ArrayList<WorkspaceGroupModel>) {
+        for (item in dataset) {
+            workspaceGroupDb.insertNewWorkspaceGroup(item)
+        }
+    }
+
+    fun getWorkspaceTaskByGroupId(groupTaskId: Long): ArrayList<WorkspaceGroupTaskModel> {
+        return workspaceGroupTaskDb.getAllWorkspaceGroupTask() as ArrayList
+    }
+
+
 }
 

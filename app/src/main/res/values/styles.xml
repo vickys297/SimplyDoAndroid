@@ -2,7 +2,7 @@
 
     <style name="Widget.Theme.SimplyDo.MyView" parent="">
         <item name="android:background">@drawable/small_date_time_view</item>
-<!--        <item name="exampleColor">@color/light_blue_400</item>-->
+        <!--        <item name="exampleColor">@color/light_blue_400</item>-->
     </style>
 
     <style name="LottieStyle">

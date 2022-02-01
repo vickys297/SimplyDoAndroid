@@ -5,13 +5,22 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.example.simplydo.localDatabase.dao.*
 import com.example.simplydo.model.TagModel
 import com.example.simplydo.model.TodoModel
-import com.example.simplydo.model.WorkspaceAccountModel
+import com.example.simplydo.model.WorkspaceGroupTaskModel
+import com.example.simplydo.model.WorkspaceModel
+import com.example.simplydo.model.entity.WorkspaceGroupModel
 import com.example.simplydo.utlis.AppConstant
 
 @Database(
-    entities = [TodoModel::class, TagModel::class, WorkspaceAccountModel::class],
+    entities = [
+        TodoModel::class,
+        TagModel::class,
+        WorkspaceModel::class,
+        WorkspaceGroupModel::class,
+        WorkspaceGroupTaskModel::class
+    ],
     version = 1,
     exportSchema = true
 )
@@ -20,6 +29,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun todoDao(): TodoDAO
     abstract fun tagDao(): TagDAO
     abstract fun workspaceDao(): WorkspaceDAO
+    abstract fun workspaceGroupDao(): WorkspaceGroupDAO
+    abstract fun workspaceGroupTaskDao(): WorkspaceGroupTaskDAO
 
     companion object {
         @Volatile

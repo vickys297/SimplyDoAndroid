@@ -6,7 +6,7 @@
 
         <variable
             name="dataModel"
-            type="com.example.simplydo.model.WorkspaceGroupsCollectionModel" />
+            type="com.example.simplydo.model.entity.WorkspaceGroupModel" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -80,7 +80,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView45" />
 
-            <com.example.simplydo.components.StyledProgressBar
+            <com.example.simplydo.components.StackedProgressBar
                 android:id="@+id/styledProgressBar"
                 android:layout_width="0dp"
                 android:layout_height="5dp"

@@ -8,13 +8,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.simplydo.databinding.RecyclerGroupListItemBinding
-import com.example.simplydo.model.WorkspaceGroupsCollectionModel
+import com.example.simplydo.model.entity.WorkspaceGroupModel
 import com.example.simplydo.utlis.AppInterface
 
 //internal val TAG = GroupViewAdapter::class.java.canonicalName
 
 class GroupViewAdapter(
-    val dataset: ArrayList<WorkspaceGroupsCollectionModel>,
+    val dataset: ArrayList<WorkspaceGroupModel>,
     val callback: AppInterface.GroupViewCallback,
     private val fragmentContext: Context
 ) :
@@ -25,7 +25,7 @@ class GroupViewAdapter(
     class GroupViewItemViewHolder(val binding: RecyclerGroupListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(
-            item: WorkspaceGroupsCollectionModel,
+            item: WorkspaceGroupModel,
             callback: AppInterface.GroupViewCallback
         ): RecyclerGroupListItemBinding {
             binding.apply {

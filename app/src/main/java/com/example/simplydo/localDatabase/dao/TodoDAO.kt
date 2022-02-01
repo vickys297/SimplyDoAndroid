@@ -1,4 +1,4 @@
-package com.example.simplydo.localDatabase
+package com.example.simplydo.localDatabase.dao
 
 import androidx.lifecycle.LiveData
 import androidx.paging.PagingSource

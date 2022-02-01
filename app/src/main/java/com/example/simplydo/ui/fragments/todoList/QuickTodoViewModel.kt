@@ -41,7 +41,7 @@ class QuickTodoViewModel(private val appRepository: AppRepository) :
         eventDate: Long,
         priority: Boolean
     ): Long {
-        return appRepository.reinsertTodoTask(
+        return appRepository.insertTodoTask(
             TodoModel(
                 title = title,
                 todo = task,
@@ -79,7 +79,7 @@ class QuickTodoViewModel(private val appRepository: AppRepository) :
     }
 
     fun undoTaskRemove(task: TodoModel) {
-        appRepository.reinsertTodoTask(task)
+        appRepository.insertTodoTask(task)
     }
 
     fun updateTaskModel(todoModel: TodoModel) {
