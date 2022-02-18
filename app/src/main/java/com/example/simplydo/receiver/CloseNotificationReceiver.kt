@@ -8,7 +8,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.core.content.ContextCompat
 import com.example.simplydo.localDatabase.AppDatabase
-import com.example.simplydo.ui.MainActivity
+import com.example.simplydo.ui.activity.personalWorkspace.PersonalWorkspaceActivity
 import com.example.simplydo.utlis.AppConstant
 import com.example.simplydo.utlis.AppRepository
 
@@ -36,7 +36,7 @@ class CloseNotificationReceiver : BroadcastReceiver() {
 
                 Log.i(TAG, "onReceive: ${bundle.getLong(AppConstant.NAVIGATION_TASK_KEY)}")
 
-                val mainActivityIntent = Intent(context, MainActivity::class.java).apply {
+                val mainActivityIntent = Intent(context, PersonalWorkspaceActivity::class.java).apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     putExtra(AppConstant.NAVIGATION_TASK_KEY, notificationID)
                 }
@@ -56,7 +56,7 @@ class CloseNotificationReceiver : BroadcastReceiver() {
                 val notificationID = intent.getLongExtra(AppConstant.NAVIGATION_TASK_KEY, 0L)
                 val bundle = Bundle()
                 bundle.putLong(AppConstant.NAVIGATION_TASK_KEY, notificationID)
-                val mainActivityIntent = Intent(context, MainActivity::class.java).apply {
+                val mainActivityIntent = Intent(context, PersonalWorkspaceActivity::class.java).apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     putExtra(AppConstant.NAVIGATION_TASK_KEY, notificationID)
                 }

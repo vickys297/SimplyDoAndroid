@@ -6,7 +6,7 @@
 
         <variable
             name="viewModel"
-            type="com.example.simplydo.ui.fragments.organizationView.WorkspaceGroupViewViewModel" />
+            type="com.example.simplydo.ui.activity.privateWorkspace.workspaceGroupView.WorkspaceGroupViewViewModel" />
 
     </data>
 
@@ -15,41 +15,58 @@
         android:layout_height="match_parent">
 
 
-        <TextView
-            android:id="@+id/textView_header"
+        <LinearLayout
+            android:id="@+id/linearLayout5"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="8dp"
-            android:textSize="30sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/textView_participants"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toStartOf="@+id/profileView"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView_header" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/textView_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/textView_participants"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp" />
+
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/switch_workspace"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginEnd="16dp"
+            android:background="@android:color/transparent"
+            android:padding="8dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_workspace"
+            app:layout_constraintBottom_toBottomOf="@+id/linearLayout5"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/linearLayout5" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view_group_view"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
+            android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             app:layout_constraintBottom_toTopOf="@+id/button_create_group"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias=".5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView_participants" />
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout5" />
 
         <Button
             android:id="@+id/button_create_group"

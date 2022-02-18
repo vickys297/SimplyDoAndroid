@@ -14,9 +14,9 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/primary_color_circle">
+        android:background="@drawable/circular_contact_name_dark">
 
-        <com.example.simplydo.utlis.ProfileImageView
+        <com.example.simplydo.components.ProfileImageView
             android:id="@+id/profileImageView"
             android:layout_width="20dp"
             android:layout_height="20dp"

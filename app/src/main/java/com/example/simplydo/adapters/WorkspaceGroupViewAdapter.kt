@@ -60,8 +60,6 @@ class WorkspaceGroupViewAdapter(
                 adapter = userProfileStackAdapter
                 addItemDecoration(GroupViewAdapter.OverlapRecyclerViewDecoration(4, -25))
             }
-
-
         }
     }
 

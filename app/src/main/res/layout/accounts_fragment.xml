@@ -16,7 +16,7 @@
         android:layout_height="match_parent"
         tools:context=".ui.fragments.accounts.AccountsFragments">
 
-        <com.example.simplydo.utlis.ProfileImageView
+        <com.example.simplydo.components.ProfileImageView
             android:id="@+id/profileImageView"
             android:layout_width="50dp"
             android:layout_height="50dp"

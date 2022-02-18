@@ -5,8 +5,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.simplydo.databinding.RecyclerWorkspaceListItemBinding
 import com.example.simplydo.model.WorkspaceModel
+import com.example.simplydo.utlis.AppInterface
 
-class MyWorkspaceAdapter() : RecyclerView.Adapter<MyWorkspaceAdapter.MyWorkspaceViewHolder>() {
+class MyWorkspaceAdapter(val callback: AppInterface.MyWorkspace.Callback?) :
+    RecyclerView.Adapter<MyWorkspaceAdapter.MyWorkspaceViewHolder>() {
     var dataset = ArrayList<WorkspaceModel>()
 
     class MyWorkspaceViewHolder(val binding: RecyclerWorkspaceListItemBinding) :
@@ -29,6 +31,7 @@ class MyWorkspaceAdapter() : RecyclerView.Adapter<MyWorkspaceAdapter.MyWorkspace
 
     override fun onBindViewHolder(holder: MyWorkspaceViewHolder, position: Int) {
         val item = dataset[position]
+        holder.itemView.setOnClickListener { callback!!.onSelect(item) }
         holder.bind(item)
     }
 

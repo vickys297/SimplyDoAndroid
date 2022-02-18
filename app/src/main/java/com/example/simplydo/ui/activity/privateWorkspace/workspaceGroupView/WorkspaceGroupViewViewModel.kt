@@ -1,4 +1,4 @@
-package com.example.simplydo.ui.fragments.organizationView
+package com.example.simplydo.ui.activity.privateWorkspace.workspaceGroupView
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

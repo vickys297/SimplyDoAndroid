@@ -10,7 +10,7 @@ import com.example.simplydo.model.WorkspaceGroupTaskModel
 interface WorkspaceGroupTaskDAO {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertWorkspaceDatabase(todoModel: WorkspaceGroupTaskModel): Long
+    fun insertWorkspaceDatabase(workspaceGroupTaskModel: WorkspaceGroupTaskModel): Long
 
     @Query("SELECT * FROM workspaceGroupTask WHERE dtId =:dtId")
     fun getWorkspaceGroupTaskById(dtId: Long): List<WorkspaceGroupTaskModel>
@@ -18,8 +18,8 @@ interface WorkspaceGroupTaskDAO {
     @Query("SELECT * FROM workspaceGroupTask WHERE taskStatus =:status")
     fun getWorkspaceGroupTaskByStatus(status: Int): List<WorkspaceGroupTaskModel>
 
-    @Query("SELECT * FROM workspaceGroupTask")
-    fun getAllWorkspaceGroupTask(): List<WorkspaceGroupTaskModel>
+    @Query("SELECT * FROM workspaceGroupTask WHERE groupId =:groupTaskId")
+    fun getAllWorkspaceGroupTask(groupTaskId: Long): List<WorkspaceGroupTaskModel>
 
     @Query("SELECT * FROM workspaceGroupTask WHERE groupId =:groupTaskId")
     fun getWorkspaceGroupTaskByGroupId(groupTaskId: Long): List<WorkspaceGroupTaskModel>

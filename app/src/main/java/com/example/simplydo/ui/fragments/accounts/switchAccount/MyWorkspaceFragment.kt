@@ -31,7 +31,7 @@ class MyWorkspaceFragment : Fragment(R.layout.available_workspace_fragment) {
         binding = AvailableWorkspaceFragmentBinding.bind(view)
         setupBinding()
 
-        myWorkspaceAdapter = MyWorkspaceAdapter()
+        myWorkspaceAdapter = MyWorkspaceAdapter(null)
         binding.recyclerViewWorkspaceAccounts.apply {
             layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)

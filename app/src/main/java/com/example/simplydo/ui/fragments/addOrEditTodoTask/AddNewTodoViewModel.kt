@@ -70,12 +70,16 @@ class AddNewTodoViewModel(val appRepository: AppRepository) :
         filesArray: ArrayList<FileModel>,
         location: LatLngModel,
         repeatFrequency: ArrayList<SelectorDataModal>,
-        repeatWeek: ArrayList<SelectorDataModal>
+        repeatWeek: ArrayList<SelectorDataModal>,
+        workspaceId: Long,
+        workspaceGroupId: Long
     ): Long {
-        return appRepository.insertTodoTask(
-            TodoModel(
+        return appRepository.insertWorkspaceTodoTask(
+            WorkspaceGroupTaskModel(
                 title = title,
                 todo = task,
+                groupId = workspaceGroupId.toString(),
+                workspaceId = workspaceId.toString(),
                 eventDateTime = eventDate,
                 taskPriority = taskPriority,
                 locationData = location,

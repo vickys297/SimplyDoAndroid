@@ -1,5 +1,6 @@
 package com.example.simplydo.model
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.io.Serializable
@@ -10,23 +11,21 @@ import java.util.*
 @Entity(tableName = "workspace")
 data class WorkspaceModel(
 
-    @PrimaryKey
-    val orgId: String,
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "wId")
+    val wId: Long = 0,
+
+    val orgId: Long,
 
     val accountType: String,
-
     val title: String,
-
     val moreDetails: String,
-
     val createdAt: Long = System.currentTimeMillis(),
-
     val createdBy: UserIdModel,
+    val users: ArrayList<UserModel>
+) : Serializable {
 
-    val users: ArrayList<UserModel>,
-
-
-)
+}
 
 
 data class WorkspaceGroupsCollectionModel(
@@ -52,6 +51,6 @@ data class WorkspaceGroupsCollectionModel(
 
 data class UserIdModel(
     val admin: UserModel
-)
+) : Serializable
 
 

@@ -70,6 +70,14 @@
             android:text="@string/completed" />
 
         <Button
+            android:id="@+id/buttonSettings"
+            style="@style/ButtonOptions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/settings" />
+
+        <Button
             android:id="@+id/buttonCalenderView"
             style="@style/PrimaryButton"
             android:layout_width="match_parent"

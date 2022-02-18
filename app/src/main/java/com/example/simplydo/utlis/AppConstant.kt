@@ -103,13 +103,23 @@ object AppConstant {
         const val VERIFY_WEBSITE = "http://192.168.0.100"
     }
 
+    object Workspace {
+        const val DEFAULT_PERSONAL_WORKSPACE: Long = -1
+    }
+
     object Preferences {
+        const val CURRENT_ACTIVE_WORKSPACE: String = "currentActiveSpace"
         const val IS_PAID_USER = "isPaidUser"
         const val PERSONAL_WORKSPACE = "personalWorkSpace"
         const val WORKSPACE_DATA = "workspaceData"
         const val USER_DATA = "userData"
         const val ORGANIZATION_ID = "organizationId"
         const val PAID_PLANS = "paidPlanAvailableData"
+    }
+
+    object Session {
+        const val PERSONAL_SCREEN: Int = 1
+        const val WORKSPACE_SCREEN: Int = 2
     }
 
     // task
@@ -145,7 +155,9 @@ object AppConstant {
     }
 
     object Key {
+        const val NAVIGATION_WORKSPACE: String = "workspaceData"
         const val NAVIGATION_WORKSPACE_ID: String = "workspaceId"
+        const val NAVIGATION_GROUP_ID: String = "groupId"
         const val NAVIGATION_TASK_FLAG_KEY: String = "taskFlagKey"
         const val NAVIGATION_PARTICIPANT_KEY: String = "participantsKey"
         const val NAVIGATION_WORKSPACE_GROUP_ITEM: String = "WorkspaceGroupItem"

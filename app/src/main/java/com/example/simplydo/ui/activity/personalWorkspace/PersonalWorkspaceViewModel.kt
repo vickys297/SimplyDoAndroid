@@ -1,4 +1,4 @@
-package com.example.simplydo.ui
+package com.example.simplydo.ui.activity.personalWorkspace
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
@@ -13,7 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
 
-class MainViewModel(val appRepository: AppRepository) : ViewModel() {
+class PersonalWorkspaceViewModel(val appRepository: AppRepository) : ViewModel() {
 
     fun getAllTodoListNotSynced(): LiveData<List<TodoModel>> {
         return appRepository.appDatabase.todoDao().getAllTodoNotSynced()

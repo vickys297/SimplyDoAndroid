@@ -1,4 +1,4 @@
-package com.example.simplydo.ui.fragments.todoList
+package com.example.simplydo.ui.activity.personalWorkspace.personalTask
 
 import android.content.Intent
 import android.os.Build
@@ -27,6 +27,7 @@ import com.example.simplydo.dialog.bottomSheetDialogs.basicAddTodoDialog.AddNewR
 import com.example.simplydo.dialog.bottomSheetDialogs.basicAddTodoDialog.EditTodoBasic
 import com.example.simplydo.dialog.bottomSheetDialogs.calenderOptions.TodoOptions
 import com.example.simplydo.dialog.bottomSheetDialogs.todoOptions.TodoOptionsFragment
+import com.example.simplydo.dialog.bottomSheetDialogs.workspaceDialog.WorkspaceSwitchBottomSheetDialog
 import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.model.CommonResponseModel
 import com.example.simplydo.model.TodoModel
@@ -46,7 +47,6 @@ class QuickTodoFragment : Fragment(R.layout.fragment_quick_todo), View.OnClickLi
         fun newInstance() = QuickTodoFragment()
     }
 
-
     private lateinit var todoObserver: Observer<CommonResponseModel>
     private lateinit var totalTaskCountObserver: Observer<Int>
     private lateinit var noNetworkObserver: Observer<String>
@@ -62,6 +62,9 @@ class QuickTodoFragment : Fragment(R.layout.fragment_quick_todo), View.OnClickLi
 
     private lateinit var newTaskOptionsBottomSheetDialog: NewTaskOptionsBottomSheetDialog
     private lateinit var todoOptions: TodoOptions
+
+    private lateinit var workspaceSwitchBottomSheetDialog: WorkspaceSwitchBottomSheetDialog
+
 
     private val undoInterface = object : UndoInterface {
         override fun onUndo(task: TodoModel, type: Int) {
@@ -109,7 +112,6 @@ class QuickTodoFragment : Fragment(R.layout.fragment_quick_todo), View.OnClickLi
             findNavController().navigate(R.id.action_toDoFragment_to_editFragment, bundle)
         }
     }
-
 
     private val todoOptionDialogFragments = object : TodoOptionDialogFragments {
         override fun onDelete(item: TodoModel) {
@@ -178,6 +180,10 @@ class QuickTodoFragment : Fragment(R.layout.fragment_quick_todo), View.OnClickLi
             findNavController().navigate(R.id.action_toDoFragment_to_otherTodoFragment, bundle)
         }
 
+        override fun onSettingsClicked() {
+            findNavController().navigate(R.id.action_toDoFragment_to_accounts)
+        }
+
     }
     private var todoAdapterInterface = object : TodoItemInterface {
         override fun onLongClick(item: TodoModel) {
@@ -238,19 +244,30 @@ class QuickTodoFragment : Fragment(R.layout.fragment_quick_todo), View.OnClickLi
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentQuickTodoBinding.bind(view)
 
-//        (activity as MainActivity).setSupportActionBar(binding.todoToolbar)
-//        (activity as MainActivity).supportActionBar!!.setDisplayShowTitleEnabled(false)
+//        (activity as PersonalWorkspaceActivity).setSupportActionBar(binding.todoToolbar)
+//        (activity as PersonalWorkspaceActivity).supportActionBar!!.setDisplayShowTitleEnabled(false)
 //        setHasOptionsMenu(true)
 
         val accentText = "<font color='#6200EE'>Daily<br>Routine</font>"
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            binding.text1.text = Html.fromHtml("Discover your $accentText here", HtmlCompat.FROM_HTML_MODE_LEGACY)
+            binding.text1.text =
+                Html.fromHtml("Discover your $accentText here", HtmlCompat.FROM_HTML_MODE_LEGACY)
         } else {
             binding.text1.text = Html.fromHtml("Discover your $accentText here")
         }
 
         setObserver()
         setupViewModel()
+
+        workspaceSwitchBottomSheetDialog =
+            WorkspaceSwitchBottomSheetDialog.newInstance(
+                requireContext(),
+                callback = object : AppInterface.MyWorkspace.CreateWorkspaceDialog {
+                    override fun onCreateNewWorkspace() {
+                        findNavController().navigate(R.id.action_toDoFragment_to_createWorkspaceFragment)
+                    }
+                })
+
         // init
         newTaskOptionsBottomSheetDialog =
             NewTaskOptionsBottomSheetDialog.getInstance(requireContext(), newTaskOptionsCallback)
@@ -262,15 +279,18 @@ class QuickTodoFragment : Fragment(R.layout.fragment_quick_todo), View.OnClickLi
             adapter = quickTodoListAdapter
         }
 
-
         binding.buttonAddNewTask.setOnClickListener(this@QuickTodoFragment)
-
         binding.buttonTodoOption.setOnClickListener(this@QuickTodoFragment)
-
         binding.profileView.setOnClickListener {
-            findNavController().navigate(R.id.action_toDoFragment_to_accounts)
-        }
 
+
+            workspaceSwitchBottomSheetDialog.show(
+                requireActivity().supportFragmentManager,
+                WorkspaceSwitchBottomSheetDialog::class.java.canonicalName
+            )
+
+
+        }
 
         val simpleItemTouchCallback: ItemTouchHelper.SimpleCallback = object :
             ItemTouchHelper.SimpleCallback(
@@ -363,18 +383,14 @@ class QuickTodoFragment : Fragment(R.layout.fragment_quick_todo), View.OnClickLi
     }
 
     private fun setObserver() {
-
-
         todoObserver = Observer {
             if (it.result == AppConstant.API_RESULT_OK) {
                 Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
             }
         }
-
         noNetworkObserver = Observer {
             Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
         }
-
         totalTaskCountObserver = Observer {
             if (it > 0) {
                 binding.recyclerViewTodoList.visibility = View.VISIBLE
@@ -384,7 +400,6 @@ class QuickTodoFragment : Fragment(R.layout.fragment_quick_todo), View.OnClickLi
                 binding.recyclerViewTodoList.visibility = View.GONE
             }
         }
-
     }
 
     private fun setupViewModel() {
@@ -400,9 +415,7 @@ class QuickTodoFragment : Fragment(R.layout.fragment_quick_todo), View.OnClickLi
                         )
                     )
                 )
-            ).get(
-                QuickTodoViewModel::class.java
-            )
+            )[QuickTodoViewModel::class.java]
         binding.apply {
             todoViewModel = this@QuickTodoFragment.viewModel
             lifecycleOwner = this@QuickTodoFragment

@@ -1,4 +1,4 @@
-package com.example.simplydo.ui.fragments.todoList
+package com.example.simplydo.ui.activity.personalWorkspace.personalTask
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -57,7 +57,7 @@ class QuickTodoViewModel(private val appRepository: AppRepository) :
 
 
     fun completeTaskByID(dtId: Long): Int {
-      return appRepository.completeTaskById(dtId)
+        return appRepository.completeTaskById(dtId)
     }
 
     fun getQuickTodoList(

@@ -1,4 +1,4 @@
-package com.example.simplydo.ui.fragments.accounts.workspace
+package com.example.simplydo.ui.activity.privateWorkspace.createWorkspace
 
 import android.os.Build
 import android.os.Bundle
@@ -42,10 +42,14 @@ class CreateWorkspaceFragment : Fragment(R.layout.create_workspace_fragment) {
         binding.imageButtonClose.setOnClickListener {
             findNavController().navigateUp()
         }
-        binding.button.setOnClickListener {
+        binding.buttonCreateNewWorkspace.setOnClickListener {
 
-            findNavController().navigate(R.id.action_createWorkspaceFragment_to_plansFragment)
+            viewModel.createNewWorkSpace(
+                binding.editTextWorkspace.text.toString(),
+                requireContext()
+            )
 
+//            findNavController().navigate(R.id.action_createWorkspaceFragment_to_plansFragment)
             /*if (AppPreference.getPreferences(
                     AppConstant.Preferences.IS_PAID_USER,
                     false,

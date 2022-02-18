@@ -4,18 +4,19 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.simplydo.dialog.bottomSheetDialogs.tags.TagsBottomSheetDialogViewModel
-import com.example.simplydo.ui.MainViewModel
+import com.example.simplydo.dialog.bottomSheetDialogs.workspaceDialog.WorkspaceSwitchBottomSheetDialogViewModel
+import com.example.simplydo.ui.activity.personalWorkspace.PersonalWorkspaceViewModel
 import com.example.simplydo.ui.fragments.accounts.switchAccount.MyWorkspaceViewModel
-import com.example.simplydo.ui.fragments.accounts.workspace.CreateWorkspaceViewModel
+import com.example.simplydo.ui.activity.privateWorkspace.createWorkspace.CreateWorkspaceViewModel
 import com.example.simplydo.ui.fragments.addOrEditTodoTask.AddNewTodoViewModel
 import com.example.simplydo.ui.fragments.attachmentsFragments.contacts.ContactsViewModel
 import com.example.simplydo.ui.fragments.attachmentsFragments.gallery.GalleryListViewModel
 import com.example.simplydo.ui.fragments.calender.CalenderViewModel
-import com.example.simplydo.ui.fragments.organizationView.WorkspaceGroupViewViewModel
-import com.example.simplydo.ui.fragments.organizationView.organizationTask.WorkspaceGroupTaskViewModel
+import com.example.simplydo.ui.activity.privateWorkspace.workspaceGroupView.WorkspaceGroupViewViewModel
+import com.example.simplydo.ui.activity.privateWorkspace.workspaceTaskView.WorkspaceGroupTaskViewModel
 import com.example.simplydo.ui.fragments.otherTodoFragments.OtherTodoViewModel
 import com.example.simplydo.ui.fragments.selectParticipants.SelectParticipantsViewModel
-import com.example.simplydo.ui.fragments.todoList.QuickTodoViewModel
+import com.example.simplydo.ui.activity.personalWorkspace.personalTask.QuickTodoViewModel
 import com.example.simplydo.ui.fragments.todoListFullDetails.TodoFullDetailsViewModel
 import com.example.simplydo.ui.fragments.workspace.CreateNewWorkspaceGroupViewModel
 
@@ -47,8 +48,8 @@ open class ViewModelFactory internal constructor(
                 ContactsViewModel(appRepository) as T
             }
 
-            MainViewModel::class.java.canonicalName -> {
-                MainViewModel(appRepository) as T
+            PersonalWorkspaceViewModel::class.java.canonicalName -> {
+                PersonalWorkspaceViewModel(appRepository) as T
             }
 
             TodoFullDetailsViewModel::class.java.canonicalName -> {
@@ -77,6 +78,9 @@ open class ViewModelFactory internal constructor(
             }
             WorkspaceGroupTaskViewModel::class.java.canonicalName->{
                 WorkspaceGroupTaskViewModel(appRepository) as T
+            }
+            WorkspaceSwitchBottomSheetDialogViewModel::class.java.canonicalName->{
+                WorkspaceSwitchBottomSheetDialogViewModel(appRepository) as T
             }
             else -> {
                 throw IllegalArgumentException("ViewModel not found")

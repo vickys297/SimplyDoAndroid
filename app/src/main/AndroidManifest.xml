@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.simplydo">
-
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
@@ -19,6 +18,7 @@
     <uses-permission
         android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
@@ -38,16 +38,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SimplyDo"
         tools:ignore="UnusedAttribute">
+
         <activity
             android:name=".ui.activity.SplashScreenActivity"
-            android:theme="@style/Theme.SimplyDo"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/Theme.SimplyDo">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <service
             android:name=".services.MyService"
             android:enabled="true"
@@ -71,17 +73,23 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+
         <activity
-            android:name=".ui.MainActivity"
-            android:theme="@style/Theme.SimplyDo"
-            android:windowSoftInputMode="adjustPan" />
-        <activity
-            android:name=".ui.activity.login.LoginActivity"
+            android:name="com.example.simplydo.ui.activity.personalWorkspace.PersonalWorkspaceActivity"
             android:theme="@style/Theme.SimplyDo"
             android:windowSoftInputMode="adjustPan" />
 
-        <!-- Broad caste receivers -->
-        <receiver android:name=".receiver.AppBroadCastReceiver"
+        <activity
+            android:name=".ui.activity.privateWorkspace.WorkspaceActivity"
+            android:theme="@style/Theme.SimplyDo"
+            android:windowSoftInputMode="adjustPan" />
+
+        <activity
+            android:name=".ui.activity.login.LoginActivity"
+            android:theme="@style/Theme.SimplyDo"
+            android:windowSoftInputMode="adjustPan" /> <!-- Broad caste receivers -->
+        <receiver
+            android:name=".receiver.AppBroadCastReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />

@@ -2,12 +2,11 @@ package com.example.simplydo.ui.fragments.addOrEditTodoTask
 
 import android.app.DatePickerDialog
 import android.content.Context
-import android.icu.util.Calendar
 import android.os.Build
 import android.os.Bundle
 import android.text.Html
 import android.util.Log
-import android.view.*
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.core.view.isVisible
@@ -46,8 +45,8 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.chip.Chip
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
+import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 internal val TAG = AddNewTodo::class.java.canonicalName
@@ -57,7 +56,8 @@ class AddNewTodo : Fragment(R.layout.add_new_todo_fragment), NewTodoOptionsFragm
     private var toast: Toast? = null
     private var taskPriority: Int = 3
     private var taskFlagId: Int = -1
-    private var workspaceID: Int = -1
+    private var workspaceId: Long = -1L
+    private var workspaceGroupId: Long = -1L
 
     private var todoTaskDataSet: ArrayList<TodoTaskModel> = ArrayList()
     private lateinit var viewModel: AddNewTodoViewModel
@@ -77,7 +77,7 @@ class AddNewTodo : Fragment(R.layout.add_new_todo_fragment), NewTodoOptionsFragm
     private var latLng: LatLngModel = LatLngModel(0.0, 0.0)
 
     private var eventDate: Long = System.currentTimeMillis()
-    private var currentEventStartDueDateTime = System.currentTimeMillis()
+    private var currentEventStartDueDateTime: Long = System.currentTimeMillis()
     private var taskRepeatFrequency: ArrayList<SelectorDataModal> = arrayListOf()
     private var taskRepeatDays: ArrayList<SelectorDataModal> = arrayListOf()
 
@@ -262,22 +262,23 @@ class AddNewTodo : Fragment(R.layout.add_new_todo_fragment), NewTodoOptionsFragm
         }
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = AddNewTodoFragmentBinding.bind(view)
         setupObserver()
         setViewModel()
-
         eventTime =
             "${AppFunctions.getHoursOfDay(System.currentTimeMillis())}:${
                 AppFunctions.getMinutes(
                     System.currentTimeMillis()
                 )
             }"
-        Log.i(TAG, "onCreateView: eventTime --> $eventTime")
 
         arguments?.let {
-            eventDate = it.getLong(getString(R.string.eventDateString))
+            val calendar = Calendar.getInstance()
+            calendar.set(Calendar.SECOND, 0)
+            eventDate = it.getLong(getString(R.string.eventDateString), calendar.timeInMillis)
 
             when (it.getInt(
                 AppConstant.Key.NAVIGATION_TASK_FLAG_KEY,
@@ -288,15 +289,30 @@ class AddNewTodo : Fragment(R.layout.add_new_todo_fragment), NewTodoOptionsFragm
                 }
                 AppConstant.Task.WORKSPACE_TASK -> {
                     taskFlagId = AppConstant.Task.WORKSPACE_TASK
-                    workspaceID = it.getInt(
+                    workspaceId = it.getLong(
                         AppConstant.Key.NAVIGATION_WORKSPACE_ID,
+                        -1
+                    )
+                    workspaceGroupId = it.getLong(
+                        AppConstant.Key.NAVIGATION_GROUP_ID,
                         -1
                     )
                 }
                 else -> {
-                    workspaceID = -1
+                    workspaceId = -1
+                    workspaceGroupId = -1
                 }
             }
+
+            Log.i(
+                TAG,
+                "onViewCreated: eventDate ${
+                    AppFunctions.convertTimeInMillsecToPattern(
+                        eventDate,
+                        "dd-MM-yyyy hh:mm:ss"
+                    )
+                }"
+            )
         }
 
         // setup array list
@@ -305,16 +321,24 @@ class AddNewTodo : Fragment(R.layout.add_new_todo_fragment), NewTodoOptionsFragm
         audioArrayList = ArrayList()
         filesArrayList = ArrayList()
 
-        repeatDialog =
-            RepeatDialog.getInstance(
-                requireContext(),
-                callback = onRepeatCallback,
-                taskRepeatDays = taskRepeatDays,
-                taskRepeatFrequency = taskRepeatFrequency
-            )
+        repeatDialog = RepeatDialog.getInstance(
+            requireContext(),
+            callback = onRepeatCallback,
+            taskRepeatDays = taskRepeatDays,
+            taskRepeatFrequency = taskRepeatFrequency
+        )
+
         priorityDialog = PriorityDialog.newInstance(callback = onPriorityCallback)
 
-
+        Log.i(
+            TAG,
+            "onViewCreated: eventDate ${
+                AppFunctions.convertTimeInMillsecToPattern(
+                    eventDate,
+                    "dd-MM-yyyy hh:mm:ss"
+                )
+            }"
+        )
         binding.textViewEventDate.text = AppFunctions.convertTimeInMillsecToPattern(
             eventDate,
             AppConstant.DATE_PATTERN_EVENT_DATE
@@ -346,7 +370,6 @@ class AddNewTodo : Fragment(R.layout.add_new_todo_fragment), NewTodoOptionsFragm
 
         binding.linearLayoutEventDateSelector.setOnClickListener {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-
                 val datePicker = DatePickerDialog(requireContext())
                 datePicker.datePicker.minDate = System.currentTimeMillis()
 
@@ -412,7 +435,7 @@ class AddNewTodo : Fragment(R.layout.add_new_todo_fragment), NewTodoOptionsFragm
         }
 
         binding.btnCreateTodoTask.setOnClickListener {
-            Log.i(TAG, "onViewCreated: $latLng")
+            Log.i(TAG, "onViewCreated: $taskFlagId")
             if (validateDetails()) {
                 val title = binding.editTextTitle.text.toString()
                 val task = binding.editTextTask.text.toString()
@@ -433,6 +456,8 @@ class AddNewTodo : Fragment(R.layout.add_new_todo_fragment), NewTodoOptionsFragm
                             repeatFrequency = viewModel.selectedRepeatFrequency.value
                                 ?: ArrayList(),
                             repeatWeek = viewModel.selectedRepeatDays.value ?: ArrayList(),
+                            workspaceId = workspaceId,
+                            workspaceGroupId = workspaceGroupId
                         )
                     } else {
                         viewModel.createTodo(
@@ -457,6 +482,15 @@ class AddNewTodo : Fragment(R.layout.add_new_todo_fragment), NewTodoOptionsFragm
                     bundle.putString("title", title)
                     bundle.putString("task", task)
                     bundle.putBoolean("priority", true)
+
+                    val selectedDate = Date()
+                    selectedDate.time = currentEventStartDueDateTime
+                    val createAlertAt =
+                        SimpleDateFormat("dd-MM-yyyy hh:mm:ss", Locale.getDefault()).format(
+                            currentEventStartDueDateTime
+                        )
+
+                    Log.i(TAG, "onViewCreated: create Alert @ $createAlertAt")
 
                     AppFunctions.setupNotification(
                         it,
@@ -578,6 +612,10 @@ class AddNewTodo : Fragment(R.layout.add_new_todo_fragment), NewTodoOptionsFragm
         setupTaskPriority(taskPriority)
     }
 
+    private fun setTimeEvent() {
+
+    }
+
     private fun showTimePickerDialog() {
         val picker = MaterialTimePicker.Builder()
             .setTimeFormat(TimeFormat.CLOCK_12H)
@@ -587,21 +625,12 @@ class AddNewTodo : Fragment(R.layout.add_new_todo_fragment), NewTodoOptionsFragm
 
         picker.show(requireActivity().supportFragmentManager, "tag")
         picker.addOnPositiveButtonClickListener {
-            val selectedDueTime = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                Calendar.getInstance().apply {
-                    timeInMillis = currentEventStartDueDateTime
-                    set(Calendar.HOUR_OF_DAY, picker.hour)
-                    set(Calendar.MINUTE, picker.minute)
-                }.timeInMillis
-
-            } else {
-                java.util.Calendar.getInstance().apply {
-                    timeInMillis = currentEventStartDueDateTime
-                    set(java.util.Calendar.HOUR_OF_DAY, picker.hour)
-                    set(java.util.Calendar.MINUTE, picker.minute)
-                }.timeInMillis
-            }
-
+            val selectedDueTime = Calendar.getInstance().apply {
+                timeInMillis = currentEventStartDueDateTime
+                set(Calendar.HOUR_OF_DAY, picker.hour)
+                set(Calendar.MINUTE, picker.minute)
+                set(Calendar.SECOND, 0)
+            }.timeInMillis
 
             binding.textViewEventTime.text =
                 AppFunctions.getPatternByTimeInMilliSec(selectedDueTime, "hh:mm a")

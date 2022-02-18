@@ -14,6 +14,7 @@
         <item name="android:windowLightStatusBar">true</item>
 
         <!-- Customize your theme here. -->
+
     </style>
 
 
@@ -157,8 +158,12 @@
     </style>
 
     <style name="TextDay">
-        <item name="android:textColor">@color/black</item>
+        <item name="android:textColor">@color/dark_night</item>
     </style>
+
+<!--    <style name="IconColor">-->
+<!--        <item name="android:fillColor">@color/dark_night</item>-->
+<!--    </style>-->
 
     <style name="TextMonth">
         <item name="android:textColor">@color/purple_500</item>

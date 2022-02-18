@@ -9,13 +9,14 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.simplydo.R
 import com.example.simplydo.api.API
+import com.example.simplydo.api.network.NoConnectivityException
+import com.example.simplydo.api.network.RetrofitServices
 import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.model.Token
 import com.example.simplydo.model.TokenResponse
-import com.example.simplydo.api.network.NoConnectivityException
-import com.example.simplydo.api.network.RetrofitServices
-import com.example.simplydo.ui.MainActivity
+import com.example.simplydo.ui.activity.personalWorkspace.PersonalWorkspaceActivity
 import com.example.simplydo.ui.activity.login.LoginActivity
+import com.example.simplydo.ui.activity.privateWorkspace.WorkspaceActivity
 import com.example.simplydo.utlis.AppConstant
 import com.example.simplydo.utlis.AppPreference
 import com.example.simplydo.utlis.AppRepository
@@ -49,10 +50,22 @@ class SplashScreenActivity : AppCompatActivity() {
                     this@SplashScreenActivity
                 )
             ) {
-                startActivity(
-                    Intent(this@SplashScreenActivity, MainActivity::class.java).apply {
-                        flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                    })
+                val currentWorkspace = AppPreference.getPreferences(
+                    AppConstant.Preferences.CURRENT_ACTIVE_WORKSPACE,
+                    AppConstant.Workspace.DEFAULT_PERSONAL_WORKSPACE,
+                    this@SplashScreenActivity
+                )
+                if (currentWorkspace == AppConstant.Workspace.DEFAULT_PERSONAL_WORKSPACE) {
+                    startActivity(
+                        Intent(this@SplashScreenActivity, PersonalWorkspaceActivity::class.java).apply {
+                            flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                        })
+                } else {
+                    startActivity(
+                        Intent(this@SplashScreenActivity, WorkspaceActivity::class.java).apply {
+                            flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                        })
+                }
                 finish()
             } else {
                 FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->

@@ -10,12 +10,21 @@ object AppPreference {
         sharedPreferences.apply()
     }
 
+    fun storePreferences(key: String, value: Long, context: Context) {
+        val sharedPreferences =
+            context.getSharedPreferences(AppConstant.SESSION_KEY, Context.MODE_PRIVATE).edit()
+        sharedPreferences.putLong(key, value)
+        sharedPreferences.apply()
+    }
+
     fun storePreferences(key: String, value: Int, context: Context) {
         val sharedPreferences =
             context.getSharedPreferences(AppConstant.SESSION_KEY, Context.MODE_PRIVATE).edit()
         sharedPreferences.putInt(key, value)
         sharedPreferences.apply()
     }
+
+
 
     fun storePreferences(key: String, value: Boolean, context: Context) {
         val sharedPreferences =
@@ -24,7 +33,7 @@ object AppPreference {
         sharedPreferences.apply()
     }
 
-    fun getPreferences(key: String, context: Context, default: String = ""): String {
+    fun getPreferences(key: String, default: String = "", context: Context): String {
         val sharedPreferences =
             context.getSharedPreferences(AppConstant.SESSION_KEY, Context.MODE_PRIVATE)
         return sharedPreferences.getString(key, default) ?: ""
@@ -46,6 +55,12 @@ object AppPreference {
         val sharedPreferences =
             context.getSharedPreferences(AppConstant.SESSION_KEY, Context.MODE_PRIVATE)
         return sharedPreferences.getBoolean(key, default)
+    }
+
+    fun getPreferences(key: String, default: Long, context: Context): Long {
+        val sharedPreferences =
+            context.getSharedPreferences(AppConstant.SESSION_KEY, Context.MODE_PRIVATE)
+        return sharedPreferences.getLong(key, default)
     }
 
 }

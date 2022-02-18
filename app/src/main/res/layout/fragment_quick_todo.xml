@@ -7,7 +7,7 @@
 
         <variable
             name="todoViewModel"
-            type="com.example.simplydo.ui.fragments.todoList.QuickTodoViewModel" />
+            type="com.example.simplydo.ui.activity.personalWorkspace.personalTask.QuickTodoViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -41,16 +41,28 @@
                 android:textSize="24sp" />
         </LinearLayout>
 
-        <com.example.simplydo.utlis.ProfileImageView
+        <ImageButton
             android:id="@+id/profileView"
             android:layout_width="45dp"
             android:layout_height="45dp"
+            android:padding="8dp"
             android:layout_marginEnd="16dp"
+            android:background="@android:color/transparent"
             android:scaleType="centerCrop"
-            android:src="@drawable/sample_profile_picture"
+            android:src="@drawable/ic_workspace"
             app:layout_constraintBottom_toBottomOf="@+id/top_section"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/top_section" />
+        <!--        <com.example.simplydo.components.ProfileImageView-->
+        <!--            android:id="@+id/profileView"-->
+        <!--            android:layout_width="45dp"-->
+        <!--            android:layout_height="45dp"-->
+        <!--            android:layout_marginEnd="16dp"-->
+        <!--            android:scaleType="centerCrop"-->
+        <!--            android:src="@drawable/sample_profile_picture"-->
+        <!--            app:layout_constraintBottom_toBottomOf="@+id/top_section"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintTop_toTopOf="@+id/top_section" />-->
 
         <!--        <androidx.appcompat.widget.Toolbar
                     android:id="@+id/todoToolbar"

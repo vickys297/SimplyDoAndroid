@@ -13,6 +13,27 @@
         android:backgroundTintMode="multiply"
         tools:context=".ui.activity.login.LoginActivity">
 
+        <TextView
+            android:id="@+id/textView53"
+            style="@style/Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="68dp"
+            android:text="@string/welcome_back"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/imageView7"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            app:layout_constraintBottom_toTopOf="@+id/textInputLayoutMobile"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView54"
+            app:srcCompat="@drawable/app_logo" />
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textInputLayoutMobile"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -44,7 +65,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
-            android:visibility="gone"
+            android:visibility="visible"
             app:layout_constraintBottom_toTopOf="@+id/btnVerifyOTP"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
@@ -75,19 +96,22 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/Dp_60"
             android:text="@string/verify_otp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <ImageView
-            android:id="@+id/imageView7"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            app:layout_constraintBottom_toTopOf="@+id/textInputLayoutMobile"
+            android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/app_logo" />
+            tools:layout_editor_absoluteY="671dp" />
+
+        <TextView
+            android:id="@+id/textView54"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/rookie"
+            android:textColor="@color/colorPrimary"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView53" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

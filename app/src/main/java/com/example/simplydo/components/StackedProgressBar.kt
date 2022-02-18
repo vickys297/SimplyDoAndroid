@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
-import kotlin.random.Random
 
 
 /**
@@ -14,8 +13,7 @@ internal val TAG = StackedProgressBar::class.java.canonicalName
 
 class StackedProgressBar : View {
 
-    private val progressBarHeight = height
-    private val progressBarWidth = width
+
     private lateinit var paint: Paint
 
 
@@ -46,17 +44,19 @@ class StackedProgressBar : View {
         super.onDraw(canvas)
 
         val arrayChart = arrayListOf(
-            23, 10, 20, 13, 33
+            25, 25, 25, 25
+        )
+        val colors = arrayListOf(
+            Color.parseColor("#FC4F4F"),
+            Color.parseColor("#FF9F45"),
+            Color.parseColor("#FFE162"),
+            Color.parseColor("#49FF00")
         )
         var leftPosition = 0
-        for (item in arrayChart) {
-            val color =
-                Color.argb(255, Random.nextInt(256), Random.nextInt(256), Random.nextInt(256))
+        for ((index, item) in arrayChart.withIndex()) {
 
-            paint.color = color
-
+            paint.color = colors[index]
             val firstSize = (leftPosition + width * item / 100)
-
 
             val rect = RectF(leftPosition.toFloat(), 0f, firstSize.toFloat(), 10f)
 

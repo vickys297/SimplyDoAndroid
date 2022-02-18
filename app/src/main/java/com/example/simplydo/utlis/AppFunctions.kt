@@ -64,6 +64,7 @@ object AppFunctions {
         val formatter = SimpleDateFormat(datePattern, Locale.getDefault())
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = milliseconds
+        Log.i(TAG, "convertTimeInMillsecToPattern: ${formatter.format(calendar.time)}")
         return formatter.format(calendar.time)
     }
 
@@ -224,7 +225,7 @@ object AppFunctions {
             PendingIntent.FLAG_CANCEL_CURRENT
         )
         alarmManager.setExactAndAllowWhileIdle(
-            AlarmManager.RTC_WAKEUP, eventTime, pendingIntent
+            AlarmManager.ELAPSED_REALTIME_WAKEUP, eventTime, pendingIntent
         )
     }
 
@@ -344,7 +345,7 @@ object AppFunctions {
             )
 
             Log.i(
-                com.example.simplydo.ui.fragments.todoList.TAG,
+                com.example.simplydo.ui.activity.personalWorkspace.todoList.TAG,
                 "setupNotification: $isEnabled"
             )
         } else {
@@ -387,7 +388,7 @@ object AppFunctions {
                 )
 
                 Log.i(
-                    com.example.simplydo.ui.fragments.todoList.TAG,
+                    com.example.simplydo.ui.activity.personalWorkspace.personalTask.TAG,
                     "setupNotification: $isEnabled"
                 )
             }
@@ -407,7 +408,7 @@ object AppFunctions {
                 )
 
                 Log.i(
-                    com.example.simplydo.ui.fragments.todoList.TAG,
+                    com.example.simplydo.ui.activity.personalWorkspace.personalTask.TAG,
                     "setupNotification: $isEnabled"
                 )
 
@@ -420,7 +421,7 @@ object AppFunctions {
 
     fun combineEventDateEventTimeAsCalender(eventDate: Long, eventTime: String): Calendar {
 
-        val evenTime = if (eventTime.isNotEmpty()) eventTime else "00:00"
+        val evenTime = eventTime.ifEmpty { "00:00" }
 
 
         Log.i(TAG, "combineEventDateEventTimeAsCalender: $eventTime")

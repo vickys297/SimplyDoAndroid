@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/workspace_graph"
+    app:startDestination="@id/workspaceGroupViewFragment">
+
+    <fragment
+        android:id="@+id/workspaceGroupViewFragment"
+        android:name="com.example.simplydo.ui.activity.privateWorkspace.workspaceGroupView.WorkspaceGroupViewFragment"
+        android:label="WorkspaceGroupViewFragment">
+        <action
+            android:id="@+id/action_workspace_workspaceGroupViewFragment_to_workspaceGroupTaskViewFragment"
+            app:destination="@id/workspaceGroupTaskViewFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/workspaceGroupTaskViewFragment"
+        android:name="com.example.simplydo.ui.activity.privateWorkspace.workspaceTaskView.WorkspaceGroupTaskViewFragment"
+        android:label="WorkspaceGroupTaskViewFragment">
+        <action
+            android:id="@+id/action_workspace_workspaceGroupTaskViewFragment_to_addNewTodo"
+            app:destination="@id/addNewTodo"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
+    </fragment>
+    <fragment
+        android:id="@+id/addNewTodo"
+        android:name="com.example.simplydo.ui.fragments.addOrEditTodoTask.AddNewTodo"
+        android:label="AddNewTodo" />
+
+</navigation>

@@ -1,6 +1,7 @@
-package com.example.simplydo.ui.fragments.organizationView.organizationTask
+package com.example.simplydo.ui.activity.privateWorkspace.workspaceTaskView
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -20,7 +21,7 @@ import com.example.simplydo.utlis.AppFunctions
 import com.example.simplydo.utlis.AppRepository
 import com.example.simplydo.utlis.ViewModelFactory
 
-
+internal val TAG = WorkspaceGroupTaskViewFragment::class.java.canonicalName
 class WorkspaceGroupTaskViewFragment : Fragment(R.layout.workspace_group_task_fragment) {
 
     companion object {
@@ -45,8 +46,6 @@ class WorkspaceGroupTaskViewFragment : Fragment(R.layout.workspace_group_task_fr
         groupData =
             requireArguments().getSerializable(AppConstant.Key.NAVIGATION_WORKSPACE_GROUP_ITEM) as WorkspaceGroupModel
 
-        viewModel.getWorkspaceGroupTask(groupData.gId)
-
         binding.textViewHeader1.text = groupData.name
         binding.textViewCardTitle.text = groupData.description
 
@@ -61,14 +60,23 @@ class WorkspaceGroupTaskViewFragment : Fragment(R.layout.workspace_group_task_fr
         binding.buttonCreateNewTask.setOnClickListener {
             val bundle = Bundle()
             bundle.putInt(AppConstant.Key.NAVIGATION_TASK_FLAG_KEY, AppConstant.Task.WORKSPACE_TASK)
-            bundle.putLong(AppConstant.Key.NAVIGATION_WORKSPACE_ID, 1189273871293L)
-            findNavController().navigate(R.id.action_organizationTaskFragment_to_addNewTodo, bundle)
+            bundle.putLong(AppConstant.Key.NAVIGATION_WORKSPACE_ID, groupData.workspaceID)
+            bundle.putLong(AppConstant.Key.NAVIGATION_GROUP_ID, groupData.gId)
+            findNavController().navigate(
+                R.id.action_workspace_workspaceGroupTaskViewFragment_to_addNewTodo,
+                bundle
+            )
         }
 
 
         val animation = PieChartAnimation(binding.pieChart, 360)
         animation.duration = 5000
         binding.pieChart.startAnimation(animation)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.getWorkspaceGroupTask(groupData.gId)
     }
 
 
@@ -127,6 +135,7 @@ class WorkspaceGroupTaskViewFragment : Fragment(R.layout.workspace_group_task_fr
             }
         }
 
+        Log.i(TAG, "getTaskByProgressStatus: $groupTaskByProgressModel")
         workspaceGroupTaskViewAdapter.updateDataset(groupTaskByProgressModel)
     }
 

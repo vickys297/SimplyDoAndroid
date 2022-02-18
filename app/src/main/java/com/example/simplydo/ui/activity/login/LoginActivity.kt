@@ -8,14 +8,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.example.simplydo.R
 import com.example.simplydo.api.API
+import com.example.simplydo.api.network.NoConnectivityException
+import com.example.simplydo.api.network.RetrofitServices
 import com.example.simplydo.databinding.ActivityLoginBinding
 import com.example.simplydo.model.LoginModel
 import com.example.simplydo.model.LoginResponseModel
 import com.example.simplydo.model.OTPModel
 import com.example.simplydo.model.OTPResponse
-import com.example.simplydo.api.network.NoConnectivityException
-import com.example.simplydo.api.network.RetrofitServices
-import com.example.simplydo.ui.MainActivity
+import com.example.simplydo.ui.activity.personalWorkspace.PersonalWorkspaceActivity
+import com.example.simplydo.ui.activity.privateWorkspace.WorkspaceActivity
 import com.example.simplydo.utlis.AppConstant
 import com.example.simplydo.utlis.AppPreference
 import retrofit2.Call
@@ -108,9 +109,31 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun goToMainActivity() {
-        val intent = Intent(this@LoginActivity, MainActivity::class.java)
-        startActivity(intent)
-        finish()
+
+        val currentActiveScreen = AppPreference.getPreferences(
+            AppConstant.Preferences.CURRENT_ACTIVE_WORKSPACE,
+            AppConstant.Session.PERSONAL_SCREEN,
+            this@LoginActivity
+        )
+
+        when (currentActiveScreen) {
+            AppConstant.Session.PERSONAL_SCREEN -> {
+                val intent = Intent(this@LoginActivity, PersonalWorkspaceActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
+            AppConstant.Session.WORKSPACE_SCREEN -> {
+                val intent = Intent(this@LoginActivity, WorkspaceActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
+            else -> {
+                val intent = Intent(this@LoginActivity, PersonalWorkspaceActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
+        }
+
     }
 
     private fun loginUser(mobile: String) {

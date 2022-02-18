@@ -1,4 +1,4 @@
-package com.example.simplydo.ui
+package com.example.simplydo.ui.activity.personalWorkspace
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.example.simplydo.R
-import com.example.simplydo.databinding.MainActivityBinding
+import com.example.simplydo.databinding.PersonalWorkspaceActivityBinding
 import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.model.*
 import com.example.simplydo.model.entity.WorkspaceGroupModel
@@ -16,9 +16,9 @@ import com.example.simplydo.utlis.*
 import com.google.gson.Gson
 import java.util.*
 
-internal val TAG = MainActivity::class.java.canonicalName
+internal val TAG = PersonalWorkspaceActivity::class.java.canonicalName
 
-class MainActivity : AppCompatActivity() {
+class PersonalWorkspaceActivity : AppCompatActivity() {
 
 
     private lateinit var allTodoListDataObserver: Observer<List<TodoModel>>
@@ -26,12 +26,16 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
     private lateinit var navHostFragment: NavHostFragment
 
-    private lateinit var viewModel: MainViewModel
-    private lateinit var binding: MainActivityBinding
+    private lateinit var viewModel: PersonalWorkspaceViewModel
+    private lateinit var binding: PersonalWorkspaceActivityBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this@MainActivity, R.layout.main_activity)
+        binding =
+            DataBindingUtil.setContentView(
+                this@PersonalWorkspaceActivity,
+                R.layout.personal_workspace_activity
+            )
 
         setUpObserver()
         setUpViewModel()
@@ -41,16 +45,16 @@ class MainActivity : AppCompatActivity() {
         loadDefaults()
 
 //        val userKey =
-//            AppPreference.getPreferences(AppConstant.USER_KEY, "", context = this@MainActivity)
-//        val uuid = AppPreference.getPreferences(AppConstant.UUID, "", this@MainActivity)
+//            AppPreference.getPreferences(AppConstant.USER_KEY, "", context = this@PersonalWorkspaceActivity)
+//        val uuid = AppPreference.getPreferences(AppConstant.UUID, "", this@PersonalWorkspaceActivity)
 //
 //        if (uuid.isEmpty()) {
-//            val intent = Intent(this@MainActivity, SplashScreenActivity::class.java)
+//            val intent = Intent(this@PersonalWorkspaceActivity, SplashScreenActivity::class.java)
 //            startActivity(intent)
 //            finish()
 //        }
 //        if (userKey.isEmpty()) {
-//            val intent = Intent(this@MainActivity, LoginActivity::class.java)
+//            val intent = Intent(this@PersonalWorkspaceActivity, LoginActivity::class.java)
 //            startActivity(intent)
 //            finish()
 //        }
@@ -94,17 +98,17 @@ class MainActivity : AppCompatActivity() {
 
     private fun setUpViewModel() {
         viewModel = ViewModelProvider(
-            this@MainActivity, ViewModelFactory(
-                this@MainActivity,
+            this@PersonalWorkspaceActivity, ViewModelFactory(
+                this@PersonalWorkspaceActivity,
                 AppRepository.getInstance(
-                    this@MainActivity,
-                    AppDatabase.getInstance(this@MainActivity)
+                    this@PersonalWorkspaceActivity,
+                    AppDatabase.getInstance(this@PersonalWorkspaceActivity)
                 )
             )
-        )[MainViewModel::class.java]
+        )[PersonalWorkspaceViewModel::class.java]
         binding.apply {
-            viewModel = this@MainActivity.viewModel
-            lifecycleOwner = this@MainActivity
+            viewModel = this@PersonalWorkspaceActivity.viewModel
+            lifecycleOwner = this@PersonalWorkspaceActivity
             executePendingBindings()
         }
 
@@ -113,7 +117,7 @@ class MainActivity : AppCompatActivity() {
         if (!AppPreference.getPreferences(
                 getString(R.string.preload_sample_data),
                 false,
-                this@MainActivity
+                this@PersonalWorkspaceActivity
             )
         ) {
             preLoadDummyData()
@@ -138,7 +142,7 @@ class MainActivity : AppCompatActivity() {
                         admin = Gson().fromJson(
                             AppPreference.getPreferences(
                                 AppConstant.Preferences.USER_DATA,
-                                this@MainActivity
+                                this@PersonalWorkspaceActivity
                             ), UserModel::class.java
                         )
                     ),
@@ -229,7 +233,7 @@ class MainActivity : AppCompatActivity() {
         AppPreference.storePreferences(
             AppConstant.Preferences.PAID_PLANS,
             Gson().toJson(plans),
-            this@MainActivity
+            this@PersonalWorkspaceActivity
         )
     }
 
@@ -237,25 +241,48 @@ class MainActivity : AppCompatActivity() {
     private fun createPrivateWorkspace() {
         AppPreference.storePreferences(
             AppConstant.Preferences.ORGANIZATION_ID,
-            "8927576298374326464357",
-            this@MainActivity
+            8927576298374326462L,
+            this@PersonalWorkspaceActivity
         )
         val userModel = UserModel(
             firstName = "Vignesh",
             middleName = "",
             lastName = "Selvam",
             email = "vignesh297@gmail.com",
-            phone = AppPreference.getPreferences(AppConstant.USER_MOBILE, this@MainActivity),
-            uKey = AppPreference.getPreferences(AppConstant.USER_KEY, this@MainActivity)
+            phone = AppPreference.getPreferences(
+                AppConstant.USER_MOBILE,
+                this@PersonalWorkspaceActivity
+            ),
+            uKey = AppPreference.getPreferences(
+                AppConstant.USER_KEY,
+                this@PersonalWorkspaceActivity
+            )
         )
 
         AppPreference.storePreferences(
             AppConstant.Preferences.USER_DATA,
             Gson().toJson(userModel),
-            this@MainActivity
+            this@PersonalWorkspaceActivity
         )
+        val personalWorkspace = WorkspaceModel(
+            wId = -1,
+            orgId = -1,
+            accountType = "",
+            title = "Personal Workspace",
+            moreDetails = "",
+            createdBy = UserIdModel(userModel),
+            users = arrayListOf()
+        )
+
+        AppPreference.storePreferences(
+            AppConstant.Preferences.CURRENT_ACTIVE_WORKSPACE,
+            personalWorkspace.wId,
+            this@PersonalWorkspaceActivity
+        )
+
         val workspace = WorkspaceModel(
-            orgId = "927813698371976",
+            wId = -1,
+            orgId = 927813698371976L,
             accountType = "",
             title = "Simply Do",
             moreDetails = "",
@@ -292,6 +319,7 @@ class MainActivity : AppCompatActivity() {
             )
         )
 
+        viewModel.storePrivateSpace(personalWorkspace)
         viewModel.storePrivateSpace(workspace)
     }
 
@@ -299,7 +327,7 @@ class MainActivity : AppCompatActivity() {
         AppPreference.storePreferences(
             AppConstant.Preferences.IS_PAID_USER,
             true,
-            this@MainActivity
+            this@PersonalWorkspaceActivity
         )
     }
 
@@ -310,13 +338,19 @@ class MainActivity : AppCompatActivity() {
                 middleName = "",
                 lastName = "Selvam",
                 email = "vignesh297@gmail.com",
-                phone = AppPreference.getPreferences(AppConstant.USER_MOBILE, this@MainActivity),
-                uKey = AppPreference.getPreferences(AppConstant.USER_KEY, this@MainActivity)
+                phone = AppPreference.getPreferences(
+                    AppConstant.USER_MOBILE,
+                    this@PersonalWorkspaceActivity
+                ),
+                uKey = AppPreference.getPreferences(
+                    AppConstant.USER_KEY,
+                    this@PersonalWorkspaceActivity
+                )
             )
         )
         val datSet = Gson().toJson(defaultPersonalWorkspace)
         AppPreference.storePreferences(
-            AppConstant.Preferences.PERSONAL_WORKSPACE, datSet, this@MainActivity
+            AppConstant.Preferences.PERSONAL_WORKSPACE, datSet, this@PersonalWorkspaceActivity
         )
     }
 
@@ -408,7 +442,7 @@ class MainActivity : AppCompatActivity() {
         AppPreference.storePreferences(
             getString(R.string.preload_sample_data),
             true,
-            this@MainActivity
+            this@PersonalWorkspaceActivity
         )
     }
 

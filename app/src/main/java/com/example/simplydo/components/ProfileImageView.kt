@@ -1,4 +1,4 @@
-package com.example.simplydo.utlis
+package com.example.simplydo.components
 
 import android.annotation.SuppressLint
 import android.content.Context

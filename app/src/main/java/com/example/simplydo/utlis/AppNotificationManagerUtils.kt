@@ -12,7 +12,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.example.simplydo.R
 import com.example.simplydo.receiver.CloseNotificationReceiver
-import com.example.simplydo.ui.MainActivity
+import com.example.simplydo.ui.activity.personalWorkspace.PersonalWorkspaceActivity
 
 
 fun NotificationManager.sendNotification(
@@ -26,7 +26,7 @@ fun NotificationManager.sendNotification(
     val channelId = "task_notification_$notificationId"
 
     // 3. Set up main Intent for notification.
-    val notifyIntent = Intent(applicationContext, MainActivity::class.java).apply {
+    val notifyIntent = Intent(applicationContext, PersonalWorkspaceActivity::class.java).apply {
         Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
     }
 

@@ -10,7 +10,7 @@ import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.example.simplydo.R
 import com.example.simplydo.databinding.ActivityOnBoardBinding
-import com.example.simplydo.ui.MainActivity
+import com.example.simplydo.ui.activity.personalWorkspace.PersonalWorkspaceActivity
 import com.example.simplydo.ui.activity.screens.Page1
 import com.example.simplydo.ui.activity.screens.Page2
 import com.example.simplydo.ui.activity.screens.Page3
@@ -65,7 +65,7 @@ class OnBoardActivity : AppCompatActivity() {
                 )
             ) {
                 startActivity(
-                    Intent(this@OnBoardActivity, MainActivity::class.java).apply {
+                    Intent(this@OnBoardActivity, PersonalWorkspaceActivity::class.java).apply {
                         flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                     })
                 finish()

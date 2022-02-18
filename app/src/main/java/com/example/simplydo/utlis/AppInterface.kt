@@ -79,6 +79,7 @@ interface TodoTaskOptionsInterface {
     fun onCalenderView()
     fun onCompletedView()
     fun onPastTaskView()
+    fun onSettingsClicked()
 }
 
 
@@ -179,6 +180,16 @@ interface AppInterface {
     interface WorkspaceAdapter {
         interface Callback {
             fun onWorkSpaceSelected(item: LinkedWorkspaceDataModel)
+        }
+    }
+
+    interface MyWorkspace {
+        interface Callback {
+            fun onSelect(item: WorkspaceModel)
+        }
+
+        interface CreateWorkspaceDialog {
+            fun onCreateNewWorkspace()
         }
     }
 

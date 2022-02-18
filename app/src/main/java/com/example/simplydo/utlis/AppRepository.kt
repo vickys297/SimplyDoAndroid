@@ -54,9 +54,9 @@ class AppRepository private constructor(
         return executor!!.get()
     }
 
-    fun insertWorkspaceTodoTask(todoModel: WorkspaceGroupTaskModel): Long {
+    fun insertWorkspaceTodoTask(workspaceGroupTaskModel: WorkspaceGroupTaskModel): Long {
         val callable =
-            Callable { workspaceGroupTaskDb.insertWorkspaceDatabase(todoModel = todoModel) }
+            Callable { workspaceGroupTaskDb.insertWorkspaceDatabase(workspaceGroupTaskModel = workspaceGroupTaskModel) }
         val executor = Executors.newSingleThreadExecutor().submit(callable)
         return executor!!.get()
     }
@@ -414,7 +414,7 @@ class AppRepository private constructor(
     }
 
     fun createNewWorkspace(data: WorkspaceModel) {
-
+        workspaceDb.createNewWorkspace(data)
     }
 
     fun writeNewWorkspace(workspace: WorkspaceModel) {
@@ -452,7 +452,7 @@ class AppRepository private constructor(
     }
 
     fun getWorkspaceTaskByGroupId(groupTaskId: Long): ArrayList<WorkspaceGroupTaskModel> {
-        return workspaceGroupTaskDb.getAllWorkspaceGroupTask() as ArrayList
+        return workspaceGroupTaskDb.getAllWorkspaceGroupTask(groupTaskId) as ArrayList
     }
 
 
