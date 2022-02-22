@@ -219,7 +219,7 @@ class QuickTodoFragment : Fragment(R.layout.fragment_quick_todo), View.OnClickLi
             task: String,
             eventDate: Long,
             isPriority: Boolean,
-            allDayTask: Boolean
+            isAllDayTask: Boolean
         ) {
             val newInert = viewModel.createNewTodo(
                 title,
@@ -237,6 +237,7 @@ class QuickTodoFragment : Fragment(R.layout.fragment_quick_todo), View.OnClickLi
                 AppFunctions.showSnackBar(binding.root, "New task added")
                 AppFunctions.setupNotification(it, eventDate, bundle, requireActivity())
             }
+
         }
     }
 

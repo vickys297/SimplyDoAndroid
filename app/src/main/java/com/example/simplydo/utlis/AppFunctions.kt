@@ -355,66 +355,69 @@ object AppFunctions {
 
     @WorkerThread
     fun setupNotification(
-        tasKId: Long,
+        taskId: Long,
         eventDateTime: Long,
         bundle: Bundle,
         activity: Activity
     ) {
 
+        val currentTime = Calendar.getInstance()
 
-        val calendar = getCurrentDateCalender()
-        calendar.timeInMillis = eventDateTime
-
+        val taskTime = getCurrentDateCalender()
+        taskTime.timeInMillis = eventDateTime
 
         // alert when this is the future task
         when {
-            System.currentTimeMillis() < calendar.timeInMillis -> {
-                calendar.set(Calendar.HOUR_OF_DAY, 7)
-                calendar.set(Calendar.MINUTE, 0)
-                calendar.set(Calendar.SECOND, 0)
-                calendar.set(Calendar.MILLISECOND, 0)
+            currentTime.timeInMillis < taskTime.timeInMillis -> {
+
+                taskTime.set(Calendar.HOUR_OF_DAY, 7)
+                taskTime.set(Calendar.MINUTE, 0)
+                taskTime.set(Calendar.SECOND, 0)
+                taskTime.set(Calendar.MILLISECOND, 0)
 
                 setNotificationTrigger(
                     activity,
-                    tasKId.toString(),
-                    calendar.timeInMillis,
+                    taskId.toString(),
+                    taskTime.timeInMillis,
                     bundle,
                     AppConstant.ALERT_TYPE_SILENT
                 )
 
                 val isEnabled = checkHasNotificationEnabled(
                     activity,
-                    dtId = tasKId.toString()
+                    dtId = taskId.toString()
                 )
 
                 Log.i(
                     com.example.simplydo.ui.activity.personalWorkspace.personalTask.TAG,
-                    "setupNotification: $isEnabled"
+                    "setupNotification 1: $isEnabled"
                 )
             }
 
             // alert when this is the future task
-            System.currentTimeMillis() > calendar.timeInMillis -> {
+            currentTime.timeInMillis > taskTime.timeInMillis -> {
+                taskTime.set(Calendar.MILLISECOND, 0)
                 setNotificationTrigger(
                     activity,
-                    tasKId.toString(),
-                    calendar.timeInMillis,
+                    taskId.toString(),
+                    taskTime.timeInMillis,
                     bundle,
                     AppConstant.ALERT_TYPE_SILENT
                 )
+
                 val isEnabled = checkHasNotificationEnabled(
                     activity,
-                    dtId = tasKId.toString()
+                    dtId = taskId.toString()
                 )
 
                 Log.i(
                     com.example.simplydo.ui.activity.personalWorkspace.personalTask.TAG,
-                    "setupNotification: $isEnabled"
+                    "setupNotification 2: $isEnabled"
                 )
 
             }
             else -> {
-                Log.i(TAG, "setupNotification: unable to set notification 2")
+                Log.i(TAG, "setupNotification: unable to set notification 3")
             }
         }
     }

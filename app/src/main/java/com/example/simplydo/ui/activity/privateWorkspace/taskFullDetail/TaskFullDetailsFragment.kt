@@ -1,4 +1,4 @@
-package com.example.simplydo.ui.fragments.todoListFullDetails
+package com.example.simplydo.ui.activity.privateWorkspace.taskFullDetail
 
 import android.content.Context
 import android.content.Intent
@@ -20,16 +20,15 @@ import com.example.simplydo.adapters.taskAttachmentAdapter.AttachmentAudioAdapte
 import com.example.simplydo.adapters.taskAttachmentAdapter.AttachmentContactAdapter
 import com.example.simplydo.adapters.taskAttachmentAdapter.AttachmentGalleryAdapter
 import com.example.simplydo.adapters.taskAttachmentAdapter.AttachmentTodoTaskAdapter
-import com.example.simplydo.databinding.TodoFullDetailsFragmentBinding
-import com.example.simplydo.dialog.bottomSheetDialogs.basicAddTodoDialog.EditTodoBasic
+import com.example.simplydo.databinding.TaskFullDetailsFragmentBinding
+import com.example.simplydo.dialog.bottomSheetDialogs.basicAddTodoDialog.EditWorkspaceTaskBasic
 import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.model.ContactModel
 import com.example.simplydo.model.TagModel
-import com.example.simplydo.model.TodoModel
 import com.example.simplydo.model.TodoTaskModel
+import com.example.simplydo.model.WorkspaceGroupTaskModel
 import com.example.simplydo.model.attachmentModel.AudioModel
 import com.example.simplydo.model.attachmentModel.GalleryModel
-import com.example.simplydo.ui.activity.privateWorkspace.taskFullDetail.TaskFullDetailsFragment
 import com.example.simplydo.utlis.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.SupportMapFragment
@@ -38,19 +37,18 @@ import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.chip.Chip
 
-internal val TAG = TaskFullDetailsFragment::class.java.canonicalName
 
-class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
+class TaskFullDetailsFragment : Fragment(R.layout.task_full_details_fragment) {
 
     companion object {
         fun newInstance() = TaskFullDetailsFragment()
     }
 
-    private lateinit var todoData: TodoModel
-    private lateinit var _binding: TodoFullDetailsFragmentBinding
-    private val binding: TodoFullDetailsFragmentBinding get() = _binding
+    private lateinit var todoData: WorkspaceGroupTaskModel
+    private lateinit var _binding: TaskFullDetailsFragmentBinding
+    private val binding: TaskFullDetailsFragmentBinding get() = _binding
 
-    private lateinit var viewModel: TodoFullDetailsViewModel
+    private lateinit var viewModel: TaskFullDetailsViewModel
 
     // all adapter
     private lateinit var attachmentAudioAdapter: AttachmentAudioAdapter
@@ -58,7 +56,7 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
     private lateinit var attachmentContactAdapter: AttachmentContactAdapter
     private lateinit var attachmentTodoTaskAdapter: AttachmentTodoTaskAdapter
 
-    private lateinit var observerTodoTask: Observer<TodoModel>
+    private lateinit var observerTodoTask: Observer<WorkspaceGroupTaskModel>
 
     private val attachmentTodoTaskAdapterCallback: NewTodo.TodoTask = object : NewTodo.TodoTask {
         override fun onTaskSelect(item: TodoTaskModel) {
@@ -107,17 +105,17 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
         }
     }
 
-    private val editBasicTodoInterface = object : EditBasicTodoInterface {
-        override fun onUpdateDetails(todoModel: TodoModel) {
+    private val editBasicTodoInterface = object : EditBasicWorkspaceTaskInterface {
+        override fun onUpdateDetails(todoModel: WorkspaceGroupTaskModel) {
             viewModel.updateTaskModel(todoModel)
         }
 
-        override fun onAddMoreDetails(todoModel: TodoModel) {
+        override fun onAddMoreDetails(todoModel: WorkspaceGroupTaskModel) {
             // show edit fragment
             val bundle = Bundle()
             bundle.putSerializable(AppConstant.NAVIGATION_TASK_DATA_KEY, todoModel)
             findNavController().navigate(
-                R.id.action_todoFullDetailsFragment_to_editFragment,
+                R.id.action_workspace_todoFullDetailsFragment_to_editWorkspaceTaskDetails,
                 bundle
             )
         }
@@ -129,13 +127,13 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
         savedInstanceState: Bundle?
     ): View? {
 
-        Log.i(TAG, "onCreateView: ")
+        Log.i(com.example.simplydo.ui.fragments.todoListFullDetails.TAG, "onCreateView: ")
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        _binding = TodoFullDetailsFragmentBinding.bind(view)
+        _binding = TaskFullDetailsFragmentBinding.bind(view)
 
         setupBinding()
         loadObservers()
@@ -233,11 +231,17 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
         }
         binding.buttonEdit.setOnClickListener {
 
-            Log.e(TAG, "taskType: ${todoData.taskType}")
+            Log.e(
+                com.example.simplydo.ui.fragments.todoListFullDetails.TAG,
+                "taskType: ${todoData.taskType}"
+            )
             if (todoData.taskType == AppConstant.Task.TASK_TYPE_BASIC) {
                 // show basic edit
-                EditTodoBasic.newInstance(requireContext(), editBasicTodoInterface, todoData)
-                    .show(requireActivity().supportFragmentManager, "dialog")
+                EditWorkspaceTaskBasic.newInstance(
+                    requireContext(),
+                    editBasicTodoInterface,
+                    todoData
+                ).show(requireActivity().supportFragmentManager, "dialog")
             }
 
 
@@ -246,7 +250,7 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
                 val bundle = Bundle()
                 bundle.putSerializable(AppConstant.NAVIGATION_TASK_DATA_KEY, todoData)
                 findNavController().navigate(
-                    R.id.action_todoFullDetailsFragment_to_editFragment,
+                    R.id.action_workspace_todoFullDetailsFragment_to_editWorkspaceTaskDetails,
                     bundle
                 )
             }
@@ -313,7 +317,7 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
         }
     }
 
-    private fun checkAttachment(data: TodoModel) {
+    private fun checkAttachment(data: WorkspaceGroupTaskModel) {
         if (
             data.audioAttachments.isEmpty() &&
             data.galleryAttachments.isEmpty() &&
@@ -326,7 +330,8 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
         }
     }
 
-    private fun getTodoData(dtId: Long): TodoModel {
+    private fun getTodoData(dtId: Long): WorkspaceGroupTaskModel {
+
         return viewModel.getTodoDataById(dtId = dtId)
     }
 
@@ -338,7 +343,7 @@ class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
                 requireContext(),
                 appRepository,
             )
-        )[TodoFullDetailsViewModel::class.java]
+        )[TaskFullDetailsViewModel::class.java]
 
         attachmentAudioAdapter =
             AttachmentAudioAdapter(audioAttachmentInterface = audioAttachmentInterface)

@@ -7,11 +7,13 @@ import com.example.simplydo.databinding.RecyclerTaskStatusHeaderBinding
 import com.example.simplydo.databinding.RecyclerTodoWorkspaceListItemBinding
 import com.example.simplydo.model.GroupTaskByProgressModel
 import com.example.simplydo.model.WorkspaceGroupTaskModel
+import com.example.simplydo.utlis.AppInterface
 
 internal const val ITEM_VIEW_HEADER = 0
 internal const val ITEM_VIEW_CONTENT = 1
 
-class WorkspaceGroupTaskViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class WorkspaceGroupTaskViewAdapter(private val callback: AppInterface.WorkspaceGroupTask.Task) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var dataSet: ArrayList<GroupTaskByProgressModel> = arrayListOf()
 
@@ -41,7 +43,12 @@ class WorkspaceGroupTaskViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHold
                     (holder as TodoViewHolder).apply {
                         bind(this@run)
                     }
+                    holder.itemView.setOnClickListener {
+                        callback.onTaskSelected(this@run)
+                    }
                 }
+
+
             }
         }
     }
@@ -57,6 +64,8 @@ class WorkspaceGroupTaskViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHold
                         false
                     )
                 )
+
+
             }
             ITEM_VIEW_HEADER -> {
                 TodoViewHeaderHolder(

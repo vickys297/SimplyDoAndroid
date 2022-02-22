@@ -23,10 +23,25 @@
             app:exitAnim="@android:anim/slide_out_right"
             app:popEnterAnim="@android:anim/fade_in"
             app:popExitAnim="@android:anim/fade_out" />
+        <action
+            android:id="@+id/action_workspace_workspaceGroupTaskViewFragment_to_todoFullDetailsFragment"
+            app:destination="@id/todoFullDetailsFragment" />
     </fragment>
     <fragment
         android:id="@+id/addNewTodo"
         android:name="com.example.simplydo.ui.fragments.addOrEditTodoTask.AddNewTodo"
         android:label="AddNewTodo" />
+    <fragment
+        android:id="@+id/todoFullDetailsFragment"
+        android:name="com.example.simplydo.ui.activity.privateWorkspace.taskFullDetail.TaskFullDetailsFragment"
+        android:label="TodoFullDetailsFragment" >
+        <action
+            android:id="@+id/action_workspace_todoFullDetailsFragment_to_editWorkspaceTaskDetails"
+            app:destination="@id/editWorkspaceTaskDetails" />
+    </fragment>
+    <fragment
+        android:id="@+id/editWorkspaceTaskDetails"
+        android:name="com.example.simplydo.ui.activity.privateWorkspace.editTaskDetails.EditWorkspaceTaskDetails"
+        android:label="EditWorkspaceTaskDetails" />
 
 </navigation>

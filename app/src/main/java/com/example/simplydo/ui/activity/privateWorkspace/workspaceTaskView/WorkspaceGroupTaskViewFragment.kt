@@ -16,10 +16,7 @@ import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.model.GroupTaskByProgressModel
 import com.example.simplydo.model.WorkspaceGroupTaskModel
 import com.example.simplydo.model.entity.WorkspaceGroupModel
-import com.example.simplydo.utlis.AppConstant
-import com.example.simplydo.utlis.AppFunctions
-import com.example.simplydo.utlis.AppRepository
-import com.example.simplydo.utlis.ViewModelFactory
+import com.example.simplydo.utlis.*
 
 internal val TAG = WorkspaceGroupTaskViewFragment::class.java.canonicalName
 class WorkspaceGroupTaskViewFragment : Fragment(R.layout.workspace_group_task_fragment) {
@@ -28,6 +25,20 @@ class WorkspaceGroupTaskViewFragment : Fragment(R.layout.workspace_group_task_fr
         fun newInstance() = WorkspaceGroupTaskViewFragment()
     }
 
+    private val taskCallback = object : AppInterface.WorkspaceGroupTask.Task {
+        override fun onTaskSelected(content: WorkspaceGroupTaskModel) {
+            val bundle = Bundle()
+            bundle.putLong(AppConstant.NAVIGATION_TASK_KEY, content.dtId)
+            findNavController().navigate(
+                R.id.action_workspace_workspaceGroupTaskViewFragment_to_todoFullDetailsFragment,
+                bundle
+            )
+        }
+
+        override fun onTaskDeleted() {
+        }
+
+    }
     private lateinit var observerWorkspaceGroupTaskArrayList: Observer<ArrayList<WorkspaceGroupTaskModel>>
 
     private lateinit var viewModel: WorkspaceGroupTaskViewModel
@@ -49,7 +60,7 @@ class WorkspaceGroupTaskViewFragment : Fragment(R.layout.workspace_group_task_fr
         binding.textViewHeader1.text = groupData.name
         binding.textViewCardTitle.text = groupData.description
 
-        workspaceGroupTaskViewAdapter = WorkspaceGroupTaskViewAdapter()
+        workspaceGroupTaskViewAdapter = WorkspaceGroupTaskViewAdapter(callback = taskCallback)
 
         binding.recyclerViewGroupTask.apply {
             layoutManager =

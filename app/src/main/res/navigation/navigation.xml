@@ -173,7 +173,7 @@
     </fragment>
     <fragment
         android:id="@+id/todoFullDetailsFragment"
-        android:name="com.example.simplydo.ui.fragments.todoListFullDetails.TodoFullDetailsFragment"
+        android:name="com.example.simplydo.ui.activity.privateWorkspace.taskFullDetail.TaskFullDetailsFragment"
         android:label="todo_full_details_fragment"
         tools:layout="@layout/todo_full_details_fragment">
         <action

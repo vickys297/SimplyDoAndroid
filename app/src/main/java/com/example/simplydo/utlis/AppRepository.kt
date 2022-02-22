@@ -455,6 +455,18 @@ class AppRepository private constructor(
         return workspaceGroupTaskDb.getAllWorkspaceGroupTask(groupTaskId) as ArrayList
     }
 
+    fun getWorkspaceTaskByTaskId(dtId: Long): WorkspaceGroupTaskModel {
+        return Executors.newSingleThreadExecutor().submit(Callable {
+            workspaceGroupTaskDb.getWorkspaceGroupTaskById(dtId)
+        }).get()
+    }
+
+    fun updateWorkspaceTaskData(workspaceGroupTaskModel: WorkspaceGroupTaskModel): Int {
+        return Executors.newSingleThreadExecutor().submit(Callable {
+            workspaceGroupTaskDb.updateWorkspaceTaskData(workspaceGroupTaskModel)
+        }).get()
+    }
+
 
 }
 

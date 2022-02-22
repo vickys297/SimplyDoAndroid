@@ -23,6 +23,11 @@ interface EditBasicTodoInterface {
     fun onAddMoreDetails(todoModel: TodoModel)
 }
 
+interface EditBasicWorkspaceTaskInterface {
+    fun onUpdateDetails(todoModel: WorkspaceGroupTaskModel)
+    fun onAddMoreDetails(todoModel: WorkspaceGroupTaskModel)
+}
+
 interface CalenderAdapterInterface {
     fun onDateSelect(layoutPosition: Int, smallCalenderModel: SmallCalenderModel)
 }
@@ -190,6 +195,13 @@ interface AppInterface {
 
         interface CreateWorkspaceDialog {
             fun onCreateNewWorkspace()
+        }
+    }
+
+    interface WorkspaceGroupTask {
+        interface Task {
+            fun onTaskSelected(content: WorkspaceGroupTaskModel)
+            fun onTaskDeleted()
         }
     }
 
