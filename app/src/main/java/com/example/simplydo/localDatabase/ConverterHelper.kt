@@ -133,13 +133,13 @@ class ConverterHelper {
 
 
     @TypeConverter
-    fun fromUserModel(list: ArrayList<UserModel>): String {
+    fun fromUserModel(list: ArrayList<AccountModel>): String {
         return gson.toJson(list)
     }
 
     @TypeConverter
-    fun toUserModel(json: String): ArrayList<UserModel> {
-        return gson.fromJson(json, object : TypeToken<ArrayList<UserModel>>() {}.type)
+    fun toUserModel(json: String): ArrayList<AccountModel> {
+        return gson.fromJson(json, object : TypeToken<ArrayList<AccountModel>>() {}.type)
     }
 
     @TypeConverter

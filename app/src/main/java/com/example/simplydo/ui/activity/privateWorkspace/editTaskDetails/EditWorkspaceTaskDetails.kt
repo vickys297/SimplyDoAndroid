@@ -188,23 +188,23 @@ class EditWorkspaceTaskDetails : Fragment(R.layout.edit_task_fragment),
 
     private var addAttachmentInterface: AddAttachmentInterface = object : AddAttachmentInterface {
         override fun onAddDocument() {
-            findNavController().navigate(R.id.action_editFragment_to_documentListFragment)
+            findNavController().navigate(R.id.action_workspace_editWorkspaceTaskDetails_to_fileListFragment)
         }
 
         override fun onAddAudio() {
-            findNavController().navigate(R.id.action_editFragment_to_audioListFragment)
+            findNavController().navigate(R.id.action_workspace_editWorkspaceTaskDetails_to_audioListFragment)
         }
 
         override fun onOpenGallery() {
-            findNavController().navigate(R.id.action_editFragment_to_galleryListFragment)
+            findNavController().navigate(R.id.action_workspace_editWorkspaceTaskDetails_to_galleryListFragment)
         }
 
         override fun onAddContact() {
-            findNavController().navigate(R.id.action_editFragment_to_contactsFragment)
+            findNavController().navigate(R.id.action_workspace_editWorkspaceTaskDetails_to_contactsFragment)
         }
 
         override fun onAddLocation() {
-            findNavController().navigate(R.id.action_editFragment_to_mapsFragment)
+            findNavController().navigate(R.id.action_workspace_editWorkspaceTaskDetails_to_mapsFragment)
         }
 
         override fun onCancelTask() {

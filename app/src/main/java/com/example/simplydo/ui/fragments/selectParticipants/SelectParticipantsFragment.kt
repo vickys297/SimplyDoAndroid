@@ -12,7 +12,7 @@ import com.example.simplydo.adapters.workspace.ParticipantsAdapter
 import com.example.simplydo.databinding.SelectParticipantsFragmentBinding
 import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.model.UserAccountModel
-import com.example.simplydo.model.UserModel
+import com.example.simplydo.model.AccountModel
 import com.example.simplydo.utlis.AppConstant
 import com.example.simplydo.utlis.AppRepository
 import com.example.simplydo.utlis.ParticipantInterface
@@ -29,7 +29,7 @@ class SelectParticipantsFragment : Fragment(R.layout.select_participants_fragmen
     private lateinit var viewModel: SelectParticipantsViewModel
     private lateinit var binding: SelectParticipantsFragmentBinding
     private lateinit var participantsAdapter: ParticipantsAdapter
-    private lateinit var observerParticipantData: Observer<ArrayList<UserModel>>
+    private lateinit var observerParticipantData: Observer<ArrayList<AccountModel>>
     private val participantsList: ArrayList<UserAccountModel> = arrayListOf()
 
 
@@ -81,7 +81,7 @@ class SelectParticipantsFragment : Fragment(R.layout.select_participants_fragmen
                 for (item in it) {
                     dataset.add(
                         UserAccountModel(
-                            user = item,
+                            account = item,
                             role = arrayListOf()
                         )
                     )

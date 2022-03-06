@@ -99,7 +99,7 @@ class AppRepository private constructor(
 
             override fun onFailure(call: Call<CommonResponseModel>, t: Throwable) {
                 if (t is NoConnectivityException) {
-                    // show No Connectivity message to user or do whatever you want.
+                    // show No Connectivity message to account or do whatever you want.
                     noNetworkMessage.postValue("No network connection")
                 }
             }
@@ -433,16 +433,16 @@ class AppRepository private constructor(
         return
     }
 
-    fun getParticipatesFromWorkspace(): ArrayList<UserModel> {
-        return workspaceDb.getUserFromWorkspace().users
+    fun getParticipatesFromWorkspace(): ArrayList<AccountModel> {
+        return workspaceDb.getUserFromWorkspace().accounts
     }
 
     fun insertNewWorkspaceGroup(newGroup: WorkspaceGroupModel) {
         workspaceGroupDb.insertNewWorkspaceGroup(newGroup)
     }
 
-    fun getWorkspaceGroup(): ArrayList<WorkspaceGroupModel> {
-        return workspaceGroupDb.getAllWorkSpaceGroups() as ArrayList
+    fun getWorkspaceGroup(workspaceID: Long): ArrayList<WorkspaceGroupModel> {
+        return workspaceGroupDb.getWorkSpaceGroupById(workspaceID) as ArrayList
     }
 
     fun createWorkspaceGroup(dataset: ArrayList<WorkspaceGroupModel>) {

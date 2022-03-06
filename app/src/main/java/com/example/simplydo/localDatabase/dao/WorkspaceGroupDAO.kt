@@ -12,8 +12,8 @@ interface WorkspaceGroupDAO {
     @Query("SELECT * FROM workspaceGroups")
     fun getAllWorkSpaceGroups(): List<WorkspaceGroupModel>
 
-    @Query("SELECT * FROM workspaceGroups WHERE gId = :gid")
-    fun getWorkSpaceGroupById(gid: Long): List<WorkspaceGroupModel>
+    @Query("SELECT * FROM workspaceGroups WHERE workspaceID = :workspaceID")
+    fun getWorkSpaceGroupById(workspaceID: Long): List<WorkspaceGroupModel>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertNewWorkspaceGroup(workspaceGroupModel: WorkspaceGroupModel): Long

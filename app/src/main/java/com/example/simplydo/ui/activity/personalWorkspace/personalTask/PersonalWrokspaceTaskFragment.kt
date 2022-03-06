@@ -1,6 +1,5 @@
 package com.example.simplydo.ui.activity.personalWorkspace.personalTask
 
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.Html
@@ -31,7 +30,6 @@ import com.example.simplydo.dialog.bottomSheetDialogs.workspaceDialog.WorkspaceS
 import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.model.CommonResponseModel
 import com.example.simplydo.model.TodoModel
-import com.example.simplydo.ui.activity.settings.SettingsActivity
 import com.example.simplydo.utlis.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -181,7 +179,7 @@ class QuickTodoFragment : Fragment(R.layout.fragment_quick_todo), View.OnClickLi
         }
 
         override fun onSettingsClicked() {
-            findNavController().navigate(R.id.action_toDoFragment_to_accounts)
+            findNavController().navigate(R.id.action_toDoFragment_to_mySettingActivity)
         }
 
     }
@@ -376,8 +374,9 @@ class QuickTodoFragment : Fragment(R.layout.fragment_quick_todo), View.OnClickLi
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menuSettings -> {
-                val intent = Intent(requireContext(), SettingsActivity::class.java)
-                requireContext().startActivity(intent)
+                findNavController().navigate(R.id.action_toDoFragment_to_mySettingActivity)
+//                val intent = Intent(requireContext(), SettingsActivity::class.java)
+//                requireContext().startActivity(intent)
             }
         }
         return super.onOptionsItemSelected(item)

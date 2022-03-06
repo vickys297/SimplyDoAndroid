@@ -9,9 +9,10 @@ import com.example.simplydo.ui.activity.personalWorkspace.PersonalWorkspaceViewM
 import com.example.simplydo.ui.activity.personalWorkspace.personalTask.QuickTodoViewModel
 import com.example.simplydo.ui.activity.privateWorkspace.createWorkspace.CreateWorkspaceViewModel
 import com.example.simplydo.ui.activity.privateWorkspace.editTaskDetails.EditWorkspaceTaskViewModel
-import com.example.simplydo.ui.activity.privateWorkspace.taskFullDetail.TaskFullDetailsViewModel
 import com.example.simplydo.ui.activity.privateWorkspace.workspaceGroupView.WorkspaceGroupViewViewModel
+import com.example.simplydo.ui.activity.privateWorkspace.workspaceTaskListFullDetails.WorkspaceTaskFullDetailsViewModel
 import com.example.simplydo.ui.activity.privateWorkspace.workspaceTaskView.WorkspaceGroupTaskViewModel
+import com.example.simplydo.ui.fragments.accounts.myAccount.MyAccountsViewModel
 import com.example.simplydo.ui.fragments.accounts.switchAccount.MyWorkspaceViewModel
 import com.example.simplydo.ui.fragments.addOrEditTodoTask.AddNewTodoViewModel
 import com.example.simplydo.ui.fragments.attachmentsFragments.contacts.ContactsViewModel
@@ -19,7 +20,8 @@ import com.example.simplydo.ui.fragments.attachmentsFragments.gallery.GalleryLis
 import com.example.simplydo.ui.fragments.calender.CalenderViewModel
 import com.example.simplydo.ui.fragments.otherTodoFragments.OtherTodoViewModel
 import com.example.simplydo.ui.fragments.selectParticipants.SelectParticipantsViewModel
-import com.example.simplydo.ui.fragments.workspace.CreateNewWorkspaceGroupViewModel
+import com.example.simplydo.ui.fragments.todoListFullDetails.TodoFullDetailsViewModel
+import com.example.simplydo.ui.activity.privateWorkspace.createWorkspaceGroup.CreateNewWorkspaceGroupViewModel
 
 open class ViewModelFactory internal constructor(
     private val context: Context,
@@ -53,10 +55,6 @@ open class ViewModelFactory internal constructor(
                 PersonalWorkspaceViewModel(appRepository) as T
             }
 
-            TaskFullDetailsViewModel::class.java.canonicalName -> {
-                TaskFullDetailsViewModel(appRepository) as T
-            }
-
             TagsBottomSheetDialogViewModel::class.java.canonicalName -> {
                 TagsBottomSheetDialogViewModel(appRepository) as T
             }
@@ -84,12 +82,20 @@ open class ViewModelFactory internal constructor(
                 WorkspaceSwitchBottomSheetDialogViewModel(appRepository) as T
             }
 
-            TaskFullDetailsViewModel::class.java.canonicalName -> {
-                TaskFullDetailsViewModel(appRepository) as T
+            TodoFullDetailsViewModel::class.java.canonicalName -> {
+                TodoFullDetailsViewModel(appRepository) as T
+            }
+
+            WorkspaceTaskFullDetailsViewModel::class.java.canonicalName -> {
+                WorkspaceTaskFullDetailsViewModel(appRepository) as T
             }
 
             EditWorkspaceTaskViewModel::class.java.canonicalName -> {
                 EditWorkspaceTaskViewModel(appRepository) as T
+            }
+
+            MyAccountsViewModel::class.java.canonicalName->{
+                MyAccountsViewModel(appRepository) as T
             }
             else -> {
                 throw IllegalArgumentException("ViewModel not found")

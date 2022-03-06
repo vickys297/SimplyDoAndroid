@@ -15,10 +15,7 @@ import com.example.simplydo.databinding.GroupViewFragmentBinding
 import com.example.simplydo.dialog.bottomSheetDialogs.workspaceDialog.WorkspaceSwitchBottomSheetDialog
 import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.model.entity.WorkspaceGroupModel
-import com.example.simplydo.utlis.AppConstant
-import com.example.simplydo.utlis.AppInterface
-import com.example.simplydo.utlis.AppRepository
-import com.example.simplydo.utlis.ViewModelFactory
+import com.example.simplydo.utlis.*
 
 internal val TAG = WorkspaceGroupViewFragment::class.java.canonicalName
 
@@ -33,6 +30,7 @@ class WorkspaceGroupViewFragment : Fragment(R.layout.group_view_fragment) {
     private lateinit var binding: GroupViewFragmentBinding
     private lateinit var groupViewAdapter: WorkspaceGroupViewAdapter
     private lateinit var workspaceSwitchBottomSheetDialog: WorkspaceSwitchBottomSheetDialog
+    private var workspaceID: Long = -1
 
 
     private var taskCount = 0
@@ -65,7 +63,13 @@ class WorkspaceGroupViewFragment : Fragment(R.layout.group_view_fragment) {
 
         setupViewModel()
         setupObserver()
-        viewModelWorkspace.getWorkspaceGroup()
+        workspaceID = AppPreference.getPreferences(
+            AppConstant.Preferences.CURRENT_ACTIVE_WORKSPACE,
+            -1L,
+            requireContext()
+        )
+
+        viewModelWorkspace.getWorkspaceGroup(workspaceID)
 
 
         val accentText = "<font color='#6200EE'>Workspace</font>"
@@ -83,7 +87,12 @@ class WorkspaceGroupViewFragment : Fragment(R.layout.group_view_fragment) {
         binding.textViewParticipants.text = String.format("%d groups created", taskCount)
 
         binding.buttonCreateGroup.setOnClickListener {
-            findNavController().navigate(R.id.action_groupViewFragment_to_createNewWorkspaceGroupFragment)
+            val bundle = Bundle()
+            bundle.putLong(AppConstant.Key.NAVIGATION_WORKSPACE_ID, workspaceID)
+            findNavController().navigate(
+                R.id.action_workspace_workspaceGroupViewFragment_to_createNewWorkspaceGroupFragment,
+                bundle
+            )
         }
         binding.switchWorkspace.setOnClickListener {
             workspaceSwitchBottomSheetDialog.show(

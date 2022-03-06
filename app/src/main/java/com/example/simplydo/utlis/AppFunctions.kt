@@ -27,6 +27,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
+
 object AppFunctions {
 
     object Priority {
@@ -206,7 +207,7 @@ object AppFunctions {
     }
 
     @WorkerThread
-    fun setNotificationTrigger(
+    private fun setNotificationTrigger(
         activity: Activity,
         dtId: String,
         eventTime: Long,
@@ -222,10 +223,10 @@ object AppFunctions {
             activity,
             dtId.toInt(),
             intent,
-            PendingIntent.FLAG_CANCEL_CURRENT
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
         alarmManager.setExactAndAllowWhileIdle(
-            AlarmManager.ELAPSED_REALTIME_WAKEUP, eventTime, pendingIntent
+            AlarmManager.RTC_WAKEUP, eventTime, pendingIntent
         )
     }
 
@@ -250,7 +251,7 @@ object AppFunctions {
             activity,
             dtId.toInt(),
             intent,
-            PendingIntent.FLAG_CANCEL_CURRENT
+            0
         ) //the same as up
         val alarmManager = activity.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarmManager.cancel(pendingIntent)
@@ -367,8 +368,20 @@ object AppFunctions {
         taskTime.timeInMillis = eventDateTime
 
         // alert when this is the future task
+
+        Log.e(
+            TAG,
+            "setupNotification: ${
+                String.format(
+                    "%s : %s :%s",
+                    taskTime.get(Calendar.HOUR_OF_DAY),
+                    taskTime.get(Calendar.MINUTE),
+                    taskTime.get(Calendar.SECOND)
+                )
+            }",
+        )
         when {
-            currentTime.timeInMillis < taskTime.timeInMillis -> {
+            currentTime.timeInMillis > taskTime.timeInMillis -> {
 
                 taskTime.set(Calendar.HOUR_OF_DAY, 7)
                 taskTime.set(Calendar.MINUTE, 0)
@@ -380,7 +393,7 @@ object AppFunctions {
                     taskId.toString(),
                     taskTime.timeInMillis,
                     bundle,
-                    AppConstant.ALERT_TYPE_SILENT
+                    AppConstant.ALERT_TYPE_NOTIFY
                 )
 
                 val isEnabled = checkHasNotificationEnabled(
@@ -395,14 +408,14 @@ object AppFunctions {
             }
 
             // alert when this is the future task
-            currentTime.timeInMillis > taskTime.timeInMillis -> {
+            currentTime.timeInMillis < taskTime.timeInMillis -> {
                 taskTime.set(Calendar.MILLISECOND, 0)
                 setNotificationTrigger(
                     activity,
                     taskId.toString(),
                     taskTime.timeInMillis,
                     bundle,
-                    AppConstant.ALERT_TYPE_SILENT
+                    AppConstant.ALERT_TYPE_NOTIFY
                 )
 
                 val isEnabled = checkHasNotificationEnabled(

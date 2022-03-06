@@ -2,7 +2,7 @@ package com.example.simplydo.model
 
 import java.io.Serializable
 
-data class UserModel(
+data class AccountModel(
     val profilePicture: String = "https://picsum.photos/200",
     val firstName: String,
     var middleName: String? = null,
@@ -10,7 +10,8 @@ data class UserModel(
     val email: String,
     val phone: String,
     val uKey: String,
-):Serializable {
+    val title: String =""
+) : Serializable {
     fun getUserName(): String {
         return String.format(
             "%s %s", firstName, if (!middleName.isNullOrEmpty()) {

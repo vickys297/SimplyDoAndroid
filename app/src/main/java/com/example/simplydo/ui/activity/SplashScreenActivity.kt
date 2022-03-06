@@ -113,7 +113,7 @@ class SplashScreenActivity : AppCompatActivity() {
             }
             override fun onFailure(call: Call<TokenResponse?>?, t: Throwable?) {
                 if (t is NoConnectivityException) {
-                    // show No Connectivity message to user or do whatever you want.
+                    // show No Connectivity message to account or do whatever you want.
                     showNoNetworkMessage()
                 }
             }

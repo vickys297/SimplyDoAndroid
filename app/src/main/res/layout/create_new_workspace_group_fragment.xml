@@ -7,14 +7,14 @@
 
         <variable
             name="viewModel"
-            type="com.example.simplydo.ui.fragments.workspace.CreateNewWorkspaceGroupViewModel" />
+            type="com.example.simplydo.ui.activity.privateWorkspace.createWorkspaceGroup.CreateNewWorkspaceGroupViewModel" />
 
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.fragments.workspace.CreateNewWorkspaceGroupFragment">
+        tools:context=".ui.activity.privateWorkspace.createWorkspaceGroup.CreateNewWorkspaceGroupFragment">
 
         <TextView
             android:id="@+id/textView47"

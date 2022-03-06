@@ -15,7 +15,6 @@ class WorkspaceAdapter(private val linkedAccounts: ArrayList<LinkedWorkspaceData
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: LinkedWorkspaceDataModel): RecyclerAccountListItemBinding {
             return binding.apply {
-                accountModel = item
                 executePendingBindings()
             }
         }

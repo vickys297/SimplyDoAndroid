@@ -30,7 +30,7 @@ class WorkspaceGroupTaskViewFragment : Fragment(R.layout.workspace_group_task_fr
             val bundle = Bundle()
             bundle.putLong(AppConstant.NAVIGATION_TASK_KEY, content.dtId)
             findNavController().navigate(
-                R.id.action_workspace_workspaceGroupTaskViewFragment_to_todoFullDetailsFragment,
+                R.id.action_workspace_workspaceGroupTaskViewFragment_to_privateTaskFullDetailsFragment,
                 bundle
             )
         }

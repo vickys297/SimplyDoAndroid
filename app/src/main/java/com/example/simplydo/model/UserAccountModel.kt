@@ -5,7 +5,7 @@ import java.io.Serializable
 
 data class UserAccountModel(
 
-    val user: UserModel,
+    val account: AccountModel,
 
     @Ignore
     var selected: Boolean = false,

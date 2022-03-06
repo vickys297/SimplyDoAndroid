@@ -31,13 +31,13 @@ fun NotificationManager.sendNotification(
     }
 
     // When creating your Intent, you need to take into account the back state, i.e., what
-    // happens after your Activity launches and the user presses the back button.
+    // happens after your Activity launches and the account presses the back button.
 
     // There are two options:
     //      1. Regular activity - You're starting an Activity that's part of the application's
     //      normal workflow.
 
-    //      2. Special activity - The user only sees this Activity if it's started from a
+    //      2. Special activity - The account only sees this Activity if it's started from a
     //      notification. In a sense, the Activity extends the notification by providing
     //      information that would be hard to display in the notification itself.
 

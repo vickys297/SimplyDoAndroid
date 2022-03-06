@@ -29,7 +29,6 @@ import com.example.simplydo.model.TodoModel
 import com.example.simplydo.model.TodoTaskModel
 import com.example.simplydo.model.attachmentModel.AudioModel
 import com.example.simplydo.model.attachmentModel.GalleryModel
-import com.example.simplydo.ui.activity.privateWorkspace.taskFullDetail.TaskFullDetailsFragment
 import com.example.simplydo.utlis.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.SupportMapFragment
@@ -38,12 +37,12 @@ import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.chip.Chip
 
-internal val TAG = TaskFullDetailsFragment::class.java.canonicalName
+internal val TAG = TodoFullDetailsFragment::class.java.canonicalName
 
 class TodoFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
 
     companion object {
-        fun newInstance() = TaskFullDetailsFragment()
+        fun newInstance() = TodoFullDetailsFragment()
     }
 
     private lateinit var todoData: TodoModel

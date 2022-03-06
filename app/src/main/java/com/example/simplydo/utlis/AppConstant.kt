@@ -173,10 +173,10 @@ object AppConstant {
     const val NOTIFICATION_TASK_NEW: Int = 1000
     const val NOTIFICATION_TASK_DAILY_REMAINDER: Int = 1001
 
-    // Silent alert user about the upcoming task
+    // Silent alert account about the upcoming task
     const val ALERT_TYPE_SILENT: Int = 15
 
-    // Alert user show notification at the task event date time
+    // Alert account show notification at the task event date time
     const val ALERT_TYPE_NOTIFY: Int = 11
 
     const val ACTION_COMPLETE: String = "action_task_complete"

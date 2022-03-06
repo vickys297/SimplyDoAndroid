@@ -22,7 +22,7 @@ data class WorkspaceModel(
     val moreDetails: String,
     val createdAt: Long = System.currentTimeMillis(),
     val createdBy: UserIdModel,
-    val users: ArrayList<UserModel>
+    val accounts: ArrayList<AccountModel>
 ) : Serializable {
 
 }
@@ -50,7 +50,7 @@ data class WorkspaceGroupsCollectionModel(
 }
 
 data class UserIdModel(
-    val admin: UserModel
+    val admin: AccountModel
 ) : Serializable
 
 

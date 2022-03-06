@@ -1,4 +1,4 @@
-package com.example.simplydo.ui.fragments.workspace
+package com.example.simplydo.ui.activity.privateWorkspace.createWorkspaceGroup
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

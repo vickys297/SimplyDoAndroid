@@ -143,12 +143,12 @@ class PersonalWorkspaceActivity : AppCompatActivity() {
                             AppPreference.getPreferences(
                                 AppConstant.Preferences.USER_DATA,
                                 this@PersonalWorkspaceActivity
-                            ), UserModel::class.java
+                            ), AccountModel::class.java
                         )
                     ),
                     people = arrayListOf(
                         UserAccountModel(
-                            user = UserModel(
+                            account = AccountModel(
                                 firstName = "Vignesh",
                                 middleName = "",
                                 lastName = "Selvam",
@@ -160,7 +160,7 @@ class PersonalWorkspaceActivity : AppCompatActivity() {
                             role = arrayListOf()
                         ),
                         UserAccountModel(
-                            user = UserModel(
+                            account = AccountModel(
                                 firstName = "Sandeep",
                                 middleName = "",
                                 lastName = "Selvam",
@@ -171,7 +171,7 @@ class PersonalWorkspaceActivity : AppCompatActivity() {
                             ),
                             role = arrayListOf()
                         ), UserAccountModel(
-                            user = UserModel(
+                            account = AccountModel(
                                 firstName = "Vignesh",
                                 middleName = "",
                                 lastName = "Selvam",
@@ -183,7 +183,7 @@ class PersonalWorkspaceActivity : AppCompatActivity() {
                             role = arrayListOf()
                         ),
                         UserAccountModel(
-                            user = UserModel(
+                            account = AccountModel(
                                 firstName = "Sandeep",
                                 middleName = "",
                                 lastName = "Selvam",
@@ -208,7 +208,7 @@ class PersonalWorkspaceActivity : AppCompatActivity() {
                 id = "1234",
                 period = "Yearly",
                 price = "169.00",
-                textDescription = "Recommended by most of users",
+                textDescription = "Recommended by most of accounts",
                 trailPeriodText = "30 days Free Trail",
                 trialPeriod = 30,
                 priority = true,
@@ -244,7 +244,7 @@ class PersonalWorkspaceActivity : AppCompatActivity() {
             8927576298374326462L,
             this@PersonalWorkspaceActivity
         )
-        val userModel = UserModel(
+        val userModel = AccountModel(
             firstName = "Vignesh",
             middleName = "",
             lastName = "Selvam",
@@ -271,7 +271,7 @@ class PersonalWorkspaceActivity : AppCompatActivity() {
             title = "Personal Workspace",
             moreDetails = "",
             createdBy = UserIdModel(userModel),
-            users = arrayListOf()
+            accounts = arrayListOf()
         )
 
         AppPreference.storePreferences(
@@ -287,29 +287,29 @@ class PersonalWorkspaceActivity : AppCompatActivity() {
             title = "Simply Do",
             moreDetails = "",
             createdBy = UserIdModel(userModel),
-            users = arrayListOf(
-                UserModel(
+            accounts = arrayListOf(
+                AccountModel(
                     firstName = "Vignesh",
                     lastName = "Selvam",
                     email = "vignesh297@gmail.com",
                     phone = "8012215105",
                     uKey = "1000001"
                 ),
-                UserModel(
+                AccountModel(
                     firstName = "Sandeep",
                     lastName = "Selvam",
                     email = "sandeep@test.com",
                     phone = "9876543210",
                     uKey = "1000002"
                 ),
-                UserModel(
+                AccountModel(
                     firstName = "Ram",
                     lastName = "",
                     email = "ram@gmail.com",
                     phone = "9876543211",
                     uKey = "1000003"
                 ),
-                UserModel(
+                AccountModel(
                     firstName = "Joe",
                     lastName = "",
                     email = "joe@gmail.com",
@@ -333,7 +333,7 @@ class PersonalWorkspaceActivity : AppCompatActivity() {
 
     private fun createPersonalWorkspace() {
         val defaultPersonalWorkspace = PersonalWorkspaceModel(
-            admin = UserModel(
+            admin = AccountModel(
                 firstName = "Vignesh",
                 middleName = "",
                 lastName = "Selvam",

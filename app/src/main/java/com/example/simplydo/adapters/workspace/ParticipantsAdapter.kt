@@ -57,7 +57,7 @@ class ParticipantsAdapter(
 
                 Glide
                     .with(bind.root)
-                    .load(item.user.profilePicture)
+                    .load(item.account.profilePicture)
                     .centerCrop()
                     .into(bind.profileImageView)
             }

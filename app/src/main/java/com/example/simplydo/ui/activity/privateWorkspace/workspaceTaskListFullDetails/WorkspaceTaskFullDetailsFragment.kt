@@ -1,4 +1,4 @@
-package com.example.simplydo.ui.activity.privateWorkspace.taskFullDetail
+package com.example.simplydo.ui.activity.privateWorkspace.workspaceTaskListFullDetails
 
 import android.content.Context
 import android.content.Intent
@@ -20,7 +20,7 @@ import com.example.simplydo.adapters.taskAttachmentAdapter.AttachmentAudioAdapte
 import com.example.simplydo.adapters.taskAttachmentAdapter.AttachmentContactAdapter
 import com.example.simplydo.adapters.taskAttachmentAdapter.AttachmentGalleryAdapter
 import com.example.simplydo.adapters.taskAttachmentAdapter.AttachmentTodoTaskAdapter
-import com.example.simplydo.databinding.TaskFullDetailsFragmentBinding
+import com.example.simplydo.databinding.TodoFullDetailsFragmentBinding
 import com.example.simplydo.dialog.bottomSheetDialogs.basicAddTodoDialog.EditWorkspaceTaskBasic
 import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.model.ContactModel
@@ -37,18 +37,17 @@ import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.chip.Chip
 
-
-class TaskFullDetailsFragment : Fragment(R.layout.task_full_details_fragment) {
+class WorkspaceTaskFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
 
     companion object {
-        fun newInstance() = TaskFullDetailsFragment()
+        fun newInstance() = WorkspaceTaskFullDetailsFragment()
     }
 
     private lateinit var todoData: WorkspaceGroupTaskModel
-    private lateinit var _binding: TaskFullDetailsFragmentBinding
-    private val binding: TaskFullDetailsFragmentBinding get() = _binding
+    private lateinit var _binding: TodoFullDetailsFragmentBinding
+    private val binding: TodoFullDetailsFragmentBinding get() = _binding
 
-    private lateinit var viewModel: TaskFullDetailsViewModel
+    private lateinit var viewModel: WorkspaceTaskFullDetailsViewModel
 
     // all adapter
     private lateinit var attachmentAudioAdapter: AttachmentAudioAdapter
@@ -115,7 +114,7 @@ class TaskFullDetailsFragment : Fragment(R.layout.task_full_details_fragment) {
             val bundle = Bundle()
             bundle.putSerializable(AppConstant.NAVIGATION_TASK_DATA_KEY, todoModel)
             findNavController().navigate(
-                R.id.action_workspace_todoFullDetailsFragment_to_editWorkspaceTaskDetails,
+                R.id.action_todoFullDetailsFragment_to_editFragment,
                 bundle
             )
         }
@@ -133,7 +132,7 @@ class TaskFullDetailsFragment : Fragment(R.layout.task_full_details_fragment) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        _binding = TaskFullDetailsFragmentBinding.bind(view)
+        _binding = TodoFullDetailsFragmentBinding.bind(view)
 
         setupBinding()
         loadObservers()
@@ -241,7 +240,8 @@ class TaskFullDetailsFragment : Fragment(R.layout.task_full_details_fragment) {
                     requireContext(),
                     editBasicTodoInterface,
                     todoData
-                ).show(requireActivity().supportFragmentManager, "dialog")
+                )
+                    .show(requireActivity().supportFragmentManager, "dialog")
             }
 
 
@@ -250,7 +250,7 @@ class TaskFullDetailsFragment : Fragment(R.layout.task_full_details_fragment) {
                 val bundle = Bundle()
                 bundle.putSerializable(AppConstant.NAVIGATION_TASK_DATA_KEY, todoData)
                 findNavController().navigate(
-                    R.id.action_workspace_todoFullDetailsFragment_to_editWorkspaceTaskDetails,
+                    R.id.action_workspace_privateTaskFullDetailsFragment2_to_editWorkspaceTaskDetails,
                     bundle
                 )
             }
@@ -331,7 +331,6 @@ class TaskFullDetailsFragment : Fragment(R.layout.task_full_details_fragment) {
     }
 
     private fun getTodoData(dtId: Long): WorkspaceGroupTaskModel {
-
         return viewModel.getTodoDataById(dtId = dtId)
     }
 
@@ -343,7 +342,7 @@ class TaskFullDetailsFragment : Fragment(R.layout.task_full_details_fragment) {
                 requireContext(),
                 appRepository,
             )
-        )[TaskFullDetailsViewModel::class.java]
+        )[WorkspaceTaskFullDetailsViewModel::class.java]
 
         attachmentAudioAdapter =
             AttachmentAudioAdapter(audioAttachmentInterface = audioAttachmentInterface)

@@ -6,7 +6,6 @@ import android.text.Html
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simplydo.R
 import com.example.simplydo.adapters.PaidPlansAdapter
@@ -56,7 +55,7 @@ class PlansFragment : Fragment(R.layout.plans_fragment) {
         }
 
         binding.buttonContinueToPayment.setOnClickListener {
-            findNavController().navigate(R.id.action_plansFragment_to_postPaymentStateFragment)
+//            findNavController().navigate(R.id.action_plansFragment_to_postPaymentStateFragment)
         }
 
         loadPaidPlan()

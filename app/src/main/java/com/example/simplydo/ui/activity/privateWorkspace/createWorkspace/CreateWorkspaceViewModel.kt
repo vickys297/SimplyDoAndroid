@@ -3,8 +3,8 @@ package com.example.simplydo.ui.activity.privateWorkspace.createWorkspace
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.simplydo.model.AccountModel
 import com.example.simplydo.model.UserIdModel
-import com.example.simplydo.model.UserModel
 import com.example.simplydo.model.WorkspaceModel
 import com.example.simplydo.utlis.AppConstant
 import com.example.simplydo.utlis.AppPreference
@@ -30,10 +30,10 @@ class CreateWorkspaceViewModel(val appRepository: AppRepository) : ViewModel() {
                     AppPreference.getPreferences(
                         AppConstant.Preferences.USER_DATA,
                         content
-                    ), UserModel::class.java
+                    ), AccountModel::class.java
                 )
             ),
-            users = ArrayList()
+            accounts = ArrayList()
         )
         viewModelScope.launch(Dispatchers.IO) {
             appRepository.createNewWorkspace(data)

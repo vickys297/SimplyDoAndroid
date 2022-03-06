@@ -1,4 +1,4 @@
-package com.example.simplydo.ui.fragments.workspace
+package com.example.simplydo.ui.activity.privateWorkspace.createWorkspaceGroup
 
 import android.os.Bundle
 import android.view.View
@@ -10,9 +10,9 @@ import com.example.simplydo.R
 import com.example.simplydo.adapters.workspace.ParticipantsAdapter
 import com.example.simplydo.databinding.CreateNewWorkspaceGroupFragmentBinding
 import com.example.simplydo.localDatabase.AppDatabase
+import com.example.simplydo.model.AccountModel
 import com.example.simplydo.model.UserAccountModel
 import com.example.simplydo.model.UserIdModel
-import com.example.simplydo.model.UserModel
 import com.example.simplydo.model.entity.WorkspaceGroupModel
 import com.example.simplydo.utlis.*
 import com.google.gson.Gson
@@ -105,7 +105,7 @@ class CreateNewWorkspaceGroupFragment : Fragment(R.layout.create_new_workspace_g
                     AppPreference.getPreferences(
                         AppConstant.Preferences.USER_DATA,
                         requireContext()
-                    ), UserModel::class.java
+                    ), AccountModel::class.java
                 )
             ),
             people = participantsList
@@ -113,6 +113,7 @@ class CreateNewWorkspaceGroupFragment : Fragment(R.layout.create_new_workspace_g
 
 
         viewModel.insertNewGroup(newGroup)
+        findNavController().navigateUp()
     }
 
 }

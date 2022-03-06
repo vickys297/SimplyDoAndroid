@@ -29,7 +29,7 @@ class AccountsFragments : Fragment(R.layout.accounts_fragment), View.OnClickList
                 R.drawable.ic_notification,
                 "Accounts",
                 "Personal, Organization accounts",
-                -1
+                R.id.action_settings_accountsFragments_to_myAccountsFragment
             )
         )
 
@@ -38,7 +38,7 @@ class AccountsFragments : Fragment(R.layout.accounts_fragment), View.OnClickList
                 R.drawable.ic_notification,
                 "Notification",
                 "Notifications, Alerts & Tasks",
-                R.id.action_accounts_to_notificationSettingsFragment
+                R.id.action_settings_accountsFragments_to_notificationSettingsFragment
             )
         )
 
@@ -109,10 +109,10 @@ class AccountsFragments : Fragment(R.layout.accounts_fragment), View.OnClickList
     override fun onClick(v: View) {
         when (v.id) {
             binding.buttonEditProfile.id -> {
-                findNavController().navigate(R.id.action_accounts_to_editProfileFragment)
+                findNavController().navigate(R.id.action_settings_accountsFragments_to_editProfileFragment)
             }
             binding.textViewSwitchAccount.id -> {
-                findNavController().navigate(R.id.action_accounts_to_myWorkspaceFragment)
+                findNavController().navigate(R.id.action_settings_accountsFragments_to_myWorkspaceFragment)
             }
         }
     }

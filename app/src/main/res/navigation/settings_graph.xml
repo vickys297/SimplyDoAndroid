@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/settings_graph"
+    app:startDestination="@id/accountsFragments">
+
+    <fragment
+        android:id="@+id/accountsFragments"
+        android:name="com.example.simplydo.ui.fragments.accounts.AccountsFragments"
+        android:label="AccountsFragments">
+        <action
+            android:id="@+id/action_settings_accountsFragments_to_myAccountsFragment"
+            app:destination="@id/myAccountsFragment" />
+        <action
+            android:id="@+id/action_settings_accountsFragments_to_notificationSettingsFragment"
+            app:destination="@id/notificationSettingsFragment" />
+        <action
+            android:id="@+id/action_settings_accountsFragments_to_editProfileFragment"
+            app:destination="@id/editProfileFragment" />
+        <action
+            android:id="@+id/action_settings_accountsFragments_to_myWorkspaceFragment"
+            app:destination="@id/myWorkspaceFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/myAccountsFragment"
+        android:name="com.example.simplydo.ui.fragments.accounts.myAccount.MyAccountsFragment"
+        android:label="MyAccountsFragment" >
+        <action
+            android:id="@+id/action_settings_myAccountsFragment_to_addAccountFragment"
+            app:destination="@id/addAccountFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/notificationSettingsFragment"
+        android:name="com.example.simplydo.ui.fragments.accounts.notifications.NotificationSettingsFragment"
+        android:label="notification_settings_fragment"
+        tools:layout="@layout/notification_settings_fragment" />
+    <fragment
+        android:id="@+id/editProfileFragment"
+        android:name="com.example.simplydo.ui.fragments.accounts.editProfile.EditProfileFragment"
+        android:label="EditProfileFragment" />
+    <fragment
+        android:id="@+id/myWorkspaceFragment"
+        android:name="com.example.simplydo.ui.fragments.accounts.linkAccount.MyWorkspaceFragment"
+        android:label="MyWorkspaceFragment" />
+    <fragment
+        android:id="@+id/addAccountFragment"
+        android:name="com.example.simplydo.ui.fragments.accounts.addAccount.AddAccountFragment"
+        android:label="add_account_fragment"
+        tools:layout="@layout/add_account_fragment" />
+</navigation>

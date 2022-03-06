@@ -49,6 +49,8 @@ class CreateWorkspaceFragment : Fragment(R.layout.create_workspace_fragment) {
                 requireContext()
             )
 
+            findNavController().navigateUp()
+
 //            findNavController().navigate(R.id.action_createWorkspaceFragment_to_plansFragment)
             /*if (AppPreference.getPreferences(
                     AppConstant.Preferences.IS_PAID_USER,

@@ -38,7 +38,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SimplyDo"
         tools:ignore="UnusedAttribute">
-
+        <activity
+            android:name=".ui.activity.settings.MySettingActivity"
+            android:exported="false" />
         <activity
             android:name=".ui.activity.SplashScreenActivity"
             android:exported="true"
@@ -75,15 +77,13 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name="com.example.simplydo.ui.activity.personalWorkspace.PersonalWorkspaceActivity"
+            android:name=".ui.activity.personalWorkspace.PersonalWorkspaceActivity"
             android:theme="@style/Theme.SimplyDo"
             android:windowSoftInputMode="adjustPan" />
-
         <activity
             android:name=".ui.activity.privateWorkspace.WorkspaceActivity"
             android:theme="@style/Theme.SimplyDo"
             android:windowSoftInputMode="adjustPan" />
-
         <activity
             android:name=".ui.activity.login.LoginActivity"
             android:theme="@style/Theme.SimplyDo"

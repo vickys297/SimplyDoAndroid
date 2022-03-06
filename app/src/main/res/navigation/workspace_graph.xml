@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/workspace_graph"
     app:startDestination="@id/workspaceGroupViewFragment">
 
@@ -11,6 +12,12 @@
         <action
             android:id="@+id/action_workspace_workspaceGroupViewFragment_to_workspaceGroupTaskViewFragment"
             app:destination="@id/workspaceGroupTaskViewFragment" />
+        <action
+            android:id="@+id/action_workspace_workspaceGroupViewFragment_to_mySettingActivity2"
+            app:destination="@id/mySettingActivity" />
+        <action
+            android:id="@+id/action_workspace_workspaceGroupViewFragment_to_createNewWorkspaceGroupFragment"
+            app:destination="@id/createNewWorkspaceGroupFragment" />
     </fragment>
     <fragment
         android:id="@+id/workspaceGroupTaskViewFragment"
@@ -24,24 +31,69 @@
             app:popEnterAnim="@android:anim/fade_in"
             app:popExitAnim="@android:anim/fade_out" />
         <action
-            android:id="@+id/action_workspace_workspaceGroupTaskViewFragment_to_todoFullDetailsFragment"
-            app:destination="@id/todoFullDetailsFragment" />
+            android:id="@+id/action_workspace_workspaceGroupTaskViewFragment_to_privateTaskFullDetailsFragment"
+            app:destination="@id/privateTaskFullDetailsFragment" />
     </fragment>
     <fragment
         android:id="@+id/addNewTodo"
         android:name="com.example.simplydo.ui.fragments.addOrEditTodoTask.AddNewTodo"
         android:label="AddNewTodo" />
     <fragment
-        android:id="@+id/todoFullDetailsFragment"
-        android:name="com.example.simplydo.ui.activity.privateWorkspace.taskFullDetail.TaskFullDetailsFragment"
-        android:label="TodoFullDetailsFragment" >
+        android:id="@+id/editWorkspaceTaskDetails"
+        android:name="com.example.simplydo.ui.activity.privateWorkspace.editTaskDetails.EditWorkspaceTaskDetails"
+        android:label="EditWorkspaceTaskDetails">
         <action
-            android:id="@+id/action_workspace_todoFullDetailsFragment_to_editWorkspaceTaskDetails"
+            android:id="@+id/action_workspace_editWorkspaceTaskDetails_to_audioListFragment"
+            app:destination="@id/audioListFragment2" />
+        <action
+            android:id="@+id/action_workspace_editWorkspaceTaskDetails_to_contactsFragment"
+            app:destination="@id/contactsFragment2" />
+        <action
+            android:id="@+id/action_workspace_editWorkspaceTaskDetails_to_mapsFragment"
+            app:destination="@id/mapsFragment2" />
+        <action
+            android:id="@+id/action_workspace_editWorkspaceTaskDetails_to_galleryListFragment"
+            app:destination="@id/galleryListFragment2" />
+        <action
+            android:id="@+id/action_workspace_editWorkspaceTaskDetails_to_fileListFragment"
+            app:destination="@id/fileListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/privateTaskFullDetailsFragment"
+        android:name="com.example.simplydo.ui.activity.privateWorkspace.workspaceTaskListFullDetails.WorkspaceTaskFullDetailsFragment"
+        android:label="PrivateTaskFullDetailsFragment">
+        <action
+            android:id="@+id/action_workspace_privateTaskFullDetailsFragment2_to_editWorkspaceTaskDetails"
             app:destination="@id/editWorkspaceTaskDetails" />
     </fragment>
     <fragment
-        android:id="@+id/editWorkspaceTaskDetails"
-        android:name="com.example.simplydo.ui.activity.privateWorkspace.editTaskDetails.EditWorkspaceTaskDetails"
-        android:label="EditWorkspaceTaskDetails" />
+        android:id="@+id/audioListFragment2"
+        android:name="com.example.simplydo.ui.fragments.attachmentsFragments.audio.AudioListFragment"
+        android:label="AudioListFragment" />
+    <fragment
+        android:id="@+id/contactsFragment2"
+        android:name="com.example.simplydo.ui.fragments.attachmentsFragments.contacts.ContactsFragment"
+        android:label="ContactsFragment" />
+    <fragment
+        android:id="@+id/mapsFragment2"
+        android:name="com.example.simplydo.ui.fragments.attachmentsFragments.map.LocationFragment"
+        android:label="MapsFragment" />
+    <fragment
+        android:id="@+id/galleryListFragment2"
+        android:name="com.example.simplydo.ui.fragments.attachmentsFragments.gallery.GalleryListFragment"
+        android:label="GalleryListFragment" />
+    <fragment
+        android:id="@+id/fileListFragment"
+        android:name="com.example.simplydo.ui.fragments.attachmentsFragments.documents.FileListFragment"
+        android:label="FileListFragment" />
+    <activity
+        android:id="@+id/mySettingActivity"
+        android:name="com.example.simplydo.ui.activity.settings.MySettingActivity"
+        android:label="activity_my_setting"
+        tools:layout="@layout/activity_my_setting" />
+    <fragment
+        android:id="@+id/createNewWorkspaceGroupFragment"
+        android:name="com.example.simplydo.ui.activity.privateWorkspace.createWorkspaceGroup.CreateNewWorkspaceGroupFragment"
+        android:label="CreateNewWorkspaceGroupFragment" />
 
 </navigation>

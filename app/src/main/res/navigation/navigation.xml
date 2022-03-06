@@ -53,8 +53,8 @@
             android:id="@+id/action_toDoFragment_to_searchTaskFragment"
             app:destination="@id/searchTaskFragment" />
         <action
-            android:id="@+id/action_toDoFragment_to_accounts"
-            app:destination="@id/accounts" />
+            android:id="@+id/action_toDoFragment_to_mySettingActivity"
+            app:destination="@id/mySettingActivity" />
         <action
             android:id="@+id/action_toDoFragment_to_createWorkspaceFragment"
             app:destination="@id/createWorkspaceFragment" />
@@ -144,7 +144,7 @@
         android:label="GalleryListFragment" />
     <fragment
         android:id="@+id/mapsFragment"
-        android:name="com.example.simplydo.ui.fragments.attachmentsFragments.map.MapsFragment"
+        android:name="com.example.simplydo.ui.fragments.attachmentsFragments.map.LocationFragment"
         android:label="fragment_maps"
         tools:layout="@layout/fragment_maps" />
     <fragment
@@ -173,7 +173,7 @@
     </fragment>
     <fragment
         android:id="@+id/todoFullDetailsFragment"
-        android:name="com.example.simplydo.ui.activity.privateWorkspace.taskFullDetail.TaskFullDetailsFragment"
+        android:name="com.example.simplydo.ui.fragments.todoListFullDetails.TodoFullDetailsFragment"
         android:label="todo_full_details_fragment"
         tools:layout="@layout/todo_full_details_fragment">
         <action
@@ -206,67 +206,9 @@
             app:destination="@id/editFragment" />
     </fragment>
     <fragment
-        android:id="@+id/accounts"
-        android:name="com.example.simplydo.ui.fragments.accounts.AccountsFragments"
-        android:label="accounts_fragment"
-        tools:layout="@layout/accounts_fragment">
-        <action
-            android:id="@+id/action_accounts_to_editProfileFragment"
-            app:destination="@id/editProfileFragment" />
-        <action
-            android:id="@+id/action_accounts_to_myWorkspaceFragment"
-            app:destination="@id/myWorkspaceFragment" />
-        <action
-            android:id="@+id/action_accounts_to_notificationSettingsFragment"
-            app:destination="@id/notificationSettingsFragment" />
-    </fragment>
-    <fragment
         android:id="@+id/imageSliderFullScreenFragment"
         android:name="com.example.simplydo.ui.fragments.fullScreenContent.ImageSliderFullScreenFragment"
         android:label="ImageSliderFullScreenFragment" />
-    <fragment
-        android:id="@+id/editProfileFragment"
-        android:name="com.example.simplydo.ui.fragments.accounts.editProfile.EditProfileFragment"
-        android:label="EditProfileFragment" />
-    <fragment
-        android:id="@+id/myWorkspaceFragment"
-        android:name="com.example.simplydo.ui.fragments.accounts.linkAccount.MyWorkspaceFragment"
-        android:label="link_account_fragment"
-        tools:layout="@layout/available_workspace_fragment">
-        <action
-            android:id="@+id/action_myWorkspaceFragment_to_createWorkspaceFragment"
-            app:destination="@id/createWorkspaceFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/notificationSettingsFragment"
-        android:name="com.example.simplydo.ui.fragments.accounts.notifications.NotificationSettingsFragment"
-        android:label="notification_settings_fragment"
-        tools:layout="@layout/notification_settings_fragment" />
-    <fragment
-        android:id="@+id/createWorkspaceFragment"
-        android:name="com.example.simplydo.ui.activity.privateWorkspace.createWorkspace.CreateWorkspaceFragment"
-        android:label="CreateWorkspaceFragment">
-        <action
-            android:id="@+id/action_createWorkspaceFragment_to_plansFragment"
-            app:destination="@id/plansFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/plansFragment"
-        android:name="com.example.simplydo.ui.fragments.accounts.plans.PlansFragment"
-        android:label="PlansFragment">
-        <action
-            android:id="@+id/action_plansFragment_to_postPaymentStateFragment"
-            app:destination="@id/postPaymentStateFragment"
-            app:popUpTo="@id/accounts" />
-    </fragment>
-    <fragment
-        android:id="@+id/postPaymentStateFragment"
-        android:name="com.example.simplydo.ui.fragments.postPayment.PostPaymentStateFragment"
-        android:label="PostPaymentStateFragment">
-        <action
-            android:id="@+id/action_postPaymentStateFragment_to_accounts"
-            app:destination="@id/accounts" />
-    </fragment>
     <fragment
         android:id="@+id/groupViewFragment"
         android:name="com.example.simplydo.ui.activity.privateWorkspace.workspaceGroupView.WorkspaceGroupViewFragment"
@@ -288,7 +230,7 @@
     </fragment>
     <fragment
         android:id="@+id/createNewWorkspaceGroupFragment"
-        android:name="com.example.simplydo.ui.fragments.workspace.CreateNewWorkspaceGroupFragment"
+        android:name="com.example.simplydo.ui.activity.privateWorkspace.createWorkspaceGroup.CreateNewWorkspaceGroupFragment"
         android:label="CreateNewWorkspaceGroupFragment" >
         <action
             android:id="@+id/action_createNewWorkspaceGroupFragment_to_selectParticipantsFragment"
@@ -299,4 +241,13 @@
         android:id="@+id/selectParticipantsFragment"
         android:name="com.example.simplydo.ui.fragments.selectParticipants.SelectParticipantsFragment"
         android:label="SelectParticipantsFragment" />
+    <activity
+        android:id="@+id/mySettingActivity"
+        android:name="com.example.simplydo.ui.activity.settings.MySettingActivity"
+        android:label="activity_my_setting"
+        tools:layout="@layout/activity_my_setting" />
+    <fragment
+        android:id="@+id/createWorkspaceFragment"
+        android:name="com.example.simplydo.ui.activity.privateWorkspace.createWorkspace.CreateWorkspaceFragment"
+        android:label="CreateWorkspaceFragment" />
 </navigation>

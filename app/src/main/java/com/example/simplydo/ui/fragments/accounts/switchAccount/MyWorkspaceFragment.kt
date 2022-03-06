@@ -6,7 +6,6 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simplydo.R
 import com.example.simplydo.adapters.MyWorkspaceAdapter
@@ -14,7 +13,10 @@ import com.example.simplydo.databinding.AvailableWorkspaceFragmentBinding
 import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.model.WorkspaceModel
 import com.example.simplydo.ui.fragments.accounts.switchAccount.MyWorkspaceViewModel
-import com.example.simplydo.utlis.*
+import com.example.simplydo.utlis.AppConstant
+import com.example.simplydo.utlis.AppPreference
+import com.example.simplydo.utlis.AppRepository
+import com.example.simplydo.utlis.ViewModelFactory
 
 class MyWorkspaceFragment : Fragment(R.layout.available_workspace_fragment) {
 
@@ -47,7 +49,7 @@ class MyWorkspaceFragment : Fragment(R.layout.available_workspace_fragment) {
                     requireContext()
                 )
             ) {
-                findNavController().navigate(R.id.action_myWorkspaceFragment_to_createWorkspaceFragment)
+//                findNavController().navigate(R.id.action_myWorkspaceFragment_to_createWorkspaceFragment)
             } else {
                 Toast.makeText(requireContext(), "You don't have any plan", Toast.LENGTH_LONG)
                     .show()

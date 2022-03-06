@@ -7,15 +7,14 @@ import com.example.simplydo.model.entity.WorkspaceGroupModel
 import com.example.simplydo.utlis.AppRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.*
 
 class WorkspaceGroupViewViewModel(val appRepository: AppRepository) : ViewModel() {
 
     val mutableArrayWorkspaceGroupModel = MutableLiveData<ArrayList<WorkspaceGroupModel>>()
 
-    fun getWorkspaceGroup() {
+    fun getWorkspaceGroup(workspaceID: Long) {
         viewModelScope.launch(Dispatchers.IO) {
-            val result = appRepository.getWorkspaceGroup()
+            val result = appRepository.getWorkspaceGroup(workspaceID)
             mutableArrayWorkspaceGroupModel.postValue(result)
         }
     }
