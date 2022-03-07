@@ -14,7 +14,6 @@ import com.example.simplydo.R
 import com.example.simplydo.receiver.CloseNotificationReceiver
 import com.example.simplydo.ui.activity.personalWorkspace.PersonalWorkspaceActivity
 
-
 fun NotificationManager.sendNotification(
     notificationId: Long,
     title: String,
@@ -56,7 +55,7 @@ fun NotificationManager.sendNotification(
         applicationContext,
         0,
         notifyIntent,
-        0
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     )
 
 
@@ -77,7 +76,7 @@ fun NotificationManager.sendNotification(
             applicationContext,
             notificationId.toInt(),
             completeTaskIntent,
-            0
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
     // Dismiss Action.
@@ -90,7 +89,7 @@ fun NotificationManager.sendNotification(
         applicationContext,
         notificationId.toInt(),
         viewTaskIntent,
-        0
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     )
 
     // View List Action.
@@ -102,7 +101,7 @@ fun NotificationManager.sendNotification(
         applicationContext,
         notificationId.toInt(),
         viewListTask,
-        0
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     )
 
 

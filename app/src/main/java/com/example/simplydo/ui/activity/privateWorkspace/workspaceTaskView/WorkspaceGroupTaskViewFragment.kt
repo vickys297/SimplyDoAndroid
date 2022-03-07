@@ -116,15 +116,21 @@ class WorkspaceGroupTaskViewFragment : Fragment(R.layout.workspace_group_task_fr
         groupTaskByProgressModel = ArrayList()
         val taskStatus = AppFunctions.getTaskStatus()
 
+        val contactsByStatus = arrayListOf<Int>()
+
         for (status in taskStatus) {
             val tasks: ArrayList<WorkspaceGroupTaskModel> = arrayList
 
             val taskByStatus = tasks.filter { it.taskStatus == status.statusId }
-            val finishedTask = tasks.filter { it.taskStatus == AppConstant.Task.TASK_STATUS_COMPLETED }
+
+            val finishedTask =
+                tasks.filter { it.taskStatus == AppConstant.Task.TASK_STATUS_COMPLETED }
 
             binding.textViewTotalTask.text = tasks.size.toString()
             binding.textViewTaskFinished.text = finishedTask.size.toString()
             binding.textViewAverageTimeConsumed.text = String.format("00Hrs 00Min")
+
+            contactsByStatus.add(taskByStatus.size)
 
             groupTaskByProgressModel.add(
                 GroupTaskByProgressModel(
@@ -148,6 +154,8 @@ class WorkspaceGroupTaskViewFragment : Fragment(R.layout.workspace_group_task_fr
 
         Log.i(TAG, "getTaskByProgressStatus: $groupTaskByProgressModel")
         workspaceGroupTaskViewAdapter.updateDataset(groupTaskByProgressModel)
+
+        binding.progressbarCardProgress.updateProgressSize(contactsByStatus, arrayList.size)
     }
 
 }

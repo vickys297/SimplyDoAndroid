@@ -3,6 +3,7 @@ package com.example.simplydo.components
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 
 
@@ -15,6 +16,13 @@ class StackedProgressBar : View {
 
 
     private lateinit var paint: Paint
+
+    private lateinit var progressBarCanvas: Canvas
+
+    private var arrayChart = arrayListOf(
+        25, 25, 25, 25
+    )
+    private var totalItem = 100
 
 
     constructor(context: Context) : super(context) {
@@ -42,21 +50,24 @@ class StackedProgressBar : View {
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
+        progressBarCanvas = canvas
+        drawProgressBar(progressBarCanvas)
+    }
 
-        val arrayChart = arrayListOf(
-            25, 25, 25, 25
-        )
+    private fun drawProgressBar(canvas: Canvas) {
+        Log.i(TAG, "drawProgressBar: $totalItem")
         val colors = arrayListOf(
             Color.parseColor("#FC4F4F"),
             Color.parseColor("#FF9F45"),
             Color.parseColor("#FFE162"),
             Color.parseColor("#49FF00")
         )
+
         var leftPosition = 0
         for ((index, item) in arrayChart.withIndex()) {
 
             paint.color = colors[index]
-            val firstSize = (leftPosition + width * item / 100)
+            val firstSize = (leftPosition + width * item / totalItem)
 
             val rect = RectF(leftPosition.toFloat(), 0f, firstSize.toFloat(), 10f)
 
@@ -67,8 +78,12 @@ class StackedProgressBar : View {
             leftPosition += firstSize + 1 - leftPosition
         }
 
+    }
 
-//        canvas.drawRect(rect, paint)
-
+    fun updateProgressSize(contactsByStatus: ArrayList<Int>, size: Int) {
+        arrayChart = contactsByStatus
+        totalItem = size
+        Log.i(TAG, "updateProgressSize: $totalItem")
+        invalidate()
     }
 }
