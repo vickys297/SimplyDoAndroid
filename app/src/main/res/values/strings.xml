@@ -202,4 +202,8 @@
     <string name="rookie">Rookie</string>
     <string name="add_new_account">Add New Account</string>
     <string name="my_accounts">My Accounts</string>
+    <string name="stage">Stage</string>
+    <string name="complete">Complete</string>
+    <string name="share">Share</string>
+    <string name="view_calender">View in Calendar</string>
 </resources>

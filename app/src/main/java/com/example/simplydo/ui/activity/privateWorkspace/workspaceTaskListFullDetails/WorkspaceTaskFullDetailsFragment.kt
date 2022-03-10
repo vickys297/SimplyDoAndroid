@@ -228,6 +228,12 @@ class WorkspaceTaskFullDetailsFragment : Fragment(R.layout.todo_full_details_fra
             }
 
         }
+
+
+        binding.buttonOptions.setOnClickListener {
+
+        }
+
         binding.buttonEdit.setOnClickListener {
 
             Log.e(
