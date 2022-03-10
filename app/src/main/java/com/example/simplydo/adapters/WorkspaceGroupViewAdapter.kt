@@ -42,8 +42,6 @@ class WorkspaceGroupViewAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = dataset[position]
 
-
-
         holder.bind(item, callback).let { bind ->
 
             bind.cardViewContainer.setOnClickListener {

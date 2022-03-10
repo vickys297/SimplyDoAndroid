@@ -44,9 +44,7 @@ class WorkspaceGroupViewFragment : Fragment(R.layout.group_view_fragment) {
                 bundle
             )
         }
-
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -70,7 +68,6 @@ class WorkspaceGroupViewFragment : Fragment(R.layout.group_view_fragment) {
         )
 
         viewModelWorkspace.getWorkspaceGroup(workspaceID)
-
 
         val accentText = "<font color='#6200EE'>Workspace</font>"
 
@@ -108,6 +105,8 @@ class WorkspaceGroupViewFragment : Fragment(R.layout.group_view_fragment) {
             it?.let {
                 taskCount = it.size
                 binding.textViewParticipants.text = String.format("%d groups created", taskCount)
+
+
 
                 groupViewAdapter = WorkspaceGroupViewAdapter(dataset = it, callback = callback)
 
