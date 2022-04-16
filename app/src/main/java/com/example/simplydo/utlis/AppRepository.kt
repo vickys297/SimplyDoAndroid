@@ -2,6 +2,7 @@ package com.example.simplydo.utlis
 
 import android.content.Context
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
@@ -12,6 +13,7 @@ import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.localDatabase.dao.TodoDAO
 import com.example.simplydo.model.*
 import com.example.simplydo.model.entity.WorkspaceGroupModel
+import com.example.simplydo.model.privateWorkspace.WorkspaceGroupTaskModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -23,14 +25,14 @@ import java.util.concurrent.Executors
 internal val TAG = AppRepository::class.java.canonicalName
 
 class AppRepository private constructor(
-    val context: Context,
+    private val context: Context,
     val appDatabase: AppDatabase
 ) {
     private var db: TodoDAO = appDatabase.todoDao()
     private var tagDb = appDatabase.tagDao()
     private var workspaceDb = appDatabase.workspaceDao()
     private var workspaceGroupDb = appDatabase.workspaceGroupDao()
-    private var workspaceGroupTaskDb = appDatabase.workspaceGroupTaskDao()
+    var workspaceGroupTaskDb = appDatabase.workspaceGroupTaskDao()
 
     companion object {
         fun getInstance(context: Context, appDatabase: AppDatabase): AppRepository {
@@ -277,12 +279,14 @@ class AppRepository private constructor(
     private fun getPastTaskData(nextPageNumber: Int, currentTimeMillis: String): TodoPagingModel {
         val pageSize = 30
 
-        val callable1 = Callable { db.getPastTaskPaging(nextPageNumber, pageSize, currentTimeMillis) }
+        val callable1 =
+            Callable { db.getPastTaskPaging(nextPageNumber, pageSize, currentTimeMillis) }
         val executors1 = Executors.newSingleThreadExecutor().submit(callable1)
 
         val todoModelArrayList = executors1.get() as ArrayList<TodoModel>
 
-        val callable2 = Callable { db.getPastTaskCount(nextPageNumber, pageSize, currentTimeMillis) }
+        val callable2 =
+            Callable { db.getPastTaskCount(nextPageNumber, pageSize, currentTimeMillis) }
         val executors2 = Executors.newSingleThreadExecutor().submit(callable2)
 
         val remainingCount = executors2.get().toInt()
@@ -351,7 +355,6 @@ class AppRepository private constructor(
 
         return TodoPagingModel(todoModelArrayList, incrementer)
     }
-
 
 
     fun getSelectedEventDateItemCount(
@@ -441,8 +444,8 @@ class AppRepository private constructor(
         workspaceGroupDb.insertNewWorkspaceGroup(newGroup)
     }
 
-    fun getWorkspaceGroup(workspaceID: Long): ArrayList<WorkspaceGroupModel> {
-        return workspaceGroupDb.getWorkSpaceGroupById(workspaceID) as ArrayList
+    fun getWorkspaceGroup(workspaceID: Long): PagingSource<Int, WorkspaceGroupModel> {
+        return workspaceGroupDb.getWorkSpaceGroupByWorkspaceId(workspaceID)
     }
 
     fun createWorkspaceGroup(dataset: ArrayList<WorkspaceGroupModel>) {
@@ -451,8 +454,8 @@ class AppRepository private constructor(
         }
     }
 
-    fun getWorkspaceTaskByGroupId(groupTaskId: Long): ArrayList<WorkspaceGroupTaskModel> {
-        return workspaceGroupTaskDb.getAllWorkspaceGroupTask(groupTaskId) as ArrayList
+    fun getWorkspaceTaskByGroupId(groupTaskId: Long): PagingSource<Int, WorkspaceGroupTaskModel> {
+        return workspaceGroupTaskDb.getAllWorkspaceGroupTask(groupTaskId)
     }
 
     fun getWorkspaceTaskByTaskId(dtId: Long): WorkspaceGroupTaskModel {
@@ -467,6 +470,31 @@ class AppRepository private constructor(
         }).get()
     }
 
+    fun deleteWorkspaceTaskById(task: WorkspaceGroupTaskModel): Int {
+        return workspaceGroupTaskDb.deleteWorkspaceTaskById(task)
+    }
+
+    fun getAllWorkspaceGroupTaskInLiveData(groupTaskId: Long): LiveData<List<WorkspaceGroupTaskModel>> {
+        return workspaceGroupTaskDb.getAllWorkspaceGroupTaskInLiveData(groupTaskId)
+    }
+
+    fun getWorkspaceGroupTaskCount(workspaceID: Long): Int {
+        return workspaceGroupDb.getWorkspaceGroupTaskCount(workspaceID)
+    }
+
+    fun workspaceSearchTask(
+        searchFilterText: String,
+        workspaceId: Long,
+        groupId: Long
+    ): PagingSource<Int, WorkspaceGroupTaskModel> {
+        return workspaceGroupTaskDb.workspaceSearchTask(searchFilterText, workspaceId, groupId)
+    }
+
+    fun getApplicationContext(): Context {
+        return context
+    }
 
 }
+
+
 

@@ -18,8 +18,9 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ItemTouchHelper.ACTION_STATE_DRAG
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.simplydo.R
-import com.example.simplydo.adapters.QuickTodoListAdapter
+import com.example.simplydo.adapters.PersonalTaskListAdapter
 import com.example.simplydo.databinding.FragmentQuickTodoBinding
 import com.example.simplydo.dialog.bottomSheetDialogs.NewTaskOptionsBottomSheetDialog
 import com.example.simplydo.dialog.bottomSheetDialogs.basicAddTodoDialog.AddNewRemainder
@@ -28,23 +29,23 @@ import com.example.simplydo.dialog.bottomSheetDialogs.calenderOptions.TodoOption
 import com.example.simplydo.dialog.bottomSheetDialogs.todoOptions.TodoOptionsFragment
 import com.example.simplydo.dialog.bottomSheetDialogs.workspaceDialog.WorkspaceSwitchBottomSheetDialog
 import com.example.simplydo.localDatabase.AppDatabase
+import com.example.simplydo.model.AccountModel
 import com.example.simplydo.model.CommonResponseModel
 import com.example.simplydo.model.TodoModel
 import com.example.simplydo.utlis.*
+import com.google.gson.Gson
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 
-internal val TAG = QuickTodoFragment::class.java.canonicalName
+internal val TAG = PersonalWorkspaceTaskFragment::class.java.canonicalName
 internal const val CHANNEL_ID = "task_channel_id"
 internal const val NOTIFICATION_ID = 8888
 
-class QuickTodoFragment : Fragment(R.layout.fragment_quick_todo), View.OnClickListener {
+class PersonalWorkspaceTaskFragment : Fragment(R.layout.fragment_quick_todo), View.OnClickListener {
 
-    companion object {
-        fun newInstance() = QuickTodoFragment()
-    }
 
+    private lateinit var userData: AccountModel
     private lateinit var todoObserver: Observer<CommonResponseModel>
     private lateinit var totalTaskCountObserver: Observer<Int>
     private lateinit var noNetworkObserver: Observer<String>
@@ -54,7 +55,7 @@ class QuickTodoFragment : Fragment(R.layout.fragment_quick_todo), View.OnClickLi
     private lateinit var _binding: FragmentQuickTodoBinding
     private val binding get() = _binding
 
-    private lateinit var quickTodoListAdapter: QuickTodoListAdapter
+    private lateinit var personalTaskListAdapter: PersonalTaskListAdapter
 
     private lateinit var recentSelectedItem: TodoModel
 
@@ -65,10 +66,10 @@ class QuickTodoFragment : Fragment(R.layout.fragment_quick_todo), View.OnClickLi
 
 
     private val undoInterface = object : UndoInterface {
-        override fun onUndo(task: TodoModel, type: Int) {
+        override fun onUndo(task: Any, type: Int) {
             when (type) {
                 AppConstant.Task.TASK_ACTION_RESTORE -> {
-                    viewModel.undoTaskRemove(task)
+                    viewModel.undoTaskRemove(task as TodoModel)
                 }
             }
         }
@@ -183,6 +184,7 @@ class QuickTodoFragment : Fragment(R.layout.fragment_quick_todo), View.OnClickLi
         }
 
     }
+
     private var todoAdapterInterface = object : TodoItemInterface {
         override fun onLongClick(item: TodoModel) {
             recentSelectedItem = item
@@ -243,6 +245,19 @@ class QuickTodoFragment : Fragment(R.layout.fragment_quick_todo), View.OnClickLi
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentQuickTodoBinding.bind(view)
 
+        userData = Gson().fromJson(
+            AppPreference.getPreferences(
+                AppConstant.Preferences.USER_DATA,
+                requireContext()
+            ), AccountModel::class.java
+        )
+
+        Glide
+            .with(requireActivity())
+            .load(userData.profilePicture)
+            .into(binding.profileImageView2)
+
+
 //        (activity as PersonalWorkspaceActivity).setSupportActionBar(binding.todoToolbar)
 //        (activity as PersonalWorkspaceActivity).supportActionBar!!.setDisplayShowTitleEnabled(false)
 //        setHasOptionsMenu(true)
@@ -272,24 +287,22 @@ class QuickTodoFragment : Fragment(R.layout.fragment_quick_todo), View.OnClickLi
             NewTaskOptionsBottomSheetDialog.getInstance(requireContext(), newTaskOptionsCallback)
         todoOptions = TodoOptions.getInstance(requireContext(), todoTaskOptionsInterface)
 
-        quickTodoListAdapter = QuickTodoListAdapter(todoAdapterInterface, requireContext())
+        personalTaskListAdapter = PersonalTaskListAdapter(todoAdapterInterface, requireContext())
         binding.recyclerViewTodoList.apply {
             layoutManager = LinearLayoutManager(requireContext())
-            adapter = quickTodoListAdapter
+            adapter = personalTaskListAdapter
         }
 
-        binding.buttonAddNewTask.setOnClickListener(this@QuickTodoFragment)
-        binding.buttonTodoOption.setOnClickListener(this@QuickTodoFragment)
+        binding.buttonAddNewTask.setOnClickListener(this@PersonalWorkspaceTaskFragment)
+        binding.buttonTodoOption.setOnClickListener(this@PersonalWorkspaceTaskFragment)
+        binding.profileImageView2.setOnClickListener(this@PersonalWorkspaceTaskFragment)
         binding.profileView.setOnClickListener {
-
-
             workspaceSwitchBottomSheetDialog.show(
                 requireActivity().supportFragmentManager,
                 WorkspaceSwitchBottomSheetDialog::class.java.canonicalName
             )
-
-
         }
+
 
         val simpleItemTouchCallback: ItemTouchHelper.SimpleCallback = object :
             ItemTouchHelper.SimpleCallback(
@@ -310,11 +323,11 @@ class QuickTodoFragment : Fragment(R.layout.fragment_quick_todo), View.OnClickLi
                 val from = viewHolder.absoluteAdapterPosition
                 val to = target.absoluteAdapterPosition
 
-                val item1 = quickTodoListAdapter.getItemAtPosition(from)
-                val item2 = quickTodoListAdapter.getItemAtPosition(to)
+                val item1 = personalTaskListAdapter.getItemAtPosition(from)
+                val item2 = personalTaskListAdapter.getItemAtPosition(to)
 
                 if (item1 != null && item2 != null) {
-//                    quickTodoListAdapter.notifyItemMoved(from, to)
+//                    personalTaskListAdapter.notifyItemMoved(from, to)
                     return true
                 }
                 return false
@@ -323,11 +336,11 @@ class QuickTodoFragment : Fragment(R.layout.fragment_quick_todo), View.OnClickLi
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
                 //Remove swiped item from list and notify the RecyclerView
                 val position = viewHolder.absoluteAdapterPosition
-                quickTodoListAdapter.getItemAtPosition(position)?.let {
-                    quickTodoListAdapter.notifyItemRemoved(position)
+                personalTaskListAdapter.getItemAtPosition(position)?.let {
+                    personalTaskListAdapter.notifyItemRemoved(position)
 
                     if (it.eventDateTime < AppFunctions.getCurrentDayStartInMilliSeconds()) {
-                        quickTodoListAdapter.notifyItemRemoved(position)
+                        personalTaskListAdapter.notifyItemRemoved(position)
                     }
 
                     if (!it.isCompleted)
@@ -417,8 +430,8 @@ class QuickTodoFragment : Fragment(R.layout.fragment_quick_todo), View.OnClickLi
                 )
             )[QuickTodoViewModel::class.java]
         binding.apply {
-            todoViewModel = this@QuickTodoFragment.viewModel
-            lifecycleOwner = this@QuickTodoFragment
+            todoViewModel = this@PersonalWorkspaceTaskFragment.viewModel
+            lifecycleOwner = this@PersonalWorkspaceTaskFragment
             executePendingBindings()
         }
 
@@ -436,7 +449,7 @@ class QuickTodoFragment : Fragment(R.layout.fragment_quick_todo), View.OnClickLi
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.getQuickTodoList(AppFunctions.getCurrentDayStartInMilliSeconds())
                 .collect {
-                    quickTodoListAdapter.submitData(it)
+                    personalTaskListAdapter.submitData(it)
                 }
         }
     }
@@ -454,6 +467,9 @@ class QuickTodoFragment : Fragment(R.layout.fragment_quick_todo), View.OnClickLi
                     requireActivity().supportFragmentManager,
                     TodoOptions::class.java.canonicalName
                 )
+            }
+            binding.profileImageView2.id -> {
+                findNavController().navigate(R.id.action_toDoFragment_to_mySettingActivity)
             }
         }
     }

@@ -36,10 +36,10 @@ class OtherTodoFragment : Fragment(R.layout.other_todo_fragment), LifecycleObser
 
 
     private val undoInterface = object : UndoInterface {
-        override fun onUndo(task: TodoModel, type: Int) {
+        override fun onUndo(task: Any, type: Int) {
             when (type) {
                 AppConstant.Task.TASK_ACTION_RESTORE -> {
-                    viewModel.undoTaskRemove(task)
+                    viewModel.undoTaskRemove(task as TodoModel)
                 }
             }
         }

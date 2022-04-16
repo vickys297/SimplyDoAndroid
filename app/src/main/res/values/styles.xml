@@ -22,5 +22,5 @@
         <item name="android:background">@drawable/small_background_badge_light</item>
     </style>
 
-    <item format="reference" name="IconColor" type="color">@color/dark_night</item>
+    <item name="IconColor" format="reference" type="color">@color/dark_night</item>
 </resources>

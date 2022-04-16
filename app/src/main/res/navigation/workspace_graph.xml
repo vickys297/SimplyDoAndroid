@@ -33,6 +33,9 @@
         <action
             android:id="@+id/action_workspace_workspaceGroupTaskViewFragment_to_privateTaskFullDetailsFragment"
             app:destination="@id/privateTaskFullDetailsFragment" />
+        <action
+            android:id="@+id/action_workspace_workspaceGroupTaskViewFragment_to_searchTaskFragment"
+            app:destination="@id/searchTaskFragment" />
     </fragment>
     <fragment
         android:id="@+id/addNewTodo"
@@ -65,6 +68,9 @@
         <action
             android:id="@+id/action_workspace_privateTaskFullDetailsFragment2_to_editWorkspaceTaskDetails"
             app:destination="@id/editWorkspaceTaskDetails" />
+        <action
+            android:id="@+id/action_workspace_privateTaskFullDetailsFragment_to_selectParticipantsFragment"
+            app:destination="@id/selectParticipantsFragment2" />
     </fragment>
     <fragment
         android:id="@+id/audioListFragment2"
@@ -95,5 +101,17 @@
         android:id="@+id/createNewWorkspaceGroupFragment"
         android:name="com.example.simplydo.ui.activity.privateWorkspace.createWorkspaceGroup.CreateNewWorkspaceGroupFragment"
         android:label="CreateNewWorkspaceGroupFragment" />
+    <fragment
+        android:id="@+id/selectParticipantsFragment2"
+        android:name="com.example.simplydo.ui.fragments.selectParticipants.SelectParticipantsFragment"
+        android:label="SelectParticipantsFragment" />
+    <fragment
+        android:id="@+id/searchTaskFragment"
+        android:name="com.example.simplydo.ui.fragments.searchTask.SearchTaskFragment"
+        android:label="SearchTaskFragment" >
+        <action
+            android:id="@+id/action_workspace_searchTaskFragment_to_privateTaskFullDetailsFragment"
+            app:destination="@id/privateTaskFullDetailsFragment" />
+    </fragment>
 
 </navigation>

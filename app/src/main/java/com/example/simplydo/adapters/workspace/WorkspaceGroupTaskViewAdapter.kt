@@ -1,28 +1,41 @@
-package com.example.simplydo.adapters
+package com.example.simplydo.adapters.workspace
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.simplydo.adapters.GroupViewAdapter
+import com.example.simplydo.adapters.UserProfileStackAdapter
+import com.example.simplydo.databinding.RecyclerEmptyListItemBinding
 import com.example.simplydo.databinding.RecyclerTaskStatusHeaderBinding
 import com.example.simplydo.databinding.RecyclerTodoWorkspaceListItemBinding
 import com.example.simplydo.model.GroupTaskByProgressModel
-import com.example.simplydo.model.WorkspaceGroupTaskModel
+import com.example.simplydo.model.privateWorkspace.WorkspaceGroupTaskModel
 import com.example.simplydo.utlis.AppInterface
 
 internal const val ITEM_VIEW_HEADER = 0
 internal const val ITEM_VIEW_CONTENT = 1
+internal const val ITEM_VIEW_EMPTY = 2
 
 class WorkspaceGroupTaskViewAdapter(private val callback: AppInterface.WorkspaceGroupTask.Task) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var dataSet: ArrayList<GroupTaskByProgressModel> = arrayListOf()
 
+    private lateinit var userProfileStackAdapter: UserProfileStackAdapter
+
     override fun getItemViewType(position: Int): Int {
         val item = dataSet[position]
-        return if (item.taskHeader != null) {
-            ITEM_VIEW_HEADER
-        } else {
-            ITEM_VIEW_CONTENT
+        return when {
+            item.taskHeader != null -> {
+                ITEM_VIEW_HEADER
+            }
+            item.message != null -> {
+                ITEM_VIEW_EMPTY
+            }
+            else -> {
+                ITEM_VIEW_CONTENT
+            }
         }
     }
 
@@ -38,14 +51,40 @@ class WorkspaceGroupTaskViewAdapter(private val callback: AppInterface.Workspace
                     }
                 }
             }
+            ITEM_VIEW_EMPTY -> {
+                item.message?.run {
+                    (holder as TodoViewEmptyHolder).apply {
+                        bind(this@run)
+                    }
+                }
+            }
             ITEM_VIEW_CONTENT -> {
                 item.content?.run {
                     (holder as TodoViewHolder).apply {
-                        bind(this@run)
+                        bind(this@run).let { binding ->
+                            binding.recyclerViewStackedProfileView.apply {
+                                userProfileStackAdapter =
+                                    UserProfileStackAdapter(dataset = this@run.taskParticipants)
+                                layoutManager = LinearLayoutManager(
+                                    binding.root.context,
+                                    LinearLayoutManager.HORIZONTAL,
+                                    false
+                                )
+                                adapter = userProfileStackAdapter
+                                addItemDecoration(
+                                    GroupViewAdapter.OverlapRecyclerViewDecoration(
+                                        4,
+                                        -25
+                                    )
+                                )
+                            }
+                        }
                     }
+
                     holder.itemView.setOnClickListener {
                         callback.onTaskSelected(this@run)
                     }
+
                 }
 
 
@@ -64,12 +103,19 @@ class WorkspaceGroupTaskViewAdapter(private val callback: AppInterface.Workspace
                         false
                     )
                 )
-
-
             }
             ITEM_VIEW_HEADER -> {
                 TodoViewHeaderHolder(
                     RecyclerTaskStatusHeaderBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
+                    )
+                )
+            }
+            ITEM_VIEW_EMPTY -> {
+                TodoViewEmptyHolder(
+                    RecyclerEmptyListItemBinding.inflate(
                         LayoutInflater.from(parent.context),
                         parent,
                         false
@@ -93,19 +139,37 @@ class WorkspaceGroupTaskViewAdapter(private val callback: AppInterface.Workspace
         }
     }
 
-    class TodoViewHolder(val binding: RecyclerTodoWorkspaceListItemBinding) :
+    class TodoViewHolder(
+        val binding: RecyclerTodoWorkspaceListItemBinding
+    ) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: WorkspaceGroupTaskModel) {
-            binding.apply {
+        fun bind(item: WorkspaceGroupTaskModel): RecyclerTodoWorkspaceListItemBinding {
+            return binding.apply {
                 dataModel = item
                 executePendingBindings()
             }
+
+
         }
     }
 
+    class TodoViewEmptyHolder(val binding: RecyclerEmptyListItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(message: String): RecyclerEmptyListItemBinding {
+            binding.textView55.text = message
+
+            return binding.apply {
+                executePendingBindings()
+            }
+        }
+
+    }
+
     fun updateDataset(groupTaskByProgressModel: ArrayList<GroupTaskByProgressModel>) {
-        val lastPosition = dataSet.size
+//        val lastPosition = dataSet.size
         this.dataSet = groupTaskByProgressModel
-        notifyItemChanged(lastPosition, dataSet.size)
+        notifyDataSetChanged()
     }
 }
+
+

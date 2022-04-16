@@ -13,6 +13,7 @@ import androidx.core.app.NotificationManagerCompat
 import com.example.simplydo.R
 import com.example.simplydo.receiver.CloseNotificationReceiver
 import com.example.simplydo.ui.activity.personalWorkspace.PersonalWorkspaceActivity
+import com.example.simplydo.ui.activity.privateWorkspace.WorkspaceActivity
 
 fun NotificationManager.sendNotification(
     notificationId: Long,
@@ -20,13 +21,20 @@ fun NotificationManager.sendNotification(
     task: String,
     priority: Boolean,
     applicationContext: Context,
-    type: Int = AppConstant.NOTIFICATION_TASK_NEW
+    type: Int = AppConstant.NOTIFICATION_TASK_NEW,
+    workspace: Boolean
 ) {
     val channelId = "task_notification_$notificationId"
 
     // 3. Set up main Intent for notification.
-    val notifyIntent = Intent(applicationContext, PersonalWorkspaceActivity::class.java).apply {
-        Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+    val notifyIntent = if (workspace) {
+        Intent(applicationContext, WorkspaceActivity::class.java).apply {
+            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+    } else {
+        Intent(applicationContext, PersonalWorkspaceActivity::class.java).apply {
+            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
     }
 
     // When creating your Intent, you need to take into account the back state, i.e., what

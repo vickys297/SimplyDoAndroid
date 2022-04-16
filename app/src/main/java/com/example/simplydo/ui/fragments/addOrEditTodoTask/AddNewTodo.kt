@@ -440,9 +440,12 @@ class AddNewTodo : Fragment(R.layout.add_new_todo_fragment), NewTodoOptionsFragm
                 val title = binding.editTextTitle.text.toString()
                 val task = binding.editTextTask.text.toString()
 
+                var isWorkspace: Boolean
+
 //                Insert new task in db
                 val newInsertId =
                     if (taskFlagId == AppConstant.Task.WORKSPACE_TASK) {
+                        isWorkspace = true
                         viewModel.createWorkspaceTask(
                             title,
                             task,
@@ -460,6 +463,8 @@ class AddNewTodo : Fragment(R.layout.add_new_todo_fragment), NewTodoOptionsFragm
                             workspaceGroupId = workspaceGroupId
                         )
                     } else {
+                        isWorkspace = false
+
                         viewModel.createTodo(
                             title,
                             task,
@@ -482,6 +487,7 @@ class AddNewTodo : Fragment(R.layout.add_new_todo_fragment), NewTodoOptionsFragm
                     bundle.putString("title", title)
                     bundle.putString("task", task)
                     bundle.putBoolean("priority", true)
+                    bundle.putBoolean("workspace", isWorkspace)
 
                     val selectedDate = Date()
                     selectedDate.time = currentEventStartDueDateTime

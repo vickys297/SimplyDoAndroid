@@ -15,9 +15,9 @@ import android.view.View
 import android.widget.Toast
 import androidx.annotation.WorkerThread
 import androidx.core.content.ContextCompat
+import com.example.simplydo.R
 import com.example.simplydo.model.LinkedWorkspaceDataModel
 import com.example.simplydo.model.TaskStatusDataModel
-import com.example.simplydo.model.TodoModel
 import com.example.simplydo.receiver.AppBroadCastReceiver
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
@@ -194,7 +194,7 @@ object AppFunctions {
         message: String,
         actionButtonName: String,
         type: Int,
-        task: TodoModel,
+        task: Any,
         undoInterface: UndoInterface,
     ) {
         val snackBar: Snackbar = Snackbar.make(view, message, Snackbar.LENGTH_LONG)
@@ -225,6 +225,11 @@ object AppFunctions {
             intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
+//        alarmManager.setRepeating(
+//            AlarmManager.RTC_WAKEUP, eventTime,
+//            AlarmManager.INTERVAL_DAY,
+//            pendingIntent
+//        )
         alarmManager.setExactAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP, eventTime, pendingIntent
         )
@@ -468,22 +473,47 @@ object AppFunctions {
     }
 
     fun getTaskStatus(): ArrayList<TaskStatusDataModel> {
+
         return arrayListOf(
             TaskStatusDataModel(
                 statusName = "Open",
-                statusId = AppConstant.Task.TASK_STATUS_OPEN
+                statusId = AppConstant.Task.TASK_STATUS_OPEN,
+                statusColor = "#FC4F4F"
             ),
             TaskStatusDataModel(
                 statusName = "In Progress",
-                statusId = AppConstant.Task.TASK_STATUS_IN_PROGRESS
+                statusId = AppConstant.Task.TASK_STATUS_IN_PROGRESS,
+                statusColor = "#FF9F45"
             ),
             TaskStatusDataModel(
                 statusName = "On Hold",
-                statusId = AppConstant.Task.TASK_STATUS_ON_HOLD
+                statusId = AppConstant.Task.TASK_STATUS_ON_HOLD,
+                statusColor = "#FFE162"
             ),
             TaskStatusDataModel(
                 statusName = "Completed",
-                statusId = AppConstant.Task.TASK_STATUS_COMPLETED
+                statusId = AppConstant.Task.TASK_STATUS_COMPLETED,
+                statusColor = "#49FF00"
+            )
+        )
+    }
+
+    fun getTaskPriority(requireContext: Context): ArrayList<TaskStatusDataModel> {
+        return arrayListOf(
+            TaskStatusDataModel(
+                statusName = requireContext.getString(R.string.high_priority),
+                statusId = AppConstant.TaskPriority.HIGH_PRIORITY,
+                statusColor = "#FFE162"
+            ),
+            TaskStatusDataModel(
+                statusName = requireContext.getString(R.string.medium_priority),
+                statusId = AppConstant.TaskPriority.MEDIUM_PRIORITY,
+                statusColor = "#FF9F45"
+            ),
+            TaskStatusDataModel(
+                statusName = requireContext.getString(R.string.low_priority),
+                statusId = AppConstant.TaskPriority.LOW_PRIORITY,
+                statusColor = "#FC4F4F"
             )
         )
     }

@@ -16,59 +16,59 @@
             style="@style/ToolbarStyledText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:padding="8dp"
             android:text="@string/options" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/stage" />
+            android:padding="8dp"
+            android:text="@string/update_stage" />
 
-        <LinearLayout
-            android:id="@+id/linearLayout_stages"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view_stage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-        </LinearLayout>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/stage" />
+            android:padding="8dp" />
 
         <LinearLayout
             android:id="@+id/linearLayout_priority"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:orientation="vertical">
 
         </LinearLayout>
 
 
         <Button
+            android:id="@+id/button_add_participants"
+            style="@style/ButtonOptions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/add_participants" />
+
+        <Button
+            android:id="@+id/button_view_calendar"
             style="@style/ButtonOptions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/view_calender" />
 
         <Button
+            android:id="@+id/button_share"
             style="@style/ButtonOptions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/share" />
 
         <Button
-            style="@style/ButtonOptions"
+            android:id="@+id/button_delete"
+            style="@style/PrimaryButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/delete" />
 
-
-        <Button
-            style="@style/PrimaryButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/complete" />
 
     </LinearLayout>
 </layout>

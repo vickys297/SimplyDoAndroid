@@ -31,6 +31,7 @@ class AppBroadCastReceiver : BroadcastReceiver() {
                     title = it.getString("title", ""),
                     task = it.getString("task", ""),
                     priority = it.getBoolean("priority", true),
+                    workspace = it.getBoolean("workspace", true),
                     applicationContext = context,
                     type = AppConstant.NOTIFICATION_TASK_NEW
                 )

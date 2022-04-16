@@ -1,7 +1,10 @@
 package com.example.simplydo.model
 
+import com.example.simplydo.model.privateWorkspace.WorkspaceGroupTaskModel
+
 data class GroupTaskByProgressModel(
     val taskHeader: TaskHeaderContent? = null,
+    val message: String? = null,
     val content: WorkspaceGroupTaskModel? = null
 ) {
     data class TaskHeaderContent(
@@ -12,5 +15,6 @@ data class GroupTaskByProgressModel(
 
 data class TaskStatusDataModel(
     val statusName: String,
-    val statusId: Int
+    val statusId: Int,
+    val statusColor: String
 )

@@ -8,9 +8,9 @@ import androidx.room.TypeConverters
 import com.example.simplydo.localDatabase.dao.*
 import com.example.simplydo.model.TagModel
 import com.example.simplydo.model.TodoModel
-import com.example.simplydo.model.WorkspaceGroupTaskModel
 import com.example.simplydo.model.WorkspaceModel
 import com.example.simplydo.model.entity.WorkspaceGroupModel
+import com.example.simplydo.model.privateWorkspace.WorkspaceGroupTaskModel
 import com.example.simplydo.utlis.AppConstant
 
 @Database(

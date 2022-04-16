@@ -16,40 +16,52 @@
         android:layout_height="match_parent"
         tools:context=".ui.main.MainFragment">
 
+        <com.example.simplydo.components.ProfileImageView
+            android:id="@+id/profileImageView2"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="16dp"
+            app:layout_constraintBottom_toBottomOf="@+id/top_section"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/top_section"
+            tools:srcCompat="@tools:sample/avatars" />
+
         <LinearLayout
             android:id="@+id/top_section"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:orientation="vertical"
             app:layout_constraintEnd_toStartOf="@+id/profileView"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/profileImageView2"
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/hello_there" />
+                android:text="@string/hello_there"
+                android:textColor="#AAAAAA"
+                android:textSize="10sp" />
 
             <TextView
                 android:id="@+id/text_1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/discover_your_daily"
-                android:textSize="24sp" />
+                android:textSize="14sp"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <ImageButton
             android:id="@+id/profileView"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:padding="8dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_marginEnd="16dp"
             android:background="@android:color/transparent"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_workspace"
+            android:src="@drawable/ic_switch_workspace"
             app:layout_constraintBottom_toBottomOf="@+id/top_section"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/top_section" />

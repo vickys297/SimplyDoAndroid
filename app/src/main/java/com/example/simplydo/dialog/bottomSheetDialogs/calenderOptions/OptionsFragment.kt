@@ -46,10 +46,6 @@ class TodoOptions(
             dismiss()
         }
 
-        binding.buttonSettings.setOnClickListener {
-            todoTaskOptionsInterface.onSettingsClicked()
-            dismiss()
-        }
 
     }
 

@@ -38,7 +38,8 @@ class RegularNotificationWorker(val appContext: Context, workerParameters: Worke
                 task = "You have $taskAvailable tasks today.",
                 priority = false,
                 applicationContext = appContext,
-                type = AppConstant.NOTIFICATION_TASK_DAILY_REMAINDER
+                type = AppConstant.NOTIFICATION_TASK_DAILY_REMAINDER,
+                workspace = false
             )
 
         }

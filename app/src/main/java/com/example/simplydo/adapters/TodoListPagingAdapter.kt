@@ -222,9 +222,9 @@ class TodoListPagingAdapter internal constructor(
 
     override fun getItemViewType(position: Int): Int {
         return if (getItem(position)!!.isCompleted) {
-            QuickTodoListAdapter.VIEW_TYPE_TASK_COMPLETED
+            PersonalTaskListAdapter.VIEW_TYPE_TASK_COMPLETED
         } else {
-            QuickTodoListAdapter.VIEW_TYPE_TASK
+            PersonalTaskListAdapter.VIEW_TYPE_TASK
         }
     }
 

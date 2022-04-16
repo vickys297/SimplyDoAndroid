@@ -7,6 +7,7 @@ import com.example.simplydo.model.*
 import com.example.simplydo.model.attachmentModel.AudioModel
 import com.example.simplydo.model.attachmentModel.FileModel
 import com.example.simplydo.model.attachmentModel.GalleryModel
+import com.example.simplydo.model.privateWorkspace.WorkspaceGroupTaskModel
 import com.example.simplydo.utlis.AppConstant
 import com.example.simplydo.utlis.AppFunctions
 import com.example.simplydo.utlis.AppRepository

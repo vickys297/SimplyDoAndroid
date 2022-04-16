@@ -32,14 +32,22 @@ class CreateNewWorkspaceGroupFragment : Fragment(R.layout.create_new_workspace_g
     private lateinit var participantsAdapter: ParticipantsAdapter
     private var participantsList: ArrayList<UserAccountModel> = arrayListOf()
 
+    private var workspaceId: Long = 1
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = CreateNewWorkspaceGroupFragmentBinding.bind(view)
         setupViewModel()
 
+        requireArguments().let {
+            workspaceId = it.getLong(AppConstant.Key.NAVIGATION_WORKSPACE_ID)
+        }
+
         binding.buttonCreateGroup.setOnClickListener(this@CreateNewWorkspaceGroupFragment)
         participantsAdapter = ParticipantsAdapter(isRemoveVisible = false, callback = null)
+
+
 
         binding.recyclerViewParticipants.apply {
             layoutManager =
@@ -49,12 +57,12 @@ class CreateNewWorkspaceGroupFragment : Fragment(R.layout.create_new_workspace_g
 
         findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<ArrayList<UserAccountModel>>(
             AppConstant.Key.NAVIGATION_PARTICIPANT_KEY
-        )?.observe(viewLifecycleOwner, {
+        )?.observe(viewLifecycleOwner) {
             it?.let {
                 participantsList = it
                 participantsAdapter.updateDataset(it)
             }
-        })
+        }
 
         binding.imageButtonAddParticipants.setOnClickListener {
             findNavController().navigate(R.id.action_createNewWorkspaceGroupFragment_to_selectParticipantsFragment)
@@ -97,7 +105,7 @@ class CreateNewWorkspaceGroupFragment : Fragment(R.layout.create_new_workspace_g
 
     private fun createNewWorkSpace() {
         val newGroup = WorkspaceGroupModel(
-            workspaceID = 89732289738L,
+            workspaceID = workspaceId,
             name = binding.editTextName.text.toString(),
             description = binding.editTextDescriptions.text.toString(),
             createdBy = UserIdModel(

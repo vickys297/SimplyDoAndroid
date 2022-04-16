@@ -6,29 +6,29 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simplydo.R
+import com.example.simplydo.adapters.GroupViewAdapter
+import com.example.simplydo.adapters.UserProfileStackAdapter
 import com.example.simplydo.adapters.taskAttachmentAdapter.AttachmentAudioAdapter
 import com.example.simplydo.adapters.taskAttachmentAdapter.AttachmentContactAdapter
 import com.example.simplydo.adapters.taskAttachmentAdapter.AttachmentGalleryAdapter
 import com.example.simplydo.adapters.taskAttachmentAdapter.AttachmentTodoTaskAdapter
 import com.example.simplydo.databinding.TodoFullDetailsFragmentBinding
+import com.example.simplydo.dialog.bottomSheetDialogs.TaskFullDetailsBottomSheetDialog
 import com.example.simplydo.dialog.bottomSheetDialogs.basicAddTodoDialog.EditWorkspaceTaskBasic
 import com.example.simplydo.localDatabase.AppDatabase
-import com.example.simplydo.model.ContactModel
-import com.example.simplydo.model.TagModel
-import com.example.simplydo.model.TodoTaskModel
-import com.example.simplydo.model.WorkspaceGroupTaskModel
+import com.example.simplydo.model.*
 import com.example.simplydo.model.attachmentModel.AudioModel
 import com.example.simplydo.model.attachmentModel.GalleryModel
+import com.example.simplydo.model.privateWorkspace.WorkspaceGroupTaskModel
 import com.example.simplydo.utlis.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.SupportMapFragment
@@ -36,12 +36,14 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.chip.Chip
+import kotlinx.coroutines.launch
 
 class WorkspaceTaskFullDetailsFragment : Fragment(R.layout.todo_full_details_fragment) {
 
     companion object {
         fun newInstance() = WorkspaceTaskFullDetailsFragment()
     }
+
 
     private lateinit var todoData: WorkspaceGroupTaskModel
     private lateinit var _binding: TodoFullDetailsFragmentBinding
@@ -54,8 +56,36 @@ class WorkspaceTaskFullDetailsFragment : Fragment(R.layout.todo_full_details_fra
     private lateinit var attachmentGalleryAdapter: AttachmentGalleryAdapter
     private lateinit var attachmentContactAdapter: AttachmentContactAdapter
     private lateinit var attachmentTodoTaskAdapter: AttachmentTodoTaskAdapter
+    private lateinit var userProfileStackAdapter: UserProfileStackAdapter
 
     private lateinit var observerTodoTask: Observer<WorkspaceGroupTaskModel>
+    private lateinit var observerAddParticipants: Observer<ArrayList<UserAccountModel>>
+
+    private val taskFullDetailsCallBack: AppInterface.TaskFullDetailsCallBack =
+        object : AppInterface.TaskFullDetailsCallBack {
+            override fun onDelete() {
+                lifecycleScope.launch {
+                    viewModel.deleteTask(todoData)
+                    findNavController().navigateUp()
+                }
+            }
+
+            override fun onViewCalendar() {
+            }
+
+            override fun onShare() {
+            }
+
+            override fun onStageSelect(item: TaskStatusDataModel) {
+                todoData.taskStatus = item.statusId
+                viewModel.updateWorkspaceTaskData(todoData)
+            }
+
+            override fun onAddParticipants() {
+                findNavController().navigate(R.id.action_workspace_privateTaskFullDetailsFragment_to_selectParticipantsFragment)
+            }
+
+        }
 
     private val attachmentTodoTaskAdapterCallback: NewTodo.TodoTask = object : NewTodo.TodoTask {
         override fun onTaskSelect(item: TodoTaskModel) {
@@ -106,7 +136,7 @@ class WorkspaceTaskFullDetailsFragment : Fragment(R.layout.todo_full_details_fra
 
     private val editBasicTodoInterface = object : EditBasicWorkspaceTaskInterface {
         override fun onUpdateDetails(todoModel: WorkspaceGroupTaskModel) {
-            viewModel.updateTaskModel(todoModel)
+            viewModel.updateWorkspaceTaskData(todoModel)
         }
 
         override fun onAddMoreDetails(todoModel: WorkspaceGroupTaskModel) {
@@ -120,16 +150,6 @@ class WorkspaceTaskFullDetailsFragment : Fragment(R.layout.todo_full_details_fra
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-
-        Log.i(com.example.simplydo.ui.fragments.todoListFullDetails.TAG, "onCreateView: ")
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = TodoFullDetailsFragmentBinding.bind(view)
@@ -137,10 +157,53 @@ class WorkspaceTaskFullDetailsFragment : Fragment(R.layout.todo_full_details_fra
         setupBinding()
         loadObservers()
 
+        loadTodoDetails()
+
+        binding.buttonOptions.setOnClickListener {
+            TaskFullDetailsBottomSheetDialog.newInstance(
+                requireContext(),
+                callback = taskFullDetailsCallBack
+            ).show(
+                requireActivity().supportFragmentManager,
+                TaskFullDetailsBottomSheetDialog::class.java.canonicalName
+            )
+        }
+        binding.buttonEdit.setOnClickListener {
+
+            Log.e(
+                com.example.simplydo.ui.fragments.todoListFullDetails.TAG,
+                "taskType: ${todoData.taskType}"
+            )
+            if (todoData.taskType == AppConstant.Task.TASK_TYPE_BASIC) {
+                // show basic edit
+                EditWorkspaceTaskBasic.newInstance(
+                    requireContext(),
+                    editBasicTodoInterface,
+                    todoData
+                )
+                    .show(requireActivity().supportFragmentManager, "dialog")
+            }
+
+
+            if (todoData.taskType == AppConstant.Task.TASK_TYPE_EVENT) {
+                // show edit fragment
+                val bundle = Bundle()
+                bundle.putSerializable(AppConstant.NAVIGATION_TASK_DATA_KEY, todoData)
+                findNavController().navigate(
+                    R.id.action_workspace_privateTaskFullDetailsFragment2_to_editWorkspaceTaskDetails,
+                    bundle
+                )
+            }
+        }
+        binding.imageButtonBack.setOnClickListener {
+            findNavController().navigateUp()
+        }
+    }
+
+    private fun loadTodoDetails() {
         arguments?.let {
             todoData = getTodoData(dtId = it.getLong(AppConstant.NAVIGATION_TASK_KEY))
         }
-
         todoData.let { data ->
             binding.tvTitle.text = data.title
             binding.tvTodo.text = data.todo
@@ -149,6 +212,19 @@ class WorkspaceTaskFullDetailsFragment : Fragment(R.layout.todo_full_details_fra
                 getTaskPriorityBackground(data.taskPriority, requireContext())
 
             loadTodoTaskRecyclerView(data.arrayListTodoTask)
+
+
+            binding.recyclerViewParticipants.apply {
+                userProfileStackAdapter = UserProfileStackAdapter(dataset = data.taskParticipants)
+                layoutManager = LinearLayoutManager(
+                    requireContext(),
+                    LinearLayoutManager.HORIZONTAL,
+                    false
+                )
+                adapter = userProfileStackAdapter
+                addItemDecoration(GroupViewAdapter.OverlapRecyclerViewDecoration(4, -25))
+            }
+
             binding.textViewEventDateAndTime.text = data.getEventDate()
             binding.textViewEventTime.visibility = data.isEventTimeVisible()
             binding.textViewEventTime.text = data.getEventTime()
@@ -230,37 +306,6 @@ class WorkspaceTaskFullDetailsFragment : Fragment(R.layout.todo_full_details_fra
         }
 
 
-        binding.buttonOptions.setOnClickListener {
-
-        }
-
-        binding.buttonEdit.setOnClickListener {
-
-            Log.e(
-                com.example.simplydo.ui.fragments.todoListFullDetails.TAG,
-                "taskType: ${todoData.taskType}"
-            )
-            if (todoData.taskType == AppConstant.Task.TASK_TYPE_BASIC) {
-                // show basic edit
-                EditWorkspaceTaskBasic.newInstance(
-                    requireContext(),
-                    editBasicTodoInterface,
-                    todoData
-                )
-                    .show(requireActivity().supportFragmentManager, "dialog")
-            }
-
-
-            if (todoData.taskType == AppConstant.Task.TASK_TYPE_EVENT) {
-                // show edit fragment
-                val bundle = Bundle()
-                bundle.putSerializable(AppConstant.NAVIGATION_TASK_DATA_KEY, todoData)
-                findNavController().navigate(
-                    R.id.action_workspace_privateTaskFullDetailsFragment2_to_editWorkspaceTaskDetails,
-                    bundle
-                )
-            }
-        }
     }
 
     override fun onResume() {
@@ -380,9 +425,22 @@ class WorkspaceTaskFullDetailsFragment : Fragment(R.layout.todo_full_details_fra
     private fun loadObservers() {
         observerTodoTask = Observer { result ->
             result?.let {
-                viewModel.updateTodoData(it)
+                viewModel.updateWorkspaceTaskData(it)
             }
         }
+
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<java.util.ArrayList<UserAccountModel>>(
+            AppConstant.Key.NAVIGATION_PARTICIPANT_KEY
+        )?.observe(viewLifecycleOwner) { result ->
+            Log.i(TAG, "NAVIGATION_PARTICIPANT_KEY: $result")
+
+            if (!result.isNullOrEmpty()) {
+                todoData.taskParticipants.addAll(result)
+                viewModel.updateWorkspaceTaskData(todoData)
+                loadTodoDetails()
+            }
+        }
+
         viewModel.mutableTodoDataSet.observe(viewLifecycleOwner, observerTodoTask)
     }
 

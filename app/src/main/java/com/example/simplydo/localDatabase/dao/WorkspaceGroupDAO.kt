@@ -1,5 +1,6 @@
 package com.example.simplydo.localDatabase.dao
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -13,8 +14,11 @@ interface WorkspaceGroupDAO {
     fun getAllWorkSpaceGroups(): List<WorkspaceGroupModel>
 
     @Query("SELECT * FROM workspaceGroups WHERE workspaceID = :workspaceID")
-    fun getWorkSpaceGroupById(workspaceID: Long): List<WorkspaceGroupModel>
+    fun getWorkSpaceGroupByWorkspaceId(workspaceID: Long): PagingSource<Int, WorkspaceGroupModel>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertNewWorkspaceGroup(workspaceGroupModel: WorkspaceGroupModel): Long
+
+    @Query("SELECT COUNT(*) FROM workspaceGroups WHERE workspaceID = :workspaceID")
+    fun getWorkspaceGroupTaskCount(workspaceID: Long): Int
 }

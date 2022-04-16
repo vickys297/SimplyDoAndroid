@@ -56,7 +56,8 @@ class LocationFragment : Fragment(R.layout.fragment_maps) {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     private val locationCallback = object : LocationCallback() {
-        override fun onLocationResult(locationResult: LocationResult?) {
+        override fun onLocationResult(locationResult: LocationResult) {
+            super.onLocationResult(locationResult)
             locationResult ?: return
             for (location in locationResult.locations) {
                 // Update UI with location data
@@ -65,6 +66,7 @@ class LocationFragment : Fragment(R.layout.fragment_maps) {
                 newMarkerLocation()
             }
         }
+
     }
 
     private val callback = OnMapReadyCallback { googleMap ->

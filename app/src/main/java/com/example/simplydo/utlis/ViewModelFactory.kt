@@ -8,25 +8,28 @@ import com.example.simplydo.dialog.bottomSheetDialogs.workspaceDialog.WorkspaceS
 import com.example.simplydo.ui.activity.personalWorkspace.PersonalWorkspaceViewModel
 import com.example.simplydo.ui.activity.personalWorkspace.personalTask.QuickTodoViewModel
 import com.example.simplydo.ui.activity.privateWorkspace.createWorkspace.CreateWorkspaceViewModel
+import com.example.simplydo.ui.activity.privateWorkspace.createWorkspaceGroup.CreateNewWorkspaceGroupViewModel
 import com.example.simplydo.ui.activity.privateWorkspace.editTaskDetails.EditWorkspaceTaskViewModel
 import com.example.simplydo.ui.activity.privateWorkspace.workspaceGroupView.WorkspaceGroupViewViewModel
 import com.example.simplydo.ui.activity.privateWorkspace.workspaceTaskListFullDetails.WorkspaceTaskFullDetailsViewModel
 import com.example.simplydo.ui.activity.privateWorkspace.workspaceTaskView.WorkspaceGroupTaskViewModel
 import com.example.simplydo.ui.fragments.accounts.myAccount.MyAccountsViewModel
+import com.example.simplydo.ui.fragments.accounts.notifications.NotificationSettingsViewModel
 import com.example.simplydo.ui.fragments.accounts.switchAccount.MyWorkspaceViewModel
 import com.example.simplydo.ui.fragments.addOrEditTodoTask.AddNewTodoViewModel
 import com.example.simplydo.ui.fragments.attachmentsFragments.contacts.ContactsViewModel
 import com.example.simplydo.ui.fragments.attachmentsFragments.gallery.GalleryListViewModel
 import com.example.simplydo.ui.fragments.calender.CalenderViewModel
 import com.example.simplydo.ui.fragments.otherTodoFragments.OtherTodoViewModel
+import com.example.simplydo.ui.fragments.searchTask.SearchTaskViewModel
 import com.example.simplydo.ui.fragments.selectParticipants.SelectParticipantsViewModel
 import com.example.simplydo.ui.fragments.todoListFullDetails.TodoFullDetailsViewModel
-import com.example.simplydo.ui.activity.privateWorkspace.createWorkspaceGroup.CreateNewWorkspaceGroupViewModel
 
 open class ViewModelFactory internal constructor(
     private val context: Context,
     private val appRepository: AppRepository,
 ) : ViewModelProvider.Factory {
+
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return when (modelClass.canonicalName) {
             QuickTodoViewModel::class.java.canonicalName -> {
@@ -94,8 +97,16 @@ open class ViewModelFactory internal constructor(
                 EditWorkspaceTaskViewModel(appRepository) as T
             }
 
-            MyAccountsViewModel::class.java.canonicalName->{
+            MyAccountsViewModel::class.java.canonicalName -> {
                 MyAccountsViewModel(appRepository) as T
+            }
+
+            SearchTaskViewModel::class.java.canonicalName -> {
+                SearchTaskViewModel(appRepository) as T
+            }
+
+            NotificationSettingsViewModel::class.java.canonicalName -> {
+                NotificationSettingsViewModel(appRepository) as T
             }
             else -> {
                 throw IllegalArgumentException("ViewModel not found")

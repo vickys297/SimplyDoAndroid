@@ -7,15 +7,22 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.bumptech.glide.Glide
 import com.example.simplydo.R
 import com.example.simplydo.adapters.WorkspaceGroupViewAdapter
 import com.example.simplydo.databinding.GroupViewFragmentBinding
+import com.example.simplydo.dialog.bottomSheetDialogs.calenderOptions.TodoOptions
 import com.example.simplydo.dialog.bottomSheetDialogs.workspaceDialog.WorkspaceSwitchBottomSheetDialog
 import com.example.simplydo.localDatabase.AppDatabase
+import com.example.simplydo.model.AccountModel
 import com.example.simplydo.model.entity.WorkspaceGroupModel
 import com.example.simplydo.utlis.*
+import com.google.gson.Gson
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 internal val TAG = WorkspaceGroupViewFragment::class.java.canonicalName
 
@@ -26,12 +33,15 @@ class WorkspaceGroupViewFragment : Fragment(R.layout.group_view_fragment) {
     }
 
     private lateinit var observerArraylistWorkspaceGroupModel: Observer<ArrayList<WorkspaceGroupModel>>
+    private lateinit var observerWorkspaceGroupCount: Observer<Int>
+
     private lateinit var viewModelWorkspace: WorkspaceGroupViewViewModel
     private lateinit var binding: GroupViewFragmentBinding
     private lateinit var groupViewAdapter: WorkspaceGroupViewAdapter
     private lateinit var workspaceSwitchBottomSheetDialog: WorkspaceSwitchBottomSheetDialog
     private var workspaceID: Long = -1
-
+    private lateinit var todoOptions: TodoOptions
+    private lateinit var userData: AccountModel
 
     private var taskCount = 0
 
@@ -44,6 +54,29 @@ class WorkspaceGroupViewFragment : Fragment(R.layout.group_view_fragment) {
                 bundle
             )
         }
+    }
+
+    private val todoTaskOptionsInterface = object : TodoTaskOptionsInterface {
+        override fun onCalenderView() {
+            findNavController().navigate(R.id.action_toDoFragment_to_calenderFragment)
+        }
+
+        override fun onCompletedView() {
+            val bundle = Bundle()
+            bundle.putInt(getString(R.string.view_type), AppConstant.TODO_VIEW_COMPLETED)
+            findNavController().navigate(R.id.action_toDoFragment_to_otherTodoFragment, bundle)
+        }
+
+        override fun onPastTaskView() {
+            val bundle = Bundle()
+            bundle.putInt(getString(R.string.view_type), AppConstant.TODO_VIEW_PAST)
+            findNavController().navigate(R.id.action_toDoFragment_to_otherTodoFragment, bundle)
+        }
+
+        override fun onSettingsClicked() {
+            findNavController().navigate(R.id.action_toDoFragment_to_mySettingActivity)
+        }
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -59,6 +92,8 @@ class WorkspaceGroupViewFragment : Fragment(R.layout.group_view_fragment) {
                     }
                 })
 
+        todoOptions = TodoOptions.getInstance(requireContext(), todoTaskOptionsInterface)
+
         setupViewModel()
         setupObserver()
         workspaceID = AppPreference.getPreferences(
@@ -66,8 +101,6 @@ class WorkspaceGroupViewFragment : Fragment(R.layout.group_view_fragment) {
             -1L,
             requireContext()
         )
-
-        viewModelWorkspace.getWorkspaceGroup(workspaceID)
 
         val accentText = "<font color='#6200EE'>Workspace</font>"
 
@@ -80,8 +113,21 @@ class WorkspaceGroupViewFragment : Fragment(R.layout.group_view_fragment) {
             Html.fromHtml(String.format("My %s", accentText))
         }
 
+        userData = Gson().fromJson(
+            AppPreference.getPreferences(
+                AppConstant.Preferences.USER_DATA,
+                requireContext()
+            ), AccountModel::class.java
+        )
+
+        Glide
+            .with(requireContext())
+            .load(userData.profilePicture)
+            .into(binding.profileImageView)
+
+        viewModelWorkspace.getWorkSpaceCount(workspaceID)
+
         binding.textViewHeader.text = workspaceTextTitle
-        binding.textViewParticipants.text = String.format("%d groups created", taskCount)
 
         binding.buttonCreateGroup.setOnClickListener {
             val bundle = Bundle()
@@ -97,30 +143,53 @@ class WorkspaceGroupViewFragment : Fragment(R.layout.group_view_fragment) {
                 WorkspaceSwitchBottomSheetDialog::class.java.canonicalName
             )
         }
+        binding.profileImageView.setOnClickListener {
+            findNavController().navigate(R.id.mySettingActivity)
+        }
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setupRecyclerView()
+    }
+
+    private fun setupRecyclerView() {
+        groupViewAdapter = WorkspaceGroupViewAdapter(callback = callback)
+        binding.recyclerViewGroupView.apply {
+            layoutManager =
+                GridLayoutManager(requireContext(), 2)
+            adapter = groupViewAdapter
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModelWorkspace.getWorkspaceGroup(workspaceID).collect {
+                groupViewAdapter.submitData(it)
+            }
+        }
     }
 
     private fun setupObserver() {
         observerArraylistWorkspaceGroupModel = Observer {
-
             it?.let {
                 taskCount = it.size
                 binding.textViewParticipants.text = String.format("%d groups created", taskCount)
-
-
-
-                groupViewAdapter = WorkspaceGroupViewAdapter(dataset = it, callback = callback)
-
-                binding.recyclerViewGroupView.apply {
-                    layoutManager =
-                        GridLayoutManager(requireContext(), 2)
-                    adapter = groupViewAdapter
-                }
             }
-
         }
         viewModelWorkspace.mutableArrayWorkspaceGroupModel.observe(
             viewLifecycleOwner,
             observerArraylistWorkspaceGroupModel
+        )
+
+        observerWorkspaceGroupCount = Observer {
+            it?.let {
+                binding.textViewParticipants.text = String.format("%d groups created", it)
+            }
+        }
+
+        viewModelWorkspace.mutableWorkspaceCount.observe(
+            viewLifecycleOwner,
+            observerWorkspaceGroupCount
         )
     }
 

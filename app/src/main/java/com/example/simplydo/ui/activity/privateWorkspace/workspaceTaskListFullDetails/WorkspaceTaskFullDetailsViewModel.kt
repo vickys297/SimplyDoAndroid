@@ -2,7 +2,7 @@ package com.example.simplydo.ui.activity.privateWorkspace.workspaceTaskListFullD
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.simplydo.model.WorkspaceGroupTaskModel
+import com.example.simplydo.model.privateWorkspace.WorkspaceGroupTaskModel
 import com.example.simplydo.utlis.AppRepository
 
 class WorkspaceTaskFullDetailsViewModel(val appRepository: AppRepository) : ViewModel() {
@@ -13,11 +13,13 @@ class WorkspaceTaskFullDetailsViewModel(val appRepository: AppRepository) : View
         return appRepository.getWorkspaceTaskByTaskId(dtId)
     }
 
-    fun updateTaskModel(todoModel: WorkspaceGroupTaskModel) {
+    fun updateWorkspaceTaskData(todoModel: WorkspaceGroupTaskModel) {
         appRepository.updateWorkspaceTaskData(todoModel)
     }
 
-    fun updateTodoData(it: WorkspaceGroupTaskModel) {
-//        appRepository.updateWorkspaceTaskData(updateModel = it)
+    fun deleteTask(task: WorkspaceGroupTaskModel) {
+        appRepository.deleteWorkspaceTaskById(task)
     }
+
+
 }

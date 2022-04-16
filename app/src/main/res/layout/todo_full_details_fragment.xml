@@ -29,21 +29,90 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/tvTitle"
-                style="@style/ToolbarStyledText"
-                android:layout_width="0dp"
+            <ImageButton
+                android:id="@+id/imageButton_back"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:text="@string/hello"
-                android:textSize="24sp"
-                android:transitionName="transition_title"
-                app:layout_constraintEnd_toStartOf="@+id/imCompleted"
+                android:backgroundTint="@android:color/transparent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_baseline_arrow_back_24" />
 
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout"
+                style="@style/EditTextLayout"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/chip_group_task_tags">
+
+                <TextView
+                    android:id="@+id/tvTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:text="@string/hello"
+                    android:textSize="24sp"
+                    android:transitionName="transition_title"
+                    app:layout_constraintEnd_toStartOf="@+id/textView_priority"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/textView_priority"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="4dp"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/tvTitle"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/tvTitle" />
+
+                <TextView
+                    android:id="@+id/textViewEventDateAndTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:drawablePadding="10dp"
+                    android:gravity="center"
+                    android:textSize="16sp"
+                    android:transitionName="transition_eventDateTime"
+                    app:drawableStartCompat="@drawable/ic_baseline_calendar_today_16"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+
+                <TextView
+                    android:id="@+id/textViewEventTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:gravity="center"
+                    android:textSize="16sp"
+                    android:transitionName="transition_eventDateTime"
+                    app:layout_constraintBottom_toBottomOf="@+id/textViewEventDateAndTime"
+                    app:layout_constraintStart_toEndOf="@+id/textViewEventDateAndTime"
+                    app:layout_constraintTop_toTopOf="@+id/textViewEventDateAndTime" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_view_participants"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="@+id/textViewEventTime"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/textViewEventTime" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
                 android:id="@+id/linearLayout3"
@@ -55,7 +124,7 @@
                 android:layout_marginEnd="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/textViewEventDateAndTime">
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
 
                 <TextView
                     style="@style/Title"
@@ -313,41 +382,15 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textViewAttachment" />
 
-            <TextView
-                android:id="@+id/textViewEventDateAndTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:drawablePadding="10dp"
-                android:gravity="center"
-                android:textSize="16sp"
-                android:transitionName="transition_eventDateTime"
-                app:drawableStartCompat="@drawable/ic_baseline_calendar_today_16"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/chip_group_task_tags" />
-
-            <TextView
-                android:id="@+id/textViewEventTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:gravity="center"
-                android:textSize="16sp"
-                android:transitionName="transition_eventDateTime"
-                app:layout_constraintBottom_toBottomOf="@+id/textViewEventDateAndTime"
-                app:layout_constraintStart_toEndOf="@+id/textViewEventDateAndTime"
-                app:layout_constraintTop_toTopOf="@+id/textViewEventDateAndTime" />
-
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/imCompleted"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginEnd="16dp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@+id/tvTitle"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="@+id/imageButton_back"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/tvTitle"
+                app:layout_constraintTop_toTopOf="@+id/imageButton_back"
                 app:lottie_autoPlay="true"
                 app:lottie_loop="true"
                 app:lottie_rawRes="@raw/lottie_task_completed_3"
@@ -359,28 +402,14 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvTitle">
+                app:layout_constraintTop_toBottomOf="@+id/imageButton_back">
 
             </com.google.android.material.chip.ChipGroup>
-
-            <TextView
-                android:id="@+id/textView_priority"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:paddingLeft="10dp"
-                android:paddingTop="4dp"
-                android:paddingRight="10dp"
-                android:paddingBottom="4dp"
-                android:textColor="@color/white"
-                app:layout_constraintBottom_toBottomOf="@+id/textViewEventDateAndTime"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/textViewEventDateAndTime" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

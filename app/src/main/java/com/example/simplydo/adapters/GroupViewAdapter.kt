@@ -17,8 +17,7 @@ class GroupViewAdapter(
     val dataset: ArrayList<WorkspaceGroupModel>,
     val callback: AppInterface.GroupViewCallback,
     private val fragmentContext: Context
-) :
-    RecyclerView.Adapter<GroupViewAdapter.GroupViewItemViewHolder>() {
+) : RecyclerView.Adapter<GroupViewAdapter.GroupViewItemViewHolder>() {
 
     private lateinit var userProfileStackAdapter: UserProfileStackAdapter
 
@@ -59,7 +58,6 @@ class GroupViewAdapter(
         userProfileStackAdapter = UserProfileStackAdapter(dataset = item.people)
 
         holder.bind(item, callback).let { bind ->
-
 
             bind.recyclerView.apply {
                 layoutManager = LinearLayoutManager(

@@ -23,7 +23,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class WorkspaceSwitchBottomSheetDialog(
     val requireContext: Context,
-    val createNewWorkspaceDialog: AppInterface.MyWorkspace.CreateWorkspaceDialog
+    private val createNewWorkspaceDialog: AppInterface.MyWorkspace.CreateWorkspaceDialog
 ) : BottomSheetDialogFragment() {
 
     companion object {

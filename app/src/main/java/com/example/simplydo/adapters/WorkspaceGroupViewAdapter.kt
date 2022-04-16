@@ -2,6 +2,8 @@ package com.example.simplydo.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.simplydo.databinding.RecyclerGroupListItemBinding
@@ -9,17 +11,34 @@ import com.example.simplydo.model.entity.WorkspaceGroupModel
 import com.example.simplydo.utlis.AppInterface
 
 class WorkspaceGroupViewAdapter(
-    val dataset: ArrayList<WorkspaceGroupModel>,
     val callback: AppInterface.GroupViewCallback,
-) : RecyclerView.Adapter<WorkspaceGroupViewAdapter.ViewHolder>() {
+) : PagingDataAdapter<WorkspaceGroupModel, WorkspaceGroupViewAdapter.ViewHolder>(DIFF_CALLBACK) {
+
+    companion object {
+        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<WorkspaceGroupModel>() {
+            override fun areItemsTheSame(
+                oldItem: WorkspaceGroupModel,
+                newItem: WorkspaceGroupModel
+            ): Boolean {
+                return oldItem.gId == newItem.gId
+            }
+
+            override fun areContentsTheSame(
+                oldItem: WorkspaceGroupModel,
+                newItem: WorkspaceGroupModel
+            ): Boolean {
+                return oldItem == newItem
+            }
+
+        }
+    }
 
     private lateinit var userProfileStackAdapter: UserProfileStackAdapter
 
     class ViewHolder(val binding: RecyclerGroupListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(
-            item: WorkspaceGroupModel,
-            callback: AppInterface.GroupViewCallback
+            item: WorkspaceGroupModel
         ): RecyclerGroupListItemBinding {
             return binding.apply {
                 dataModel = item
@@ -39,27 +58,27 @@ class WorkspaceGroupViewAdapter(
         )
     }
 
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = dataset[position]
+        val item = getItem(position)
+        item?.let {
+            holder.bind(item).let { bind ->
 
-        holder.bind(item, callback).let { bind ->
+                bind.cardViewContainer.setOnClickListener {
+                    callback.onSelect(item)
+                }
 
-            bind.cardViewContainer.setOnClickListener {
-                callback.onSelect(item)
-            }
-
-            bind.recyclerView.apply {
-                userProfileStackAdapter = UserProfileStackAdapter(dataset = item.people)
-                layoutManager = LinearLayoutManager(
-                    holder.binding.root.context,
-                    LinearLayoutManager.HORIZONTAL,
-                    false
-                )
-                adapter = userProfileStackAdapter
-                addItemDecoration(GroupViewAdapter.OverlapRecyclerViewDecoration(4, -25))
+                bind.recyclerView.apply {
+                    userProfileStackAdapter = UserProfileStackAdapter(dataset = item.people)
+                    layoutManager = LinearLayoutManager(
+                        holder.binding.root.context,
+                        LinearLayoutManager.HORIZONTAL,
+                        false
+                    )
+                    adapter = userProfileStackAdapter
+                    addItemDecoration(GroupViewAdapter.OverlapRecyclerViewDecoration(4, -25))
+                }
             }
         }
     }
-
-    override fun getItemCount(): Int = dataset.size
 }

@@ -6,6 +6,7 @@ import com.example.simplydo.model.attachmentModel.AudioModel
 import com.example.simplydo.model.attachmentModel.FileModel
 import com.example.simplydo.model.attachmentModel.GalleryModel
 import com.example.simplydo.model.entity.WorkspaceGroupModel
+import com.example.simplydo.model.privateWorkspace.WorkspaceGroupTaskModel
 
 interface NewRemainderInterface {
     fun onAddMoreDetails(eventDate: Long)
@@ -55,7 +56,8 @@ interface SelectedContactInterface {
 }
 
 interface CommonBottomSheetDialogInterface {
-    fun onPositiveButtonClick()
+    fun onPositiveButtonClick(content: Any)
+    fun onNegativeButtonClick(content: Any)
 }
 
 
@@ -107,7 +109,7 @@ interface FileAttachmentInterface {
 }
 
 interface UndoInterface {
-    fun onUndo(task: TodoModel, type: Int)
+    fun onUndo(task: Any, type: Int)
 }
 
 interface Page4Interface {
@@ -178,6 +180,19 @@ interface AppInterface {
         }
     }
 
+
+    interface TaskFullDetailsCallBack {
+        fun onDelete()
+        fun onViewCalendar()
+        fun onShare()
+        fun onStageSelect(item: TaskStatusDataModel)
+        fun onAddParticipants()
+
+        interface TaskFullDetailsStageCallback {
+            fun onStageSelected(item: TaskStatusDataModel)
+        }
+    }
+
     interface GroupViewCallback {
         fun onSelect(item: WorkspaceGroupModel)
     }
@@ -201,7 +216,7 @@ interface AppInterface {
     interface WorkspaceGroupTask {
         interface Task {
             fun onTaskSelected(content: WorkspaceGroupTaskModel)
-            fun onTaskDeleted()
+            fun onTaskDeleted(content: WorkspaceGroupTaskModel)
         }
     }
 

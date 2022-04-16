@@ -206,4 +206,27 @@
     <string name="complete">Complete</string>
     <string name="share">Share</string>
     <string name="view_calender">View in Calendar</string>
+    <string name="update_stage">Update Stage</string>
+    <string name="change_priority">Change Priority</string>
+    <string name="add_participants">Add Participants</string>
+    <string name="no_details_available">No Details Available</string>
+    <string name="ascending">Ascending</string>
+    <string name="descending">Descending</string>
+    <string name="filter_by">Filter By</string>
+    <string name="order_by">Order By</string>
+    <string name="view_by">View By</string>
+    <string name="clear_filter">Clear Filter</string>
+    <string name="type_something">Type something</string>
+    <string name="msg_token_fmt">Firebase Token</string>
+    <string name="default_notification_channel_id">001</string>
+    <string name="remind_me_before_the_task_start">Remind me before the task start</string>
+    <string name="show_alert_for_personal_task">Show alert for personal task</string>
+    <string name="show_notifications">Show notifications</string>
+    <string name="show_alert_for_workspace_task">Show alert for workspace task</string>
+    <string name="general">General</string>
+    <string name="alert_time">Alert Time</string>
+    <string name="snooze_time">Snooze Time</string>
+    <string name="remainder_time">Remainder Time</string>
+    <string name="remind_me_the_current_day_task">Remind me the current day task</string>
+    <string name="snooze_alert">Snooze alert</string>
 </resources>

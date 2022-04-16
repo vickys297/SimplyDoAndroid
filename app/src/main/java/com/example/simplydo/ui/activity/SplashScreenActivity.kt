@@ -14,12 +14,13 @@ import com.example.simplydo.api.network.RetrofitServices
 import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.model.Token
 import com.example.simplydo.model.TokenResponse
-import com.example.simplydo.ui.activity.personalWorkspace.PersonalWorkspaceActivity
 import com.example.simplydo.ui.activity.login.LoginActivity
+import com.example.simplydo.ui.activity.personalWorkspace.PersonalWorkspaceActivity
 import com.example.simplydo.ui.activity.privateWorkspace.WorkspaceActivity
 import com.example.simplydo.utlis.AppConstant
 import com.example.simplydo.utlis.AppPreference
 import com.example.simplydo.utlis.AppRepository
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import retrofit2.Call
 import retrofit2.Callback
@@ -35,10 +36,26 @@ class SplashScreenActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash_screen)
 
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w(TAG, "Fetching FCM registration token failed", task.exception)
+                return@OnCompleteListener
+            }
+
+            // Get new FCM registration token
+            val token = task.result
+
+            // Log and toast
+//            val msg = getString(R.string.msg_token_fmt, token)
+            Log.d(TAG, "Token >> $token")
+            Toast.makeText(baseContext, token, Toast.LENGTH_SHORT).show()
+        })
+
         appRepository = AppRepository.getInstance(
             this@SplashScreenActivity,
             AppDatabase.getInstance(context = this@SplashScreenActivity)
         )
+
     }
 
     override fun onResume() {

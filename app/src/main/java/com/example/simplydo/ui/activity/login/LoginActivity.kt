@@ -133,8 +133,8 @@ class LoginActivity : AppCompatActivity() {
                 finish()
             }
         }
-
     }
+
 
     private fun loginUser(mobile: String) {
         if (mobile.isNotEmpty()) {

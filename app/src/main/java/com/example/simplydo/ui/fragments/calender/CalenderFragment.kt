@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.simplydo.R
 import com.example.simplydo.adapters.CalenderViewAdapter
-import com.example.simplydo.adapters.QuickTodoListAdapter
+import com.example.simplydo.adapters.PersonalTaskListAdapter
 import com.example.simplydo.databinding.CalenderFragmentBinding
 import com.example.simplydo.dialog.bottomSheetDialogs.basicAddTodoDialog.AddNewRemainder
 import com.example.simplydo.dialog.bottomSheetDialogs.todoOptions.TodoOptionsFragment
@@ -30,7 +30,6 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 internal val TAG = CalenderFragment::class.java.canonicalName
@@ -50,7 +49,7 @@ class CalenderFragment : Fragment() {
     private lateinit var arrayListSmallCalenderModels: ArrayList<SmallCalenderModel>
     private lateinit var calenderViewAdapter: CalenderViewAdapter
 
-    private lateinit var quickTodoListAdapter: QuickTodoListAdapter
+    private lateinit var personalTaskListAdapter: PersonalTaskListAdapter
 
     private var selectedEventDate: CalenderDateSelectorModel = CalenderDateSelectorModel(
         startEventDate = AppFunctions.getCurrentDayStartInMilliSeconds(),
@@ -62,13 +61,13 @@ class CalenderFragment : Fragment() {
     private lateinit var calenderLinearLayoutManager: LinearLayoutManager
 
     private val undoInterface = object : UndoInterface {
-        override fun onUndo(task: TodoModel, type: Int) {
+        override fun onUndo(task: Any, type: Int) {
             when (type) {
                 AppConstant.Task.TASK_ACTION_RESTORE -> {
-                    viewModel.undoTaskRemove(task)
+                    viewModel.undoTaskRemove(task as TodoModel)
                 }
                 AppConstant.Task.TASK_ACTION_DELETE -> {
-                    viewModel.undoTaskRemove(task)
+                    viewModel.undoTaskRemove(task as TodoModel)
                 }
             }
         }
@@ -289,10 +288,10 @@ class CalenderFragment : Fragment() {
 
 
         // using quick task list adapter
-        quickTodoListAdapter = QuickTodoListAdapter(todoAdapterInterface, requireContext())
+        personalTaskListAdapter = PersonalTaskListAdapter(todoAdapterInterface, requireContext())
         binding.recyclerViewTodoList.apply {
             layoutManager = LinearLayoutManager(requireContext())
-            adapter = quickTodoListAdapter
+            adapter = personalTaskListAdapter
         }
 
 
@@ -314,11 +313,11 @@ class CalenderFragment : Fragment() {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 //Remove swiped item from list and notify the RecyclerView
                 val position = viewHolder.absoluteAdapterPosition
-                quickTodoListAdapter.getItemAtPosition(position)?.let {
-                    quickTodoListAdapter.notifyItemRemoved(position)
+                personalTaskListAdapter.getItemAtPosition(position)?.let {
+                    personalTaskListAdapter.notifyItemRemoved(position)
 
                     if (it.eventDateTime < AppFunctions.getCurrentDayStartInMilliSeconds()) {
-                        quickTodoListAdapter.notifyItemRemoved(position)
+                        personalTaskListAdapter.notifyItemRemoved(position)
                     }
 
                     if (!it.isCompleted)
@@ -365,11 +364,11 @@ class CalenderFragment : Fragment() {
                 val from = viewHolder.absoluteAdapterPosition
                 val to = target.absoluteAdapterPosition
 
-                val item1 = quickTodoListAdapter.getItemAtPosition(from)
-                val item2 = quickTodoListAdapter.getItemAtPosition(to)
+                val item1 = personalTaskListAdapter.getItemAtPosition(from)
+                val item2 = personalTaskListAdapter.getItemAtPosition(to)
 
                 if (item1 != null && item2 != null) {
-//                    quickTodoListAdapter.notifyItemMoved(from, to)
+//                    personalTaskListAdapter.notifyItemMoved(from, to)
                     return true
                 }
                 return false
@@ -380,14 +379,14 @@ class CalenderFragment : Fragment() {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
                 //Remove swiped item from list and notify the RecyclerView
                 val position = viewHolder.absoluteAdapterPosition
-                val item = quickTodoListAdapter.getItemAtPosition(position)
+                val item = personalTaskListAdapter.getItemAtPosition(position)
 
                 item?.let {
 
                     viewModel.completeTaskByID(item.dtId)
 
                     if (item.eventDateTime < AppFunctions.getCurrentDayStartInMilliSeconds()) {
-                        quickTodoListAdapter.notifyItemRemoved(position)
+                        personalTaskListAdapter.notifyItemRemoved(position)
                     }
 
                     Snackbar.make(
@@ -419,8 +418,8 @@ class CalenderFragment : Fragment() {
     }
 
     private fun setupPagingDataObserverForSelectedDate() {
-        if (quickTodoListAdapter.itemCount > 0) {
-            quickTodoListAdapter.submitData(viewLifecycleOwner.lifecycle, PagingData.empty())
+        if (personalTaskListAdapter.itemCount > 0) {
+            personalTaskListAdapter.submitData(viewLifecycleOwner.lifecycle, PagingData.empty())
         }
         val pagingDataSource = viewModel.getTodoListByEventDate(
             selectedEventDate.startEventDate,
@@ -428,7 +427,7 @@ class CalenderFragment : Fragment() {
         )
         lifecycleScope.launch {
             pagingDataSource.collectLatest {
-                quickTodoListAdapter.submitData(it)
+                personalTaskListAdapter.submitData(it)
             }
         }
         viewModel.getSelectedEventDateItemCount(

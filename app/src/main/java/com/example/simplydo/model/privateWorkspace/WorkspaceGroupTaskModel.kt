@@ -1,10 +1,11 @@
-package com.example.simplydo.model
+package com.example.simplydo.model.privateWorkspace
 
 import android.view.View
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.example.simplydo.model.*
 import com.example.simplydo.model.attachmentModel.AudioModel
 import com.example.simplydo.model.attachmentModel.FileModel
 import com.example.simplydo.model.attachmentModel.GalleryModel
@@ -98,7 +99,10 @@ data class WorkspaceGroupTaskModel(
     var taskTags: ArrayList<TagModel> = arrayListOf(),
 
     @ColumnInfo(name = "todoTaskList", defaultValue = "")
-    val arrayListTodoTask: ArrayList<TodoTaskModel> = arrayListOf()
+    val arrayListTodoTask: ArrayList<TodoTaskModel> = arrayListOf(),
+
+    @ColumnInfo(name = "taskParticipants", defaultValue = "")
+    val taskParticipants: ArrayList<UserAccountModel> = arrayListOf()
 
 ) : Serializable {
     fun isCompletedVisible(): Int {

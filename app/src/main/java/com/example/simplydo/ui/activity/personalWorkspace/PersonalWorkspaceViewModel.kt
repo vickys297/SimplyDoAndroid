@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.simplydo.model.*
 import com.example.simplydo.model.attachmentModel.GalleryModel
 import com.example.simplydo.model.entity.WorkspaceGroupModel
+import com.example.simplydo.model.privateWorkspace.WorkspaceGroupTaskModel
 import com.example.simplydo.utlis.AppConstant
 import com.example.simplydo.utlis.AppFunctions
 import com.example.simplydo.utlis.AppRepository

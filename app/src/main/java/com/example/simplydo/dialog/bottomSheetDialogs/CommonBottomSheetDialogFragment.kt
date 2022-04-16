@@ -1,5 +1,6 @@
 package com.example.simplydo.dialog.bottomSheetDialogs
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +16,11 @@ private const val DIALOG_TITLE = "param1"
 private const val DIALOG_MESSAGE = "param2"
 private const val DIALOG_POSITIVE_BUTTON_NAME = "param3"
 
-class CommonBottomSheetDialogFragment(private val commonBottomSheetDialogInterface: CommonBottomSheetDialogInterface) : BottomSheetDialogFragment() {
+class CommonBottomSheetDialogFragment(
+    private val commonBottomSheetDialogInterface: CommonBottomSheetDialogInterface,
+    private val modelClass: Any,
+    private val requiredContext: Context
+) : BottomSheetDialogFragment() {
 
     private var dialogTitle: String = ""
     private var dialogMessage: String = ""
@@ -36,7 +41,12 @@ class CommonBottomSheetDialogFragment(private val commonBottomSheetDialogInterfa
     ): View? {
         // Inflate the layout for this fragment
         isCancelable = false
-        return inflater.inflate(R.layout.fragment_common_bottom_sheet_dialog, container, false)
+        val layoutInflater = LayoutInflater.from(requiredContext)
+        return layoutInflater.inflate(
+            R.layout.fragment_common_bottom_sheet_dialog,
+            container,
+            false
+        )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -51,18 +61,20 @@ class CommonBottomSheetDialogFragment(private val commonBottomSheetDialogInterfa
         btnCancel.apply {
             text = dialogPositiveButtonName
             setOnClickListener {
-                commonBottomSheetDialogInterface.onPositiveButtonClick()
+                commonBottomSheetDialogInterface.onPositiveButtonClick(modelClass)
+                dismiss()
             }
         }
+
         tvTitle.text = dialogTitle
         tvMessage.text = dialogMessage
 
 
         btnClose.setOnClickListener {
+            commonBottomSheetDialogInterface.onNegativeButtonClick(modelClass)
+
             dismiss()
         }
-
-
     }
 
     companion object {
@@ -72,9 +84,15 @@ class CommonBottomSheetDialogFragment(private val commonBottomSheetDialogInterfa
             title: String,
             message: String,
             positiveButtonName: String,
-            commonBottomSheetDialogInterface: CommonBottomSheetDialogInterface
+            commonBottomSheetDialogInterface: CommonBottomSheetDialogInterface,
+            modelClass: Any,
+            requiredContext: Context
         ) =
-            CommonBottomSheetDialogFragment(commonBottomSheetDialogInterface).apply {
+            CommonBottomSheetDialogFragment(
+                commonBottomSheetDialogInterface,
+                modelClass,
+                requiredContext
+            ).apply {
                 arguments = Bundle().apply {
                     putString(DIALOG_TITLE, title)
                     putString(DIALOG_MESSAGE, message)

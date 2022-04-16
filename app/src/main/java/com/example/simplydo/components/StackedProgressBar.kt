@@ -18,6 +18,7 @@ class StackedProgressBar : View {
     private lateinit var paint: Paint
 
     private lateinit var progressBarCanvas: Canvas
+    private var itemClassificationCount = 0
 
     private var arrayChart = arrayListOf(
         25, 25, 25, 25
@@ -55,35 +56,51 @@ class StackedProgressBar : View {
     }
 
     private fun drawProgressBar(canvas: Canvas) {
-        Log.i(TAG, "drawProgressBar: $totalItem")
-        val colors = arrayListOf(
-            Color.parseColor("#FC4F4F"),
-            Color.parseColor("#FF9F45"),
-            Color.parseColor("#FFE162"),
-            Color.parseColor("#49FF00")
-        )
+        Log.i(TAG, "totalItem: $totalItem")
+        Log.i(TAG, "arrayChart: $arrayChart")
+
+        val colors = arrayListOf<Int>()
+        colors.add(Color.parseColor("#FC4F4F"))
+        colors.add(Color.parseColor("#FF9F45"))
+        colors.add(Color.parseColor("#FFE162"))
+        colors.add(Color.parseColor("#49FF00"))
+        colors.add(Color.parseColor("#FC4F4F"))
+        colors.add(Color.parseColor("#FF9F45"))
+        colors.add(Color.parseColor("#FFE162"))
+        colors.add(Color.parseColor("#49FF00"))
+        colors.add(Color.parseColor("#FC4F4F"))
+        colors.add(Color.parseColor("#FF9F45"))
+        colors.add(Color.parseColor("#FFE162"))
+        colors.add(Color.parseColor("#49FF00"))
+
+        Log.i(TAG, "colors: $colors")
 
         var leftPosition = 0
         for ((index, item) in arrayChart.withIndex()) {
-
+            Log.i(TAG, "index: $index")
             paint.color = colors[index]
             val firstSize = (leftPosition + width * item / totalItem)
-
             val rect = RectF(leftPosition.toFloat(), 0f, firstSize.toFloat(), 10f)
-
             val corners = floatArrayOf(15f, 15f, 15f, 15f, 15f, 15f, 15f, 15f)
             val path = Path()
             path.addRoundRect(rect, corners, Path.Direction.CW)
+            Log.i(TAG, "drawProgressBar: paint ${paint.color}")
             canvas.drawPath(path, paint)
-            leftPosition += firstSize + 1 - leftPosition
+            leftPosition += firstSize - leftPosition
         }
-
     }
 
     fun updateProgressSize(contactsByStatus: ArrayList<Int>, size: Int) {
         arrayChart = contactsByStatus
-        totalItem = size
+        totalItem = if (size > 0)
+            size
+        else
+            1
         Log.i(TAG, "updateProgressSize: $totalItem")
         invalidate()
+    }
+
+    fun updateItemSize(itemSize: Int) {
+        itemClassificationCount = itemSize
     }
 }

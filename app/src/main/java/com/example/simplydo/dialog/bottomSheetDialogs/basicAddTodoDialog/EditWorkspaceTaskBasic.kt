@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import com.example.simplydo.R
 import com.example.simplydo.databinding.FragmentAddTodoBasicListDialogBinding
-import com.example.simplydo.model.WorkspaceGroupTaskModel
+import com.example.simplydo.model.privateWorkspace.WorkspaceGroupTaskModel
 import com.example.simplydo.utlis.AppConstant
 import com.example.simplydo.utlis.AppFunctions
 import com.example.simplydo.utlis.EditBasicWorkspaceTaskInterface

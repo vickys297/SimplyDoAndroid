@@ -77,6 +77,7 @@ object MimeTypes {
     }
 }
 
+
 object AppConstant {
 
     object TaskPriority {
@@ -115,6 +116,19 @@ object AppConstant {
         const val USER_DATA = "userData"
         const val ORGANIZATION_ID = "organizationId"
         const val PAID_PLANS = "paidPlanAvailableData"
+
+        object Settings {
+            object Notifications {
+                const val SHOW_ALL_NOTIFICATION = "showAllNotification"
+                const val SHOW_PERSONAL_TASK_NOTIFICATION = "showPersonalTaskNotification"
+                const val SHOW_WORKSPACE_TASK_NOTIFICATION = "showWorkspaceTaskNotification"
+                const val REMIND_ME_BEFORE_EVENT_START = "remindMeBeforeTheTaskStart"
+                const val SNOOZE_ALERT = "snoozeAlert"
+                const val SNOOZE_ALERT_TIME = "snoozeAlertTime"
+                const val REMIND_ME_THE_CURRENT_DAY_TASK = "remindMeTheCurrentDayTask"
+                const val REMIND_ME_TIME = "remindMeTime"
+            }
+        }
     }
 
     object Session {
@@ -155,6 +169,7 @@ object AppConstant {
     }
 
     object Key {
+        const val PREFERRED_ORDER_BY: String = "preferredOrderBy"
         const val NAVIGATION_WORKSPACE: String = "workspaceData"
         const val NAVIGATION_WORKSPACE_ID: String = "workspaceId"
         const val NAVIGATION_GROUP_ID: String = "groupId"
