@@ -5,7 +5,7 @@
 
     <data>
 
-        <variable
+            <variable
             name="viewModel"
             type="com.example.simplydo.ui.fragments.accounts.notifications.NotificationSettingsViewModel" />
     </data>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".dialog.bottomSheetDialogs.SnoozeTimePickerBottomSheetDialog">
+
+        <!-- TODO: Update blank fragment layout -->
+        <TextView
+            style="@style/ToolbarStyledText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="@string/snooze_time"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/button_15_mins"
+            style="@style/ButtonOptions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/_15_mins" />
+
+        <Button
+            android:id="@+id/button_10_mins"
+            style="@style/ButtonOptions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/_10_mins" />
+
+        <Button
+            android:id="@+id/button_5_mins"
+            style="@style/ButtonOptions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/_5_mins" />
+
+        <Button
+            android:id="@+id/button_close"
+            style="@style/PrimaryButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/close" />
+
+    </LinearLayout>
+</layout>

@@ -51,6 +51,11 @@ interface ContactAdapterInterface {
     fun onContactSelect(item: ContactModel)
 }
 
+interface SnoozeTimeInterface {
+    fun onSnoozeTimeSelect(time: Int)
+    fun onClose()
+}
+
 interface SelectedContactInterface {
     fun onContactRemove(item: ContactModel)
 }

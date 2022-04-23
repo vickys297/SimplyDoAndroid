@@ -68,6 +68,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:18.0.0'
     implementation 'androidx.work:work-runtime-ktx:2.7.1'
     implementation 'com.google.firebase:firebase-messaging-ktx:23.0.1'
+    implementation project(path: ':simplyDoScheduler')
 
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

@@ -22,6 +22,7 @@ import com.example.simplydo.utlis.AppPreference
 import com.example.simplydo.utlis.AppRepository
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
+import com.mobi.business.simplydoscheduler.SimplyDoScheduler
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -50,6 +51,10 @@ class SplashScreenActivity : AppCompatActivity() {
             Log.d(TAG, "Token >> $token")
             Toast.makeText(baseContext, token, Toast.LENGTH_SHORT).show()
         })
+
+
+        val scheduler = SimplyDoScheduler.getInstance(this@SplashScreenActivity)
+        scheduler.scheduleNotification(123132123)
 
         appRepository = AppRepository.getInstance(
             this@SplashScreenActivity,

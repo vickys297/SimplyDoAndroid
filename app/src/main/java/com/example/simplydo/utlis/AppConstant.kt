@@ -123,6 +123,7 @@ object AppConstant {
                 const val SHOW_PERSONAL_TASK_NOTIFICATION = "showPersonalTaskNotification"
                 const val SHOW_WORKSPACE_TASK_NOTIFICATION = "showWorkspaceTaskNotification"
                 const val REMIND_ME_BEFORE_EVENT_START = "remindMeBeforeTheTaskStart"
+                const val REMIND_ME_BEFORE_EVENT_START_TIME = "remindMeBeforeTheTaskStartTime"
                 const val SNOOZE_ALERT = "snoozeAlert"
                 const val SNOOZE_ALERT_TIME = "snoozeAlertTime"
                 const val REMIND_ME_THE_CURRENT_DAY_TASK = "remindMeTheCurrentDayTask"
