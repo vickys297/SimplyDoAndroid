@@ -32,12 +32,12 @@ import com.example.simplydo.dialog.bottomSheetDialogs.attachments.AddAttachments
 import com.example.simplydo.dialog.bottomSheetDialogs.priorityDialog.PriorityDialog
 import com.example.simplydo.dialog.bottomSheetDialogs.repeatDialog.RepeatDialog
 import com.example.simplydo.dialog.bottomSheetDialogs.tags.TagsBottomSheetDialog
-import com.example.simplydo.localDatabase.AppDatabase
+import com.example.simplydo.database.AppDatabase
 import com.example.simplydo.model.*
 import com.example.simplydo.model.attachmentModel.AudioModel
 import com.example.simplydo.model.attachmentModel.FileModel
 import com.example.simplydo.model.attachmentModel.GalleryModel
-import com.example.simplydo.utlis.*
+import com.example.simplydo.utils.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng

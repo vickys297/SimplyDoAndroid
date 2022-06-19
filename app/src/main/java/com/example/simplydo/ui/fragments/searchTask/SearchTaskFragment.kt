@@ -13,9 +13,9 @@ import com.example.simplydo.R
 import com.example.simplydo.adapters.search.WorkspaceSearchTaskAdapter
 import com.example.simplydo.databinding.SearchTaskFragmentBinding
 import com.example.simplydo.dialog.bottomSheetDialogs.CommonBottomSheetDialogFragment
-import com.example.simplydo.localDatabase.AppDatabase
+import com.example.simplydo.database.AppDatabase
 import com.example.simplydo.model.privateWorkspace.WorkspaceGroupTaskModel
-import com.example.simplydo.utlis.*
+import com.example.simplydo.utils.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch

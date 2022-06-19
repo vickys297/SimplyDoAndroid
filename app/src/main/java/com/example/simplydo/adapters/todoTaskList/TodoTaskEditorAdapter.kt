@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.simplydo.databinding.RecyclerTaskListItemBinding
 import com.example.simplydo.databinding.RecyclerTaskTextItemBinding
 import com.example.simplydo.model.TodoTaskModel
-import com.example.simplydo.utlis.AppConstant
-import com.example.simplydo.utlis.NewTodo
+import com.example.simplydo.utils.AppConstant
+import com.example.simplydo.utils.NewTodo
 
 internal const val VIEW_TYPE_LIST = 0
 internal const val VIEW_TYPE_TEXT = 1

@@ -10,13 +10,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simplydo.R
 import com.example.simplydo.adapters.workspace.ParticipantsAdapter
 import com.example.simplydo.databinding.SelectParticipantsFragmentBinding
-import com.example.simplydo.localDatabase.AppDatabase
+import com.example.simplydo.database.AppDatabase
 import com.example.simplydo.model.UserAccountModel
 import com.example.simplydo.model.AccountModel
-import com.example.simplydo.utlis.AppConstant
-import com.example.simplydo.utlis.AppRepository
-import com.example.simplydo.utlis.ParticipantInterface
-import com.example.simplydo.utlis.ViewModelFactory
+import com.example.simplydo.utils.AppConstant
+import com.example.simplydo.utils.AppRepository
+import com.example.simplydo.utils.ParticipantInterface
+import com.example.simplydo.utils.ViewModelFactory
 
 internal val TAG = SelectParticipantsFragment::class.java.canonicalName
 

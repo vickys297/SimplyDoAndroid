@@ -1,4 +1,4 @@
-package com.example.simplydo.localDatabase.dao
+package com.example.simplydo.database.dao
 
 import androidx.room.*
 import com.example.simplydo.model.TagModel

@@ -16,9 +16,9 @@ import com.example.simplydo.R
 import com.example.simplydo.adapters.attachment.SelectedListContactAdapter
 import com.example.simplydo.adapters.attachment.SelectionListContactAdapter
 import com.example.simplydo.databinding.ContactsListViewBinding
-import com.example.simplydo.localDatabase.AppDatabase
+import com.example.simplydo.database.AppDatabase
 import com.example.simplydo.model.ContactModel
-import com.example.simplydo.utlis.*
+import com.example.simplydo.utils.*
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 

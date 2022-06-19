@@ -12,7 +12,7 @@ import android.view.ViewGroup
 import android.widget.SeekBar
 import com.example.simplydo.databinding.FragmentPlayAudioBottomSheetDialogBinding
 import com.example.simplydo.model.attachmentModel.AudioModel
-import com.example.simplydo.utlis.AppFunctions
+import com.example.simplydo.utils.AppFunctions
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.util.*
 

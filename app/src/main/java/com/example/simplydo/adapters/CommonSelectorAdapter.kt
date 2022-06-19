@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.simplydo.R
 import com.example.simplydo.databinding.RecyclerItemSelectorBinding
 import com.example.simplydo.model.SelectorDataModal
-import com.example.simplydo.utlis.CommonSelector
+import com.example.simplydo.utils.CommonSelector
 
 class CommonSelectorAdapter(
     val arrayList: ArrayList<SelectorDataModal>,

@@ -1,4 +1,4 @@
-package com.example.simplydo.workerClass
+package com.example.simplydo.worker
 
 import android.app.NotificationManager
 import android.content.Context
@@ -6,10 +6,10 @@ import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import com.example.simplydo.localDatabase.AppDatabase
-import com.example.simplydo.utlis.AppConstant
-import com.example.simplydo.utlis.AppFunctions
-import com.example.simplydo.utlis.sendNotification
+import com.example.simplydo.database.AppDatabase
+import com.example.simplydo.utils.AppConstant
+import com.example.simplydo.utils.AppFunctions
+import com.example.simplydo.utils.sendNotification
 
 internal val TAG = RegularNotificationWorker::class.java.canonicalName
 

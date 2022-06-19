@@ -15,9 +15,9 @@ import com.example.simplydo.adapters.attachment.SelectionListAudioAdapter
 import com.example.simplydo.databinding.AudioListFragmentBinding
 import com.example.simplydo.dialog.bottomSheetDialogs.playAudio.PlayAudioBottomSheetDialog
 import com.example.simplydo.model.attachmentModel.AudioModel
-import com.example.simplydo.utlis.AppConstant
-import com.example.simplydo.utlis.AppFunctions
-import com.example.simplydo.utlis.AudioInterface
+import com.example.simplydo.utils.AppConstant
+import com.example.simplydo.utils.AppFunctions
+import com.example.simplydo.utils.AudioInterface
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.launch

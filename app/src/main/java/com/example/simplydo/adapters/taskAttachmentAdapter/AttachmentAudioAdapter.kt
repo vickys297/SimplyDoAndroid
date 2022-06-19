@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.simplydo.databinding.RecyclerAttachmentAudioListItemBinding
 import com.example.simplydo.model.attachmentModel.AudioModel
-import com.example.simplydo.utlis.AudioAttachmentInterface
+import com.example.simplydo.utils.AudioAttachmentInterface
 
 class AttachmentAudioAdapter(private val audioAttachmentInterface: AudioAttachmentInterface) : RecyclerView.Adapter<AttachmentAudioAdapter.AudioViewHolder>() {
 

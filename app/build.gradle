@@ -4,7 +4,6 @@ plugins {
     id 'kotlin-kapt'
     id 'com.google.gms.google-services'
     id 'com.google.secrets_gradle_plugin' version '0.5'
-    id 'androidx.navigation.safeargs.kotlin'
     id 'kotlin-parcelize'
 }
 
@@ -41,6 +40,7 @@ android {
         jvmTarget = '1.8'
     }
     buildToolsVersion '30.0.3'
+    namespace 'com.example.simplydo'
 }
 
 

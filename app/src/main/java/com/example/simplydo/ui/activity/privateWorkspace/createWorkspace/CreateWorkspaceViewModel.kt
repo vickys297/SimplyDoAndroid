@@ -6,9 +6,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.simplydo.model.AccountModel
 import com.example.simplydo.model.UserIdModel
 import com.example.simplydo.model.WorkspaceModel
-import com.example.simplydo.utlis.AppConstant
-import com.example.simplydo.utlis.AppPreference
-import com.example.simplydo.utlis.AppRepository
+import com.example.simplydo.utils.AppConstant
+import com.example.simplydo.utils.AppPreference
+import com.example.simplydo.utils.AppRepository
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

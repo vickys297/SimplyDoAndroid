@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.simplydo.R
 import com.example.simplydo.adapters.PersonalTaskListAdapter
+import com.example.simplydo.database.AppDatabase
 import com.example.simplydo.databinding.FragmentQuickTodoBinding
 import com.example.simplydo.dialog.bottomSheetDialogs.NewTaskOptionsBottomSheetDialog
 import com.example.simplydo.dialog.bottomSheetDialogs.basicAddTodoDialog.AddNewRemainder
@@ -28,11 +29,10 @@ import com.example.simplydo.dialog.bottomSheetDialogs.basicAddTodoDialog.EditTod
 import com.example.simplydo.dialog.bottomSheetDialogs.calenderOptions.TodoOptions
 import com.example.simplydo.dialog.bottomSheetDialogs.todoOptions.TodoOptionsFragment
 import com.example.simplydo.dialog.bottomSheetDialogs.workspaceDialog.WorkspaceSwitchBottomSheetDialog
-import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.model.AccountModel
 import com.example.simplydo.model.CommonResponseModel
 import com.example.simplydo.model.TodoModel
-import com.example.simplydo.utlis.*
+import com.example.simplydo.utils.*
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -50,7 +50,7 @@ class PersonalWorkspaceTaskFragment : Fragment(R.layout.fragment_quick_todo), Vi
     private lateinit var totalTaskCountObserver: Observer<Int>
     private lateinit var noNetworkObserver: Observer<String>
 
-    private lateinit var viewModel: QuickTodoViewModel
+    private lateinit var viewModel: PersonalWorkspaceTaskViewViewModel
 
     private lateinit var _binding: FragmentQuickTodoBinding
     private val binding get() = _binding
@@ -74,6 +74,7 @@ class PersonalWorkspaceTaskFragment : Fragment(R.layout.fragment_quick_todo), Vi
             }
         }
     }
+
     private val newTaskOptionsCallback: AppInterface.NewTaskDialogCallback = object :
         AppInterface.NewTaskDialogCallback {
         override fun onOptionSelected(option: Int) {
@@ -96,8 +97,8 @@ class PersonalWorkspaceTaskFragment : Fragment(R.layout.fragment_quick_todo), Vi
         override fun onClose() {
 
         }
-
     }
+
 
     private val editBasicTodoInterface = object : EditBasicTodoInterface {
         override fun onUpdateDetails(todoModel: TodoModel) {
@@ -377,6 +378,8 @@ class PersonalWorkspaceTaskFragment : Fragment(R.layout.fragment_quick_todo), Vi
         val itemTouchHelper = ItemTouchHelper(simpleItemTouchCallback)
         itemTouchHelper.attachToRecyclerView(binding.recyclerViewTodoList)
 
+
+        
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -428,9 +431,10 @@ class PersonalWorkspaceTaskFragment : Fragment(R.layout.fragment_quick_todo), Vi
                         )
                     )
                 )
-            )[QuickTodoViewModel::class.java]
+            )[PersonalWorkspaceTaskViewViewModel::class.java]
+
         binding.apply {
-            todoViewModel = this@PersonalWorkspaceTaskFragment.viewModel
+            personalViewModel = this@PersonalWorkspaceTaskFragment.viewModel
             lifecycleOwner = this@PersonalWorkspaceTaskFragment
             executePendingBindings()
         }

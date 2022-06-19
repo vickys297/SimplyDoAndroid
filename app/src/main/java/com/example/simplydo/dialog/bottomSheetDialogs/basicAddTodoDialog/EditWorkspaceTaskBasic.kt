@@ -10,9 +10,9 @@ import android.view.inputmethod.InputMethodManager
 import com.example.simplydo.R
 import com.example.simplydo.databinding.FragmentAddTodoBasicListDialogBinding
 import com.example.simplydo.model.privateWorkspace.WorkspaceGroupTaskModel
-import com.example.simplydo.utlis.AppConstant
-import com.example.simplydo.utlis.AppFunctions
-import com.example.simplydo.utlis.EditBasicWorkspaceTaskInterface
+import com.example.simplydo.utils.AppConstant
+import com.example.simplydo.utils.AppFunctions
+import com.example.simplydo.utils.EditBasicWorkspaceTaskInterface
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 

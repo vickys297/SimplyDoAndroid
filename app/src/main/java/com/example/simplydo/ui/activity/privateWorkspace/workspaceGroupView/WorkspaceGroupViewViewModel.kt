@@ -9,7 +9,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.simplydo.model.entity.WorkspaceGroupModel
 import com.example.simplydo.ui.activity.personalWorkspace.personalTask.PAGE_SIZE
-import com.example.simplydo.utlis.AppRepository
+import com.example.simplydo.utils.AppRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch

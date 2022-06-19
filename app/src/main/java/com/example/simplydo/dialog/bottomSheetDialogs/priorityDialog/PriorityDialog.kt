@@ -6,8 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import com.example.simplydo.R
-import com.example.simplydo.utlis.AppConstant
-import com.example.simplydo.utlis.AppInterface
+import com.example.simplydo.utils.AppConstant
+import com.example.simplydo.utils.AppInterface
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 

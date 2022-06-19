@@ -3,7 +3,7 @@ package com.example.simplydo.ui.fragments.todoListFullDetails
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.simplydo.model.TodoModel
-import com.example.simplydo.utlis.AppRepository
+import com.example.simplydo.utils.AppRepository
 
 class TodoFullDetailsViewModel(val appRepository: AppRepository) : ViewModel() {
 

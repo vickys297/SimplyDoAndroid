@@ -8,18 +8,17 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.example.simplydo.R
+import com.example.simplydo.database.AppDatabase
 import com.example.simplydo.databinding.PersonalWorkspaceActivityBinding
-import com.example.simplydo.localDatabase.AppDatabase
 import com.example.simplydo.model.*
 import com.example.simplydo.model.entity.WorkspaceGroupModel
-import com.example.simplydo.utlis.*
+import com.example.simplydo.utils.*
 import com.google.gson.Gson
 import java.util.*
 
 internal val TAG = PersonalWorkspaceActivity::class.java.canonicalName
 
 class PersonalWorkspaceActivity : AppCompatActivity() {
-
 
     private lateinit var allTodoListDataObserver: Observer<List<TodoModel>>
 
@@ -445,6 +444,4 @@ class PersonalWorkspaceActivity : AppCompatActivity() {
             this@PersonalWorkspaceActivity
         )
     }
-
-
 }

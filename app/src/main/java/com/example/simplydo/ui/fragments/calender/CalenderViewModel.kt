@@ -12,9 +12,9 @@ import com.example.simplydo.model.LatLngModel
 import com.example.simplydo.model.TodoModel
 import com.example.simplydo.model.attachmentModel.GalleryModel
 import com.example.simplydo.ui.activity.personalWorkspace.personalTask.PAGE_SIZE
-import com.example.simplydo.utlis.AppConstant
-import com.example.simplydo.utlis.AppFunctions
-import com.example.simplydo.utlis.AppRepository
+import com.example.simplydo.utils.AppConstant
+import com.example.simplydo.utils.AppFunctions
+import com.example.simplydo.utils.AppRepository
 import kotlinx.coroutines.flow.Flow
 import java.util.*
 

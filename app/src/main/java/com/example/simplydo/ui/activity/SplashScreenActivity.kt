@@ -11,21 +11,26 @@ import com.example.simplydo.R
 import com.example.simplydo.api.API
 import com.example.simplydo.api.network.NoConnectivityException
 import com.example.simplydo.api.network.RetrofitServices
-import com.example.simplydo.localDatabase.AppDatabase
+import com.example.simplydo.database.AppDatabase
 import com.example.simplydo.model.Token
 import com.example.simplydo.model.TokenResponse
 import com.example.simplydo.ui.activity.login.LoginActivity
 import com.example.simplydo.ui.activity.personalWorkspace.PersonalWorkspaceActivity
 import com.example.simplydo.ui.activity.privateWorkspace.WorkspaceActivity
-import com.example.simplydo.utlis.AppConstant
-import com.example.simplydo.utlis.AppPreference
-import com.example.simplydo.utlis.AppRepository
+import com.example.simplydo.utils.AppConstant
+import com.example.simplydo.utils.AppPreference
+import com.example.simplydo.utils.AppRepository
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import com.mobi.business.simplydoscheduler.SimplyDoScheduler
+import com.mobi.business.simplydoscheduler.model.DateTimeModel
+import com.mobi.business.simplydoscheduler.model.DayModel
+import com.mobi.business.simplydoscheduler.model.NotificationDataModel
+import com.mobi.business.simplydoscheduler.model.TimeModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.*
 
 internal val TAG = SplashScreenActivity::class.java.canonicalName
 
@@ -54,7 +59,32 @@ class SplashScreenActivity : AppCompatActivity() {
 
 
         val scheduler = SimplyDoScheduler.getInstance(this@SplashScreenActivity)
-        scheduler.scheduleNotification(123132123)
+        scheduler.scheduleRepeatedNotification(
+            NotificationDataModel(
+                title = "Title",
+                message = "Message",
+                dateTime = DateTimeModel(
+                    date = DayModel(
+                        year = 2020, month = 1, day = 1
+                    ),
+                    time = TimeModel(
+                        hours = 11,
+                        minutes = 36
+                    ),
+                ),
+                id = 2313,
+                setOf(
+                    Calendar.MONDAY,
+                    Calendar.TUESDAY,
+                    Calendar.WEDNESDAY,
+                    Calendar.THURSDAY,
+                    Calendar.FRIDAY,
+                    Calendar.SATURDAY,
+                    Calendar.SUNDAY
+                ),
+                repeatableType = 23
+            )
+        )
 
         appRepository = AppRepository.getInstance(
             this@SplashScreenActivity,

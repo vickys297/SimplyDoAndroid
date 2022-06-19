@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.simplydo.databinding.FragmentSnoozeTimePickerBottomSheetDialogBinding
-import com.example.simplydo.utlis.SnoozeTimeInterface
+import com.example.simplydo.utils.SnoozeTimeInterface
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 

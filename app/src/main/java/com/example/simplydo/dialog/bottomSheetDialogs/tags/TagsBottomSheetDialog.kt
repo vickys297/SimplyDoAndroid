@@ -10,11 +10,11 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import com.example.simplydo.R
 import com.example.simplydo.databinding.TagsBottomSheetDialogFragmentBinding
-import com.example.simplydo.localDatabase.AppDatabase
+import com.example.simplydo.database.AppDatabase
 import com.example.simplydo.model.TagModel
-import com.example.simplydo.utlis.AppInterface
-import com.example.simplydo.utlis.AppRepository
-import com.example.simplydo.utlis.ViewModelFactory
+import com.example.simplydo.utils.AppInterface
+import com.example.simplydo.utils.AppRepository
+import com.example.simplydo.utils.ViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
 

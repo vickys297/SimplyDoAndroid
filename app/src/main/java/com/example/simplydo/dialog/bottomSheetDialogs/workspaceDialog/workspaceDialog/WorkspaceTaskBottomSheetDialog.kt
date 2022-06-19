@@ -8,8 +8,8 @@ import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
 import com.example.simplydo.R
 import com.example.simplydo.databinding.FragmentWorkspaceTaskBottomSheetDialogBinding
-import com.example.simplydo.utlis.AppConstant
-import com.example.simplydo.utlis.AppPreference
+import com.example.simplydo.utils.AppConstant
+import com.example.simplydo.utils.AppPreference
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class WorkspaceTaskBottomSheetDialog(private val requireContext: Context, val callback: Callback) :

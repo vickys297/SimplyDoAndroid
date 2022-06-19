@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.simplydo.databinding.FragmentAddAttachmentsFragmentsBinding
-import com.example.simplydo.utlis.AddAttachmentInterface
+import com.example.simplydo.utils.AddAttachmentInterface
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class AddAttachmentsFragments(

@@ -6,8 +6,8 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.core.content.ContextCompat
-import com.example.simplydo.utlis.AppConstant
-import com.example.simplydo.utlis.sendNotification
+import com.example.simplydo.utils.AppConstant
+import com.example.simplydo.utils.sendNotification
 
 internal val TAG = AppBroadCastReceiver::class.java.canonicalName
 class AppBroadCastReceiver : BroadcastReceiver() {

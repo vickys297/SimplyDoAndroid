@@ -14,9 +14,9 @@ import com.example.simplydo.R
 import com.example.simplydo.adapters.TodoListPagingAdapter
 import com.example.simplydo.databinding.OtherTodoFragmentBinding
 import com.example.simplydo.dialog.bottomSheetDialogs.todoOptions.TodoOptionsFragment
-import com.example.simplydo.localDatabase.AppDatabase
+import com.example.simplydo.database.AppDatabase
 import com.example.simplydo.model.TodoModel
-import com.example.simplydo.utlis.*
+import com.example.simplydo.utils.*
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 

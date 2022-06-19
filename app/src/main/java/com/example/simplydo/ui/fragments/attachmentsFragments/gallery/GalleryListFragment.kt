@@ -15,10 +15,10 @@ import com.example.simplydo.R
 import com.example.simplydo.adapters.attachment.SelectionListGalleryAdapter
 import com.example.simplydo.databinding.FragmentGalleryViewBinding
 import com.example.simplydo.model.attachmentModel.GalleryModel
-import com.example.simplydo.utlis.AppConstant
-import com.example.simplydo.utlis.AppFunctions
-import com.example.simplydo.utlis.GalleryInterface
-import com.example.simplydo.utlis.SimpleViewModelFactory
+import com.example.simplydo.utils.AppConstant
+import com.example.simplydo.utils.AppFunctions
+import com.example.simplydo.utils.GalleryInterface
+import com.example.simplydo.utils.SimpleViewModelFactory
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 

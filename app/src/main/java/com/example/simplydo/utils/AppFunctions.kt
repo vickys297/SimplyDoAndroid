@@ -1,4 +1,4 @@
-package com.example.simplydo.utlis
+package com.example.simplydo.utils
 
 import android.app.Activity
 import android.app.AlarmManager
@@ -226,8 +226,8 @@ object AppFunctions {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 //        alarmManager.setRepeating(
-//            AlarmManager.RTC_WAKEUP, eventTime,
-//            AlarmManager.INTERVAL_DAY,
+//            SchedulerAlarmManager.RTC_WAKEUP, eventTime,
+//            SchedulerAlarmManager.INTERVAL_DAY,
 //            pendingIntent
 //        )
         alarmManager.setExactAndAllowWhileIdle(

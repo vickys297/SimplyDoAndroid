@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.simplydo.databinding.RecyclerTaskFooterItemBinding
-import com.example.simplydo.utlis.NewTodo
+import com.example.simplydo.utils.NewTodo
 
 class TodoTaskFooterAdapter(private val addTodoInterface: NewTodo.AddTask) :
     RecyclerView.Adapter<TodoTaskFooterAdapter.TodoFooterViewHolder>() {

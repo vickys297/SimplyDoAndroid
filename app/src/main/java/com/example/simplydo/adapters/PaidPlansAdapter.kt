@@ -6,7 +6,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.simplydo.databinding.RecyclerPlanListItemBinding
 import com.example.simplydo.model.PaidPlanModel
-import com.example.simplydo.utlis.PaidPlain
+import com.example.simplydo.utils.PaidPlain
 
 class PaidPlansAdapter(
     private var currentSelectedPosition: Int = 0,

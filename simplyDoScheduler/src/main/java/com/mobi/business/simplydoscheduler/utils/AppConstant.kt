@@ -1,4 +1,4 @@
-package com.example.simplydo.utlis
+package com.mobi.business.simplydoscheduler.utils
 
 object MimeTypes {
     object Application {

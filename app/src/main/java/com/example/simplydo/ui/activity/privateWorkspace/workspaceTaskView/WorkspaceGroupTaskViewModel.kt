@@ -10,7 +10,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.simplydo.model.privateWorkspace.WorkspaceGroupTaskModel
 import com.example.simplydo.ui.activity.personalWorkspace.personalTask.PAGE_SIZE
-import com.example.simplydo.utlis.AppRepository
+import com.example.simplydo.utils.AppRepository
 import kotlinx.coroutines.flow.Flow
 
 class WorkspaceGroupTaskViewModel(val appRepository: AppRepository) : ViewModel() {

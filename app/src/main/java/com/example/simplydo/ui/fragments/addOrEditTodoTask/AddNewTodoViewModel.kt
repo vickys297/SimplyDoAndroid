@@ -8,9 +8,9 @@ import com.example.simplydo.model.attachmentModel.AudioModel
 import com.example.simplydo.model.attachmentModel.FileModel
 import com.example.simplydo.model.attachmentModel.GalleryModel
 import com.example.simplydo.model.privateWorkspace.WorkspaceGroupTaskModel
-import com.example.simplydo.utlis.AppConstant
-import com.example.simplydo.utlis.AppFunctions
-import com.example.simplydo.utlis.AppRepository
+import com.example.simplydo.utils.AppConstant
+import com.example.simplydo.utils.AppFunctions
+import com.example.simplydo.utils.AppRepository
 import java.util.*
 
 class AddNewTodoViewModel(val appRepository: AppRepository) :

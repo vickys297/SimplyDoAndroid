@@ -3,7 +3,7 @@ package com.example.simplydo.ui.activity.privateWorkspace.workspaceTaskListFullD
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.simplydo.model.privateWorkspace.WorkspaceGroupTaskModel
-import com.example.simplydo.utlis.AppRepository
+import com.example.simplydo.utils.AppRepository
 
 class WorkspaceTaskFullDetailsViewModel(val appRepository: AppRepository) : ViewModel() {
 

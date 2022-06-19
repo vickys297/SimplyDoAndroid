@@ -9,9 +9,9 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.simplydo.R
 import com.example.simplydo.databinding.NotificationSettingsFragmentBinding
 import com.example.simplydo.dialog.bottomSheetDialogs.SnoozeTimePickerBottomSheetDialog
-import com.example.simplydo.localDatabase.AppDatabase
+import com.example.simplydo.database.AppDatabase
 import com.example.simplydo.model.TaskReminderTime
-import com.example.simplydo.utlis.*
+import com.example.simplydo.utils.*
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import com.google.gson.Gson

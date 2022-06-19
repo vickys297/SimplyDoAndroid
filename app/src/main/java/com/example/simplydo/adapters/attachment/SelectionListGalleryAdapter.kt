@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.simplydo.databinding.RecyclerGalleryListItemBinding
 import com.example.simplydo.model.attachmentModel.GalleryModel
-import com.example.simplydo.utlis.GalleryInterface
+import com.example.simplydo.utils.GalleryInterface
 
 
 class SelectionListGalleryAdapter(val requireContext: Context, private val galleryInterface: GalleryInterface) :

@@ -9,12 +9,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simplydo.R
 import com.example.simplydo.adapters.workspace.ParticipantsAdapter
 import com.example.simplydo.databinding.CreateNewWorkspaceGroupFragmentBinding
-import com.example.simplydo.localDatabase.AppDatabase
+import com.example.simplydo.database.AppDatabase
 import com.example.simplydo.model.AccountModel
 import com.example.simplydo.model.UserAccountModel
 import com.example.simplydo.model.UserIdModel
 import com.example.simplydo.model.entity.WorkspaceGroupModel
-import com.example.simplydo.utlis.*
+import com.example.simplydo.utils.*
 import com.google.gson.Gson
 
 internal val TAG = CreateNewWorkspaceGroupFragment::class.java.canonicalName

@@ -9,7 +9,7 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import com.example.simplydo.R
-import com.example.simplydo.utlis.CommonBottomSheetDialogInterface
+import com.example.simplydo.utils.CommonBottomSheetDialogInterface
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 private const val DIALOG_TITLE = "param1"

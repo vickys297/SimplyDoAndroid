@@ -15,9 +15,9 @@ import com.example.simplydo.ui.activity.screens.Page1
 import com.example.simplydo.ui.activity.screens.Page2
 import com.example.simplydo.ui.activity.screens.Page3
 import com.example.simplydo.ui.activity.screens.Page4
-import com.example.simplydo.utlis.AppConstant
-import com.example.simplydo.utlis.AppPreference
-import com.example.simplydo.utlis.Page4Interface
+import com.example.simplydo.utils.AppConstant
+import com.example.simplydo.utils.AppPreference
+import com.example.simplydo.utils.Page4Interface
 import com.google.firebase.messaging.FirebaseMessaging
 
 internal val TAG_ONBOARD = OnBoardActivity::class.java.canonicalName

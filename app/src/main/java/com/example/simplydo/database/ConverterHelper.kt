@@ -1,4 +1,4 @@
-package com.example.simplydo.localDatabase
+package com.example.simplydo.database
 
 import androidx.room.TypeConverter
 import com.example.simplydo.model.*

@@ -1,7 +1,7 @@
 package com.example.simplydo.api.network
 
 import android.content.Context
-import com.example.simplydo.utlis.AppConstant
+import com.example.simplydo.utils.AppConstant
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit

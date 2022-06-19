@@ -9,8 +9,8 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.simplydo.dataSource.DataSourceContactNew
 import com.example.simplydo.model.ContactModel
-import com.example.simplydo.utlis.AppConstant.DEFAULT_PAGE_SIZE
-import com.example.simplydo.utlis.AppRepository
+import com.example.simplydo.utils.AppConstant.DEFAULT_PAGE_SIZE
+import com.example.simplydo.utils.AppRepository
 import kotlinx.coroutines.flow.Flow
 
 internal val ContactsViewModelTAG = ContactsViewModel::class.java.canonicalName

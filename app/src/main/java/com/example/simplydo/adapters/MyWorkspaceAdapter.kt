@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.simplydo.databinding.RecyclerWorkspaceListItemBinding
 import com.example.simplydo.model.WorkspaceModel
-import com.example.simplydo.utlis.AppInterface
+import com.example.simplydo.utils.AppInterface
 
 class MyWorkspaceAdapter(val callback: AppInterface.MyWorkspace.Callback?) :
     RecyclerView.Adapter<MyWorkspaceAdapter.MyWorkspaceViewHolder>() {

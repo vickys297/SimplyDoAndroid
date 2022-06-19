@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.simplydo.databinding.FragmentOptionsBinding
-import com.example.simplydo.utlis.TodoTaskOptionsInterface
+import com.example.simplydo.utils.TodoTaskOptionsInterface
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class TodoOptions(

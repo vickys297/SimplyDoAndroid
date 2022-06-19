@@ -1,4 +1,4 @@
-package com.example.simplydo.utlis
+package com.example.simplydo.utils
 
 import android.view.View
 import com.example.simplydo.model.*

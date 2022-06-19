@@ -11,8 +11,8 @@ import com.example.simplydo.adapters.GroupViewAdapter
 import com.example.simplydo.adapters.StageListAdapter
 import com.example.simplydo.databinding.WorkspaceTaskFullDetailsBottomSheetDialogFragmentBinding
 import com.example.simplydo.model.TaskStatusDataModel
-import com.example.simplydo.utlis.AppFunctions
-import com.example.simplydo.utlis.AppInterface
+import com.example.simplydo.utils.AppFunctions
+import com.example.simplydo.utils.AppInterface
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class TaskFullDetailsBottomSheetDialog internal constructor(

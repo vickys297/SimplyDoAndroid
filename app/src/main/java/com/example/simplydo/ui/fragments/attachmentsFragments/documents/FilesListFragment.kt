@@ -7,6 +7,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.provider.OpenableColumns
 import android.util.Log
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
@@ -19,8 +20,8 @@ import com.example.simplydo.R
 import com.example.simplydo.adapters.attachment.SelectionListFilesAdapter
 import com.example.simplydo.databinding.DocumentListFragmentBinding
 import com.example.simplydo.model.attachmentModel.FileModel
-import com.example.simplydo.utlis.AppConstant
-import com.example.simplydo.utlis.AppFunctions
+import com.example.simplydo.utils.AppConstant
+import com.example.simplydo.utils.AppFunctions
 
 internal val TAG = FileListFragment::class.java.canonicalName
 
@@ -67,7 +68,7 @@ class FileListFragment : Fragment(R.layout.document_list_fragment) {
                     result.data?.let {
                         it.clipData?.also { clipData ->
                             // Perform operations on the document using its URI.
-                            Log.i(TAG, "onActivityResult: uri--> $clipData.")
+                            Log.i(TAG, "onActivityResult: uri--> $clipData")
                             getItemFromClipData(clipData)
                         }
 
@@ -91,7 +92,6 @@ class FileListFragment : Fragment(R.layout.document_list_fragment) {
                 // system file picker when it loads.
 //            putExtra(DocumentsContract.EXTRA_INITIAL_URI, Environment.DIRECTORY_DOCUMENTS)
                 putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-                putExtra(Intent.ACTION_CLOSE_SYSTEM_DIALOGS, true)
             }
             resultLauncher.launch(intent)
         }
@@ -147,10 +147,11 @@ class FileListFragment : Fragment(R.layout.document_list_fragment) {
             val columnId = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns._ID)
             val nameColumn =
                 cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DISPLAY_NAME)
-            val fileSize = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.SIZE)
+            val fileSize = cursor.getColumnIndex(OpenableColumns.SIZE)
             val createdDate =
                 cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATE_ADDED)
             val fileType = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.MEDIA_TYPE)
+
 
             Log.i(TAG, "getSelectItemData: ${cursor.count}")
 

@@ -9,10 +9,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simplydo.R
 import com.example.simplydo.adapters.myAccounts.MyAccountAdapter
 import com.example.simplydo.databinding.MyAccountsFragmentBinding
-import com.example.simplydo.localDatabase.AppDatabase
+import com.example.simplydo.database.AppDatabase
 import com.example.simplydo.model.AccountModel
-import com.example.simplydo.utlis.AppRepository
-import com.example.simplydo.utlis.ViewModelFactory
+import com.example.simplydo.utils.AppRepository
+import com.example.simplydo.utils.ViewModelFactory
 
 class MyAccountsFragment : Fragment(R.layout.my_accounts_fragment) {
 

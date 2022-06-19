@@ -7,10 +7,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.core.content.ContextCompat
-import com.example.simplydo.localDatabase.AppDatabase
+import com.example.simplydo.database.AppDatabase
 import com.example.simplydo.ui.activity.personalWorkspace.PersonalWorkspaceActivity
-import com.example.simplydo.utlis.AppConstant
-import com.example.simplydo.utlis.AppRepository
+import com.example.simplydo.utils.AppConstant
+import com.example.simplydo.utils.AppRepository
 
 
 internal val closeNotificationReceiver = CloseNotificationReceiver::class.java.canonicalName

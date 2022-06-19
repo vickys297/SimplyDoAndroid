@@ -14,8 +14,8 @@ import com.example.simplydo.R
 import com.example.simplydo.databinding.RecyclerTodoCompletedListItemBinding
 import com.example.simplydo.databinding.RecyclerTodoListItemBinding
 import com.example.simplydo.model.TodoModel
-import com.example.simplydo.utlis.AppConstant
-import com.example.simplydo.utlis.TodoItemInterface
+import com.example.simplydo.utils.AppConstant
+import com.example.simplydo.utils.TodoItemInterface
 
 internal val TAG_Other = TodoListPagingAdapter::class.java.canonicalName
 

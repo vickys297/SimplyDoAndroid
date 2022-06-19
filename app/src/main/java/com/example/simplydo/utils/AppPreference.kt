@@ -1,4 +1,4 @@
-package com.example.simplydo.utlis
+package com.example.simplydo.utils
 
 import android.content.Context
 

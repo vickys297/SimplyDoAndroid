@@ -22,14 +22,14 @@ import com.example.simplydo.adapters.taskAttachmentAdapter.AttachmentGalleryAdap
 import com.example.simplydo.adapters.taskAttachmentAdapter.AttachmentTodoTaskAdapter
 import com.example.simplydo.databinding.TodoFullDetailsFragmentBinding
 import com.example.simplydo.dialog.bottomSheetDialogs.basicAddTodoDialog.EditTodoBasic
-import com.example.simplydo.localDatabase.AppDatabase
+import com.example.simplydo.database.AppDatabase
 import com.example.simplydo.model.ContactModel
 import com.example.simplydo.model.TagModel
 import com.example.simplydo.model.TodoModel
 import com.example.simplydo.model.TodoTaskModel
 import com.example.simplydo.model.attachmentModel.AudioModel
 import com.example.simplydo.model.attachmentModel.GalleryModel
-import com.example.simplydo.utlis.*
+import com.example.simplydo.utils.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng

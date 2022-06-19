@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.simplydo.R
 import com.example.simplydo.databinding.RecyclerCalenderListItemBinding
 import com.example.simplydo.model.SmallCalenderModel
-import com.example.simplydo.utlis.CalenderAdapterInterface
+import com.example.simplydo.utils.CalenderAdapterInterface
 
 internal val TAG = CalenderViewAdapter::class.java.canonicalName
 

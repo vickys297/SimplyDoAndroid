@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.simplydo.databinding.TodoOptionsDialogFragmentsBinding
 import com.example.simplydo.model.TodoModel
-import com.example.simplydo.utlis.TodoOptionDialogFragments
+import com.example.simplydo.utils.TodoOptionDialogFragments
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class TodoOptionsFragment(

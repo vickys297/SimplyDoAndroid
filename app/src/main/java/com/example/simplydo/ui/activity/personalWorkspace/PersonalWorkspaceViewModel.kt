@@ -7,9 +7,9 @@ import com.example.simplydo.model.*
 import com.example.simplydo.model.attachmentModel.GalleryModel
 import com.example.simplydo.model.entity.WorkspaceGroupModel
 import com.example.simplydo.model.privateWorkspace.WorkspaceGroupTaskModel
-import com.example.simplydo.utlis.AppConstant
-import com.example.simplydo.utlis.AppFunctions
-import com.example.simplydo.utlis.AppRepository
+import com.example.simplydo.utils.AppConstant
+import com.example.simplydo.utils.AppFunctions
+import com.example.simplydo.utils.AppRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*

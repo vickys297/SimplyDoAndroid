@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.example.simplydo.databinding.NewTodoOptionsFragmentBinding
-import com.example.simplydo.utlis.NewTodoOptionsFragmentsInterface
+import com.example.simplydo.utils.NewTodoOptionsFragmentsInterface
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 @Deprecated("Do not use options")

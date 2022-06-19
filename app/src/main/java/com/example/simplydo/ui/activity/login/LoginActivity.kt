@@ -17,8 +17,8 @@ import com.example.simplydo.model.OTPModel
 import com.example.simplydo.model.OTPResponse
 import com.example.simplydo.ui.activity.personalWorkspace.PersonalWorkspaceActivity
 import com.example.simplydo.ui.activity.privateWorkspace.WorkspaceActivity
-import com.example.simplydo.utlis.AppConstant
-import com.example.simplydo.utlis.AppPreference
+import com.example.simplydo.utils.AppConstant
+import com.example.simplydo.utils.AppPreference
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -157,7 +157,6 @@ class LoginActivity : AppCompatActivity() {
                 data?.let {
                     when (it.result) {
                         AppConstant.API_RESULT_OK -> {
-
 
                             Toast.makeText(this@LoginActivity, it.message, Toast.LENGTH_LONG).show()
 

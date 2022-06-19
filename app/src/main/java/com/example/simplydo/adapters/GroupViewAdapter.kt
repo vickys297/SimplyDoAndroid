@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.simplydo.databinding.RecyclerGroupListItemBinding
 import com.example.simplydo.model.entity.WorkspaceGroupModel
-import com.example.simplydo.utlis.AppInterface
+import com.example.simplydo.utils.AppInterface
 
 //internal val TAG = GroupViewAdapter::class.java.canonicalName
 

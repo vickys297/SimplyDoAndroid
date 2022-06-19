@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simplydo.adapters.CommonSelectorAdapter
 import com.example.simplydo.databinding.RepeatDialogFragmentBinding
 import com.example.simplydo.model.SelectorDataModal
-import com.example.simplydo.utlis.CommonSelector
-import com.example.simplydo.utlis.RepeatDialogInterface
+import com.example.simplydo.utils.CommonSelector
+import com.example.simplydo.utils.RepeatDialogInterface
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 internal val TAG = RepeatDialog::class.java.canonicalName

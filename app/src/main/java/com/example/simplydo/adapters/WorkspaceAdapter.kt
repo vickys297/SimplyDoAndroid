@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.simplydo.databinding.RecyclerAccountListItemBinding
 import com.example.simplydo.model.LinkedWorkspaceDataModel
-import com.example.simplydo.utlis.AppInterface
+import com.example.simplydo.utils.AppInterface
 
 class WorkspaceAdapter(private val linkedAccounts: ArrayList<LinkedWorkspaceDataModel>,private  val callback : AppInterface.WorkspaceAdapter.Callback) :
     RecyclerView.Adapter<WorkspaceAdapter.AccountItemViewHolder>() {

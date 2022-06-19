@@ -9,9 +9,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.simplydo.R
 import com.example.simplydo.databinding.CreateWorkspaceFragmentBinding
-import com.example.simplydo.localDatabase.AppDatabase
-import com.example.simplydo.utlis.AppRepository
-import com.example.simplydo.utlis.ViewModelFactory
+import com.example.simplydo.database.AppDatabase
+import com.example.simplydo.utils.AppRepository
+import com.example.simplydo.utils.ViewModelFactory
 
 class CreateWorkspaceFragment : Fragment(R.layout.create_workspace_fragment) {
 

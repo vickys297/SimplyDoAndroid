@@ -10,7 +10,7 @@ import com.example.simplydo.adapters.GroupViewAdapter
 import com.example.simplydo.adapters.UserProfileStackAdapter
 import com.example.simplydo.databinding.RecyclerTodoWorkspaceListItemBinding
 import com.example.simplydo.model.privateWorkspace.WorkspaceGroupTaskModel
-import com.example.simplydo.utlis.AppInterface
+import com.example.simplydo.utils.AppInterface
 
 class WorkspaceSearchTaskAdapter(val taskCallback: AppInterface.WorkspaceGroupTask.Task) :
     PagingDataAdapter<WorkspaceGroupTaskModel, WorkspaceSearchTaskAdapter.TodoViewHolder>(DIFF_UTILS) {

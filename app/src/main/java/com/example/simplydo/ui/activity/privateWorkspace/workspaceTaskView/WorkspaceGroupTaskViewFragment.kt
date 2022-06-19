@@ -13,11 +13,11 @@ import com.example.simplydo.adapters.workspace.WorkspaceGroupTaskViewAdapter
 import com.example.simplydo.components.PieChartAnimation
 import com.example.simplydo.databinding.WorkspaceGroupTaskFragmentBinding
 import com.example.simplydo.dialog.bottomSheetDialogs.workspaceDialog.workspaceDialog.WorkspaceTaskBottomSheetDialog
-import com.example.simplydo.localDatabase.AppDatabase
+import com.example.simplydo.database.AppDatabase
 import com.example.simplydo.model.GroupTaskByProgressModel
 import com.example.simplydo.model.entity.WorkspaceGroupModel
 import com.example.simplydo.model.privateWorkspace.WorkspaceGroupTaskModel
-import com.example.simplydo.utlis.*
+import com.example.simplydo.utils.*
 import java.util.*
 
 internal val TAG = WorkspaceGroupTaskViewFragment::class.java.canonicalName

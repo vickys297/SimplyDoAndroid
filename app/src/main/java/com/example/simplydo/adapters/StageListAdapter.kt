@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.simplydo.databinding.RecyclerStageListItemBinding
 import com.example.simplydo.model.TaskStatusDataModel
-import com.example.simplydo.utlis.AppInterface
+import com.example.simplydo.utils.AppInterface
 
 class StageListAdapter(val callback: AppInterface.TaskFullDetailsCallBack.TaskFullDetailsStageCallback) :
     RecyclerView.Adapter<StageListAdapter.StageListViewHolder>() {

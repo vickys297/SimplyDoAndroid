@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.simplydo.databinding.RecyclerParticipantListItemBinding
 import com.example.simplydo.model.UserAccountModel
-import com.example.simplydo.utlis.ParticipantInterface
+import com.example.simplydo.utils.ParticipantInterface
 
 class ParticipantsAdapter(
     private val isRemoveVisible: Boolean,

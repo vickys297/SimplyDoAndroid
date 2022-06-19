@@ -13,11 +13,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simplydo.adapters.MyWorkspaceAdapter
 import com.example.simplydo.databinding.WorkspaceBottomSheetDialogBinding
-import com.example.simplydo.localDatabase.AppDatabase
+import com.example.simplydo.database.AppDatabase
 import com.example.simplydo.model.WorkspaceModel
 import com.example.simplydo.ui.activity.personalWorkspace.PersonalWorkspaceActivity
 import com.example.simplydo.ui.activity.privateWorkspace.WorkspaceActivity
-import com.example.simplydo.utlis.*
+import com.example.simplydo.utils.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 

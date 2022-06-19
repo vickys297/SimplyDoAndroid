@@ -1,4 +1,4 @@
-package com.example.simplydo.utlis
+package com.example.simplydo.utils
 
 import android.content.Context
 import android.util.Log
@@ -9,8 +9,8 @@ import androidx.paging.PagingState
 import com.example.simplydo.api.API
 import com.example.simplydo.api.network.NoConnectivityException
 import com.example.simplydo.api.network.RetrofitServices
-import com.example.simplydo.localDatabase.AppDatabase
-import com.example.simplydo.localDatabase.dao.TodoDAO
+import com.example.simplydo.database.AppDatabase
+import com.example.simplydo.database.dao.TodoDAO
 import com.example.simplydo.model.*
 import com.example.simplydo.model.entity.WorkspaceGroupModel
 import com.example.simplydo.model.privateWorkspace.WorkspaceGroupTaskModel

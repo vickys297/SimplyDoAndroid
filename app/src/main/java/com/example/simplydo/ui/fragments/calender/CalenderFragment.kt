@@ -20,12 +20,12 @@ import com.example.simplydo.adapters.PersonalTaskListAdapter
 import com.example.simplydo.databinding.CalenderFragmentBinding
 import com.example.simplydo.dialog.bottomSheetDialogs.basicAddTodoDialog.AddNewRemainder
 import com.example.simplydo.dialog.bottomSheetDialogs.todoOptions.TodoOptionsFragment
-import com.example.simplydo.localDatabase.AppDatabase
+import com.example.simplydo.database.AppDatabase
 import com.example.simplydo.model.ContactModel
 import com.example.simplydo.model.SmallCalenderModel
 import com.example.simplydo.model.TodoModel
 import com.example.simplydo.model.attachmentModel.CalenderDateSelectorModel
-import com.example.simplydo.utlis.*
+import com.example.simplydo.utils.*
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch

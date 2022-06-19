@@ -11,9 +11,9 @@ import com.example.simplydo.R
 import com.example.simplydo.adapters.PaidPlansAdapter
 import com.example.simplydo.databinding.PlansFragmentBinding
 import com.example.simplydo.model.PaidPlanModel
-import com.example.simplydo.utlis.AppConstant
-import com.example.simplydo.utlis.AppPreference
-import com.example.simplydo.utlis.PaidPlain
+import com.example.simplydo.utils.AppConstant
+import com.example.simplydo.utils.AppPreference
+import com.example.simplydo.utils.PaidPlain
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 

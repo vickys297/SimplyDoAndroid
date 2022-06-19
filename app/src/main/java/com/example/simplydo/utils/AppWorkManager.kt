@@ -1,4 +1,4 @@
-package com.example.simplydo.utlis
+package com.example.simplydo.utils
 
 import android.content.Context
 import android.util.Log
@@ -7,7 +7,7 @@ import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.example.simplydo.TAG_MY
-import com.example.simplydo.workerClass.RegularNotificationWorker
+import com.example.simplydo.worker.RegularNotificationWorker
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.TimeUnit
 

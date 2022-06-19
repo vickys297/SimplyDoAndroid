@@ -16,10 +16,10 @@ import com.example.simplydo.adapters.WorkspaceGroupViewAdapter
 import com.example.simplydo.databinding.GroupViewFragmentBinding
 import com.example.simplydo.dialog.bottomSheetDialogs.calenderOptions.TodoOptions
 import com.example.simplydo.dialog.bottomSheetDialogs.workspaceDialog.WorkspaceSwitchBottomSheetDialog
-import com.example.simplydo.localDatabase.AppDatabase
+import com.example.simplydo.database.AppDatabase
 import com.example.simplydo.model.AccountModel
 import com.example.simplydo.model.entity.WorkspaceGroupModel
-import com.example.simplydo.utlis.*
+import com.example.simplydo.utils.*
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch

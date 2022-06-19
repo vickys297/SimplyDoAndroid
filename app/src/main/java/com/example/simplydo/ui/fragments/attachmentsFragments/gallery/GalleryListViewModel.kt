@@ -10,7 +10,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.simplydo.dataSource.GalleryDataSource
 import com.example.simplydo.model.attachmentModel.GalleryModel
-import com.example.simplydo.utlis.AppConstant
+import com.example.simplydo.utils.AppConstant
 import kotlinx.coroutines.flow.Flow
 
 internal val TAG = GalleryListViewModel::class.java.canonicalName

@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.simplydo.databinding.RecyclerAudioListItemBinding
 import com.example.simplydo.model.attachmentModel.AudioModel
-import com.example.simplydo.utlis.AudioInterface
+import com.example.simplydo.utils.AudioInterface
 
 class SelectionListAudioAdapter(val context: Context, private val audioInterface: AudioInterface) :
     PagingDataAdapter<AudioModel, SelectionListAudioAdapter.AudioViewHolder>(DIFF_CALLBACK) {

@@ -1,4 +1,4 @@
-package com.example.simplydo.utlis
+package com.example.simplydo.utils
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.simplydo.dialog.bottomSheetDialogs.tags.TagsBottomSheetDialogViewModel
 import com.example.simplydo.dialog.bottomSheetDialogs.workspaceDialog.WorkspaceSwitchBottomSheetDialogViewModel
 import com.example.simplydo.ui.activity.personalWorkspace.PersonalWorkspaceViewModel
-import com.example.simplydo.ui.activity.personalWorkspace.personalTask.QuickTodoViewModel
+import com.example.simplydo.ui.activity.personalWorkspace.personalTask.PersonalWorkspaceTaskViewViewModel
 import com.example.simplydo.ui.activity.privateWorkspace.createWorkspace.CreateWorkspaceViewModel
 import com.example.simplydo.ui.activity.privateWorkspace.createWorkspaceGroup.CreateNewWorkspaceGroupViewModel
 import com.example.simplydo.ui.activity.privateWorkspace.editTaskDetails.EditWorkspaceTaskViewModel
@@ -32,8 +32,8 @@ open class ViewModelFactory internal constructor(
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return when (modelClass.canonicalName) {
-            QuickTodoViewModel::class.java.canonicalName -> {
-                QuickTodoViewModel(this.appRepository) as T
+            PersonalWorkspaceTaskViewViewModel::class.java.canonicalName -> {
+                PersonalWorkspaceTaskViewViewModel(this.appRepository) as T
             }
 
             AddNewTodoViewModel::class.java.canonicalName -> {

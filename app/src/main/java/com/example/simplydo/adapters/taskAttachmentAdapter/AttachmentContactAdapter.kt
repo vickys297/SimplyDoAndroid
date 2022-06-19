@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.simplydo.databinding.RecyclerAttachmentContactListItemBinding
 import com.example.simplydo.model.ContactModel
-import com.example.simplydo.utlis.ContactAttachmentInterface
+import com.example.simplydo.utils.ContactAttachmentInterface
 
 class AttachmentContactAdapter(
     val context: Context,

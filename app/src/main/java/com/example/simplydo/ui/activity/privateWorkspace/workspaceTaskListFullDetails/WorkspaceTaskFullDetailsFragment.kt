@@ -24,12 +24,12 @@ import com.example.simplydo.adapters.taskAttachmentAdapter.AttachmentTodoTaskAda
 import com.example.simplydo.databinding.TodoFullDetailsFragmentBinding
 import com.example.simplydo.dialog.bottomSheetDialogs.TaskFullDetailsBottomSheetDialog
 import com.example.simplydo.dialog.bottomSheetDialogs.basicAddTodoDialog.EditWorkspaceTaskBasic
-import com.example.simplydo.localDatabase.AppDatabase
+import com.example.simplydo.database.AppDatabase
 import com.example.simplydo.model.*
 import com.example.simplydo.model.attachmentModel.AudioModel
 import com.example.simplydo.model.attachmentModel.GalleryModel
 import com.example.simplydo.model.privateWorkspace.WorkspaceGroupTaskModel
-import com.example.simplydo.utlis.*
+import com.example.simplydo.utils.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng

@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.simplydo.model.WorkspaceModel
-import com.example.simplydo.utlis.AppRepository
+import com.example.simplydo.utils.AppRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*

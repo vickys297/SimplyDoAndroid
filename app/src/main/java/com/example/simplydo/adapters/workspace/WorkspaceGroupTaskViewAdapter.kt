@@ -11,7 +11,7 @@ import com.example.simplydo.databinding.RecyclerTaskStatusHeaderBinding
 import com.example.simplydo.databinding.RecyclerTodoWorkspaceListItemBinding
 import com.example.simplydo.model.GroupTaskByProgressModel
 import com.example.simplydo.model.privateWorkspace.WorkspaceGroupTaskModel
-import com.example.simplydo.utlis.AppInterface
+import com.example.simplydo.utils.AppInterface
 
 internal const val ITEM_VIEW_HEADER = 0
 internal const val ITEM_VIEW_CONTENT = 1
