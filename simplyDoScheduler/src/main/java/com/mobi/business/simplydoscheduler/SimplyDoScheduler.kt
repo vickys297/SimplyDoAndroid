@@ -1,52 +1,60 @@
 package com.mobi.business.simplydoscheduler
 
-import android.app.AlarmManager
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
-import com.mobi.business.simplydoscheduler.Receiver.SchedulerReceiverActivity
+import android.util.Log
+import com.mobi.business.simplydoscheduler.model.NotificationDataModel
+import com.mobi.business.simplydoscheduler.utils.SchedulerAlarmManager
+import java.util.*
 
-class SimplyDoScheduler(private val context: Context) {
+internal val TAG = SimplyDoScheduler::class.java.simpleName
+
+class SimplyDoScheduler(private val context: Context, val alarmManager: SchedulerAlarmManager) {
 
     companion object {
         fun getInstance(context: Context): SimplyDoScheduler {
-            return SimplyDoScheduler(context)
+            val alarmManager = SchedulerAlarmManager.getInstance(context)
+            return SimplyDoScheduler(context, alarmManager)
         }
     }
 
-    public fun scheduleNotification(
-        notificationId: Int
+
+    fun scheduleNotification(
+        notification: NotificationDataModel
     ) {
-        // Get AlarmManager instance
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        Log.i(TAG, "scheduleNotification: $notification")
+        val notificationTime = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, notification.dateTime.time.hours)
+            set(Calendar.MINUTE, notification.dateTime.time.minutes)
+            set(Calendar.SECOND, 0)
+            set(Calendar.DAY_OF_MONTH, notification.dateTime.date.day)
+            set(Calendar.MONTH, notification.dateTime.date.month)
+            set(Calendar.YEAR, notification.dateTime.date.year)
+        }.timeInMillis
 
-        val intent = Intent(context, SchedulerReceiverActivity::class.java)
-        intent.action = "FOO_ACTION"
-        intent.putExtra("KEY_FOO_STRING", "Medium AlarmManager Demo")
 
-        val pendingIntent =
-            PendingIntent.getBroadcast(
-                context,
-                notificationId,
-                intent,
-                PendingIntent.FLAG_IMMUTABLE
+        val timeInMilliSec = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, 23)
+            set(Calendar.MINUTE, 59)
+            set(Calendar.SECOND, 59)
+        }.timeInMillis
+
+        if (notificationTime <= timeInMilliSec) {
+            alarmManager.setOneTimeAlarm(
+                notificationId = notification.id,
+                timeInMillis = notificationTime
             )
-
-        // Alarm time
-        val ALARM_DELAY_IN_SECOND = 10
-        val alarmTimeAtUTC = System.currentTimeMillis() + ALARM_DELAY_IN_SECOND * 1_000L
-
-        // Set with system Alarm Service
-        // Other possible functions: setExact() / setRepeating() / setWindow(), etc
-        alarmManager.setExactAndAllowWhileIdle(
-            AlarmManager.RTC_WAKEUP,
-            alarmTimeAtUTC,
-            pendingIntent
-        )
-
+        } else {
+            alarmManager.scheduleAnAlarm(notification)
+        }
     }
 
-    public fun scheduleRepeatedNotification() {
+    fun scheduleRepeatedNotification(notification: NotificationDataModel) {
+        Log.i(TAG, "scheduleRepeatedNotification: $notification.id")
+        alarmManager.scheduleAnAlarm(notification)
+    }
+
+
+    fun cancelScheduledTask(notificationId: Int) {
 
     }
 }
