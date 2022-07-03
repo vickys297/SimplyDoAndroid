@@ -32,8 +32,12 @@ class GroupViewAdapter(
                 executePendingBindings()
             }
 
-            binding.root.setOnClickListener {
-                callback.onSelect(item)
+//            binding.root.setOnClickListener {
+//                callback.onSelect(item)
+//            }
+
+            binding.imageViewOptions.setOnClickListener {
+                callback.onOption(item)
             }
 
             return binding
@@ -68,11 +72,7 @@ class GroupViewAdapter(
                 adapter = userProfileStackAdapter
                 addItemDecoration(OverlapRecyclerViewDecoration(4, -25))
             }
-
-
         }
-
-
     }
 
 

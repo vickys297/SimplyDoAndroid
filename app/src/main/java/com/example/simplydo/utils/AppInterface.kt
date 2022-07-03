@@ -200,6 +200,12 @@ interface AppInterface {
 
     interface GroupViewCallback {
         fun onSelect(item: WorkspaceGroupModel)
+        fun onOption(item: WorkspaceGroupModel)
+    }
+
+    interface GroupViewOptionCallback {
+        fun onEdit(item: WorkspaceGroupModel)
+        fun onDelete(item: WorkspaceGroupModel)
     }
 
     interface WorkspaceAdapter {

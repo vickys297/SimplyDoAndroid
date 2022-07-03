@@ -1,4 +1,4 @@
-package com.example.simplydo.ui.activity.privateWorkspace.createWorkspaceGroup
+package com.example.simplydo.ui.fragments.editWorkspaceGroup
 
 import android.os.Bundle
 import android.view.View
@@ -9,45 +9,41 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simplydo.R
 import com.example.simplydo.adapters.workspace.ParticipantsAdapter
 import com.example.simplydo.database.AppDatabase
-import com.example.simplydo.databinding.CreateNewWorkspaceGroupFragmentBinding
-import com.example.simplydo.model.AccountModel
+import com.example.simplydo.databinding.FragmentEditWorkspaceGroupBinding
 import com.example.simplydo.model.UserAccountModel
-import com.example.simplydo.model.UserIdModel
 import com.example.simplydo.model.entity.WorkspaceGroupModel
-import com.example.simplydo.utils.*
-import com.google.gson.Gson
+import com.example.simplydo.utils.AppConstant
+import com.example.simplydo.utils.AppFunctions
+import com.example.simplydo.utils.AppRepository
+import com.example.simplydo.utils.ViewModelFactory
 
-internal val TAG = CreateNewWorkspaceGroupFragment::class.java.canonicalName
-
-class CreateNewWorkspaceGroupFragment : Fragment(R.layout.create_new_workspace_group_fragment),
+class EditWorkspaceGroupFragment : Fragment(R.layout.fragment_edit_workspace_group),
     View.OnClickListener {
 
     companion object {
-        fun newInstance() = CreateNewWorkspaceGroupFragment()
+        fun newInstance() = EditWorkspaceGroupFragment()
     }
 
-    private lateinit var viewModel: CreateNewWorkspaceGroupViewModel
-    private lateinit var binding: CreateNewWorkspaceGroupFragmentBinding
+    private lateinit var viewModel: EditWorkspaceGroupViewModel
+    private lateinit var binding: FragmentEditWorkspaceGroupBinding
 
     private lateinit var participantsAdapter: ParticipantsAdapter
     private var participantsList: ArrayList<UserAccountModel> = arrayListOf()
 
-    private var workspaceId: Long = 1
-
+    private lateinit var workspaceGroupModel: WorkspaceGroupModel
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding = CreateNewWorkspaceGroupFragmentBinding.bind(view)
+        binding = FragmentEditWorkspaceGroupBinding.bind(view)
         setupViewModel()
 
         requireArguments().let {
-            workspaceId = it.getLong(AppConstant.Key.NAVIGATION_WORKSPACE_ID)
+            workspaceGroupModel =
+                it.getSerializable(AppConstant.Key.NAVIGATION_WORKSPACE_GROUP) as WorkspaceGroupModel
         }
 
-        binding.buttonCreateGroup.setOnClickListener(this@CreateNewWorkspaceGroupFragment)
+        binding.buttonCreateGroup.setOnClickListener(this@EditWorkspaceGroupFragment)
         participantsAdapter = ParticipantsAdapter(isRemoveVisible = false, callback = null)
-
-
 
         binding.recyclerViewParticipants.apply {
             layoutManager =
@@ -59,14 +55,24 @@ class CreateNewWorkspaceGroupFragment : Fragment(R.layout.create_new_workspace_g
             AppConstant.Key.NAVIGATION_PARTICIPANT_KEY
         )?.observe(viewLifecycleOwner) {
             it?.let {
-                participantsList = it
+                it.distinct()
+                participantsList.addAll(it)
                 participantsAdapter.updateDataset(it)
             }
         }
 
         binding.imageButtonAddParticipants.setOnClickListener {
-            findNavController().navigate(R.id.action_workspace_createNewWorkspaceGroupFragment_to_selectParticipantsFragment)
+            findNavController().navigate(R.id.action_workspace_editWorkspaceGroupFragment_to_selectParticipantsFragment)
         }
+
+        loadWorkspacePeopleGroup(workspaceGroupModel)
+    }
+
+    private fun loadWorkspacePeopleGroup(workspaceGroupModel: WorkspaceGroupModel) {
+        binding.editTextName.setText(workspaceGroupModel.name)
+        binding.editTextDescriptions.setText(workspaceGroupModel.description)
+        participantsList = workspaceGroupModel.people
+        participantsAdapter.updateDataset(workspaceGroupModel.people)
     }
 
     private fun setupViewModel() {
@@ -78,10 +84,10 @@ class CreateNewWorkspaceGroupFragment : Fragment(R.layout.create_new_workspace_g
             )
         )
         viewModel =
-            ViewModelProvider(this, viewModelFactory)[CreateNewWorkspaceGroupViewModel::class.java]
+            ViewModelProvider(this, viewModelFactory)[EditWorkspaceGroupViewModel::class.java]
         binding.apply {
-            this.viewModel = this@CreateNewWorkspaceGroupFragment.viewModel
-            lifecycleOwner = this@CreateNewWorkspaceGroupFragment
+            this.viewModel = this@EditWorkspaceGroupFragment.viewModel
+            lifecycleOwner = this@EditWorkspaceGroupFragment
             executePendingBindings()
         }
     }
@@ -104,23 +110,12 @@ class CreateNewWorkspaceGroupFragment : Fragment(R.layout.create_new_workspace_g
     }
 
     private fun createNewWorkSpace() {
-        val newGroup = WorkspaceGroupModel(
-            workspaceID = workspaceId,
-            name = binding.editTextName.text.toString(),
-            description = binding.editTextDescriptions.text.toString(),
-            createdBy = UserIdModel(
-                admin = Gson().fromJson(
-                    AppPreference.getPreferences(
-                        AppConstant.Preferences.USER_DATA,
-                        requireContext()
-                    ), AccountModel::class.java
-                )
-            ),
-            people = participantsList
-        )
 
+        workspaceGroupModel.name = binding.editTextName.text.toString().trim()
+        workspaceGroupModel.description = binding.editTextDescriptions.text.toString().trim()
+        workspaceGroupModel.people = participantsList
 
-        viewModel.insertNewGroup(newGroup)
+        viewModel.updateWorkspaceGroup(workspaceGroupModel)
         findNavController().navigateUp()
     }
 

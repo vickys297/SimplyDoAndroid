@@ -20,10 +20,10 @@ data class WorkspaceGroupModel(
     val workspaceID: Long,
 
     @ColumnInfo(name = "groupName")
-    val name: String,
+    var name: String,
 
     @ColumnInfo(name = "groupDescription")
-    val description: String = "",
+    var description: String = "",
 
     @ColumnInfo(name = "createdAt")
     val createdAt: Long = System.currentTimeMillis(),
@@ -32,7 +32,7 @@ data class WorkspaceGroupModel(
     val createdBy: UserIdModel,
 
     @ColumnInfo(name = "participants")
-    val people: ArrayList<UserAccountModel>
+    var people: ArrayList<UserAccountModel>
 
 ) : Serializable {
 

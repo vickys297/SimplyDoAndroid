@@ -37,4 +37,10 @@ class WorkspaceGroupViewViewModel(val appRepository: AppRepository) : ViewModel(
             mutableWorkspaceCount.postValue(count)
         }
     }
+
+    fun deleteWorkspaceGroup(item: WorkspaceGroupModel) {
+        viewModelScope.launch(Dispatchers.IO) {
+            appRepository.deleteWorkspaceGroup(item)
+        }
+    }
 }

@@ -20,6 +20,7 @@ import com.example.simplydo.ui.fragments.addOrEditTodoTask.AddNewTodoViewModel
 import com.example.simplydo.ui.fragments.attachmentsFragments.contacts.ContactsViewModel
 import com.example.simplydo.ui.fragments.attachmentsFragments.gallery.GalleryListViewModel
 import com.example.simplydo.ui.fragments.calender.CalenderViewModel
+import com.example.simplydo.ui.fragments.editWorkspaceGroup.EditWorkspaceGroupViewModel
 import com.example.simplydo.ui.fragments.otherTodoFragments.OtherTodoViewModel
 import com.example.simplydo.ui.fragments.searchTask.SearchTaskViewModel
 import com.example.simplydo.ui.fragments.selectParticipants.SelectParticipantsViewModel
@@ -107,6 +108,9 @@ open class ViewModelFactory internal constructor(
 
             NotificationSettingsViewModel::class.java.canonicalName -> {
                 NotificationSettingsViewModel(appRepository) as T
+            }
+            EditWorkspaceGroupViewModel::class.java.canonicalName->{
+                EditWorkspaceGroupViewModel(appRepository) as T
             }
             else -> {
                 throw IllegalArgumentException("ViewModel not found")

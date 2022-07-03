@@ -5,7 +5,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import com.mobi.business.simplydoscheduler.model.NotificationDataModel
-import com.mobi.business.simplydoscheduler.receiver.SchedulerReceiverActivity
+import com.mobi.business.simplydoscheduler.receiver.SchedulerReceiver
 import java.util.*
 
 class SchedulerAlarmManager(val context: Context) {
@@ -19,9 +19,9 @@ class SchedulerAlarmManager(val context: Context) {
     fun setOneTimeAlarm(notificationId: Int, timeInMillis: Long) {
         // Get SchedulerAlarmManager instance
         val alarmManager =
-            context.getSystemService(Context.ALARM_SERVICE) as android.app.AlarmManager
+            context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-        val intent = Intent(context, SchedulerReceiverActivity::class.java)
+        val intent = Intent(context, SchedulerReceiver::class.java)
         intent.action = "FOO_ACTION"
         intent.putExtra("KEY_FOO_STRING", "Medium SchedulerAlarmManager Demo")
 
@@ -46,7 +46,7 @@ class SchedulerAlarmManager(val context: Context) {
 
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-        val intent = Intent(context, SchedulerReceiverActivity::class.java)
+        val intent = Intent(context, SchedulerReceiver::class.java)
         intent.action = "FOO_ACTION"
         intent.putExtra("KEY_FOO_STRING", "Medium SchedulerAlarmManager Demo")
 

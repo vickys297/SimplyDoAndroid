@@ -3,9 +3,15 @@
 
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
 
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+
     <application>
         <receiver
-            android:name=".receiver.SchedulerReceiverActivity"
+            android:name=".receiver.SchedulerReceiver"
             android:enabled="true" />
     </application>
 </manifest>

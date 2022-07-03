@@ -101,6 +101,7 @@ object AppConstant {
 
     object Network {
         const val BASE_URL = "http://192.168.0.150:3000/api/v1beta/"
+        const val SOCKET_BASE_URL = "http://192.168.0.150:9092/"
         const val VERIFY_WEBSITE = "http://192.168.0.100"
     }
 
@@ -177,6 +178,7 @@ object AppConstant {
         const val NAVIGATION_TASK_FLAG_KEY: String = "taskFlagKey"
         const val NAVIGATION_PARTICIPANT_KEY: String = "participantsKey"
         const val NAVIGATION_WORKSPACE_GROUP_ITEM: String = "WorkspaceGroupItem"
+        const val NAVIGATION_WORKSPACE_GROUP: String = "WorkspaceGroup"
         const val NAVIGATION_ADD_TASK_LIST: String = "GetTaskList"
         const val NAVIGATION_CONTACT_DATA_KEY: String = "SelectedContactList"
         const val NAVIGATION_FILES_DATA_KEY: String = "SelectedFilesList"

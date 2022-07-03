@@ -6,6 +6,10 @@
     app:startDestination="@id/workspaceGroupViewFragment">
 
     <fragment
+        android:id="@+id/selectParticipantsFragment"
+        android:name="com.example.simplydo.ui.fragments.selectParticipants.SelectParticipantsFragment"
+        android:label="SelectParticipantsFragment" />
+    <fragment
         android:id="@+id/workspaceGroupViewFragment"
         android:name="com.example.simplydo.ui.activity.privateWorkspace.workspaceGroupView.WorkspaceGroupViewFragment"
         android:label="WorkspaceGroupViewFragment">
@@ -18,6 +22,9 @@
         <action
             android:id="@+id/action_workspace_workspaceGroupViewFragment_to_createNewWorkspaceGroupFragment"
             app:destination="@id/createNewWorkspaceGroupFragment" />
+        <action
+            android:id="@+id/action_workspace_workspaceGroupViewFragment_to_editWorkspaceGroupFragment"
+            app:destination="@id/editWorkspaceGroupFragment" />
     </fragment>
     <fragment
         android:id="@+id/workspaceGroupTaskViewFragment"
@@ -36,6 +43,15 @@
         <action
             android:id="@+id/action_workspace_workspaceGroupTaskViewFragment_to_searchTaskFragment"
             app:destination="@id/searchTaskFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/createNewWorkspaceGroupFragment"
+        android:name="com.example.simplydo.ui.activity.privateWorkspace.createWorkspaceGroup.CreateNewWorkspaceGroupFragment"
+        android:label="CreateNewWorkspaceGroupFragment">
+   <action
+            android:id="@+id/action_workspace_createNewWorkspaceGroupFragment_to_selectParticipantsFragment"
+            app:destination="@id/selectParticipantsFragment" />
+
     </fragment>
     <fragment
         android:id="@+id/addNewTodo"
@@ -98,10 +114,6 @@
         android:label="activity_my_setting"
         tools:layout="@layout/activity_my_setting" />
     <fragment
-        android:id="@+id/createNewWorkspaceGroupFragment"
-        android:name="com.example.simplydo.ui.activity.privateWorkspace.createWorkspaceGroup.CreateNewWorkspaceGroupFragment"
-        android:label="CreateNewWorkspaceGroupFragment" />
-    <fragment
         android:id="@+id/selectParticipantsFragment2"
         android:name="com.example.simplydo.ui.fragments.selectParticipants.SelectParticipantsFragment"
         android:label="SelectParticipantsFragment" />
@@ -112,6 +124,14 @@
         <action
             android:id="@+id/action_workspace_searchTaskFragment_to_privateTaskFullDetailsFragment"
             app:destination="@id/privateTaskFullDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editWorkspaceGroupFragment"
+        android:name="com.example.simplydo.ui.fragments.editWorkspaceGroup.EditWorkspaceGroupFragment"
+        android:label="EditWorkspaceGroupFragment" >
+        <action
+            android:id="@+id/action_workspace_editWorkspaceGroupFragment_to_selectParticipantsFragment"
+            app:destination="@id/selectParticipantsFragment" />
     </fragment>
 
 </navigation>

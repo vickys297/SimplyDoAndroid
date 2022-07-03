@@ -71,6 +71,7 @@ class ParticipantsAdapter(
     fun updateDataset(newDataset: ArrayList<UserAccountModel>) {
         val lastPosition = dataset.size
         this.dataset = newDataset
+        this.dataset.distinct()
         notifyItemRangeChanged(lastPosition, newDataset.size)
     }
 }

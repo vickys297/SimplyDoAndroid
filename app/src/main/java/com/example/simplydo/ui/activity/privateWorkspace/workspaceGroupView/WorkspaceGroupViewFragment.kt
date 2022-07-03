@@ -13,12 +13,14 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
 import com.example.simplydo.R
 import com.example.simplydo.adapters.WorkspaceGroupViewAdapter
+import com.example.simplydo.database.AppDatabase
 import com.example.simplydo.databinding.GroupViewFragmentBinding
 import com.example.simplydo.dialog.bottomSheetDialogs.calenderOptions.TodoOptions
 import com.example.simplydo.dialog.bottomSheetDialogs.workspaceDialog.WorkspaceSwitchBottomSheetDialog
-import com.example.simplydo.database.AppDatabase
+import com.example.simplydo.dialog.bottomSheetDialogs.workspaceGroupDialog.WorkspaceGroupOptionDialog
 import com.example.simplydo.model.AccountModel
 import com.example.simplydo.model.entity.WorkspaceGroupModel
+import com.example.simplydo.ui.fragments.dialog.AlertDialogFragment
 import com.example.simplydo.utils.*
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.collect
@@ -45,6 +47,33 @@ class WorkspaceGroupViewFragment : Fragment(R.layout.group_view_fragment) {
 
     private var taskCount = 0
 
+    private var workSpaceGroupOptionCallback = object : AppInterface.GroupViewOptionCallback {
+        override fun onEdit(item: WorkspaceGroupModel) {
+            val bundle = Bundle()
+            bundle.putSerializable(AppConstant.Key.NAVIGATION_WORKSPACE_GROUP, item)
+            findNavController().navigate(
+                R.id.action_workspace_workspaceGroupViewFragment_to_editWorkspaceGroupFragment,
+                bundle
+            )
+        }
+
+        override fun onDelete(item: WorkspaceGroupModel) {
+            val dialog = AlertDialogFragment.newInstance(
+                message = "Are you sure do you want to delete ${item.name}?",
+                cancelable = false,
+                callback = object : AlertDialogFragment.Callback {
+                    override fun onConfirm() {
+                        viewModelWorkspace.deleteWorkspaceGroup(item)
+                    }
+
+                    override fun onClose() {
+                    }
+                }
+            )
+            dialog.show(requireActivity().supportFragmentManager, "")
+        }
+    }
+
     private var callback = object : AppInterface.GroupViewCallback {
         override fun onSelect(item: WorkspaceGroupModel) {
             val bundle = Bundle()
@@ -53,6 +82,11 @@ class WorkspaceGroupViewFragment : Fragment(R.layout.group_view_fragment) {
                 R.id.action_workspace_workspaceGroupViewFragment_to_workspaceGroupTaskViewFragment,
                 bundle
             )
+        }
+
+        override fun onOption(item: WorkspaceGroupModel) {
+            WorkspaceGroupOptionDialog.newInstance(workSpaceGroupOptionCallback, item)
+                .show(requireActivity().supportFragmentManager, "")
         }
     }
 

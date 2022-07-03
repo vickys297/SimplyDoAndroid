@@ -494,6 +494,14 @@ class AppRepository private constructor(
         return context
     }
 
+    fun deleteWorkspaceGroup(item: WorkspaceGroupModel) {
+        workspaceGroupDb.deleteWorkspaceGroup(item)
+    }
+
+    fun updateWorkspaceGroup(workspaceGroupModel: WorkspaceGroupModel) {
+        workspaceGroupDb.updateWorkspaceGroup(workspaceGroupModel)
+    }
+
 }
 
 

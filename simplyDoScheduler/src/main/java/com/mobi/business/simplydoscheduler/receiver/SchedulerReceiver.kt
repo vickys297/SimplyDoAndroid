@@ -4,9 +4,9 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.util.Log
 
-internal val TAG = SchedulerReceiverActivity::class.java.simpleName
+internal val TAG = SchedulerReceiver::class.java.simpleName
 
-class SchedulerReceiverActivity : BroadcastReceiver() {
+class SchedulerReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: android.content.Intent) {
         Log.i(TAG, "onReceive: ")

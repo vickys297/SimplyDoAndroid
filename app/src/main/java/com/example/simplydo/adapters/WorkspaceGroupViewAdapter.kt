@@ -68,6 +68,10 @@ class WorkspaceGroupViewAdapter(
                     callback.onSelect(item)
                 }
 
+                bind.imageViewOptions.setOnClickListener {
+                    callback.onOption(item)
+                }
+
                 bind.recyclerView.apply {
                     userProfileStackAdapter = UserProfileStackAdapter(dataset = item.people)
                     layoutManager = LinearLayoutManager(

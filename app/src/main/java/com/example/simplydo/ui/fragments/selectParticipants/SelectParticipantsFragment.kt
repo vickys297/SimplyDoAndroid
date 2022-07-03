@@ -9,10 +9,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.simplydo.R
 import com.example.simplydo.adapters.workspace.ParticipantsAdapter
-import com.example.simplydo.databinding.SelectParticipantsFragmentBinding
 import com.example.simplydo.database.AppDatabase
-import com.example.simplydo.model.UserAccountModel
+import com.example.simplydo.databinding.SelectParticipantsFragmentBinding
 import com.example.simplydo.model.AccountModel
+import com.example.simplydo.model.UserAccountModel
 import com.example.simplydo.utils.AppConstant
 import com.example.simplydo.utils.AppRepository
 import com.example.simplydo.utils.ParticipantInterface
@@ -66,6 +66,7 @@ class SelectParticipantsFragment : Fragment(R.layout.select_participants_fragmen
         viewModel.getParticipantsList()
 
         binding.buttonAddParticipants.setOnClickListener {
+            participantsList.distinct()
             findNavController().previousBackStackEntry?.savedStateHandle?.set(
                 AppConstant.Key.NAVIGATION_PARTICIPANT_KEY,
                 participantsList
