@@ -100,8 +100,8 @@ object AppConstant {
     }
 
     object Network {
-        const val BASE_URL = "http://192.168.0.150:3000/api/v1beta/"
-        const val SOCKET_BASE_URL = "http://192.168.0.150:9092/"
+        const val BASE_URL = "http://192.168.0.10:3000/api/v1beta/"
+        const val SOCKET_BASE_URL = "http://192.168.0.10:9092/"
         const val VERIFY_WEBSITE = "http://192.168.0.100"
     }
 

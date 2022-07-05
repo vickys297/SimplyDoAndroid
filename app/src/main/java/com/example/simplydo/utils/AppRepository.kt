@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.simplydo.api.API
+import com.example.simplydo.api.WorkspaceAPI
 import com.example.simplydo.api.network.NoConnectivityException
 import com.example.simplydo.api.network.RetrofitServices
 import com.example.simplydo.database.AppDatabase
@@ -441,7 +442,28 @@ class AppRepository private constructor(
     }
 
     fun insertNewWorkspaceGroup(newGroup: WorkspaceGroupModel) {
-        workspaceGroupDb.insertNewWorkspaceGroup(newGroup)
+        val workspaceGroupId = workspaceGroupDb.insertNewWorkspaceGroup(newGroup)
+
+        val callable = Callable { workspaceGroupDb.getWorkspaceGroupById(workspaceGroupId) }
+        val workspaceGroupMode = Executors.newSingleThreadExecutor().submit(callable).get()
+
+        Thread { syncNewWorkspaceGroup(workspaceGroupMode) }.start()
+    }
+
+    fun syncNewWorkspaceGroup(workspaceGroupModel: WorkspaceGroupModel) {
+        val service = RetrofitServices.getInstance(context).createService(WorkspaceAPI::class.java)
+        val request = service.syncWorkspaceGroup(workspaceGroupModel)
+        request.enqueue(object : Callback<CommonResponseModel> {
+            override fun onResponse(
+                call: Call<CommonResponseModel>,
+                response: Response<CommonResponseModel>
+            ) {
+            }
+
+            override fun onFailure(call: Call<CommonResponseModel>, t: Throwable) {
+            }
+
+        })
     }
 
     fun getWorkspaceGroup(workspaceID: Long): PagingSource<Int, WorkspaceGroupModel> {
