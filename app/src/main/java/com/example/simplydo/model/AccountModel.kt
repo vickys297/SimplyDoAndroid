@@ -10,7 +10,7 @@ data class AccountModel(
     val email: String,
     val phone: String,
     val uKey: String,
-    val title: String =""
+    val title: String = ""
 ) : Serializable {
     fun getUserName(): String {
         return String.format(

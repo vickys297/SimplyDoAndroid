@@ -1,5 +1,6 @@
 package com.example.simplydo.ui.fragments.accounts
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
@@ -10,6 +11,8 @@ import com.example.simplydo.R
 import com.example.simplydo.adapters.SettingsItemAdapter
 import com.example.simplydo.databinding.AccountsFragmentBinding
 import com.example.simplydo.model.SettingsItemModel
+import com.example.simplydo.ui.activity.login.LoginActivity
+import com.example.simplydo.utils.AppPreference
 
 class AccountsFragments : Fragment(R.layout.accounts_fragment), View.OnClickListener {
 
@@ -97,6 +100,7 @@ class AccountsFragments : Fragment(R.layout.accounts_fragment), View.OnClickList
 
         binding.buttonEditProfile.setOnClickListener(this)
         binding.textViewSwitchAccount.setOnClickListener(this)
+        binding.imageButtonLogout.setOnClickListener(this)
     }
 
     private fun setupViewModel() {
@@ -113,6 +117,20 @@ class AccountsFragments : Fragment(R.layout.accounts_fragment), View.OnClickList
             }
             binding.textViewSwitchAccount.id -> {
                 findNavController().navigate(R.id.action_settings_accountsFragments_to_myWorkspaceFragment)
+            }
+            binding.imageButtonLogout.id -> {
+                AppPreference.clearAllPreference(requireContext())
+
+                requireActivity().startActivity(
+                    Intent(
+                        requireContext(),
+                        LoginActivity::class.java
+                    ).apply {
+                        flags =
+                            Intent.FLAG_ACTIVITY_NEW_TASK and Intent.FLAG_ACTIVITY_CLEAR_TOP and Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    })
+
+                requireActivity().finish()
             }
         }
     }

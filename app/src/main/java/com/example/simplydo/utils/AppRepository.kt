@@ -8,6 +8,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.simplydo.api.API
 import com.example.simplydo.api.WorkspaceAPI
+import com.example.simplydo.api.WorkspaceGroupAPI
 import com.example.simplydo.api.network.NoConnectivityException
 import com.example.simplydo.api.network.RetrofitServices
 import com.example.simplydo.database.AppDatabase
@@ -522,6 +523,20 @@ class AppRepository private constructor(
 
     fun updateWorkspaceGroup(workspaceGroupModel: WorkspaceGroupModel) {
         workspaceGroupDb.updateWorkspaceGroup(workspaceGroupModel)
+    }
+
+    suspend fun getParticipatesFromCloudWorkspace(): ArrayList<AccountModel> {
+        val service =
+            RetrofitServices.getInstance(context).createService(WorkspaceGroupAPI::class.java)
+        val request = service.getPeopleList()
+
+        return if (request.isSuccessful) {
+            val responseData = request.body()!!
+            responseData.data
+        } else {
+            arrayListOf()
+        }
+
     }
 
 }

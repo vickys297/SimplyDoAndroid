@@ -63,4 +63,12 @@ object AppPreference {
         return sharedPreferences.getLong(key, default)
     }
 
+    fun clearAllPreference(context: Context) {
+        val sharedPreferences =
+            context.getSharedPreferences(AppConstant.SESSION_KEY, Context.MODE_PRIVATE).edit()
+        sharedPreferences.clear()
+        sharedPreferences.apply()
+
+    }
+
 }

@@ -79,10 +79,10 @@ class SelectParticipantsFragment : Fragment(R.layout.select_participants_fragmen
         observerParticipantData = Observer {
             it?.let {
                 val dataset: ArrayList<UserAccountModel> = arrayListOf()
-                for (item in it) {
+                it.forEach { accountModel ->
                     dataset.add(
                         UserAccountModel(
-                            account = item,
+                            account = accountModel,
                             role = arrayListOf()
                         )
                     )

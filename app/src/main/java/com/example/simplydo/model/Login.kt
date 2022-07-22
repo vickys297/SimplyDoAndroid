@@ -1,7 +1,7 @@
 package com.example.simplydo.model
 
 data class LoginModel(
-    val mobile: String,
+    val phone: String,
 )
 
 data class LoginResponseModel(
@@ -11,7 +11,7 @@ data class LoginResponseModel(
 )
 
 data class OTPModel(
-    val mobile: String,
+    val phone: String,
     val otp: String
 )
 
@@ -24,5 +24,5 @@ data class OTPResponse(
 data class LoginResponseDataModel(
     val isVerified: Boolean,
     val uKey: String,
-    val mobile: String
+    val phone: String
 )

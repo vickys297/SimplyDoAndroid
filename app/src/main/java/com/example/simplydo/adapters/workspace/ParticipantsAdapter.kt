@@ -1,5 +1,6 @@
 package com.example.simplydo.adapters.workspace
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
@@ -9,6 +10,7 @@ import com.example.simplydo.databinding.RecyclerParticipantListItemBinding
 import com.example.simplydo.model.UserAccountModel
 import com.example.simplydo.utils.ParticipantInterface
 
+internal val TAG = ParticipantsAdapter::class.java.simpleName
 class ParticipantsAdapter(
     private val isRemoveVisible: Boolean,
     private val callback: ParticipantInterface? = null
@@ -71,7 +73,8 @@ class ParticipantsAdapter(
     fun updateDataset(newDataset: ArrayList<UserAccountModel>) {
         val lastPosition = dataset.size
         this.dataset = newDataset
-        this.dataset.distinct()
+
+        Log.i(TAG, "updateDataset: ${this.dataset}")
         notifyItemRangeChanged(lastPosition, newDataset.size)
     }
 }

@@ -14,8 +14,11 @@ class SelectParticipantsViewModel(val appRepository: AppRepository) : ViewModel(
 
     fun getParticipantsList() {
         viewModelScope.launch(Dispatchers.IO) {
-            val dataset = appRepository.getParticipatesFromWorkspace()
+            val dataset = appRepository.getParticipatesFromCloudWorkspace()
             mutableParticipantsData.postValue(dataset)
         }
     }
+
+
+
 }

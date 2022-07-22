@@ -233,4 +233,8 @@
     <string name="_10_mins">10 Minutes</string>
     <string name="_5_mins">5 Minutes</string>
     <string name="alert">Alert</string>
+    <string name="first_name">First Name</string>
+    <string name="middle_name">Middle Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="create_profile">Create Profile</string>
 </resources>
